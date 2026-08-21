@@ -1,1 +1,121 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>हरियाणा ग्रामीण सेवा - परिवार पहचान पत्र पोर्टल</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+
+    <div class="w-full max-w-xl bg-white shadow-lg rounded-lg p-6 mt-6 border-t-4 border-blue-700">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-blue-800">हरियाणा ग्रामीण सेवा पोर्टल</h1>
+            <p class="text-sm text-gray-600 mt-1">परिवार पहचान पत्र (PPP) एवं ग्राम सूची चयन</p>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">ज़िला चुनें (Select District):</label>
+            <select id="districtSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                <option value="">-- ज़िला चुनें --</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">ब्लॉक / तहसील चुनें (Select Block):</label>
+            <select id="blockSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" disabled>
+                <option value="">-- पहले ज़िला चुनें --</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">गाँव की सूची (Villages List):</label>
+            <div id="villageList" class="p-4 border border-gray-300 rounded-lg bg-gray-50 min-h-[120px] max-h-60 overflow-y-auto text-gray-800">
+                <span class="text-gray-400">गाँव देखने के लिए पहले ज़िला और ब्लॉक चुनें...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // आपका Firebase Realtime Database URL
+        const firebaseConfig = {
+            databaseURL: "https://meragaov-ab9fb-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+
+        // Firebase इनिशियलाइज करना
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let villageData = {};
+
+        const districtSelect = document.getElementById('districtSelect');
+        const blockSelect = document.getElementById('blockSelect');
+        const villageList = document.getElementById('villageList');
+
+        // डेटाबेस से ज़िले और गाँवों का डेटा फेच करना
+        db.ref('villages').once('value').then((snapshot) => {
+            villageData = snapshot.val() || {};
+            let districts = Object.keys(villageData).sort();
+            
+            districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
+            districts.forEach(district => {
+                let opt = document.createElement('option');
+                opt.value = district;
+                opt.textContent = district;
+                districtSelect.appendChild(opt);
+            });
+        }).catch(error => {
+            console.error("डेटा लोड करने में त्रुटि:", error);
+            villageList.innerHTML = '<span class="text-red-500">डेटा लोड करने में समस्या आई है।</span>';
+        });
+
+        // ज़िला बदलने पर ब्लॉक लोड करना
+        districtSelect.addEventListener('change', function() {
+            const selectedDist = this.value;
+            blockSelect.innerHTML = '<option value="">-- ब्लॉक चुनें --</option>';
+            villageList.innerHTML = '<span class="text-gray-400">गाँव देखने के लिए ब्लॉक चुनें...</span>';
+            blockSelect.disabled = true;
+
+            if (selectedDist && villageData[selectedDist]) {
+                blockSelect.disabled = false;
+                let blocks = Object.keys(villageData[selectedDist]).sort();
+                blocks.forEach(block => {
+                    let opt = document.createElement('option');
+                    opt.value = block;
+                    opt.textContent = block;
+                    blockSelect.appendChild(opt);
+                });
+            }
+        });
+
+        // ब्लॉक बदलने पर गाँव की लिस्ट दिखाना
+        blockSelect.addEventListener('change', function() {
+            const selectedDist = districtSelect.value;
+            const selectedBlock = this.value;
+            villageList.innerHTML = '';
+
+            if (selectedDist && selectedBlock && villageData[selectedDist][selectedBlock]) {
+                let villages = villageData[selectedDist][selectedBlock];
+                if (Array.isArray(villages) && villages.length > 0) {
+                    let ul = document.createElement('ul');
+                    ul.className = 'list-disc pl-5 space-y-1';
+                    villages.forEach(village => {
+                        let li = document.createElement('li');
+                        li.textContent = village;
+                        ul.appendChild(li);
+                    });
+                    villageList.appendChild(ul);
+                } else {
+                    villageList.textContent = 'इस ब्लॉक में कोई गाँव उपलब्ध नहीं है।';
+                }
+            } else {
+                villageList.innerHTML = '<span class="text-gray-400">गाँव देखने के लिए ब्लॉक चुनें...</span>';
+            }
+        });
+    </script>
+</body>
+</html>
 
