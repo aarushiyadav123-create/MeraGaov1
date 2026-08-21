@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>हरियाणा ग्रामीण सेवा - परिवार पहचान पत्र पोर्टल</title>
-    <!-- Tailwind CSS for clean government portal look -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
@@ -40,7 +39,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs (Compat Version) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
@@ -58,9 +57,11 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // सीधे villages फोल्डर से डेटा फेच करना
-        db.ref('villages').once('value').then((snapshot) => {
-            villageData = snapshot.val() || {};
+        // पूरे डेटाबेस रूट से डेटा लेना (चाਹ े डेटा सीधा हो या villages के अंदर)
+        db.ref('/').once('value').then((snapshot) => {
+            const data = snapshot.val() || {};
+            // अगर डेटा के अंदर villages नाम की की है तो उसे उठाओ, वरना पूरे डेटा को ले लो
+            villageData = data.villages ? data.villages : data;
 
             let districts = Object.keys(villageData).sort();
             
@@ -68,7 +69,6 @@
             districts.forEach(district => {
                 let opt = document.createElement('option');
                 opt.value = district;
-                // नाम को सुंदर दिखने के लिए (पहला अक्षर बड़ा, बाकी छोटे)
                 opt.textContent = district.charAt(0) + district.slice(1).toLowerCase();
                 districtSelect.appendChild(opt);
             });
