@@ -57,18 +57,26 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // यह स्मार्ट कोड पूरे डेटाबेस को स्कैन करेगा
+        // डेटाबेस के रूट से डेटा फेच करना
         db.ref('/').once('value').then((snapshot) => {
             let rawData = snapshot.val() || {};
             
-            // अगर डेटा 'villages' नाम की चाबी के अंदर है, तो उसे उठाओ, वरना रूट वाले को
-            if (rawData.villages) {
+            // यह खुद चेक कर लेगा कि डेटा 'villages' के अंदर है या बाहर
+            if (rawData.villages && typeof rawData.villages === 'object') {
                 villageData = rawData.villages;
-            } else {
+            } else if (rawData.AMBALA || rawData.PALWAL || rawData.ROHTAK) {
                 villageData = rawData;
+            } else {
+                // अगर डेटा किसी और फोल्डर के अंदर है तो उसे ढूंढो
+                let keys = Object.keys(rawData);
+                if (keys.length > 0 && typeof rawData[keys[0]] === 'object') {
+                    villageData = rawData[keys[0]];
+                } else {
+                    villageData = rawData;
+                }
             }
 
-            let districts = Object.keys(villageData).sort();
+            let districts = Object.keys(villageData).filter(d => isNaN(d)).sort();
             
             districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
             districts.forEach(district => {
