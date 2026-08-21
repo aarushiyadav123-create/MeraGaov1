@@ -57,54 +57,19 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // डेटाबेस से डेटा फेच करना
-        db.ref('/').once('value').then((snapshot) => {
-            let rawData = snapshot.val() || {};
-            // अगर डेटा 'villages' के अंदर है तो उसे लो, वरना रूट को
-            villageData = rawData.villages ? rawData.villages : rawData;
+        // सीधे villages फोल्डर से डेटा लोड करना
+        db.ref('villages').once('value').then((snapshot) => {
+            villageData = snapshot.val() || {};
 
-            // अगर डेटा एरे या नंबर इंडेक्स में है, तो उसके अंदर की वैल्यू (district name) ढूंढना
-            let districts = [];
-            if (Array.isArray(villageData)) {
-                // अगर एरे है तो खाली हटाकर असली नाम निकालो
-                villageData.forEach(item => {
-                    if (item && typeof item === 'object') {
-                        // इसके अंदर ज़िले के नाम हो सकते हैं
-                        Object.keys(item).forEach(d => districts.push(d));
-                    }
-                });
-            } else {
-                districts = Object.keys(villageData);
-            }
-
-            districts = districts.filter(d => isNaN(d)).sort();
+            let districts = Object.keys(villageData).sort();
             
             districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
-            
-            // अगर ऊपर वाले तरीके से सीधे नाम न मिलें तो ऑब्जेक्ट को सीधे स्कैन करो
-            if (districts.length === 0) {
-                for (let key in villageData) {
-                    if (villageData[key] && typeof villageData[key] === 'object') {
-                        // हो सकता है की key खुद ज़िला हो या उसके अंदर ज़िला हो
-                        let subKeys = Object.keys(villageData[key]);
-                        subKeys.forEach(sub => {
-                            if (isNaN(sub)) {
-                                districts.push(sub);
-                            }
-                        });
-                    }
-                }
-            }
-
-            districts = [...new Set(districts)].sort();
-
             districts.forEach(district => {
                 let opt = document.createElement('option');
                 opt.value = district;
                 opt.textContent = district.charAt(0) + district.slice(1).toLowerCase();
                 districtSelect.appendChild(opt);
             });
-
         }).catch(error => {
             console.error("डेटा लोड करने में त्रुटि:", error);
             villageList.innerHTML = '<span class="text-red-500">डेटा लोड करने में समस्या आई है।</span>';
@@ -117,21 +82,9 @@
             villageList.innerHTML = '<span class="text-gray-400">गाँव देखने के लिए ब्लॉक चुनें...</span>';
             blockSelect.disabled = true;
 
-            // डेटा ढूंढने के लिए सही पाथ सेट करना
-            let targetDistObj = villageData[selectedDist];
-            if (!targetDistObj) {
-                // अगर सीधे नहीं मिला तो अंदर खोजो
-                for (let key in villageData) {
-                    if (villageData[key] && villageData[key][selectedDist]) {
-                        targetDistObj = villageData[key][selectedDist];
-                        break;
-                    }
-                }
-            }
-
-            if (selectedDist && targetDistObj) {
+            if (selectedDist && villageData[selectedDist]) {
                 blockSelect.disabled = false;
-                let blocks = Object.keys(targetDistObj).sort();
+                let blocks = Object.keys(villageData[selectedDist]).sort();
                 blocks.forEach(block => {
                     let opt = document.createElement('option');
                     opt.value = block;
@@ -147,18 +100,8 @@
             const selectedBlock = this.value;
             villageList.innerHTML = '';
 
-            let targetDistObj = villageData[selectedDist];
-            if (!targetDistObj) {
-                for (let key in villageData) {
-                    if (villageData[key] && villageData[key][selectedDist]) {
-                        targetDistObj = villageData[key][selectedDist];
-                        break;
-                    }
-                }
-            }
-
-            if (selectedDist && selectedBlock && targetDistObj && targetDistObj[selectedBlock]) {
-                let villages = targetDistObj[selectedBlock];
+            if (selectedDist && selectedBlock && villageData[selectedDist][selectedBlock]) {
+                let villages = villageData[selectedDist][selectedBlock];
                 if (Array.isArray(villages) && villages.length > 0) {
                     let ul = document.createElement('ul');
                     ul.className = 'list-disc pl-5 space-y-1';
