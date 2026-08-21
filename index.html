@@ -58,11 +58,9 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // Fetch Data from Firebase under 'villages' root or directly
-        db.ref('/').once('value').then((snapshot) => {
-            const rawData = snapshot.val() || {};
-            // अगर डेटा 'villages' फोल्डर के अंदर है या सीधा बाहर है, दोनों को संभालेगा
-            villageData = rawData.villages ? rawData.villages : rawData;
+        // सीधे villages फोल्डर से डेटा फेच करना
+        db.ref('villages').once('value').then((snapshot) => {
+            villageData = snapshot.val() || {};
 
             let districts = Object.keys(villageData).sort();
             
@@ -70,7 +68,7 @@
             districts.forEach(district => {
                 let opt = document.createElement('option');
                 opt.value = district;
-                // नाम को सुंदर दिखाने के लिए पहला अक्षर बड़ा बाकी छोटे कर सकते हैं या सीधा दिखा सकते हैं
+                // नाम को सुंदर दिखने के लिए (पहला अक्षर बड़ा, बाकी छोटे)
                 opt.textContent = district.charAt(0) + district.slice(1).toLowerCase();
                 districtSelect.appendChild(opt);
             });
