@@ -57,11 +57,9 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // पूरे डेटाबेस रूट से डेटा लेना (चाਹ े डेटा सीधा हो या villages के अंदर)
-        db.ref('/').once('value').then((snapshot) => {
-            const data = snapshot.val() || {};
-            // अगर डेटा के अंदर villages नाम की की है तो उसे उठाओ, वरना पूरे डेटा को ले लो
-            villageData = data.villages ? data.villages : data;
+        // सीधे villages फोल्डर से डेटा फेच करना ताकि सही ज़िले मिलें
+        db.ref('villages').once('value').then((snapshot) => {
+            villageData = snapshot.val() || {};
 
             let districts = Object.keys(villageData).sort();
             
