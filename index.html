@@ -57,10 +57,9 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // सीधे villages फोल्डर से साफ डेटा उठाना
+        // सीधे 'villages' से डेटा लोड करना
         db.ref('villages').once('value').then((snapshot) => {
             villageData = snapshot.val() || {};
-
             let districts = Object.keys(villageData).sort();
             
             districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
