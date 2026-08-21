@@ -57,8 +57,8 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // सीधे villages फोल्डर से डेटा फेच करना ताकि सही ज़िले मिलें
-        db.ref('villages').once('value').then((snapshot) => {
+        // सीधे रूट से डेटा फेच करना ताकि सारे ज़िले (Palwal, Rohtak आदि) मिल जाएं
+        db.ref('/').once('value').then((snapshot) => {
             villageData = snapshot.val() || {};
 
             let districts = Object.keys(villageData).sort();
@@ -67,6 +67,7 @@
             districts.forEach(district => {
                 let opt = document.createElement('option');
                 opt.value = district;
+                // ज़िले के नाम को सुंदर रूप देना (पहला अक्षर बड़ा, बाकी छोटे)
                 opt.textContent = district.charAt(0) + district.slice(1).toLowerCase();
                 districtSelect.appendChild(opt);
             });
