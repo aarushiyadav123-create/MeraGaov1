@@ -57,37 +57,21 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // डेटाबेस के रूट से डेटा फेच करना
-        db.ref('/').once('value').then((snapshot) => {
-            let rawData = snapshot.val() || {};
-            
-            // यह खुद चेक कर लेगा कि डेटा 'villages' के अंदर है या बाहर
-            if (rawData.villages && typeof rawData.villages === 'object') {
-                villageData = rawData.villages;
-            } else if (rawData.AMBALA || rawData.PALWAL || rawData.ROHTAK) {
-                villageData = rawData;
-            } else {
-                // अगर डेटा किसी और फोल्डर के अंदर है तो उसे ढूंढो
-                let keys = Object.keys(rawData);
-                if (keys.length > 0 && typeof rawData[keys[0]] === 'object') {
-                    villageData = rawData[keys[0]];
-                } else {
-                    villageData = rawData;
-                }
-            }
+        // सीधे villages फोल्डर से साफ डेटा उठाना
+        db.ref('villages').once('value').then((snapshot) => {
+            villageData = snapshot.val() || {};
 
-            let districts = Object.keys(villageData).filter(d => isNaN(d)).sort();
+            let districts = Object.keys(villageData).sort();
             
             districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
             districts.forEach(district => {
                 let opt = document.createElement('option');
                 opt.value = district;
-                opt.textContent = district.charAt(0) + district.slice(1).toLowerCase();
+                opt.textContent = district;
                 districtSelect.appendChild(opt);
             });
         }).catch(error => {
             console.error("डेटा लोड करने में त्रुटि:", error);
-            villageList.innerHTML = '<span class="text-red-500">डेटा लोड करने में समस्या आई है।</span>';
         });
 
         // District Change Event
@@ -103,7 +87,7 @@
                 blocks.forEach(block => {
                     let opt = document.createElement('option');
                     opt.value = block;
-                    opt.textContent = block.charAt(0) + block.slice(1).toLowerCase();
+                    opt.textContent = block;
                     blockSelect.appendChild(opt);
                 });
             }
