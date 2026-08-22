@@ -99,6 +99,10 @@
         .item-info p { font-size: 13px; color: #444; }
         .call-btn { background: #2e7d32; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; white-space: nowrap; }
         .delete-btn { background: #c62828; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 5px; }
+        
+        /* External Portal Links Styling */
+        .portal-link-box { display: block; background: #e3f2fd; border: 1px solid #90caf9; padding: 14px; border-radius: 6px; margin-bottom: 12px; text-decoration: none; color: #0d47a1; font-weight: bold; font-size: 15px; transition: 0.2s; }
+        .portal-link-box:hover { background: #bbdefb; }
     </style>
 </head>
 <body>
@@ -150,10 +154,10 @@
             <button class="portal-btn" onclick="switchSection('services-page')" id="btnServices">🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें ➔</button>
             <button class="portal-btn subadmin-btn" onclick="switchSection('munadi-page')" id="btnMunadi">📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔</button>
             <button class="portal-btn" onclick="switchSection('buysell-page')" id="btnBuySell">🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔</button>
-            <button class="portal-btn gov-btn" onclick="switchSection('haryana-gov-page')" id="btnGov">🏛️ 7. Haryana Govt Schemes & Add ➔</button>
             <button class="portal-btn" onclick="switchSection('gallery-page')" id="btnGallery">📸 4. गाँव की गैलरी (लाइव फोटो) ➔</button>
-            <button class="portal-btn" onclick="switchSection('video-page')" id="btnVideo">🎵 5. गाँव के वीडियो और लोक गीत ➔</button>
+            <button class="portal-btn" onclick="switchSection('video-page')" id="btnVideo">🎵 5. गाँव के वीडियो और लोक गीत (Live) ➔</button>
             <button class="portal-btn dark-btn" onclick="switchSection('history-page')" id="btnHistory">📚 6. गाँव का इतिहास व जानकारी Add ➔</button>
+            <button class="portal-btn gov-btn" onclick="switchSection('haryana-gov-page')" id="btnGov">🏛️ 7. Haryana Govt Schemes & Live Portals ➔</button>
         </div>
 
         <!-- PROFILE PAGE -->
@@ -280,7 +284,43 @@
             </div>
         </div>
 
-        <!-- 6. HISTORY PAGE (Added Add & Delete feature) -->
+        <!-- 4. GALLERY PAGE (Live Photos Active) -->
+        <div id="gallery-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
+            <div class="card content-box">
+                <h2>📸 गाँव की गैलरी (लाइव फोटो)</h2>
+                <p>गाँव की ताज़ा और लाइव तस्वीरें यहाँ देखें:</p>
+                <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;">📷 अपनी फोटो अपलोड करें:</h4>
+                    <input type="file" id="galleryPhotoInput" accept="image/*" style="margin-bottom: 10px; width: 100%;">
+                    <input type="text" id="galleryPhotoCaption" placeholder="फोटो का विवरण (जैसे: चौपाल, जोहड़ आदि)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button class="submit-btn" onclick="uploadGalleryPhoto()">Live Upload Karein</button>
+                </div>
+                <div id="galleryContainer" style="margin-top: 15px;">
+                    <!-- Dynamic Live Photos List -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. VIDEO & LOK GEET PAGE (Live Active) -->
+        <div id="video-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
+            <div class="card content-box">
+                <h2>🎵 गाँव के वीडियो और लोक गीत (Live Streaming)</h2>
+                <p>गाँव के सांस्कृतिक वीडियो और लाइव लोक गीत सुनें व देखें:</p>
+                <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;">➕ नया वीडियो/लोकगीत लिंक जोड़ें:</h4>
+                    <input type="text" id="mediaTitleInput" placeholder="शीर्षक (जैसे: गाँव का लोक गीत / हरियाणवी रागनी)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="mediaUrlInput" placeholder="YouTube Video Link / Audio URL paste karein" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button class="submit-btn" onclick="addLiveMedia()">Live Jodein</button>
+                </div>
+                <div id="mediaListContainer" style="margin-top: 15px;">
+                    <!-- Dynamic Video/Audio list -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. HISTORY PAGE -->
         <div id="history-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
@@ -302,16 +342,31 @@
             </div>
         </div>
 
-        <!-- 7. HARYANA GOV SCHEMES PAGE (Added Add & Delete feature) -->
+        <!-- 7. HARYANA GOV SCHEMES & LIVE PORTALS PAGE -->
         <div id="haryana-gov-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>🏛️ Haryana Government Schemes & Add</h2>
-                <p style="margin-bottom: 12px; color: #555;">हरियाणा सरकार की प्रमुख योजनाएं (HKRN, दीन दयाल उपाध्याय, खेती-बाड़ी व अन्य):</p>
+                <h2>🏛️ Haryana Government Schemes & Live Portals</h2>
+                <p style="margin-bottom: 15px; color: #555;">हरियाणा सरकार के डायरेक्ट लाइव पोर्टल और प्रमुख योजनाएं (बिना किसी रुकावट के सीधे चेक करें):</p>
                 
+                <!-- Direct Government Portal Links -->
+                <a href="https://parivarpehchan.haryana.gov.in/" target="_blank" class="portal-link-box">
+                    🔗 1. PPP Portal (परिवार पहचान पत्र - Live Check) ➔
+                </a>
+                <a href="https://hrye.hry.nic.in/" target="_blank" class="portal-link-box">
+                    🔗 2. HKRN - Haryana Kaushal Rozgar Nigam Portal ➔
+                </a>
+                <a href="https://chirayu.haryana.gov.in/" target="_blank" class="portal-link-box">
+                    🔗 3. Chirayu Yojana / Ayushman Card Portal ➔
+                </a>
+                <a href="https://edisha.gov.in/" target="_blank" class="portal-link-box">
+                    🔗 4. e-Disha Haryana Services (Certificate & Schemes) ➔
+                </a>
+
+                <hr style="margin: 20px 0;">
                 <div id="govFormArea" style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 10px;">➕ Nayi Scheme Jodein (OTP Secure):</h4>
-                    <div class="form-group"><label>Scheme ka Naam:</label><input type="text" id="gTitle" placeholder="उदा. Chirayu Yojana / Tractor Subsidy"></div>
+                    <h4 style="color: #1b5e20; margin-bottom: 10px;">➕ Aur Nayi Scheme Jodein (OTP Secure):</h4>
+                    <div class="form-group"><label>Scheme ka Naam:</label><input type="text" id="gTitle" placeholder="उदा. Tractor Subsidy"></div>
                     <div class="form-group"><label>Scheme ki Jankari:</label><textarea id="gDesc" rows="2" placeholder="Yojana ke baare mein choti jankari..."></textarea></div>
                     <div class="form-group"><label>Mobile Number:</label><input type="text" id="gPhone" placeholder="10-digit number"></div>
                     <button class="submit-btn" style="padding: 10px; font-size: 14px;" onclick="initAddOTP('gov')">OTP Bhekar Scheme Jodein</button>
@@ -323,7 +378,7 @@
                 </div>
 
                 <hr style="margin: 20px 0;">
-                <h4>Government Schemes List:</h4>
+                <h4>User Added Government Schemes List:</h4>
                 <div id="govList" style="margin-top: 10px;"></div>
             </div>
         </div>
@@ -366,8 +421,6 @@
         </div>
 
         <!-- STATIC PAGES -->
-        <div id="gallery-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव की गैलरी</h2><p>लाइव तस्वीरें।</p></div></div>
-        <div id="video-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव के वीडियो</h2><p>लोक गीत और वीडियो।</p></div></div>
         <div id="policy" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a><div class="card"><h2>Privacy Policy</h2><p style="margin-top:12px;">Surakshit data.</p></div></div>
 
     </div>
@@ -390,6 +443,8 @@
             if(sectionId === 'profile-page') loadProfileState();
             if(sectionId === 'admin-panel-page') renderPendingMunadi();
             if(sectionId === 'munadi-page') renderUserPendingMunadi();
+            if(sectionId === 'gallery-page') renderGalleryPhotos();
+            if(sectionId === 'video-page') renderMediaList();
         }
 
         function toggleLanguage() {
@@ -406,10 +461,10 @@
                 document.getElementById('btnServices').innerText = "🛠️ 1B. Essential Services (Mistri etc.) ➔";
                 document.getElementById('btnMunadi').innerText = "📢 2. Announcements & News (Verified) ➔";
                 document.getElementById('btnBuySell').innerText = "🌾 3. Cattle, Wheat, Feed Buy-Sell ➔";
-                document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Add ➔";
                 document.getElementById('btnGallery').innerText = "📸 4. Village Gallery (Live Photos) ➔";
-                document.getElementById('btnVideo').innerText = "🎵 5. Village Videos & Folk Songs ➔";
+                document.getElementById('btnVideo').innerText = "🎵 5. Village Videos & Folk Songs (Live) ➔";
                 document.getElementById('btnHistory').innerText = "📚 6. Village History & Info Add ➔";
+                document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Live Portals ➔";
             } else {
                 document.getElementById('headerSubTitle').innerText = "मेरा गाँव - मेरी पहचान";
                 document.getElementById('btnProfile').innerText = "👤 मेरी प्रोफाइल / मेरा गाँव सेट करें";
@@ -417,10 +472,10 @@
                 document.getElementById('btnServices').innerText = "🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें ➔";
                 document.getElementById('btnMunadi').innerText = "📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔";
                 document.getElementById('btnBuySell').innerText = "🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔";
-                document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Add ➔";
                 document.getElementById('btnGallery').innerText = "📸 4. गाँव की गैलरी (लाइव फोटो) ➔";
-                document.getElementById('btnVideo').innerText = "🎵 5. गाँव के वीडियो और लोक गीत ➔";
+                document.getElementById('btnVideo').innerText = "🎵 5. गाँव के वीडियो और लोक गीत (Live) ➔";
                 document.getElementById('btnHistory').innerText = "📚 6. गाँव का इतिहास व जानकारी Add ➔";
+                document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Live Portals ➔";
             }
         }
 
@@ -529,6 +584,100 @@
             alert('Reset ho gaya.');
         }
 
+        /* Live Gallery Upload Functions */
+        function uploadGalleryPhoto() {
+            const fileInput = document.getElementById('galleryPhotoInput');
+            const caption = document.getElementById('galleryPhotoCaption').value;
+            if(!fileInput.files || !fileInput.files[0]) { alert('Pehle photo select karein!'); return; }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let photos = JSON.parse(localStorage.getItem('gallery_photos') || '[]');
+                photos.push({ img: e.target.result, caption: caption || 'गाँव की लाइव तस्वीर' });
+                localStorage.setItem('gallery_photos', JSON.stringify(photos));
+                document.getElementById('galleryPhotoCaption').value = '';
+                fileInput.value = '';
+                renderGalleryPhotos();
+                alert('Photo Successfully Live Upload Ho Gayi!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        function renderGalleryPhotos() {
+            const container = document.getElementById('galleryContainer');
+            if(!container) return;
+            let photos = JSON.parse(localStorage.getItem('gallery_photos') || '[]');
+            if(photos.length === 0) {
+                container.innerHTML = '<p style="color: #777; font-size: 14px;">Abhi koi live photo uploaded nahi hai. Upar diye गए form se add karein.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            photos.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.style.marginBottom = '12px';
+                div.style.padding = '10px';
+                div.innerHTML = `
+                    <img src="${item.img}" style="width: 100%; border-radius: 6px; max-height: 250px; object-fit: cover; margin-bottom: 8px;">
+                    <p style="font-size: 14px; font-weight: bold; color: #333;">${item.caption}</p>
+                    <button class="delete-btn" style="margin-top: 8px;" onclick="deleteGalleryPhoto(${index})">Delete Photo</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteGalleryPhoto(index) {
+            let photos = JSON.parse(localStorage.getItem('gallery_photos') || '[]');
+            photos.splice(index, 1);
+            localStorage.setItem('gallery_photos', JSON.stringify(photos));
+            renderGalleryPhotos();
+        }
+
+        /* Live Video & Audio Functions */
+        function addLiveMedia() {
+            const title = document.getElementById('mediaTitleInput').value;
+            const url = document.getElementById('mediaUrlInput').value;
+            if(!title || !url) { alert('Title aur Video/Audio link dono bharein!'); return; }
+
+            let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
+            mediaList.push({ title, url });
+            localStorage.setItem('village_media', JSON.stringify(mediaList));
+
+            document.getElementById('mediaTitleInput').value = '';
+            document.getElementById('mediaUrlInput').value = '';
+            renderMediaList();
+            alert('Live Video/Audio Successfully Add Ho Gaya!');
+        }
+
+        function renderMediaList() {
+            const container = document.getElementById('mediaListContainer');
+            if(!container) return;
+            let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
+            if(mediaList.length === 0) {
+                container.innerHTML = '<p style="color: #777; font-size: 14px;">Abhi koi live video ya lok geet add nahi hai.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            mediaList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.style.marginBottom = '12px';
+                div.innerHTML = `
+                    <h5 style="color: #1b5e20; font-size: 16px; margin-bottom: 8px;">🎵 ${item.title}</h5>
+                    <p style="font-size: 13px; margin-bottom: 8px; word-break: break-all;"><a href="${item.url}" target="_blank" style="color: #0277bd;">Link Dekhein / Play Karein: ${item.url}</a></p>
+                    <button class="delete-btn" onclick="deleteMedia(${index})">Delete</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteMedia(index) {
+            let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
+            mediaList.splice(index, 1);
+            localStorage.setItem('village_media', JSON.stringify(mediaList));
+            renderMediaList();
+        }
+
         function initAddOTP(type) {
             activeItemType = type;
             let phone = "";
@@ -618,6 +767,8 @@
             renderList('history');
             renderList('gov');
             renderUserPendingMunadi();
+            renderGalleryPhotos();
+            renderMediaList();
         }
 
         function renderList(type) {
@@ -625,7 +776,6 @@
             if(!container) return;
             let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
             
-            // Default static content agar list khali ho (History aur Gov ke liye)
             if(list.length === 0 && type === 'history') {
                 container.innerHTML = `
                     <div class="item-card" style="display:block;"><h5 style="color:#1b5e20;">गाँव की स्थापना</h5><p>यह हमारे पुराने बुजुर्गों द्वारा बसाया गया एक समृद्ध गाँव है।</p></div>
@@ -633,10 +783,7 @@
                 return;
             }
             if(list.length === 0 && type === 'gov') {
-                container.innerHTML = `
-                    <div class="item-card" style="display:block;"><h5 style="color: #0277bd;">1. HKRN (Haryana Kaushal Rozgar Nigam)</h5><p>कौशल रोजगार निगम के तहत कच्चे कर्मचारियों और जॉब्स रजिस्ट्रेशन की जानकारी।</p></div>
-                    <div class="item-card" style="display:block;"><h5 style="color: #0277bd;">2. Deen Dayal Upadhyaya Antyodaya Yojana</h5><p>गरीब परिवारों के उत्थान और मकान/प्लॉट से जुड़ी सरकारी सहायता योजनाएं।</p></div>
-                `;
+                container.innerHTML = '<p style="color: #777; font-size: 13px;">Abhi koi extra user added scheme nahi hai.</p>';
                 return;
             }
 
