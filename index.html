@@ -5,52 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">मेरा गाँव - डिजिटल पोर्टल</title>
     
-    <!-- jQuery for AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Firebase SDKs (Modular with your Real Keys) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-        import { getDatabase, ref, set, get, remove, child, push } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBXryxNOlryP4WOXcKOda5dQIjLAc72wG4",
-            authDomain: "meragaov-ab9fb.firebaseapp.com",
-            databaseURL: "https://meragaov-ab9fb-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "meragaov-ab9fb",
-            storageBucket: "meragaov-ab9fb.firebasestorage.app",
-            messagingSenderId: "424538068212",
-            appId: "1:424538068212:web:2d58406aeb0b4d9524faa1",
-            measurementId: "G-86FH5M7NP1"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getDatabase(app);
-
-        window.firebaseDB = { db, ref, set, get, remove, child, push };
-        
-        window.loadFirebaseData = async function() {
-            try {
-                const snapshot = await get(child(ref(db), 'portal_data'));
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    if(data.dukaan) localStorage.setItem('dukaan_data', JSON.stringify(data.dukaan));
-                    if(data.service) localStorage.setItem('service_data', JSON.stringify(data.service));
-                    if(data.munadi) localStorage.setItem('munadi_data', JSON.stringify(data.munadi));
-                    if(data.buysell) localStorage.setItem('buysell_data', JSON.stringify(data.buysell));
-                    if(data.history) localStorage.setItem('history_data', JSON.stringify(data.history));
-                    if(data.gallery) localStorage.setItem('gallery_photos', JSON.stringify(data.gallery));
-                    if(data.media) localStorage.setItem('village_media', JSON.stringify(data.media));
-                    if(typeof renderAllLists === 'function') renderAllLists();
-                }
-            } catch(e) {
-                console.log("Firebase sync fallback", e);
-            }
-        };
-        window.loadFirebaseData();
-    </script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
@@ -182,58 +141,58 @@
                 <img id="homeUserImg" class="user-id-img" src="" alt="User">
                 <div class="user-id-info">
                     <h4 id="homeUserName"></h4>
-                    <p>गाँव: <span id="homeUserVillage"></span> &nbsp; <span style="color: green; font-weight: bold;">✔ Active (Firebase Live)</span></p>
+                    <p>गाँव: <span id="homeUserVillage"></span> &nbsp; <span style="color: green; font-weight: bold;">✔ Active</span></p>
                 </div>
             </div>
 
-            <button class="portal-btn profile-btn" onclick="switchSection('profile-page')" id="btnProfile">👤 मेरी प्रोफाइल / मेरा गाँव सेट करें</button>
-            <button class="portal-btn" onclick="switchSection('dukaan-page')" id="btnDukaan">🏥 1. दुकान देखें व OTP से जोड़ें ➔</button>
-            <button class="portal-btn" onclick="switchSection('services-page')" id="btnServices">🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें ➔</button>
-            <button class="portal-btn subadmin-btn" onclick="switchSection('munadi-page')" id="btnMunadi">📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔</button>
-            <button class="portal-btn" onclick="switchSection('buysell-page')" id="btnBuySell">🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔</button>
-            <button class="portal-btn" onclick="switchSection('gallery-page')" id="btnGallery">📸 4. गाँव की गैलरी (लाइव फोटो) ➔</button>
-            <button class="portal-btn" onclick="switchSection('video-page')" id="btnVideo">🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera) ➔</button>
-            <button class="portal-btn dark-btn" onclick="switchSection('history-page')" id="btnHistory">📚 6. गाँव का इतिहास व जानकारी Add ➔</button>
-            <button class="portal-btn pashu-btn" onclick="switchSection('pashu-sewa-page')" id="btnPashu">🐄 7. पशु सेवा एवं स्वास्थ्य सलाह (Veterinary Info) ➔</button>
-            <button class="portal-btn edu-btn" onclick="switchSection('education-page')" id="btnEdu">📖 8. बच्चों की शिक्षा व पढ़ाई (Education Support) ➔</button>
-            <button class="portal-btn gov-btn" onclick="switchSection('haryana-gov-page')" id="btnGov">🏛️ 9. Haryana Govt Schemes & Live Portals ➔</button>
+            <button class="portal-btn profile-btn" onclick="switchSection('profile-page')" id="btnProfile">मेरी प्रोफाइल व गाँव सेट करें</button>
+            <button class="portal-btn" onclick="switchSection('dukaan-page')" id="btnDukaan">दुकान देखें व जोड़ें</button>
+            <button class="portal-btn" onclick="switchSection('services-page')" id="btnServices">आवश्यक सेवाएं (मिस्त्री आदि)</button>
+            <button class="portal-btn subadmin-btn" onclick="switchSection('munadi-page')" id="btnMunadi">मुनादी व खबरें</button>
+            <button class="portal-btn" onclick="switchSection('buysell-page')" id="btnBuySell">पशु, गेहूँ, चारा खरीद-बेच</button>
+            <button class="portal-btn" onclick="switchSection('gallery-page')" id="btnGallery">गाँव की गैलरी (लाइव फोटो)</button>
+            <button class="portal-btn" onclick="switchSection('video-page')" id="btnVideo">वीडियो और लाइव प्रोग्राम</button>
+            <button class="portal-btn dark-btn" onclick="switchSection('history-page')" id="btnHistory">गाँव का इतिहास व जानकारी</button>
+            <button class="portal-btn pashu-btn" onclick="switchSection('pashu-sewa-page')" id="btnPashu">पशु सेवा एवं स्वास्थ्य सलाह</button>
+            <button class="portal-btn edu-btn" onclick="switchSection('education-page')" id="btnEdu">बच्चों की शिक्षा व पढ़ाई</button>
+            <button class="portal-btn gov-btn" onclick="switchSection('haryana-gov-page')" id="btnGov">Haryana Govt Schemes</button>
         </div>
 
         <div id="profile-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card">
                 <h3>प्रोफाइल और गाँव सेट करें</h3>
                 <div id="formSection">
                     <form onsubmit="submitFullForm(event)">
                         <div class="form-group"><label>पूरा नाम:</label><input type="text" id="userName" required placeholder="अपना नाम लिखें"></div>
-                        <div class="form-group"><label>गाँव का नाम (Mera Gaon):</label><input type="text" id="userVillage" required placeholder="गाँव का नाम लिखें"></div>
+                        <div class="form-group"><label>गाँव का नाम:</label><input type="text" id="userVillage" required placeholder="गाँव का नाम लिखें"></div>
                         <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="userPhone" required placeholder="10-digit mobile number"></div>
                         <div class="form-group"><label>अपनी फोटो अपलोड करें:</label><input type="file" id="userPhoto" accept="image/*" required></div>
                         <button type="submit" class="submit-btn">OTP भेजें</button>
                     </form>
                 </div>
                 <div id="otpSection" style="display: none;">
-                    <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px;">आपके मोबाइल पर OTP भेज दिया गया है। कृपया अपना एसएमएस चेक करें।</p>
-                    <div class="form-group"><label>4-digit OTP Darj Karein:</label><input type="text" id="enteredOtp" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyOtpAndDirectApprove()">OTP Verify & Save Karein</button>
+                    <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
+                    <div class="form-group"><label>OTP दर्ज करें:</label><input type="text" id="enteredOtp" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyOtpAndDirectApprove()">OTP वेरीफाई करें</button>
                 </div>
                 <div id="statusSection" style="display: none; text-align: center;">
-                    <div class="alert approved">🎉 Badhai ho! Profile Verified & Live Save Ho Chuki Hai.</div>
+                    <div class="alert approved">🎉 बधाई हो! प्रोफाइल वेरीफाई हो चुकी है।</div>
                     <div id="approvedView" style="margin-top: 20px; font-size: 16px; line-height: 1.8;">
                         <img id="sPhoto" class="profile-img-preview" src="" alt="Photo">
                         <p><strong>नाम:</strong> <span id="sName"></span></p>
-                        <p><strong>मेरा गाँव:</strong> <span id="sVillage"></span></p>
-                        <p style="color: green; margin-top: 8px; font-weight: bold;">✔ Active & Synced to Firebase</p>
+                        <p><strong>गाँव:</strong> <span id="sVillage"></span></p>
+                        <p style="color: green; margin-top: 8px; font-weight: bold;">✔ Active</p>
                     </div>
-                    <button onclick="resetProfile()" style="margin-top: 25px; background: #c62828; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: bold;">Profile Edit / Reset Karein</button>
+                    <button onclick="resetProfile()" style="margin-top: 25px; background: #c62828; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: bold;">प्रोफाइल एडिट / रीसेट करें</button>
                 </div>
             </div>
         </div>
 
         <div id="dukaan-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>गाँव की दुकानें & Add</h2>
+                <h2>गाँव की दुकानें व जोड़ें</h2>
                 <div id="dukaanFormArea">
                     <div class="form-group"><label>दुकान का नाम:</label><input type="text" id="dName" placeholder="दुकान का नाम"></div>
                     <div class="form-group"><label>संचालक का नाम:</label><input type="text" id="dOwner" placeholder="नाम"></div>
@@ -242,8 +201,8 @@
                 </div>
                 <div id="dukaanOtpArea" style="display:none; margin-top:15px;">
                     <p id="dukaanOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
-                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="dukaanOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
+                    <div class="form-group"><label>OTP डालें:</label><input type="text" id="dukaanOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
                 <h4>उपलब्ध दुकानें:</h4>
@@ -252,19 +211,19 @@
         </div>
 
         <div id="services-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
                 <h2>आवश्यक सेवाएं - मिस्त्री आदि</h2>
                 <div id="serviceFormArea">
-                    <div class="form-group"><label>सेवा का नाम (उदा. Mistri):</label><input type="text" id="sTitle" placeholder="जैसे: राज मिस्त्री"></div>
+                    <div class="form-group"><label>सेवा का नाम:</label><input type="text" id="sTitle" placeholder="जैसे: राज मिस्त्री"></div>
                     <div class="form-group"><label>व्यक्ति का नाम:</label><input type="text" id="sPerson" placeholder="नाम"></div>
                     <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="sPhone" placeholder="10-digit number"></div>
                     <button class="submit-btn" onclick="initAddOTP('service')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="serviceOtpArea" style="display:none; margin-top:15px;">
                     <p id="serviceOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
-                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="serviceOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
+                    <div class="form-group"><label>OTP डालें:</label><input type="text" id="serviceOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
                 <h4>मिस्त्री व सेवा सूची:</h4>
@@ -273,9 +232,9 @@
         </div>
 
         <div id="munadi-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>मुनादी व खबरें (Sub-Admin Verification)</h2>
+                <h2>मुनादी व खबरें</h2>
                 <div id="munadiFormArea">
                     <div class="form-group"><label>खबर / मुनादी विवरण:</label><textarea id="mText" rows="3" placeholder="यहाँ लिखें..."></textarea></div>
                     <div class="form-group"><label>आपका नाम:</label><input type="text" id="mUser" placeholder="अपना नाम"></div>
@@ -284,21 +243,21 @@
                 </div>
                 <div id="munadiOtpArea" style="display:none; margin-top:15px;">
                     <p id="munadiOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
-                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="munadiOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Send to Sub-Admin</button>
+                    <div class="form-group"><label>OTP डालें:</label><input type="text" id="munadiOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सब-एडमिन को भेजें</button>
                 </div>
                 <hr style="margin: 20px 0;">
-                <h4>स्वीकृत ताज़ा खबरें (Verified News):</h4>
+                <h4>स्वीकृत ताज़ा खबरें:</h4>
                 <div id="munadiList" style="margin-top: 10px;"></div>
                 
                 <hr style="margin: 20px 0;">
-                <h4 style="color: #ef6c00;">Pending Munadi:</h4>
+                <h4 style="color: #ef6c00;">लंबित मुनादी:</h4>
                 <div id="userPendingMunadiList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
         <div id="buysell-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
                 <h2>पशु, गेहूँ, चारा खरीद-बेच</h2>
                 <div id="buysellFormArea">
@@ -309,47 +268,47 @@
                 </div>
                 <div id="buysellOtpArea" style="display:none; margin-top:15px;">
                     <p id="buysellOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
-                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="buysellOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
+                    <div class="form-group"><label>OTP डालें:</label><input type="text" id="buysellOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
-                <h4>लिस्ट:</h4>
+                <h4>सूची:</h4>
                 <div id="buysellList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
         <div id="gallery-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम</a>
             <div class="card content-box">
-                <h2>📸 गाँव की गैलरी (लाइव फोटो)</h2>
+                <h2>गाँव की गैलरी (लाइव फोटो)</h2>
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 8px;">📷 अपनी फोटो अपलोड करें:</h4>
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;">अपनी फोटो अपलोड करें:</h4>
                     <input type="file" id="galleryPhotoInput" accept="image/*" style="margin-bottom: 10px; width: 100%;">
                     <input type="text" id="galleryPhotoCaption" placeholder="फोटो का विवरण (जैसे: चौपाल)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button class="submit-btn" onclick="uploadGalleryPhoto()">Firebase पर Live Upload Karein</button>
+                    <button class="submit-btn" onclick="uploadGalleryPhoto()">फोटो अपलोड करें</button>
                 </div>
                 <div id="galleryContainer" style="margin-top: 15px;"></div>
             </div>
         </div>
 
         <div id="video-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम</a>
             <div class="card content-box">
-                <h2>🎵 वीडियो और लाइव प्रोग्राम</h2>
+                <h2>वीडियो और लाइव प्रोग्राम</h2>
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 8px;">➕ नया वीडियो / लाइव लिंक जोड़ें:</h4>
-                    <input type="text" id="mediaTitleInput" placeholder="शीर्षक (जैसे: Bhajan)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <input type="text" id="mediaUrlInput" placeholder="YouTube Link paste karein (e.g. watch?v=...)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button class="submit-btn" onclick="addLiveMedia()">Firebase पर Jodein</button>
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;">नया वीडियो लिंक जोड़ें:</h4>
+                    <input type="text" id="mediaTitleInput" placeholder="शीर्षक (जैसे: भजन)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="mediaUrlInput" placeholder="YouTube लिंक पेस्ट करें" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button class="submit-btn" onclick="addLiveMedia()">जोड़ें</button>
                 </div>
                 <div id="mediaListContainer" style="margin-top: 15px;"></div>
             </div>
         </div>
 
         <div id="history-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>📚 गाँव का इतिहास व जानकारी</h2>
+                <h2>गाँव का इतिहास व जानकारी</h2>
                 <div id="historyFormArea">
                     <div class="form-group"><label>शीर्षक:</label><input type="text" id="hTitle" placeholder="उदा. गाँव की स्थापना"></div>
                     <div class="form-group"><label>विवरण:</label><textarea id="hDesc" rows="3" placeholder="इतिहास विस्तार से लिखें..."></textarea></div>
@@ -358,8 +317,8 @@
                 </div>
                 <div id="historyOtpArea" style="display:none; margin-top:15px;">
                     <p id="historyOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
-                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="historyOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
+                    <div class="form-group"><label>OTP डालें:</label><input type="text" id="historyOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
                 <h4>गाँव का इतिहास व जानकारी:</h4>
@@ -368,67 +327,74 @@
         </div>
 
         <div id="pashu-sewa-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>🐄 पशु सेवा एवं स्वास्थ्य सलाह</h2>
+                <h2>पशु सेवा एवं स्वास्थ्य सलाह</h2>
                 <p style="margin-bottom: 15px; color: #555;">पशुपालकों के लिए महत्वपूर्ण जानकारियां:</p>
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 5px;">1. टीकाकरण (Vaccination)</h4>
+                    <h4 style="color: #1b5e20; margin-bottom: 5px;">1. टीकाकरण</h4>
                     <p style="font-size: 14px; color: #444;">मुंहपका-खुरपका और गलघोटू से बचाव के लिए समय पर टीका लगवाएं।</p>
                 </div>
             </div>
         </div>
 
         <div id="education-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>📖 बच्चों की शिक्षा व पढ़ाई</h2>
-                <a href="https://ncert.nic.in/" target="_blank" class="portal-link-box">📚 1. NCERT Online Books ➔</a>
-                <a href="https://bseh.org.in/" target="_blank" class="portal-link-box">🏫 2. BSEH Haryana Board ➔</a>
+                <h2>बच्चों की शिक्षा व पढ़ाई</h2>
+                <a href="https://ncert.nic.in/" target="_blank" class="portal-link-box">1. NCERT Online Books</a>
+                <a href="https://bseh.org.in/" target="_blank" class="portal-link-box">2. BSEH Haryana Board</a>
             </div>
         </div>
 
         <div id="haryana-gov-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>🏛️ Haryana Government Schemes</h2>
-                <a href="https://parivarpehchan.haryana.gov.in/" target="_blank" class="portal-link-box">🔗 1. PPP Portal (परिवार पहचान पत्र) ➔</a>
-                <a href="https://hrye.hry.nic.in/" target="_blank" class="portal-link-box">🔗 2. HKRN Portal ➔</a>
+                <h2>Haryana Government Schemes</h2>
+                <a href="https://parivarpehchan.haryana.gov.in/" target="_blank" class="portal-link-box">1. PPP Portal (परिवार पहचान पत्र)</a>
+                <a href="https://hrye.hry.nic.in/" target="_blank" class="portal-link-box">2. HKRN Portal</a>
             </div>
         </div>
 
         <div id="admin-panel-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम</a>
             <div class="card content-box">
-                <h2 id="panelTitle">Admin / Sub-Admin Panel</h2>
+                <h2 id="panelTitle">एडमिन पैनल</h2>
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 10px;">🔐 Password Change:</h4>
-                    <div class="form-group"><label>Naya Admin Password:</label><input type="text" id="newAdminPass" placeholder="Admin password"></div>
-                    <button class="submit-btn" style="padding: 8px; font-size: 14px; margin-bottom: 12px;" onclick="changeAdminPassword()">Update Admin Pass</button>
+                    <h4 style="color: #1b5e20; margin-bottom: 10px;">पासवर्ड बदलें:</h4>
+                    <div class="form-group"><label>नया एडमिन पासवर्ड:</label><input type="text" id="newAdminPass" placeholder="Admin password"></div>
+                    <button class="submit-btn" style="padding: 8px; font-size: 14px; margin-bottom: 12px;" onclick="changeAdminPassword()">पासवर्ड अपडेट करें</button>
                 </div>
                 <div id="pendingMunadiSection" style="margin-bottom: 20px;">
-                    <h4 style="color: #ef6c00; margin-bottom: 10px;">Pending Munadi for Verification:</h4>
+                    <h4 style="color: #ef6c00; margin-bottom: 10px;">सत्यापन के लिए लंबित मुनादी:</h4>
                     <div id="pendingMunadiList"></div>
                 </div>
                 <hr style="margin: 15px 0;">
-                <button class="submit-btn" style="background: #c62828;" onclick="clearAllData()">Saara Data Delete Karein</button>
+                <button class="submit-btn" style="background: #c62828;" onclick="clearAllData()">सारा डेटा डिलीट करें</button>
             </div>
         </div>
 
         <div id="founder" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">वापस</a>
             <div class="card">
-                <h2>About Founder</h2>
+                <h2>संस्थापक के बारे में</h2>
                 <p style="margin-top:12px; font-size: 16px; font-weight: bold; color: #1b5e20;">Kusum W/O Rajesh Yadav</p>
                 <p style="margin-top:5px; font-size: 14px; color: #555;">dakshyadav.co.in - यह पोर्टल हमारे पूरे गाँव को समर्पित है।</p>
             </div>
         </div>
 
-        <div id="policy" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a><div class="card"><h2>Privacy Policy</h2><p style="margin-top:12px;">Surakshit data on Firebase.</p></div></div>
+        <div id="policy" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">वापस</a><div class="card"><h2>प्राइवेसी पॉलिसी</h2><p style="margin-top:12px;">फायरबेस क्लाउड डेटा स्टोरेज।</p></div></div>
 
     </div>
 
     <script>
+        // --- FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            databaseURL: "https://digital-gram-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         let generatedOTP = "";
         let tempProfileData = {};
         let tempImageBase64 = "";
@@ -469,56 +435,21 @@
         function sendRealSMSOTP(phone, otp) {
             generatedOTP = otp;
             const message = `Aapka OTP code ${otp} hai. Kripya ise kisi ke sath share na karein.`;
+            const realApiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=q&message=${encodeURIComponent(message)}&language=english&flash=0&numbers=${phone}`;
+
+            console.log("GENERATED OTP FOR TESTING: ", otp);
             
-            // Proper CORS bypass using an image beacon / script-based GET request execution for reliable SMS trigger
-            const apiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=q&message=${encodeURIComponent(message)}&language=english&flash=0&numbers=${phone}`;
+            fetch(realApiUrl, { method: 'GET', mode: 'no-cors' }).catch(err => console.log(err));
 
             const img = new Image();
-            img.src = apiUrl;
-        }
-
-        function syncDataToFirebase(category, dataList) {
-            if(window.firebaseDB) {
-                const { db, ref, set } = window.firebaseDB;
-                const dbRef = ref(db, 'portal_data/' + category);
-                set(dbRef, dataList).catch(err => console.log("Firebase sync error:", err));
-            }
+            img.src = realApiUrl;
+            
+            alert("OTP भेज दिया गया है! (यदि नेटवर्क ब्लॉक हो तो टेस्टिंग के लिए कंसोल/अर्ट में OTP: " + otp + ")");
         }
 
         function toggleLanguage() {
             currentLang = (currentLang === "hi") ? "en" : "hi";
             document.getElementById('langToggleBtn').innerText = (currentLang === "hi") ? "Eng" : "हिन्दी";
-            updateLanguageTexts();
-        }
-
-        function updateLanguageTexts() {
-            if(currentLang === "en") {
-                document.getElementById('headerSubTitle').innerText = "My Village - My Identity";
-                document.getElementById('btnProfile').innerText = "👤 Set My Profile / My Village";
-                document.getElementById('btnDukaan').innerText = "🏥 1. View Shops & Add via OTP ➔";
-                document.getElementById('btnServices').innerText = "🛠️ 1B. Essential Services (Mistri etc.) ➔";
-                document.getElementById('btnMunadi').innerText = "📢 2. Announcements & News (Verified) ➔";
-                document.getElementById('btnBuySell').innerText = "🌾 3. Cattle, Wheat, Feed Buy-Sell ➔";
-                document.getElementById('btnGallery').innerText = "📸 4. Village Gallery (Live Photos) ➔";
-                document.getElementById('btnVideo').innerText = "🎵 5. Videos & Live Programs ➔";
-                document.getElementById('btnHistory').innerText = "📚 6. Village History & Info Add ➔";
-                document.getElementById('btnPashu').innerText = "🐄 7. Veterinary Service & Health Advice ➔";
-                document.getElementById('btnEdu').innerText = "📖 8. Children Education Support ➔";
-                document.getElementById('btnGov').innerText = "🏛️ 9. Haryana Govt Schemes & Live Portals ➔";
-            } else {
-                document.getElementById('headerSubTitle').innerText = "मेरा गाँव - मेरी पहचान";
-                document.getElementById('btnProfile').innerText = "👤 मेरी प्रोफाइल / मेरा गाँव सेट करें";
-                document.getElementById('btnDukaan').innerText = "🏥 1. दुकान देखें व OTP से जोड़ें ➔";
-                document.getElementById('btnServices').innerText = "🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें ➔";
-                document.getElementById('btnMunadi').innerText = "📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔";
-                document.getElementById('btnBuySell').innerText = "🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔";
-                document.getElementById('btnGallery').innerText = "📸 4. गाँव की गैलरी (लाइव फोटो) ➔";
-                document.getElementById('btnVideo').innerText = "🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera) ➔";
-                document.getElementById('btnHistory').innerText = "📚 6. गाँव का इतिहास व जानकारी Add ➔";
-                document.getElementById('btnPashu').innerText = "🐄 7. पशु सेवा एवं स्वास्थ्य सलाह (Veterinary Info) ➔";
-                document.getElementById('btnEdu').innerText = "📖 8. बच्चों की शिक्षा व पढ़ाई (Education Support) ➔";
-                document.getElementById('btnGov').innerText = "🏛️ 9. Haryana Govt Schemes & Live Portals ➔";
-            }
         }
 
         function getAdminPass() { return localStorage.getItem('admin_pass') || 'admin123'; }
@@ -527,24 +458,24 @@
         function openAdminModal(role) {
             let pass = prompt(role === 'admin' ? "Enter Admin Password:" : "Enter Sub-Admin Password:");
             if(role === 'admin' && pass === getAdminPass()) {
-                alert('Admin Login Successful!');
+                alert('एडमिन लॉगिन सफल!');
                 switchSection('admin-panel-page');
-                document.getElementById('panelTitle').innerText = "Admin Master Panel (Delete Power)";
+                document.getElementById('panelTitle').innerText = "एडमिन मास्टर पैनल";
             } else if(role === 'subadmin' && pass === getSubAdminPass()) {
-                alert('Sub-Admin Login Successful!');
+                alert('सब-एडमिन लॉगिन सफल!');
                 switchSection('admin-panel-page');
-                document.getElementById('panelTitle').innerText = "Sub-Admin Verification Panel";
+                document.getElementById('panelTitle').innerText = "सब-एडमिन सत्यापन पैनल";
             } else if(pass !== null) {
-                alert('Galat Password!');
+                alert('गलत पासवर्ड!');
             }
         }
 
         function changeAdminPassword() {
             let newPass = document.getElementById('newAdminPass').value;
-            if(!newPass) { alert('Naya password darj karein!'); return; }
+            if(!newPass) { alert('नया पासवर्ड दर्ज करें!'); return; }
             localStorage.setItem('admin_pass', newPass);
             document.getElementById('newAdminPass').value = '';
-            alert('Admin Password Safalpurvak Badal Diya Gaya Hai!');
+            alert('पासवर्ड सफलतापूर्वक बदल दिया गया है!');
         }
 
         function submitFullForm(e) {
@@ -554,7 +485,7 @@
             const phone = document.getElementById('userPhone').value;
             const photoInput = document.getElementById('userPhoto');
 
-            if(phone.length < 10) { alert('Sahi mobile number dalein!'); return; }
+            if(phone.length < 10) { alert('सही मोबाइल नंबर डालें!'); return; }
             if(photoInput.files && photoInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(ev) {
@@ -568,7 +499,7 @@
                     sendRealSMSOTP(phone, otp);
                 };
                 reader.readAsDataURL(photoInput.files[0]);
-            } else { alert('Photo select karein!'); }
+            } else { alert('फोटो सेलेक्ट करें!'); }
         }
 
         function verifyOtpAndDirectApprove() {
@@ -579,15 +510,13 @@
                 localStorage.setItem('m_photo', tempProfileData.photo);
                 localStorage.setItem('m_status', 'approved');
 
-                if(window.firebaseDB) {
-                    const { db, ref, set } = window.firebaseDB;
-                    set(ref(db, 'portal_data/profile'), tempProfileData);
-                }
+                // Firebase पर प्रोफाइल सेव करें
+                db.ref('users/' + tempProfileData.phone.replace(/[^0-9]/g, '')).set(tempProfileData);
 
                 loadProfileState();
                 switchSection('home');
-                alert('Profile Verified & Saved Live to Firebase!');
-            } else { alert('Galat OTP!'); }
+                alert('प्रोफाइल वेरीफाई होकर सेव हो चुकी है!');
+            } else { alert('गलत OTP!'); }
         }
 
         function loadProfileState() {
@@ -624,24 +553,26 @@
             localStorage.clear();
             loadProfileState();
             switchSection('home');
-            alert('Reset ho gaya.');
+            alert('रीसेट हो गया है।');
         }
 
         function uploadGalleryPhoto() {
             const fileInput = document.getElementById('galleryPhotoInput');
             const caption = document.getElementById('galleryPhotoCaption').value;
-            if(!fileInput.files || !fileInput.files[0]) { alert('Pehle photo select karein!'); return; }
+            if(!fileInput.files || !fileInput.files[0]) { alert('पहले फोटो सेलेक्ट करें!'); return; }
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                let photos = JSON.parse(localStorage.getItem('gallery_photos') || '[]');
-                photos.push({ img: e.target.result, caption: caption || 'गाँव की लाइव तस्वीर' });
-                localStorage.setItem('gallery_photos', JSON.stringify(photos));
-                syncDataToFirebase('gallery', photos);
-                document.getElementById('galleryPhotoCaption').value = '';
-                fileInput.value = '';
-                renderGalleryPhotos();
-                alert('Photo Successfully Live Uploaded to Firebase!');
+                const photoData = { img: e.target.result, caption: caption || 'गाँव की तस्वीर' };
+                db.ref('gallery_photos').push(photoData, (error) => {
+                    if (!error) {
+                        document.getElementById('galleryPhotoCaption').value = '';
+                        fileInput.value = '';
+                        alert('फोटो सफलतापूर्वक अपलोड हो गई है!');
+                    } else {
+                        alert('अपलोड करने में त्रुटि!');
+                    }
+                });
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
@@ -649,32 +580,31 @@
         function renderGalleryPhotos() {
             const container = document.getElementById('galleryContainer');
             if(!container) return;
-            let photos = JSON.parse(localStorage.getItem('gallery_photos') || '[]');
-            if(photos.length === 0) {
-                container.innerHTML = '<p style="color: #777; font-size: 14px;">Abhi koi live photo uploaded nahi hai.</p>';
-                return;
-            }
-            container.innerHTML = '';
-            photos.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.style.marginBottom = '12px';
-                div.style.padding = '10px';
-                div.innerHTML = `
-                    <img src="${item.img}" style="width: 100%; border-radius: 6px; max-height: 250px; object-fit: cover; margin-bottom: 8px;">
-                    <p style="font-size: 14px; font-weight: bold; color: #333;">${item.caption}</p>
-                    <button class="delete-btn" style="margin-top: 8px;" onclick="deleteGalleryPhoto(${index})">Delete Photo</button>
-                `;
-                container.appendChild(div);
+            db.ref('gallery_photos').on('value', (snapshot) => {
+                container.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) {
+                    container.innerHTML = '<p style="color: #777; font-size: 14px;">अभी कोई फोटो अपलोड नहीं है।</p>';
+                    return;
+                }
+                Object.keys(data).forEach((key) => {
+                    const item = data[key];
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.style.marginBottom = '12px';
+                    div.style.padding = '10px';
+                    div.innerHTML = `
+                        <img src="${item.img}" style="width: 100%; border-radius: 6px; max-height: 250px; object-fit: cover; margin-bottom: 8px;">
+                        <p style="font-size: 14px; font-weight: bold; color: #333;">${item.caption}</p>
+                        <button class="delete-btn" style="margin-top: 8px;" onclick="deleteGalleryPhoto('${key}')">डिलीट करें</button>
+                    `;
+                    container.appendChild(div);
+                });
             });
         }
 
-        function deleteGalleryPhoto(index) {
-            let photos = JSON.parse(localStorage.getItem('gallery_photos') || '[]');
-            photos.splice(index, 1);
-            localStorage.setItem('gallery_photos', JSON.stringify(photos));
-            syncDataToFirebase('gallery', photos);
-            renderGalleryPhotos();
+        function deleteGalleryPhoto(key) {
+            db.ref('gallery_photos/' + key).remove().then(() => alert('डेटा डिलीट हो गया!'));
         }
 
         function getYouTubeEmbedUrl(url) {
@@ -692,52 +622,49 @@
         function addLiveMedia() {
             const title = document.getElementById('mediaTitleInput').value;
             const url = document.getElementById('mediaUrlInput').value;
-            if(!title || !url) { alert('Title aur Video/Live Link dono bharein!'); return; }
+            if(!title || !url) { alert('शीर्षक और लिंक दोनों भरें!'); return; }
 
             const embedUrl = getYouTubeEmbedUrl(url);
-            if(!embedUrl) { alert('Kripya sahi YouTube Link dalein!'); return; }
+            if(!embedUrl) { alert('कृपया सही YouTube लिंक डालें!'); return; }
 
-            let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
-            mediaList.push({ title, type: 'video', embedUrl });
-            localStorage.setItem('village_media', JSON.stringify(mediaList));
-            syncDataToFirebase('media', mediaList);
-
-            document.getElementById('mediaTitleInput').value = '';
-            document.getElementById('mediaUrlInput').value = '';
-            renderMediaList();
-            alert('Live Program / Video Successfully Added to Firebase!');
+            db.ref('village_media').push({ title, type: 'video', embedUrl }, (error) => {
+                if(!error) {
+                    document.getElementById('mediaTitleInput').value = '';
+                    document.getElementById('mediaUrlInput').value = '';
+                    alert('वीडियो सफलतापूर्वक जोड़ दिया गया है!');
+                }
+            });
         }
 
         function renderMediaList() {
             const container = document.getElementById('mediaListContainer');
             if(!container) return;
-            let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
-            if(mediaList.length === 0) {
-                container.innerHTML = '<p style="color: #777; font-size: 14px;">Abhi koi live program add nahi hai.</p>';
-                return;
-            }
-            container.innerHTML = '';
-            mediaList.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.style.marginBottom = '12px';
-                div.innerHTML = `
-                    <h5 style="color: #1b5e20; font-size: 16px; margin-bottom: 8px;">🎵 ${item.title}</h5>
-                    <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-bottom: 8px;">
-                        <iframe src="${item.embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 6px; border: none;" allowfullscreen></iframe>
-                    </div>
-                    <button class="delete-btn" onclick="deleteMedia(${index})">Delete Video</button>
-                `;
-                container.appendChild(div);
+            db.ref('village_media').on('value', (snapshot) => {
+                container.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) {
+                    container.innerHTML = '<p style="color: #777; font-size: 14px;">अभी कोई वीडियो नहीं है।</p>';
+                    return;
+                }
+                Object.keys(data).forEach((key) => {
+                    const item = data[key];
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.style.marginBottom = '12px';
+                    div.innerHTML = `
+                        <h5 style="color: #1b5e20; font-size: 16px; margin-bottom: 8px;">${item.title}</h5>
+                        <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-bottom: 8px;">
+                            <iframe src="${item.embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 6px; border: none;" allowfullscreen></iframe>
+                        </div>
+                        <button class="delete-btn" onclick="deleteMedia('${key}')">डिलीट करें</button>
+                    `;
+                    container.appendChild(div);
+                });
             });
         }
 
-        function deleteMedia(index) {
-            let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
-            mediaList.splice(index, 1);
-            localStorage.setItem('village_media', JSON.stringify(mediaList));
-            syncDataToFirebase('media', mediaList);
-            renderMediaList();
+        function deleteMedia(key) {
+            db.ref('village_media/' + key).remove().then(() => alert('डेटा डिलीट हो गया!'));
         }
 
         function initAddOTP(type) {
@@ -747,35 +674,35 @@
                 const dName = document.getElementById('dName').value;
                 const dOwner = document.getElementById('dOwner').value;
                 phone = document.getElementById('dPhone').value;
-                if(!dName || !phone) { alert('Sabhi fields bharein!'); return; }
-                pendingItemData = { title: dName, sub: 'Sanchalak: ' + dOwner, phone: phone };
+                if(!dName || !phone) { alert('सभी फील्ड भरें!'); return; }
+                pendingItemData = { title: dName, sub: 'संचालक: ' + dOwner, phone: phone };
             } else if(type === 'service') {
                 const title = document.getElementById('sTitle').value;
                 const person = document.getElementById('sPerson').value;
                 phone = document.getElementById('sPhone').value;
-                if(!title || !phone) { alert('Sabhi fields bharein!'); return; }
-                pendingItemData = { title: title + ' (' + person + ')', sub: 'Sampark Karein', phone: phone };
+                if(!title || !phone) { alert('सभी फील्ड भरें!'); return; }
+                pendingItemData = { title: title + ' (' + person + ')', sub: 'संपर्क करें', phone: phone };
             } else if(type === 'munadi') {
                 const text = document.getElementById('mText').value;
                 const mUser = document.getElementById('mUser').value;
                 phone = document.getElementById('mPhone').value;
-                if(!text || !mUser || !phone) { alert('Sabhi fields bharein!'); return; }
-                pendingItemData = { title: text, sub: 'By: ' + mUser, phone: phone };
+                if(!text || !mUser || !phone) { alert('सभी फील्ड भरें!'); return; }
+                pendingItemData = { title: text, sub: 'द्वारा: ' + mUser, phone: phone };
             } else if(type === 'buysell') {
                 const text = document.getElementById('bText').value;
                 const bUser = document.getElementById('bUser').value;
                 phone = document.getElementById('bPhone').value;
-                if(!text || !bUser || !phone) { alert('Sabhi fields bharein!'); return; }
-                pendingItemData = { title: text, sub: 'By: ' + bUser, phone: phone };
+                if(!text || !bUser || !phone) { alert('सभी फील्ड भरें!'); return; }
+                pendingItemData = { title: text, sub: 'द्वारा: ' + bUser, phone: phone };
             } else if(type === 'history') {
                 const hTitle = document.getElementById('hTitle').value;
                 const hDesc = document.getElementById('hDesc').value;
                 phone = document.getElementById('hPhone').value;
-                if(!hTitle || !hDesc || !phone) { alert('Sabhi fields bharein!'); return; }
+                if(!hTitle || !hDesc || !phone) { alert('सभी फील्ड भरें!'); return; }
                 pendingItemData = { title: hTitle, sub: hDesc, phone: phone };
             }
 
-            if(phone.length < 10) { alert('Sahi mobile number dalein!'); return; }
+            if(phone.length < 10) { alert('सही मोबाइल नंबर डालें!'); return; }
 
             const otp = Math.floor(1000 + Math.random() * 9000);
             document.getElementById(type + 'FormArea').style.display = 'none';
@@ -789,18 +716,15 @@
             const enteredOtp = document.getElementById(type + 'OtpInput').value;
             if(enteredOtp == generatedOTP) {
                 if(type === 'munadi') {
-                    let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
-                    pending.push(pendingItemData);
-                    localStorage.setItem('munadi_pending', JSON.stringify(pending));
-                    renderUserPendingMunadi();
-                    alert('OTP Verified! Suchna Sub-Admin verification ke liye bhej di gayi hai.');
+                    db.ref('munadi_pending').push(pendingItemData, () => {
+                        renderUserPendingMunadi();
+                        alert('OTP वेरीफाई हो गया! सूचना सत्यापन के लिए भेज दी गई है।');
+                    });
                 } else {
-                    let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
-                    list.push(pendingItemData);
-                    localStorage.setItem(type + '_data', JSON.stringify(list));
-                    syncDataToFirebase(type, list);
-                    alert('OTP Verified & Saved Live to Firebase!');
-                    renderList(type);
+                    db.ref(type + '_data').push(pendingItemData, () => {
+                        alert('OTP वेरीफाई होकर फायरबेस पर सेव हो गया है!');
+                        renderList(type);
+                    });
                 }
 
                 document.getElementById(type + 'OtpArea').style.display = 'none';
@@ -812,7 +736,7 @@
                 else if(type === 'buysell') { document.getElementById('bText').value=''; document.getElementById('bUser').value=''; document.getElementById('bPhone').value=''; document.getElementById('buysellOtpInput').value=''; }
                 else if(type === 'history') { document.getElementById('hTitle').value=''; document.getElementById('hDesc').value=''; document.getElementById('hPhone').value=''; document.getElementById('historyOtpInput').value=''; }
             } else {
-                alert('Galat OTP!');
+                alert('गलत OTP!');
             }
         }
 
@@ -830,115 +754,124 @@
         function renderList(type) {
             const container = document.getElementById(type + 'List');
             if(!container) return;
-            let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
-            
-            if(list.length === 0 && type === 'history') {
-                container.innerHTML = `<div class="item-card" style="display:block;"><h5 style="color:#1b5e20;">गाँव की स्थापना</h5><p>यह हमारे पुराने बुजुर्गों द्वारा बसाया गया एक समृद्ध गाँव है।</p></div>`;
-                return;
-            }
+            db.ref(type + '_data').on('value', (snapshot) => {
+                container.innerHTML = '';
+                const data = snapshot.val();
+                
+                if(!data && type === 'history') {
+                    container.innerHTML = `<div class="item-card" style="display:block;"><h5 style="color:#1b5e20;">गाँव की स्थापना</h5><p>यह हमारे पुराने बुजुर्गों द्वारा बसाया गया एक समृद्ध गाँव है।</p></div>`;
+                    return;
+                }
 
-            if(list.length === 0) {
-                container.innerHTML = '<p style="color: #777; font-size: 13px;">Abhi koi naya data nahi hai.</p>';
-                return;
-            }
-            container.innerHTML = '';
-            list.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'item-card';
-                div.innerHTML = `
-                    <div class="item-info">
-                        <h5>${item.title}</h5>
-                        <p>${item.sub} ${item.phone ? '| Mob: ' + item.phone : ''}</p>
-                    </div>
-                    <div>
-                        ${item.phone ? `<a href="tel:${item.phone}" class="call-btn">📞 Call</a>` : ''}
-                        <button class="delete-btn" onclick="deleteItem('${type}', ${index})">Delete</button>
-                    </div>
-                `;
-                container.appendChild(div);
+                if(!data) {
+                    container.innerHTML = '<p style="color: #777; font-size: 13px;">अभी कोई डेटा नहीं है।</p>';
+                    return;
+                }
+
+                Object.keys(data).forEach((key) => {
+                    const item = data[key];
+                    const div = document.createElement('div');
+                    div.className = 'item-card';
+                    div.innerHTML = `
+                        <div class="item-info">
+                            <h5>${item.title}</h5>
+                            <p>${item.sub} ${item.phone ? '| फोन: ' + item.phone : ''}</p>
+                        </div>
+                        <div>
+                            ${item.phone ? `<a href="tel:${item.phone}" class="call-btn">कॉल करें</a>` : ''}
+                            <button class="delete-btn" onclick="deleteItem('${type}', '${key}')">डिलीट</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
             });
         }
 
         function renderPendingMunadi() {
             const container = document.getElementById('pendingMunadiList');
             if(!container) return;
-            let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
-            if(pending.length === 0) {
-                container.innerHTML = '<p style="color: #777; font-size: 13px;">Koi pending suchna nahi hai.</p>';
-                return;
-            }
-            container.innerHTML = '';
-            pending.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'item-card';
-                div.innerHTML = `
-                    <div class="item-info">
-                        <h5>${item.title}</h5>
-                        <p>${item.sub} | Mob: ${item.phone}</p>
-                    </div>
-                    <div>
-                        <button class="submit-dir" style="padding: 5px 10px; font-size: 12px; background: #2e7d32; color:white; border:none; border-radius:4px;" onclick="approveMunadi(${index})">Approve</button>
-                        <button class="delete-btn" onclick="rejectMunadi(${index})">Reject</button>
-                    </div>
-                `;
-                container.appendChild(div);
+            db.ref('munadi_pending').on('value', (snapshot) => {
+                container.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) {
+                    container.innerHTML = '<p style="color: #777; font-size: 13px;">कोई लंबित सूचना नहीं है।</p>';
+                    return;
+                }
+                Object.keys(data).forEach((key) => {
+                    const item = data[key];
+                    const div = document.createElement('div');
+                    div.className = 'item-card';
+                    div.innerHTML = `
+                        <div class="item-info">
+                            <h5>${item.title}</h5>
+                            <p>${item.sub} | फोन: ${item.phone}</p>
+                        </div>
+                        <div>
+                            <button style="padding: 5px 10px; font-size: 12px; background: #2e7d32; color:white; border:none; border-radius:4px;" onclick="approveMunadi('${key}')">स्वीकृत करें</button>
+                            <button class="delete-btn" onclick="rejectMunadi('${key}')">खारिज</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
             });
         }
 
         function renderUserPendingMunadi() {
             const container = document.getElementById('userPendingMunadiList');
             if(!container) return;
-            let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
-            if(pending.length === 0) {
-                container.innerHTML = '<p style="color: #777; font-size: 13px;">Aapki koi bhi suchna pending nahi hai.</p>';
-                return;
-            }
-            container.innerHTML = '';
-            pending.forEach((item) => {
-                const div = document.createElement('div');
-                div.className = 'item-card';
-                div.innerHTML = `<div class="item-info"><h5>${item.title}</h5><p>${item.sub} | Mob: ${item.phone} <span style="color: #ef6c00; font-weight: bold;">(Pending)</span></p></div>`;
-                container.appendChild(div);
+            db.ref('munadi_pending').on('value', (snapshot) => {
+                container.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) {
+                    container.innerHTML = '<p style="color: #777; font-size: 13px;">आपकी कोई भी सूचना लंबित नहीं है।</p>';
+                    return;
+                }
+                Object.keys(data).forEach((key) => {
+                    const item = data[key];
+                    const div = document.createElement('div');
+                    div.className = 'item-card';
+                    div.innerHTML = `<div class="item-info"><h5>${item.title}</h5><p>${item.sub} | फोन: ${item.phone} <span style="color: #ef6c00; font-weight: bold;">(लंबित)</span></p></div>`;
+                    container.appendChild(div);
+                });
             });
         }
 
-        function approveMunadi(index) {
-            let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
-            let verified = JSON.parse(localStorage.getItem('munadi_data') || '[]');
-            verified.push(pending[index]);
-            pending.splice(index, 1);
-            localStorage.setItem('munadi_pending', JSON.stringify(pending));
-            localStorage.setItem('munadi_data', JSON.stringify(verified));
-            syncDataToFirebase('munadi', verified);
-            renderPendingMunadi();
-            renderList('munadi');
-            alert('Munadi Approved & Published Live to Firebase!');
+        function approveMunadi(key) {
+            db.ref('munadi_pending/' + key).once('value', (snapshot) => {
+                const item = snapshot.val();
+                if(item) {
+                    db.ref('munadi_data').push(item, () => {
+                        db.ref('munadi_pending/' + key).remove().then(() => {
+                            renderPendingMunadi();
+                            alert('मुनादी स्वीकृत और प्रकाशित हो चुकी है!');
+                        });
+                    });
+                }
+            });
         }
 
-        function rejectMunadi(index) {
-            let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
-            pending.splice(index, 1);
-            localStorage.setItem('munadi_pending', JSON.stringify(pending));
-            renderPendingMunadi();
-            renderUserPendingMunadi();
-            alert('Munadi Rejected!');
+        function rejectMunadi(key) {
+            db.ref('munadi_pending/' + key).remove().then(() => {
+                renderPendingMunadi();
+                renderUserPendingMunadi();
+                alert('मुनादी खारिज कर दी गई है!');
+            });
         }
 
-        function deleteItem(type, index) {
-            let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
-            list.splice(index, 1);
-            localStorage.setItem(type + '_data', JSON.stringify(list));
-            syncDataToFirebase(type, list);
-            renderList(type);
-            alert('Data Deleted Successfully!');
+        function deleteItem(type, key) {
+            db.ref(type + '_data/' + key).remove().then(() => {
+                alert('डेटा सफलतापूर्वक डिलीट हो गया है!');
+            });
         }
 
         function clearAllData() {
-            if(confirm("Kya aap saara data delete karna chahte hain?")) {
-                localStorage.clear();
-                loadProfileState();
-                alert('Sabhi data clear kar diya gaya hai.');
-                switchSection('home');
+            if(confirm("क्या आप फायरबेस का सारा डेटा डिलीट करना चाहते हैं?")) {
+                db.ref().remove().then(() => {
+                    localStorage.clear();
+                    loadProfileState();
+                    alert('फायरबेस और लोकल का सारा डेटा साफ़ कर दिया गया है।');
+                    switchSection('home');
+                });
             }
         }
 
