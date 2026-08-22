@@ -25,39 +25,20 @@
         .header-title p { margin: 0; font-size: 11px; color: #d0f8d8; }
         
         .icon-btn {
-            background: rgba(255,255,255,0.2);
-            border: none; color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px;
+            background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px;
         }
 
         .container { padding: 12px; }
         
         .profile-setup-box {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            margin-top: 10px;
+            background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin-top: 10px;
         }
         .profile-setup-box h3 { margin-top: 0; color: #1b5e20; font-size: 16px; }
         .input-field {
-            width: 100%;
-            padding: 10px;
-            margin: 6px 0 12px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
+            width: 100%; padding: 10px; margin: 6px 0 12px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;
         }
         .submit-btn {
-            background-color: #1b5e20;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 15px;
+            background-color: #1b5e20; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 15px;
         }
         #appDashboard { display: none; }
         .profile-card {
@@ -88,9 +69,9 @@
 
     <div class="container">
 
-        <!-- स्टेप 1: सुरक्षित प्रोफाइल और जिला-गाँव चयन फॉर्म -->
+        <!-- सरल और सुरक्षित प्रोफाइल फॉर्म -->
         <div id="profileSetupSection" class="profile-setup-box">
-            <h3>🔒 सुरक्षित प्रोफाइल & गाँव चयन</h3>
+            <h3>🔒 अपनी प्रोफाइल बनाएं</h3>
             
             <label style="font-size: 13px; font-weight: bold;">आपका नाम:</label>
             <input type="text" id="inputName" class="input-field" placeholder="अपना पूरा नाम लिखें">
@@ -98,24 +79,19 @@
             <label style="font-size: 13px; font-weight: bold;">मोबाइल नंबर:</label>
             <input type="tel" id="inputPhone" class="input-field" placeholder="10 अंकों का मोबाइल नंबर">
 
-            <label style="font-size: 13px; font-weight: bold;">अपना जिला (District) चुनें:</label>
-            <select id="selectDistrict" class="input-field" onchange="updateVillages()">
-                <option value="">-- जिला चुनें --</option>
-                <option value="Rohtak">रोहतक (Rohtak)</option>
-                <option value="Jhajjar">झज्जर (Jhajjar)</option>
-                <option value="Sonipat">सोनीपत (Sonipat)</option>
-                <option value="Hisar">हिसार (Hisar)</option>
-            </select>
-
             <label style="font-size: 13px; font-weight: bold;">अपने गाँव का नाम चुनें:</label>
             <select id="selectVillage" class="input-field">
-                <option value="">-- पहले जिला चुनें --</option>
+                <option value="">-- अपना गाँव चुनें --</option>
+                <option value="Malkosh (रोहतक)">Malkosh (रोहतक)</option>
+                <option value="Ismaila (रोहतक)">Ismaila (रोहतक)</option>
+                <option value="Sampla (रोहतक)">Sampla (रोहतक)</option>
+                <option value="Kalanaur (रोहतक)">Kalanaur (रोहतक)</option>
             </select>
 
-            <button class="submit-btn" onclick="saveProfile()">पक्की प्रोफाइल बनाएं & आगे बढ़ें ➔</button>
+            <button class="submit-btn" onclick="saveProfile()">प्रोफाइल सुरक्षित करें & आगे बढ़ें ➔</button>
         </div>
 
-        <!-- स्टेप 2: मुख्य डैशबोर्ड -->
+        <!-- मुख्य डैशबोर्ड -->
         <div id="appDashboard">
             <div class="profile-card">
                 <div class="profile-img">👤</div>
@@ -141,34 +117,6 @@
     </div>
 
     <script>
-        // जिले के हिसाब से गाँवों की लिस्ट सेट करने का लॉजिक
-        function updateVillages() {
-            var district = document.getElementById("selectDistrict").value;
-            var villageSelect = document.getElementById("selectVillage");
-            
-            villageSelect.innerHTML = ""; // पुरानी लिस्ट साफ करें
-
-            var villagesObj = {
-                "Rohtak": ["Malkosh", "Ismaila", "Sampla", "Kalanaur", "Karanti"],
-                "Jhajjar": ["Bahadurgarh", "Matanhail", "Beri", "Badli"],
-                "Sonipat": ["Ganaur", "Kharkhoda", "Gohana", "Rai"],
-                "Hisar": ["Hansi", "Narnaund", "Barwala", "Uklana"]
-            };
-
-            if (district && villagesObj[district]) {
-                var list = villagesObj[district];
-                villageSelect.innerHTML = '<option value="">-- गाँव चुनें --</option>';
-                for (var i = 0; i < list.length; i++) {
-                    var opt = document.createElement("option");
-                    opt.value = list[i];
-                    opt.innerHTML = list[i];
-                    villageSelect.appendChild(opt);
-                }
-            } else {
-                villageSelect.innerHTML = '<option value="">-- पहले जिला चुनें --</option>';
-            }
-        }
-
         function toggleLang() {
             alert("Language switch feature coming soon!");
         }
@@ -176,17 +124,16 @@
         function saveProfile() {
             var name = document.getElementById("inputName").value.trim();
             var phone = document.getElementById("inputPhone").value.trim();
-            var district = document.getElementById("selectDistrict").value;
             var village = document.getElementById("selectVillage").value;
 
-            if(name === "" || phone === "" || district === "" || village === "") {
-                alert("कृपया अपना नाम, फोन नंबर, जिला और सही गाँव जरूर चुनें!");
+            if(name === "" || phone === "" || village === "") {
+                alert("कृपया अपना नाम, फोन नंबर और गाँव सही से चुनें!");
                 return;
             }
 
             document.getElementById("displayUserName").innerText = name;
-            document.getElementById("displayUserVillage").innerText = "गाँव: " + village + " (" + district + " - सक्रिय)";
-            document.getElementById("headerVillageTitle").innerText = "मेरा गाँव - " + village.toUpperCase();
+            document.getElementById("displayUserVillage").innerText = "गाँव: " + village + " (सक्रिय)";
+            document.getElementById("headerVillageTitle").innerText = "मेरा गाँव - " + village;
 
             document.getElementById("profileSetupSection").style.display = "none";
             document.getElementById("appDashboard").style.display = "block";
