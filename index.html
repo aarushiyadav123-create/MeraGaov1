@@ -5,140 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>मेरा गाँव - डिजिटल पोर्टल</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #1b5e20;
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .header-title { text-align: center; flex-grow: 1; }
-        .header-title h2 { margin: 0; font-size: 18px; }
-        .header-title p { margin: 0; font-size: 11px; color: #d0f8d8; }
-        
-        .icon-btn {
-            background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px;
-        }
-
+        body { font-family: sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        header { background-color: #1b5e20; color: white; padding: 15px; text-align: center; font-weight: bold; }
         .container { padding: 12px; }
         
-        .profile-setup-box {
-            background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); margin-top: 10px;
+        /* प्रोफाइल बटन स्टाइल */
+        .profile-btn {
+            background-color: #fff; border: 2px solid #1b5e20; color: #1b5e20;
+            padding: 12px; width: 100%; border-radius: 8px; font-weight: bold;
+            margin-bottom: 15px; cursor: pointer; text-align: center;
         }
-        .profile-setup-box h3 { margin-top: 0; color: #1b5e20; font-size: 16px; }
-        .input-field {
-            width: 100%; padding: 10px; margin: 6px 0 12px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px;
+
+        /* डैशबोर्ड बटन्स */
+        .btn-main {
+            background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-weight: 600; 
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .submit-btn {
-            background-color: #1b5e20; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 15px;
-        }
-        #appDashboard { display: none; }
-        .profile-card {
-            background: white; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .profile-img {
-            width: 42px; height: 42px; border-radius: 50%; background-color: #ddd; margin-right: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px;
-        }
-        .shop-btn-container { display: flex; gap: 8px; margin-bottom: 12px; }
-        .btn-shop {
-            background: linear-gradient(135deg, #ff9800, #f57c00); color: white; border: none; padding: 10px; flex: 1; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center;
-        }
-        .list-item {
-            background: white; padding: 12px 14px; text-align: left; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
-        }
-        .history-item { background: linear-gradient(135deg, #d32f2f, #b71c1c); color: white; }
+        
+        /* प्रोफाइल मोडल्स */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 20% auto; padding: 20px; width: 80%; border-radius: 8px; }
+        .input-field { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-title">
-            <h2 id="headerVillageTitle">मेरा गाँव - डिजिटल पोर्टल</h2>
-            <p>गाँव को समर्पित डिजिटल सेवा</p>
-        </div>
-        <button class="icon-btn" onclick="toggleLang()">हिन्दी</button>
-    </header>
+    <header>मेरा गाँव - डिजिटल पोर्टल</header>
 
     <div class="container">
+        <!-- प्रोफाइल बटन (यहाँ से यूजर अपनी जानकारी अपडेट करेगा) -->
+        <button class="profile-btn" onclick="openModal()">👤 अपनी प्रोफाइल सेट करें</button>
 
-        <!-- सरल और सुरक्षित प्रोफाइल फॉर्म -->
-        <div id="profileSetupSection" class="profile-setup-box">
-            <h3>🔒 अपनी प्रोफाइल बनाएं</h3>
-            
-            <label style="font-size: 13px; font-weight: bold;">आपका नाम:</label>
-            <input type="text" id="inputName" class="input-field" placeholder="अपना पूरा नाम लिखें">
+        <!-- पूरा डैशबोर्ड हमेशा दिखेगा -->
+        <div class="btn-main">🏬 दुकान देखें / जोड़ें <span>➔</span></div>
+        <div class="btn-main">🛠️ 1B. गाँव की आवश्यक सेवाएं <span>➔</span></div>
+        <div class="btn-main">📢 2. मुनादी, मेला व खबरें <span>➔</span></div>
+        <div class="btn-main">🌾 3. पशु, गेहूँ, चारा खरीद-बेच <span>➔</span></div>
+        <div class="btn-main">📸 4. गाँव की गैलरी <span>➔</span></div>
+        <div class="btn-main">🎵 5. गाँव के वीडियो <span>➔</span></div>
+        <div class="btn-main" style="background: #b71c1c; color: white;">📚 6. गाँव का इतिहास <span>➔</span></div>
+    </div>
 
-            <label style="font-size: 13px; font-weight: bold;">मोबाइल नंबर:</label>
-            <input type="tel" id="inputPhone" class="input-field" placeholder="10 अंकों का मोबाइल नंबर">
-
-            <label style="font-size: 13px; font-weight: bold;">अपने गाँव का नाम चुनें:</label>
-            <select id="selectVillage" class="input-field">
-                <option value="">-- अपना गाँव चुनें --</option>
-                <option value="Malkosh (रोहतक)">Malkosh (रोहतक)</option>
-                <option value="Ismaila (रोहतक)">Ismaila (रोहतक)</option>
-                <option value="Sampla (रोहतक)">Sampla (रोहतक)</option>
-                <option value="Kalanaur (रोहतक)">Kalanaur (रोहतक)</option>
-            </select>
-
-            <button class="submit-btn" onclick="saveProfile()">प्रोफाइल सुरक्षित करें & आगे बढ़ें ➔</button>
+    <!-- प्रोफाइल पॉपअप -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <h3>अपनी जानकारी भरें</h3>
+            <input type="text" id="name" class="input-field" placeholder="नाम">
+            <input type="tel" id="phone" class="input-field" placeholder="मोबाइल नंबर">
+            <input type="text" id="village" class="input-field" placeholder="गाँव का नाम">
+            <input type="text" id="district" class="input-field" placeholder="जिला">
+            <button onclick="saveProfile()" style="background:#1b5e20; color:white; padding:10px; width:100%; border:none;">सेव करें</button>
         </div>
-
-        <!-- मुख्य डैशबोर्ड -->
-        <div id="appDashboard">
-            <div class="profile-card">
-                <div class="profile-img">👤</div>
-                <div>
-                    <h3 id="displayUserName" style="margin: 0 0 2px 0; font-size: 15px;">-</h3>
-                    <p id="displayUserVillage" style="margin: 0; color: #666; font-size: 12px;">गाँव: - (सक्रिय)</p>
-                </div>
-            </div>
-
-            <div class="shop-btn-container">
-                <button class="btn-shop">🏬 दुकान देखें</button>
-                <button class="btn-shop" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">➕ अपनी दुकान जोड़ें</button>
-            </div>
-
-            <div class="list-item"><span>🛠️ 1B. गाँव की आवश्यक सेवाएं</span><span>➔</span></div>
-            <div class="list-item" style="border-left: 4px solid #ff9800;"><span>📢 2. मुनादी, मेला व खबरें (Sub-Admin)</span><span>➔</span></div>
-            <div class="list-item"><span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच</span><span>➔</span></div>
-            <div class="list-item"><span>📸 4. गाँव की गैलरी (लाइव फोटो)</span><span>➔</span></div>
-            <div class="list-item"><span>🎵 5. गाँव के वीडियो और लोक गीत</span><span>➔</span></div>
-            <div class="list-item history-item"><span>📚 6. गाँव का इतिहास, सरपंच व शहीद</span><span>➔</span></div>
-        </div>
-
     </div>
 
     <script>
-        function toggleLang() {
-            alert("Language switch feature coming soon!");
-        }
-
+        function openModal() { document.getElementById('profileModal').style.display = "block"; }
         function saveProfile() {
-            var name = document.getElementById("inputName").value.trim();
-            var phone = document.getElementById("inputPhone").value.trim();
-            var village = document.getElementById("selectVillage").value;
-
-            if(name === "" || phone === "" || village === "") {
-                alert("कृपया अपना नाम, फोन नंबर और गाँव सही से चुनें!");
-                return;
-            }
-
-            document.getElementById("displayUserName").innerText = name;
-            document.getElementById("displayUserVillage").innerText = "गाँव: " + village + " (सक्रिय)";
-            document.getElementById("headerVillageTitle").innerText = "मेरा गाँव - " + village;
-
-            document.getElementById("profileSetupSection").style.display = "none";
-            document.getElementById("appDashboard").style.display = "block";
+            // यहाँ डेटा सेव होगा
+            alert("प्रोफाइल सुरक्षित हो गई!");
+            document.getElementById('profileModal').style.display = "none";
         }
     </script>
-
 </body>
 </html>
