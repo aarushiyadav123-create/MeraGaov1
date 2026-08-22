@@ -115,41 +115,40 @@
         }
 
         .section-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
-            color: #333;
-            margin: 15px 0 10px 0;
+            color: #444;
+            margin: 15px 0 8px 0;
+            border-left: 4px solid #1b5e20;
+            padding-left: 8px;
         }
-        .grid-menu {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .menu-item {
+
+        /* One-Line Full Width Rows */
+        .list-item {
             background: white;
-            padding: 15px;
-            text-align: center;
+            padding: 14px 15px;
+            text-align: left;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             font-weight: 600;
             color: #333;
-            font-size: 14px;
-        }
-        .full-width-item {
-            background: white;
-            padding: 12px;
-            text-align: center;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            font-weight: 600;
-            color: #1b5e20;
             margin-bottom: 10px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
         }
-        /* Special History Button */
-        .history-btn {
+        .list-item span {
+            color: #888;
+            font-size: 18px;
+        }
+
+        /* History Special Box */
+        .history-item {
             background: linear-gradient(135deg, #d32f2f, #b71c1c);
             color: white;
+            border-left: none;
         }
     </style>
 </head>
@@ -176,7 +175,7 @@
     </header>
 
     <div class="container">
-        <!-- यूजर प्रोफाइल सेक्शन (सिर्फ नाम और फोटो) -->
+        <!-- यूजर प्रोफाइल सेक्शन -->
         <div class="profile-card">
             <div class="profile-img">👤</div>
             <div>
@@ -185,36 +184,38 @@
             </div>
         </div>
 
-        <!-- दुकान देखने और जोड़ने के बटन -->
+        <!-- 1. दुकान देखें और जोड़ें बटन -->
         <div class="shop-btn-container">
             <button class="btn-shop">🏬 दुकान देखें</button>
             <button class="btn-shop" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">➕ अपनी दुकान जोड़ें</button>
         </div>
 
-        <!-- आवश्यक सेवाएं -->
+        <!-- 1B. आवश्यक सेवाएं (एक-एक लाइन में) -->
         <div class="section-title">गाँव की आवश्यक सेवाएं</div>
-        <div class="grid-menu">
-            <div class="menu-item">🛠️ मिस्त्री & मेडिकल</div>
-            <div class="menu-item">🚜 ट्रैक्टर & गाड़ी किराया</div>
-            <div class="menu-item">📜 पंडित जी & सेवाएं</div>
-            <div class="menu-item">📢 मुनादी & सूचना (Admin)</div>
-        </div>
+        <div class="list-item">🛠️ मिस्त्री & मेडिकल सेवाएं <span>➔</span></div>
+        <div class="list-item">🚜 ट्रैक्टर & गाड़ी किराया <span>➔</span></div>
+        <div class="list-item">📜 पंडित जी & अन्य सेवाएं <span>➔</span></div>
 
-        <!-- खरीद-बेच और अन्य सेवाएं -->
-        <div class="section-title">खरीद-बेच और अन्य सेवाएं</div>
-        <div class="grid-menu">
-            <div class="menu-item">🌾 पशु, गेहूँ, तूड़ा, चारा</div>
-            <div class="menu-item">📋 अन्य सेवा / श्रेणी जोड़ें</div>
-        </div>
+        <!-- 2. मुनादी, मेला, भजन व सूचनाएं -->
+        <div class="section-title">सूचनाएं और पंचायत</div>
+        <div class="list-item" style="border-left: 4px solid #ff9800;">📢 गाँव की मुनादी, मेला, भजन व खबरें (Sub-Admin Approved) <span>➔</span></div>
 
-        <!-- गाँव की झलकियां और मनोरंजन -->
-        <div class="section-title">गाँव की झलकियां और मनोरंजन</div>
-        <div class="full-width-item">📸 गाँव की गैलरी (लाइव फोटो)</div>
-        <div class="full-width-item">🎵 गाँव के वीडियो और लोक गीत</div>
+        <!-- 3. खरीद-बेच वाले बटन -->
+        <div class="section-title">खरीद-बेच (Buy / Sell)</div>
+        <div class="list-item">🌾 पशु, गेहूँ, तूड़ा, हरा चारा खरीद-बेच <span>➔</span></div>
+        <div class="list-item">📋 अन्य नई श्रेणी / सेवा जोड़ें <span>➔</span></div>
 
-        <!-- गाँव का इतिहास और गौरव (नया बटन) -->
+        <!-- 4. गाँव की गैलरी -->
+        <div class="section-title">गाँव की झलकियां</div>
+        <div class="list-item">📸 गाँव की गैलरी (लाइव फोटो) <span>➔</span></div>
+
+        <!-- 5. गाँव के वीडियो वॉल -->
+        <div class="section-title">मनोरंजन</div>
+        <div class="list-item">🎵 गाँव के वीडियो और लोक गीत <span>➔</span></div>
+
+        <!-- 6. गाँव का इतिहास और गौरव -->
         <div class="section-title">गाँव का गौरव और धरोहर</div>
-        <div class="full-width-item history-btn" style="color: white;">📚 गाँव का इतिहास, पुराने सरपंच व शहीद (Sub-Admin Approved)</div>
+        <div class="list-item history-item">📚 गाँव का इतिहास, पुराने सरपंच व शहीद (Sub-Admin Approved) <span>➔</span></div>
     </div>
 
     <script>
