@@ -15,7 +15,7 @@
         header {
             background-color: #1b5e20;
             color: white;
-            padding: 12px 15px;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -25,17 +25,17 @@
             text-align: center;
             flex-grow: 1;
         }
-        .header-title h2 { margin: 0; font-size: 20px; }
-        .header-title p { margin: 0; font-size: 12px; color: #d0f8d8; }
+        .header-title h2 { margin: 0; font-size: 18px; }
+        .header-title p { margin: 0; font-size: 11px; color: #d0f8d8; }
         
         .icon-btn {
             background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* Sidebar Menu */
@@ -71,69 +71,60 @@
 
         /* Container & Cards */
         .container {
-            padding: 15px;
+            padding: 12px;
         }
         .profile-card {
             background: white;
-            margin-bottom: 15px;
-            padding: 12px 15px;
+            margin-bottom: 12px;
+            padding: 10px 12px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .profile-img {
-            width: 50px;
-            height: 50px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background-color: #ddd;
-            margin-right: 12px;
+            margin-right: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 18px;
         }
         
         /* Shop Buttons Layout */
         .shop-btn-container {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .btn-shop {
             background: linear-gradient(135deg, #ff9800, #f57c00);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 10px;
             flex: 1;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        .section-title {
-            font-size: 15px;
-            font-weight: bold;
-            color: #444;
-            margin: 15px 0 8px 0;
-            border-left: 4px solid #1b5e20;
-            padding-left: 8px;
-        }
-
-        /* One-Line Full Width Rows */
+        /* Compact List Items */
         .list-item {
             background: white;
-            padding: 14px 15px;
+            padding: 12px 14px;
             text-align: left;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
             font-weight: 600;
             color: #333;
-            margin-bottom: 10px;
-            font-size: 15px;
+            margin-bottom: 8px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -141,14 +132,34 @@
         }
         .list-item span {
             color: #888;
-            font-size: 18px;
+            font-size: 16px;
+        }
+
+        /* Dropdown Content for 1B */
+        .dropdown-container {
+            display: none;
+            background: #fff;
+            padding: 8px 12px;
+            margin-top: -6px;
+            margin-bottom: 8px;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .sub-item {
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #444;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .sub-item:last-child {
+            border-bottom: none;
         }
 
         /* History Special Box */
         .history-item {
             background: linear-gradient(135deg, #d32f2f, #b71c1c);
             color: white;
-            border-left: none;
         }
     </style>
 </head>
@@ -179,8 +190,8 @@
         <div class="profile-card">
             <div class="profile-img">👤</div>
             <div>
-                <h3 style="margin: 0 0 3px 0; font-size: 16px;">विकास कुमार</h3>
-                <p style="margin: 0; color: #666; font-size: 13px;">गाँव: Malkosh (सक्रिय)</p>
+                <h3 style="margin: 0 0 2px 0; font-size: 15px;">विकास कुमार</h3>
+                <p style="margin: 0; color: #666; font-size: 12px;">गाँव: Malkosh (सक्रिय)</p>
             </div>
         </div>
 
@@ -190,32 +201,46 @@
             <button class="btn-shop" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">➕ अपनी दुकान जोड़ें</button>
         </div>
 
-        <!-- 1B. आवश्यक सेवाएं (एक-एक लाइन में) -->
-        <div class="section-title">गाँव की आवश्यक सेवाएं</div>
-        <div class="list-item">🛠️ मिस्त्री & मेडिकल सेवाएं <span>➔</span></div>
-        <div class="list-item">🚜 ट्रैक्टर & गाड़ी किराया <span>➔</span></div>
-        <div class="list-item">📜 पंडित जी & अन्य सेवाएं <span>➔</span></div>
+        <!-- 1B. आवश्यक सेवाएं (ड्रॉपडाउन / सिंगल बटन) -->
+        <div class="list-item" onclick="toggleDropdown()">
+            <span>🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर, पंडित आदि)</span>
+            <span id="arrow">▼</span>
+        </div>
+        <div id="serviceDropdown" class="dropdown-container">
+            <div class="sub-item">🛠️ मिस्त्री & मेडिकल सेवाएं</div>
+            <div class="sub-item">🚜 ट्रैक्टर & गाड़ी किराया</div>
+            <div class="sub-item">📜 पंडित जी & अन्य सेवाएं</div>
+        </div>
 
         <!-- 2. मुनादी, मेला, भजन व सूचनाएं -->
-        <div class="section-title">सूचनाएं और पंचायत</div>
-        <div class="list-item" style="border-left: 4px solid #ff9800;">📢 गाँव की मुनादी, मेला, भजन व खबरें (Sub-Admin Approved) <span>➔</span></div>
+        <div class="list-item" style="border-left: 4px solid #ff9800;">
+            <span>📢 2. मुनादी, मेला, भजन व खबरें (Sub-Admin)</span>
+            <span>➔</span>
+        </div>
 
-        <!-- 3. खरीद-बेच वाले बटन -->
-        <div class="section-title">खरीद-बेच (Buy / Sell)</div>
-        <div class="list-item">🌾 पशु, गेहूँ, तूड़ा, हरा चारा खरीद-बेच <span>➔</span></div>
-        <div class="list-item">📋 अन्य नई श्रेणी / सेवा जोड़ें <span>➔</span></div>
+        <!-- 3. खरीद-बेच और अन्य सेवाएं -->
+        <div class="list-item">
+            <span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच व अन्य श्रेणी</span>
+            <span>➔</span>
+        </div>
 
         <!-- 4. गाँव की गैलरी -->
-        <div class="section-title">गाँव की झलकियां</div>
-        <div class="list-item">📸 गाँव की गैलरी (लाइव फोटो) <span>➔</span></div>
+        <div class="list-item">
+            <span>📸 4. गाँव की गैलरी (लाइव फोटो)</span>
+            <span>➔</span>
+        </div>
 
-        <!-- 5. गाँव के वीडियो वॉल -->
-        <div class="section-title">मनोरंजन</div>
-        <div class="list-item">🎵 गाँव के वीडियो और लोक गीत <span>➔</span></div>
+        <!-- 5. गाँव के वीडियो -->
+        <div class="list-item">
+            <span>🎵 5. गाँव के वीडियो और लोक गीत</span>
+            <span>➔</span>
+        </div>
 
-        <!-- 6. गाँव का इतिहास और गौरव -->
-        <div class="section-title">गाँव का गौरव और धरोहर</div>
-        <div class="list-item history-item">📚 गाँव का इतिहास, पुराने सरपंच व शहीद (Sub-Admin Approved) <span>➔</span></div>
+        <!-- 6. गाँव का इतिहास -->
+        <div class="list-item history-item">
+            <span>📚 6. गाँव का इतिहास, सरपंच व शहीद</span>
+            <span>➔</span>
+        </div>
     </div>
 
     <script>
@@ -227,6 +252,17 @@
         }
         function toggleLang() {
             alert("Language switch feature coming soon!");
+        }
+        function toggleDropdown() {
+            var dropdown = document.getElementById("serviceDropdown");
+            var arrow = document.getElementById("arrow");
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+                arrow.innerHTML = "▼";
+            } else {
+                dropdown.style.display = "block";
+                arrow.innerHTML = "▲";
+            }
         }
     </script>
 
