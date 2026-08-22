@@ -34,7 +34,7 @@
         .dropdown-menu a:hover { background-color: #f1f8e9; color: #1b5e20; }
         .menu-container.active .dropdown-menu { display: block; }
 
-        /* Live Ticker Bar (News, Weather, Mandi Bhav) */
+        /* Live Ticker Bar */
         .live-ticker-container { background: #113814; color: #ffeb3b; padding: 8px 12px; font-size: 14px; font-weight: bold; overflow: hidden; white-space: nowrap; border-bottom: 2px solid #2e7d32; }
         .live-ticker-container marquee { width: 100%; }
         .ticker-item { margin-right: 40px; display: inline-block; }
@@ -250,6 +250,10 @@
                 <hr style="margin: 20px 0;">
                 <h4>स्वीकृत ताज़ा खबरें (Verified News):</h4>
                 <div id="munadiList" style="margin-top: 10px;"></div>
+                
+                <hr style="margin: 20px 0;">
+                <h4 style="color: #ef6c00;">Pending Munadi (Aapki bheji gayi suchnayein jo approval ka intezaar kar rahi hain):</h4>
+                <div id="userPendingMunadiList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
@@ -280,6 +284,17 @@
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
             <div class="card content-box">
                 <h2 id="panelTitle">Admin / Sub-Admin Panel</h2>
+                
+                <!-- Password Change Settings -->
+                <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c8e6c9;">
+                    <h4 style="color: #1b5e20; margin-bottom: 10px;">🔐 Password Change Settings:</h4>
+                    <div class="form-group"><label>Naya Admin Password:</label><input type="text" id="newAdminPass" placeholder="Admin password badlein"></div>
+                    <button class="submit-btn" style="padding: 8px; font-size: 14px; margin-bottom: 12px;" onclick="changeAdminPassword()">Update Admin Password</button>
+                    
+                    <div class="form-group"><label>Naya Sub-Admin Password:</label><input type="text" id="newSubAdminPass" placeholder="Sub-Admin password badlein"></div>
+                    <button class="submit-btn" style="padding: 8px; font-size: 14px; background: #ef6c00;" onclick="changeSubAdminPassword()">Update Sub-Admin Password</button>
+                </div>
+
                 <div id="pendingMunadiSection" style="margin-bottom: 20px;">
                     <h4 style="color: #ef6c00; margin-bottom: 10px;">Pending Munadi for Verification:</h4>
                     <div id="pendingMunadiList"></div>
@@ -327,6 +342,7 @@
             document.getElementById(sectionId).classList.add('active');
             if(sectionId === 'profile-page') loadProfileState();
             if(sectionId === 'admin-panel-page') renderPendingMunadi();
+            if(sectionId === 'munadi-page') renderUserPendingMunadi();
         }
 
         function toggleLanguage() {
@@ -367,19 +383,38 @@
             }
         }
 
+        function getAdminPass() { return localStorage.getItem('admin_pass') || 'admin123'; }
+        function getSubAdminPass() { return localStorage.getItem('subadmin_pass') || 'sub123'; }
+
         function openAdminModal(role) {
             let pass = prompt(role === 'admin' ? "Enter Admin Password:" : "Enter Sub-Admin Password:");
-            if(role === 'admin' && pass === "admin123") {
+            if(role === 'admin' && pass === getAdminPass()) {
                 alert('Admin Login Successful!');
                 switchSection('admin-panel-page');
                 document.getElementById('panelTitle').innerText = "Admin Master Panel (Delete Power)";
-            } else if(role === 'subadmin' && pass === "sub123") {
+            } else if(role === 'subadmin' && pass === getSubAdminPass()) {
                 alert('Sub-Admin Login Successful!');
                 switchSection('admin-panel-page');
                 document.getElementById('panelTitle').innerText = "Sub-Admin Verification Panel";
             } else if(pass !== null) {
                 alert('Galat Password!');
             }
+        }
+
+        function changeAdminPassword() {
+            let newPass = document.getElementById('newAdminPass').value;
+            if(!newPass) { alert('Naya password darj karein!'); return; }
+            localStorage.setItem('admin_pass', newPass);
+            document.getElementById('newAdminPass').value = '';
+            alert('Admin Password Safalpurvak Badal Diya Gaya Hai!');
+        }
+
+        function changeSubAdminPassword() {
+            let newPass = document.getElementById('newSubAdminPass').value;
+            if(!newPass) { alert('Naya password darj karein!'); return; }
+            localStorage.setItem('subadmin_pass', newPass);
+            document.getElementById('newSubAdminPass').value = '';
+            alert('Sub-Admin Password Safalpurvak Badal Diya Gaya Hai!');
         }
 
         function submitFullForm(e) {
@@ -498,6 +533,7 @@
                     let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
                     pending.push(pendingItemData);
                     localStorage.setItem('munadi_pending', JSON.stringify(pending));
+                    renderUserPendingMunadi();
                     alert('OTP Verified! Suchna Sub-Admin verification ke liye bhej di gayi hai.');
                 } else {
                     let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
@@ -524,6 +560,7 @@
             renderList('service');
             renderList('munadi');
             renderList('buysell');
+            renderUserPendingMunadi();
         }
 
         function renderList(type) {
@@ -578,6 +615,28 @@
             });
         }
 
+        function renderUserPendingMunadi() {
+            const container = document.getElementById('userPendingMunadiList');
+            if(!container) return;
+            let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
+            if(pending.length === 0) {
+                container.innerHTML = '<p style="color: #777; font-size: 13px;">Aapki koi bhi suchna pending nahi hai.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            pending.forEach((item) => {
+                const div = document.createElement('div');
+                div.className = 'item-card';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <h5>${item.title}</h5>
+                        <p>${item.sub} | Mob: ${item.phone} <span style="color: #ef6c00; font-weight: bold;">(Pending Approval)</span></p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
         function approveMunadi(index) {
             let pending = JSON.parse(localStorage.getItem('munadi_pending') || '[]');
             let verified = JSON.parse(localStorage.getItem('munadi_data') || '[]');
@@ -595,6 +654,7 @@
             pending.splice(index, 1);
             localStorage.setItem('munadi_pending', JSON.stringify(pending));
             renderPendingMunadi();
+            renderUserPendingMunadi();
             alert('Munadi Rejected!');
         }
 
