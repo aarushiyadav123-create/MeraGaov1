@@ -31,7 +31,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 </head>
 <body>
 <header>
-<div><h1 id="title">Mera Gaov Digital Portal</h1><div class="sub" id="subtitle">मेरा गाँव - मेरी पहचान</div></div>
+<div><h1 id="title">Mera Gaon Digital Portal</h1><div class="sub" id="subtitle">मेरा गाँव - मेरी पहचान</div></div>
 <div><button class="headerbtn" onclick="toggleLang()" id="langBtn">Eng</button>
 <button class="headerbtn" onclick="toggleMenu()">☰</button></div>
 </header>
@@ -48,7 +48,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 
 <section id="home">
 <div id="active" class="card hidden"></div>
-<button class="mainbtn" onclick="go('profile')">👤 <span data-i="b1">मेरी प्रोफाइल व गाँव सेट करें</span></button>
+<button class="mainbtn" onclick="go('profile')">👤 <span data-i="b1">मेरी प्रोफाइल व गाँव सेट करें (OTP + Location)</span></button>
 <button class="mainbtn" onclick="go('shops')">🏪 <span data-i="b2">गाँव की दुकानें</span></button>
 <button class="mainbtn" onclick="go('services')">🔧 <span data-i="b3">आवश्यक सेवाएं / मिस्त्री</span></button>
 <button class="mainbtn orange" onclick="go('munadi')">📢 <span data-i="b4">मुनादी व खबरें</span></button>
@@ -62,39 +62,51 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <button class="mainbtn blue" onclick="go('gov')">🏛️ Haryana Govt Schemes</button>
 </section>
 
+<!-- Profile Section with Manual Village Entry, Live Photo & OTP -->
 <section id="profile" class="hidden">
 <span class="back" onclick="go('home')">← होम</span>
 <div class="card"><h2>प्रोफाइल और गाँव सेट करें</h2>
 <div id="profileForm">
 <div class="grid two">
-<div><label>पूरा नाम</label><input id="name"></div>
-<div><label>मोबाइल नंबर</label><input id="phone" inputmode="numeric" maxlength="10"></div>
+<div><label>पूरा नाम</label><input id="name" placeholder="अपना नाम लिखें"></div>
+<div><label>मोबाइल नंबर</label><input id="phone" inputmode="numeric" maxlength="10" placeholder="10 अंकों का नंबर"></div>
 </div>
-<div style="margin-top:10px"><label>जिला</label><select id="district"><option value="">लोड हो रहा है...</option></select></div>
-<div style="margin-top:10px"><label>ब्लॉक</label><select id="block" disabled><option value="">पहले जिला चुनें</option></select></div>
-<div style="margin-top:10px"><label>गाँव</label><select id="village" disabled><option value="">पहले ब्लॉक चुनें</option></select></div>
-<div style="margin-top:10px"><label>अपनी फोटो</label><input id="photo" type="file" accept="image/*"></div>
+<div style="margin-top:10px" id="otpBox" class="hidden">
+<label>OTP दर्ज करें (Demo: 1234)</label>
+<input id="otpInput" inputmode="numeric" maxlength="4" placeholder="4 अंक का OTP डालें">
+<button class="btn success" style="width:100%;margin-top:8px" onclick="verifyOtp()">OTP सत्यापित करें</button>
+</div>
+<div id="mainProfileInputs" class="hidden">
+<div class="grid two" style="margin-top:10px">
+<div><label>जिला</label><input id="district" placeholder="जिला का नाम"></div>
+<div><label>ब्लॉक / तहसील</label><input id="block" placeholder="ब्लॉक का नाम"></div>
+</div>
+<div style="margin-top:10px"><label>गाँव का नाम</label><input id="village" placeholder="अपनेगाँव का नाम लिखें"></div>
+<div style="margin-top:10px"><label>लाइव फोटो (कैमरा से)</label><input id="photo" type="file" accept="image/*" capture="environment"></div>
+<div style="margin-top:10px"><label>लाइव लोकेशन (GPS)</label><button class="btn blue" type="button" onclick="getLocation()">📍 मेरी लाइव लोकेशन प्राप्त करें</button><p id="locStatus" class="small" style="margin-top:5px;color:#0277bd;"></p></div>
 <button class="btn success" style="width:100%;margin-top:12px" onclick="saveProfile()">प्रोफाइल सेव करें</button>
-<p class="status" id="villageStatus">Firebase से डेटा कनेक्ट किया जा रहा है...</p>
+</div>
+<button id="sendOtpBtn" class="btn success" style="width:100%;margin-top:12px" onclick="sendOtp()">OTP भेजें</button>
+<p class="status" id="profileStatus"></p>
 </div>
 <div id="profileView" class="hidden"></div>
 </div></section>
 
-<section id="shops" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🏪 दुकानें</h2><div class="grid two"><input id="shopName" placeholder="दुकान का नाम"><input id="shopOwner" placeholder="संचालक"><input id="shopPhone" placeholder="मोबाइल"></div><button class="btn success" style="margin-top:10px" onclick="add('shops',{title:v('shopName'),sub:v('shopOwner'),phone:v('shopPhone')})">जोड़ें</button><div id="shopsList"></div></div></section>
+<section id="shops" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🏪 दुकानें</h2><div class="grid two"><input id="shopName" placeholder="दुकान का नाम"><input id="shopOwner" placeholder="संचालक"><input id="shopPhone" placeholder="मोबाइल"></div><button class="btn success" style="margin-top:10px" onclick="addWithOtp('shops',{title:v('shopName'),sub:v('shopOwner'),phone:v('shopPhone')})">जोड़ें (OTP के साथ)</button><div id="shopsList"></div></div></section>
 
-<section id="services" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🔧 आवश्यक सेवाएं</h2><input id="serviceTitle" placeholder="जैसे राज मिस्त्री"><input id="servicePerson" placeholder="व्यक्ति का नाम" style="margin-top:8px"><input id="servicePhone" placeholder="मोबाइल" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="add('services',{title:v('serviceTitle'),sub:v('servicePerson'),phone:v('servicePhone')})">जोड़ें</button><div id="servicesList"></div></div></section>
+<section id="services" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🔧 आवश्यक सेवाएं</h2><input id="serviceTitle" placeholder="जैसे राज मिस्त्री"><input id="servicePerson" placeholder="व्यक्ति का नाम" style="margin-top:8px"><input id="servicePhone" placeholder="मोबाइल" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="addWithOtp('services',{title:v('serviceTitle'),sub:v('servicePerson'),phone:v('servicePhone')})">जोड़ें</button><div id="servicesList"></div></div></section>
 
 <section id="munadi" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>📢 मुनादी व खबरें</h2><textarea id="munadiText" rows="3" placeholder="खबर / मुनादी"></textarea><input id="munadiUser" placeholder="नाम" style="margin-top:8px"><input id="munadiPhone" placeholder="मोबाइल" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="submitMunadi()">सत्यापन के लिए भेजें</button><h3>स्वीकृत खबरें</h3><div id="munadiList"></div><h3>लंबित खबरें</h3><div id="pendingList"></div></div></section>
 
-<section id="buysell" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🐄 खरीद-बेच</h2><input id="buyText" placeholder="वस्तु का विवरण"><input id="buyUser" placeholder="नाम" style="margin-top:8px"><input id="buyPhone" placeholder="मोबाइल" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="add('buysell',{title:v('buyText'),sub:v('buyUser'),phone:v('buyPhone')})">जोड़ें</button><div id="buysellList"></div></div></section>
+<section id="buysell" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🐄 खरीद-बेच</h2><input id="buyText" placeholder="वस्तु का विवरण"><input id="buyUser" placeholder="नाम" style="margin-top:8px"><input id="buyPhone" placeholder="मोबाइल" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="addWithOtp('buysell',{title:v('buyText'),sub:v('buyUser'),phone:v('buyPhone')})">जोड़ें</button><div id="buysellList"></div></div></section>
 
-<section id="gallery" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>📷 गाँव की गैलरी</h2><input id="galleryFile" type="file" accept="image/*"><input id="galleryCaption" placeholder="फोटो का विवरण" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="uploadPhoto()">अपलोड करें</button><div id="galleryList"></div></div></section>
+<section id="gallery" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>📷 गाँव की गैलरी</h2><input id="galleryFile" type="file" accept="image/*" capture="environment"><input id="galleryCaption" placeholder="फोटो का विवरण" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="uploadPhoto()">अपलोड करें</button><div id="galleryList"></div></div></section>
 
 <section id="livevideo" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🔴 लाइव वीडियो और प्रोग्राम</h2><input id="liveTitle" placeholder="कार्यक्रम का शीर्षक"><input id="liveUrl" placeholder="YouTube Live लिंक" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="addLiveVideo()">लाइव जोड़ें</button><div id="liveVideoList"></div></div></section>
 
 <section id="videos" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>▶️ वीडियो गैलरी</h2><input id="videoTitle" placeholder="शीर्षक"><input id="videoUrl" placeholder="YouTube लिंक" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="addVideo()">जोड़ें</button><div id="videoList"></div></div></section>
 
-<section id="history" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>📜 गाँव का इतिहास</h2><input id="histTitle" placeholder="शीर्षक"><textarea id="histDesc" rows="4" placeholder="विवरण" style="margin-top:8px"></textarea><button class="btn success" style="margin-top:10px" onclick="add('history',{title:v('histTitle'),sub:v('histDesc')})">जोड़ें</button><div id="historyList"></div></div></section>
+<section id="history" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>📜 गाँव का इतिहास</h2><input id="histTitle" placeholder="शीर्षक"><textarea id="histDesc" rows="4" placeholder="विवरण" style="margin-top:8px"></textarea><button class="btn success" style="margin-top:10px" onclick="addWithOtp('history',{title:v('histTitle'),sub:v('histDesc')})">जोड़ें</button><div id="historyList"></div></div></section>
 
 <section id="animal" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🐄 पशु सेवा एवं स्वास्थ्य</h2><div class="item"><b>टीकाकरण</b><p>मुंहपका-खुरपका और अन्य रोगों से बचाव के लिए पशु चिकित्सक की सलाह से समय पर टीकाकरण करवाएं।</p></div></div></section>
 
@@ -118,16 +130,16 @@ messagingSenderId:"424538068212",appId:"1:424538068212:web:2d58406aeb0b4d9524faa
 measurementId:"G-86FH5M7NP1"};
 const app=firebase.initializeApp(firebaseConfig),db=firebase.database();
 
-let admin=false, villageDataCache={}, currentLang="hi";
+let admin=false, currentLang="hi", userLat="", userLng="";
 
 const texts = {
-  hi: { title: "Mera Gaov Digital Portal", sub: "मेरा गाँव - मेरी पहचान", news: "गाँव की खबर:",
-        b1: "मेरी प्रोफाइल व गाँव सेट करें", b2: "गाँव की दुकानें", b3: "आवश्यक सेवाएं / मिस्त्री",
+  hi: { title: "Mera Gaon Digital Portal", sub: "मेरा गाँव - मेरी पहचान", news: "गाँव की खबर:",
+        b1: "मेरी प्रोफाइल व गाँव सेट करें (OTP + Location)", b2: "गाँव की दुकानें", b3: "आवश्यक सेवाएं / मिस्त्री",
         b4: "मुनादी व खबरें", b5: "पशु, गेहूँ, चारा खरीद-बेच", b6: "गाँव की गैलरी",
         b7: "लाइव वीडियो और प्रोग्राम", b8: "वीडियो गैलरी", b9: "गाँव का इतिहास",
         b10: "पशु सेवा", b11: "बच्चों की शिक्षा" },
   en: { title: "Mera Gaon Digital Portal", sub: "My Village - My Identity", news: "Village News:",
-        b1: "My Profile & Village Setup", b2: "Village Shops", b3: "Essential Services",
+        b1: "My Profile & Village Setup (OTP + Location)", b2: "Village Shops", b3: "Essential Services",
         b4: "Announcements & News", b5: "Buy & Sell", b6: "Village Gallery",
         b7: "Live Videos & Programs", b8: "Video Gallery", b9: "Village History",
         b10: "Animal Care", b11: "Child Education" }
@@ -146,75 +158,6 @@ function toggleLang(){
   });
 }
 
-const district = document.getElementById("district");
-const block = document.getElementById("block");
-const village = document.getElementById("village");
-
-async function loadVillagesData() {
-  try {
-    let snapshot = await db.ref("villages").get();
-    if (snapshot.exists()) {
-      villageDataCache = snapshot.val();
-      district.innerHTML = '<option value="">जिला चुनें / Select District</option>';
-      Object.keys(villageDataCache).forEach(stateKey => {
-        let districtsObj = villageDataCache[stateKey];
-        if (districtsObj) {
-          Object.keys(districtsObj).forEach(distName => {
-            let o = document.createElement("option");
-            o.value = distName; o.textContent = distName;
-            district.appendChild(o);
-          });
-        }
-      });
-      document.getElementById("villageStatus").innerText = "✔ डेटा सफलतापूर्वक लोड हो गया है।";
-    }
-  } catch (error) {
-    document.getElementById("villageStatus").innerText = "⚠ डेटा लोड करने में विफल।";
-  }
-}
-loadVillagesData();
-
-district.onchange = () => {
-  block.innerHTML = '<option value="">ब्लॉक चुनें</option>';
-  village.innerHTML = '<option value="">गाँव चुनें</option>';
-  village.disabled = true;
-  if (!district.value) { block.disabled = true; return; }
-  block.disabled = false;
-  let selectedDist = district.value;
-  Object.keys(villageDataCache).forEach(state => {
-    let dists = villageDataCache[state];
-    if (dists && dists[selectedDist]) {
-      Object.keys(dists[selectedDist]).forEach(b => {
-        let o = document.createElement("option");
-        o.value = b; o.textContent = b;
-        block.appendChild(o);
-      });
-    }
-  });
-};
-
-block.onchange = () => {
-  village.innerHTML = '<option value="">गाँव चुनें</option>';
-  village.disabled = true;
-  if (!block.value) return;
-  let selectedDist = district.value;
-  let selectedBlock = block.value;
-  Object.keys(villageDataCache).forEach(state => {
-    let dists = villageDataCache[state];
-    if (dists && dists[selectedDist] && dists[selectedDist][selectedBlock]) {
-      let villagesList = dists[selectedDist][selectedBlock];
-      if (Array.isArray(villagesList)) {
-        villagesList.forEach(x => {
-          let o = document.createElement("option");
-          o.value = x; o.textContent = x;
-          village.appendChild(o);
-        });
-        village.disabled = false;
-      }
-    }
-  });
-};
-
 function v(id){return document.getElementById(id).value.trim()}
 function toggleMenu(){document.getElementById("menu").classList.toggle("hidden")}
 function go(id){
@@ -231,32 +174,90 @@ function go(id){
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function compress(file,max=700){return new Promise((res,rej)=>{let r=new FileReader();r.onload=e=>{let im=new Image();im.onload=()=>{let c=document.createElement("canvas"),scale=Math.min(1,max/im.width,max/im.height);c.width=im.width*scale;c.height=im.height*scale;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.72))};im.src=e.target.result};r.onerror=rej;r.readAsDataURL(file)})}
 
+// OTP Simulation & Verification System
+function sendOtp(){
+  let p = v("phone");
+  if(!/^\d{10}$/.test(p)){alert("कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें");return;}
+  document.getElementById("profileStatus").innerText = "OTP भेजा जा रहा है... (Demo OTP: 1234)";
+  setTimeout(()=>{
+    document.getElementById("otpBox").classList.remove("hidden");
+    document.getElementById("sendOtpBtn").classList.add("hidden");
+    document.getElementById("profileStatus").innerText = "✔ OTP आपके मोबाइल पर भेज दिया गया है।";
+  }, 800);
+}
+
+function verifyOtp(){
+  let otp = v("otpInput");
+  if(otp === "1234"){
+    document.getElementById("otpBox").classList.add("hidden");
+    document.getElementById("mainProfileInputs").classList.remove("hidden");
+    document.getElementById("profileStatus").innerText = "✔ मोबाइल नंबर सत्यापित (Verified) हो गया है!";
+  } else {
+    alert("गलत OTP! कृपया '1234' दर्ज करें।");
+  }
+}
+
+// Live Location Fetcher
+function getLocation(){
+  if(navigator.geolocation){
+    document.getElementById("locStatus").innerText = "लोकेशन प्राप्त की जा रही है...";
+    navigator.geolocation.getCurrentPosition(pos=>{
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      document.getElementById("locStatus").innerText = `✔ लोकेशन मिल गई (Lat: ${userLat.toFixed(2)}, Lng: ${userLng.toFixed(2)})`;
+    }, err=>{
+      document.getElementById("locStatus").innerText = "⚠ लोकेशन अनुमति नहीं मिली या एरर आया।";
+    });
+  } else {
+    alert("आपका ब्राउज़र लोकेशन सपोर्ट नहीं करता।");
+  }
+}
+
 async function saveProfile(){
-  let n=v("name"),p=v("phone"),d=district.value,b=block.value,g=village.value,f=document.getElementById("photo").files[0];
-  if(!n||!/^\d{10}$/.test(p)||!d||!b||!g){alert("नाम, सही 10 अंक मोबाइल और जिला/ब्लॉक/गाँव चुनें");return}
+  let n=v("name"),p=v("phone"),d=v("district"),b=v("block"),g=v("village"),f=document.getElementById("photo").files[0];
+  if(!n||!d||!b||!g){alert("कृपया नाम, जिला, ब्लॉक और गाँव का नाम भरें");return}
   let photo=f?await compress(f):"";
-  let data={name:n,phone:p,district:d,block:b,village:g,photo,updatedAt:Date.now()};
+  let data={name:n,phone:p,district:d,block:b,village:g,photo,lat:userLat,lng:userLng,updatedAt:Date.now()};
   localStorage.setItem("profile",JSON.stringify(data));
   await db.ref("users/"+p).set(data);
-  alert("प्रोफाइल सेव हो गई");loadProfile();go("home");
+  alert("प्रोफाइल सफलतापूर्वक सेव हो गई!");loadProfile();go("home");
 }
 
 function loadProfile(){
   let x=JSON.parse(localStorage.getItem("profile")||"null"),form=document.getElementById("profileForm"),view=document.getElementById("profileView");
   if(!x){form.classList.remove("hidden");view.classList.add("hidden");return}
   form.classList.add("hidden");view.classList.remove("hidden");
-  view.innerHTML=(x.photo?`<img class="photo" src="${x.photo}">`:"")+`<h3>${esc(x.name)}</h3><p>गाँव: <b>${esc(x.village)}</b><br>ब्लॉक: ${esc(x.block)}<br>जिला: ${esc(x.district)}<br><span class="ok">✔ Active</span></p><button class="btn danger" onclick="localStorage.removeItem('profile');loadProfile();">प्रोफाइल रीसेट</button>`;
+  view.innerHTML=(x.photo?`<img class="photo" src="${x.photo}">`:"")+`<h3>${esc(x.name)}</h3><p>गाँव: <b>${esc(x.village)}</b><br>ब्लॉक: ${esc(x.block)}<br>जिला: ${esc(x.district)}<br>मोबाइल: ${esc(x.phone)}<br>${x.lat?`लोकेशन: ${x.lat.toFixed(2)}, ${x.lng.toFixed(2)}<br>`:''}<span class="ok">✔ Verified & Active</span></p><button class="btn danger" onclick="localStorage.removeItem('profile');loadProfile();">प्रोफाइल रीसेट</button>`;
   document.getElementById("active").classList.remove("hidden");
-  document.getElementById("active").innerHTML=`<b>👤 ${esc(x.name)}</b><br><span class="small">📍 ${esc(x.village)}, ${esc(x.block)}, ${esc(x.district)} ✔ Active</span>`;
+  document.getElementById("active").innerHTML=`<b>👤 ${esc(x.name)}</b><br><span class="small">📍 ${esc(x.village)}, ${esc(x.block)}, ${esc(x.district)} ✔ Verified</span>`;
   document.getElementById("title").innerText=x.village+" डिजिटल पोर्टल";
 }
 
-function add(type,data){if(!data.title){alert("जानकारी भरें");return}db.ref(type+"_data").push(data).then(()=>{alert("सेव हो गया");render(type)})}
-function render(type){let c=document.getElementById(type+"List");if(!c)return;db.ref(type+"_data").once("value").then(s=>{c.innerHTML="";let d=s.val();if(!d){c.innerHTML='<p class="small">अभी कोई डेटा नहीं है।</p>';return}Object.entries(d).reverse().forEach(([k,x])=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><div class="small">${esc(x.sub||"")} ${x.phone?"| 📞 "+esc(x.phone):""}</div>${x.phone?`<a href="tel:${esc(x.phone)}">कॉल करें</a>`:""} ${admin?`<button class="danger" onclick="del('${type}_data/${k}')">डिलीट</button>`:""}</div>`)})}
+// Add data with simple OTP verification prompt
+function addWithOtp(type, data){
+  if(!data.title){alert("कृपया जानकारी भरें");return;}
+  let p = prompt("सत्यापन के लिए अपना 10 अंकों का मोबाइल नंबर दर्ज करें:");
+  if(!/^\d{10}$/.test(p)){alert("अमान्य मोबाइल नंबर");return;}
+  let otp = prompt("मोबाइल पर आया OTP दर्ज करें (Demo: 1234):");
+  if(otp === "1234"){
+    data.phone = p;
+    db.ref(type+"_data").push(data).then(()=>{alert("सफलतापूर्वक जोड़ दिया गया!");render(type);});
+  } else {
+    alert("गलत OTP! प्रविष्टि रद्द कर दी गई।");
+  }
+}
+
+function render(type){
+  let c=document.getElementById(type+"List");if(!c)return;
+  db.ref(type+"_data").once("value").then(s=>{
+    c.innerHTML="";let d=s.val();if(!d){c.innerHTML='<p class="small">अभी कोई डेटा नहीं है।</p>';return}
+    Object.entries(d).reverse().forEach(([k,x])=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><div class="small">${esc(x.sub||"")} ${x.phone?"| 📞 "+esc(x.phone):""}</div>${x.phone?`<a href="tel:${esc(x.phone)}">कॉल करें</a>`:""} ${admin?`<button class="danger" onclick="del('${type}_data/${k}')">डिलीट</button>`:""}</div>`)
+  })
+}
 
 function submitMunadi(){
   let x={title:v("munadiText"),sub:v("munadiUser"),phone:v("munadiPhone"),createdAt:Date.now()};
-  if(!x.title||!x.sub||!/^\d{10}$/.test(x.phone)){alert("सही जानकारी भरें");return}
+  if(!x.title||!x.sub||!/^\d{10}$/.test(x.phone)){alert("सही जानकारी और 10 अंकों का मोबाइल नंबर भरें");return}
   db.ref("munadi_pending").push(x).then(()=>{alert("मुनादी सत्यापन के लिए भेज दी गई");renderMunadi()});
 }
 function renderMunadi(){
@@ -274,7 +275,15 @@ function adminLogin(){let p=prompt("Admin password");if(p===(localStorage.getIte
 function subAdminLogin(){let p=prompt("Sub-Admin password");if(p===(localStorage.getItem("subadmin_pass")||"sub123")){admin=true;go("admin")}else if(p!==null)alert("गलत password")}
 function clearData(){if(admin&&confirm("सारा Firebase data delete करें?"))db.ref().remove().then(()=>{localStorage.clear();alert("सारा data साफ हो गया");location.reload()})}
 
-async function uploadPhoto(){let f=document.getElementById("galleryFile").files[0];if(!f){alert("फोटो चुनें");return}let img=await compress(f,900);await db.ref("gallery_photos").push({img,caption:v("galleryCaption")||"गाँव की तस्वीर",createdAt:Date.now()});alert("फोटो अपलोड हो गई");renderGallery()}
+async function uploadPhoto(){
+  let f=document.getElementById("galleryFile").files[0];
+  if(!f){alert("फोटो चुनें");return}
+  let p = prompt("अपलोड के लिए अपना 10 अंकों का मोबाइल नंबर दर्ज करें:");
+  if(!/^\d{10}$/.test(p)){alert("अमान्य मोबाइल नंबर");return;}
+  let img=await compress(f,900);
+  await db.ref("gallery_photos").push({img,caption:v("galleryCaption")||"गाँव की तस्वीर",phone:p,createdAt:Date.now()});
+  alert("फोटो अपलोड हो गई!");renderGallery();
+}
 function renderGallery(){db.ref("gallery_photos").once("value").then(s=>{let c=document.getElementById("galleryList");c.innerHTML="";Object.entries(s.val()||{}).reverse().forEach(([k,x])=>c.innerHTML+=`<div class="item"><img class="photo" src="${x.img}"><p>${esc(x.caption)}</p>${admin?`<button class="danger" onclick="del('gallery_photos/${k}')">डिलीट</button>`:""}</div>`)})}
 
 function yt(u){let m=u.match(/(?:youtu\.be\/|watch\?v=|embed\/)([^?&/]+)/);return m?"https://www.youtube.com/embed/"+m[1]:""}
