@@ -213,7 +213,7 @@
                     </form>
                 </div>
                 <div id="otpSection" style="display: none;">
-                    <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px;"></p>
+                    <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px;">आपके मोबाइल पर OTP भेज दिया गया है। कृपया अपना एसएमएस चेक करें।</p>
                     <div class="form-group"><label>4-digit OTP Darj Karein:</label><input type="text" id="enteredOtp" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyOtpAndDirectApprove()">OTP Verify & Save Karein</button>
                 </div>
@@ -241,7 +241,7 @@
                     <button class="submit-btn" onclick="initAddOTP('dukaan')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="dukaanOtpArea" style="display:none; margin-top:15px;">
-                    <p id="dukaanOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <p id="dukaanOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
                     <div class="form-group"><label>OTP Daalein:</label><input type="text" id="dukaanOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
                 </div>
@@ -262,7 +262,7 @@
                     <button class="submit-btn" onclick="initAddOTP('service')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="serviceOtpArea" style="display:none; margin-top:15px;">
-                    <p id="serviceOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <p id="serviceOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
                     <div class="form-group"><label>OTP Daalein:</label><input type="text" id="serviceOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
                 </div>
@@ -283,7 +283,7 @@
                     <button class="submit-btn" onclick="initAddOTP('munadi')">OTP भेजकर सबमिट करें</button>
                 </div>
                 <div id="munadiOtpArea" style="display:none; margin-top:15px;">
-                    <p id="munadiOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <p id="munadiOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
                     <div class="form-group"><label>OTP Daalein:</label><input type="text" id="munadiOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Send to Sub-Admin</button>
                 </div>
@@ -308,7 +308,7 @@
                     <button class="submit-btn" onclick="initAddOTP('buysell')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="buysellOtpArea" style="display:none; margin-top:15px;">
-                    <p id="buysellOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <p id="buysellOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
                     <div class="form-group"><label>OTP Daalein:</label><input type="text" id="buysellOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
                 </div>
@@ -339,7 +339,7 @@
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
                     <h4 style="color: #1b5e20; margin-bottom: 8px;">➕ नया वीडियो / लाइव लिंक जोड़ें:</h4>
                     <input type="text" id="mediaTitleInput" placeholder="शीर्षक (जैसे: Bhajan)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <input type="text" id="mediaUrlInput" placeholder="YouTube Link paste karein" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="mediaUrlInput" placeholder="YouTube Link paste karein (e.g. watch?v=...)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     <button class="submit-btn" onclick="addLiveMedia()">Firebase पर Jodein</button>
                 </div>
                 <div id="mediaListContainer" style="margin-top: 15px;"></div>
@@ -357,7 +357,7 @@
                     <button class="submit-btn" onclick="initAddOTP('history')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="historyOtpArea" style="display:none; margin-top:15px;">
-                    <p id="historyOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <p id="historyOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
                     <div class="form-group"><label>OTP Daalein:</label><input type="text" id="historyOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Firebase Save Karein</button>
                 </div>
@@ -466,21 +466,15 @@
                 });
         }
 
-        function sendRealSMSOTP(phone, otp, infoElementId) {
+        function sendRealSMSOTP(phone, otp) {
             generatedOTP = otp;
             const message = `Aapka OTP code ${otp} hai. Kripya ise kisi ke sath share na karein.`;
-            document.getElementById(infoElementId).innerText = `आपके मोबाइल ${phone} पर ओटीपी भेजा जा रहा है... कृपया प्रतीक्षा करें।`;
-
+            
+            // Proper CORS bypass using an image beacon / script-based GET request execution for reliable SMS trigger
             const apiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=q&message=${encodeURIComponent(message)}&language=english&flash=0&numbers=${phone}`;
 
-            fetch(apiUrl, { method: 'GET', mode: 'no-cors' })
-                .then(() => {
-                    document.getElementById(infoElementId).innerText = `✔ ओटीपी सफलतापूर्वक भेज दिया गया है। कृपया अपना एसएमएस चेक करें।`;
-                })
-                .catch(err => {
-                    console.error("SMS Error:", err);
-                    document.getElementById(infoElementId).innerText = `✔ ओटीपी अनुरोध भेज दिया गया है।`;
-                });
+            const img = new Image();
+            img.src = apiUrl;
         }
 
         function syncDataToFirebase(category, dataList) {
@@ -571,7 +565,7 @@
                     document.getElementById('formSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
                     
-                    sendRealSMSOTP(phone, otp, 'otpInfoMsg');
+                    sendRealSMSOTP(phone, otp);
                 };
                 reader.readAsDataURL(photoInput.files[0]);
             } else { alert('Photo select karein!'); }
@@ -683,20 +677,35 @@
             renderGalleryPhotos();
         }
 
+        function getYouTubeEmbedUrl(url) {
+            let videoId = '';
+            if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1]?.split('?')[0];
+            } else if (url.includes('watch?v=')) {
+                videoId = url.split('watch?v=')[1]?.split('&')[0];
+            } else if (url.includes('embed/')) {
+                videoId = url.split('embed/')[1]?.split('?')[0];
+            }
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+        }
+
         function addLiveMedia() {
             const title = document.getElementById('mediaTitleInput').value;
             const url = document.getElementById('mediaUrlInput').value;
             if(!title || !url) { alert('Title aur Video/Live Link dono bharein!'); return; }
 
+            const embedUrl = getYouTubeEmbedUrl(url);
+            if(!embedUrl) { alert('Kripya sahi YouTube Link dalein!'); return; }
+
             let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
-            mediaList.push({ title, type: 'link', url });
+            mediaList.push({ title, type: 'video', embedUrl });
             localStorage.setItem('village_media', JSON.stringify(mediaList));
             syncDataToFirebase('media', mediaList);
 
             document.getElementById('mediaTitleInput').value = '';
             document.getElementById('mediaUrlInput').value = '';
             renderMediaList();
-            alert('Live Program / Video Link Successfully Added to Firebase!');
+            alert('Live Program / Video Successfully Added to Firebase!');
         }
 
         function renderMediaList() {
@@ -714,8 +723,10 @@
                 div.style.marginBottom = '12px';
                 div.innerHTML = `
                     <h5 style="color: #1b5e20; font-size: 16px; margin-bottom: 8px;">🎵 ${item.title}</h5>
-                    <p style="font-size: 13px; margin-bottom: 8px; word-break: break-all;"><a href="${item.url}" target="_blank" style="color: #0277bd;">Link Dekhein: ${item.url}</a></p>
-                    <button class="delete-btn" onclick="deleteMedia(${index})">Delete</button>
+                    <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-bottom: 8px;">
+                        <iframe src="${item.embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 6px; border: none;" allowfullscreen></iframe>
+                    </div>
+                    <button class="delete-btn" onclick="deleteMedia(${index})">Delete Video</button>
                 `;
                 container.appendChild(div);
             });
@@ -770,7 +781,7 @@
             document.getElementById(type + 'FormArea').style.display = 'none';
             document.getElementById(type + 'OtpArea').style.display = 'block';
             
-            sendRealSMSOTP(phone, otp, type + 'OtpMsg');
+            sendRealSMSOTP(phone, otp);
         }
 
         function verifyAndSaveItem() {
@@ -866,7 +877,7 @@
                         <p>${item.sub} | Mob: ${item.phone}</p>
                     </div>
                     <div>
-                        <button class="submit-btn" style="padding: 5px 10px; font-size: 12px; background: #2e7d32;" onclick="approveMunadi(${index})">Approve</button>
+                        <button class="submit-dir" style="padding: 5px 10px; font-size: 12px; background: #2e7d32; color:white; border:none; border-radius:4px;" onclick="approveMunadi(${index})">Approve</button>
                         <button class="delete-btn" onclick="rejectMunadi(${index})">Reject</button>
                     </div>
                 `;
