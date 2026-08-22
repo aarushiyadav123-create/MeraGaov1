@@ -155,7 +155,7 @@
             <button class="portal-btn subadmin-btn" onclick="switchSection('munadi-page')" id="btnMunadi">📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔</button>
             <button class="portal-btn" onclick="switchSection('buysell-page')" id="btnBuySell">🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔</button>
             <button class="portal-btn" onclick="switchSection('gallery-page')" id="btnGallery">📸 4. गाँव की गैलरी (लाइव फोटो) ➔</button>
-            <button class="portal-btn" onclick="switchSection('video-page')" id="btnVideo">🎵 5. वीडियो और लाइव प्रोग्राम (Live) ➔</button>
+            <button class="portal-btn" onclick="switchSection('video-page')" id="btnVideo">🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera) ➔</button>
             <button class="portal-btn dark-btn" onclick="switchSection('history-page')" id="btnHistory">📚 6. गाँव का इतिहास व जानकारी Add ➔</button>
             <button class="portal-btn gov-btn" onclick="switchSection('haryana-gov-page')" id="btnGov">🏛️ 7. Haryana Govt Schemes & Live Portals ➔</button>
         </div>
@@ -284,7 +284,7 @@
             </div>
         </div>
 
-        <!-- 4. GALLERY PAGE (Live Photos Only, Scheme form removed) -->
+        <!-- 4. GALLERY PAGE (Live Photos Only - Scheme form removed completely) -->
         <div id="gallery-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
             <div class="card content-box">
@@ -300,18 +300,30 @@
             </div>
         </div>
 
-        <!-- 5. VIDEO & LIVE PROGRAM PAGE -->
+        <!-- 5. VIDEO & LIVE PROGRAM PAGE (Live Video & Camera added) -->
         <div id="video-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
             <div class="card content-box">
-                <h2>🎵 वीडियो और लाइव प्रोग्राम (Live Streaming)</h2>
-                <p>गाँव के सांस्कृतिक वीडियो, लोक गीत और लाइव प्रोग्राम यहाँ देखें व जोड़ें:</p>
+                <h2>🎵 वीडियो और लाइव प्रोग्राम (Live Video & Camera)</h2>
+                <p>गाँव के सांस्कृतिक वीडियो, लोक गीत या कैमरे से लाइव वीडियो/प्रोग्राम रिकॉर्ड करके यहाँ जोड़ें:</p>
+                
+                <!-- Option A: Link / YouTube -->
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 8px;">➕ नया वीडियो / लाइव प्रोग्राम लिंक जोड़ें:</h4>
-                    <input type="text" id="mediaTitleInput" placeholder="शीर्षक (जैसे: Live Bhajan / Gaon Ka Program / Lok Geet)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <input type="text" id="mediaUrlInput" placeholder="YouTube Video Link / Live Stream URL paste karein" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;">➕ नया वीडियो / लाइव लिंक जोड़ें:</h4>
+                    <input type="text" id="mediaTitleInput" placeholder="शीर्षक (जैसे: Live Bhajan / Gaon Ka Program)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="mediaUrlInput" placeholder="YouTube Video Link / Stream URL paste karein" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     <button class="submit-btn" onclick="addLiveMedia()">Live Program Jodein</button>
                 </div>
+
+                <!-- Option B: Direct Camera Record / Video File Upload -->
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #a5d6a7;">
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;">📹 कैमरे से लाइव वीडियो रिकॉर्ड करें / अपलोड करें:</h4>
+                    <input type="text" id="cameraVideoTitle" placeholder="वीडियो का शीर्षक (Title)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="file" id="cameraVideoInput" accept="video/*" capture="environment" style="margin-bottom: 10px; width: 100%;">
+                    <p style="font-size: 12px; color: #555; margin-bottom: 8px;">(Note: Capture option mobile mein direct camera open karega)</p>
+                    <button class="submit-btn" style="background: #0277bd;" onclick="uploadCameraVideo()">Camera Video Save Karein</button>
+                </div>
+
                 <div id="mediaListContainer" style="margin-top: 15px;"></div>
             </div>
         </div>
@@ -338,14 +350,13 @@
             </div>
         </div>
 
-        <!-- 7. HARYANA GOV SCHEMES & LIVE PORTALS PAGE (Scheme add form removed) -->
+        <!-- 7. HARYANA GOV SCHEMES & LIVE PORTALS PAGE -->
         <div id="haryana-gov-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
                 <h2>🏛️ Haryana Government Schemes & Live Portals</h2>
-                <p style="margin-bottom: 15px; color: #555;">हरियाणा सरकार के डायरेक्ट लाइव पोर्टल और प्रमुख योजनाएं (बिना किसी रुकावट के सीधे चेक करें):</p>
+                <p style="margin-bottom: 15px; color: #555;">हरियाणा सरकार के डायरेक्ट लाइव पोर्टल और प्रमुख योजनाएं:</p>
                 
-                <!-- Direct Government Portal Links -->
                 <a href="https://parivarpehchan.haryana.gov.in/" target="_blank" class="portal-link-box">
                     🔗 1. PPP Portal (परिवार पहचान पत्र - Live Check) ➔
                 </a>
@@ -398,7 +409,6 @@
             </div>
         </div>
 
-        <!-- STATIC PAGES -->
         <div id="policy" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a><div class="card"><h2>Privacy Policy</h2><p style="margin-top:12px;">Surakshit data.</p></div></div>
 
     </div>
@@ -440,7 +450,7 @@
                 document.getElementById('btnMunadi').innerText = "📢 2. Announcements & News (Verified) ➔";
                 document.getElementById('btnBuySell').innerText = "🌾 3. Cattle, Wheat, Feed Buy-Sell ➔";
                 document.getElementById('btnGallery').innerText = "📸 4. Village Gallery (Live Photos) ➔";
-                document.getElementById('btnVideo').innerText = "🎵 5. Videos & Live Programs (Live) ➔";
+                document.getElementById('btnVideo').innerText = "🎵 5. Videos & Live Programs (Live & Camera) ➔";
                 document.getElementById('btnHistory').innerText = "📚 6. Village History & Info Add ➔";
                 document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Live Portals ➔";
             } else {
@@ -451,7 +461,7 @@
                 document.getElementById('btnMunadi').innerText = "📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔";
                 document.getElementById('btnBuySell').innerText = "🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔";
                 document.getElementById('btnGallery').innerText = "📸 4. गाँव की गैलरी (लाइव फोटो) ➔";
-                document.getElementById('btnVideo').innerText = "🎵 5. वीडियो और लाइव प्रोग्राम (Live) ➔";
+                document.getElementById('btnVideo').innerText = "🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera) ➔";
                 document.getElementById('btnHistory').innerText = "📚 6. गाँव का इतिहास व जानकारी Add ➔";
                 document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Live Portals ➔";
             }
@@ -618,13 +628,32 @@
             if(!title || !url) { alert('Title aur Video/Live Link dono bharein!'); return; }
 
             let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
-            mediaList.push({ title, url });
+            mediaList.push({ title, type: 'link', url });
             localStorage.setItem('village_media', JSON.stringify(mediaList));
 
             document.getElementById('mediaTitleInput').value = '';
             document.getElementById('mediaUrlInput').value = '';
             renderMediaList();
-            alert('Live Program / Video Successfully Add Ho Gaya!');
+            alert('Live Program / Video Link Successfully Add Ho Gaya!');
+        }
+
+        function uploadCameraVideo() {
+            const title = document.getElementById('cameraVideoTitle').value;
+            const fileInput = document.getElementById('cameraVideoInput');
+            if(!title || !fileInput.files || !fileInput.files[0]) { alert('Title aur Video file select karein!'); return; }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let mediaList = JSON.parse(localStorage.getItem('village_media') || '[]');
+                mediaList.push({ title, type: 'video', url: e.target.result });
+                localStorage.setItem('village_media', JSON.stringify(mediaList));
+
+                document.getElementById('cameraVideoTitle').value = '';
+                fileInput.value = '';
+                renderMediaList();
+                alert('Live Camera Video Successfully Save Ho Gaya!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
         }
 
         function renderMediaList() {
@@ -640,9 +669,16 @@
                 const div = document.createElement('div');
                 div.className = 'card';
                 div.style.marginBottom = '12px';
+                let contentHTML = '';
+                if(item.type === 'video') {
+                    contentHTML = `<video src="${item.url}" controls style="width: 100%; border-radius: 6px; max-height: 250px; margin-bottom: 8px;"></video>`;
+                } else {
+                    contentHTML = `<p style="font-size: 13px; margin-bottom: 8px; word-break: break-all;"><a href="${item.url}" target="_blank" style="color: #0277bd;">Link Dekhein / Play Karein: ${item.url}</a></p>`;
+                }
+
                 div.innerHTML = `
                     <h5 style="color: #1b5e20; font-size: 16px; margin-bottom: 8px;">🎵 ${item.title}</h5>
-                    <p style="font-size: 13px; margin-bottom: 8px; word-break: break-all;"><a href="${item.url}" target="_blank" style="color: #0277bd;">Link Dekhein / Play Karein: ${item.url}</a></p>
+                    ${contentHTML}
                     <button class="delete-btn" onclick="deleteMedia(${index})">Delete</button>
                 `;
                 container.appendChild(div);
