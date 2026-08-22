@@ -9,9 +9,9 @@
         body { background-color: #f4f4f9; color: #333; }
 
         /* Header Style */
-        header { background: #1b5e20; color: #fff; padding: 22px 20px; display: flex; justify-content: space-between; align-items: center; position: relative; }
-        .logo-area h1 { font-size: 20px; font-weight: bold; }
-        .logo-area p { font-size: 13px; color: #c8e6c9; margin-top: 3px; }
+        header { background: #1b5e20; color: #fff; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .logo-area h1 { font-size: 20px; font-weight: bold; white-space: nowrap; }
+        .logo-area p { font-size: 13px; color: #c8e6c9; margin-top: 3px; white-space: nowrap; }
         
         .header-right { display: flex; align-items: center; gap: 10px; }
         .lang-btn { background: #2e7d32; color: white; border: 1px solid #81c784; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
@@ -45,11 +45,11 @@
         .section { display: none; }
         .section.active { display: block; }
 
-        /* Active User ID Card */
-        .user-id-card { background: #fff; border: 2px solid #2e7d32; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        .user-id-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #2e7d32; }
-        .user-id-info h4 { font-size: 16px; color: #1b5e20; }
-        .user-id-info p { font-size: 13px; color: #555; }
+        /* Compact Active User ID Card */
+        .user-id-card { background: #fff; border: 1px solid #2e7d32; padding: 8px 12px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+        .user-id-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #2e7d32; }
+        .user-id-info h4 { font-size: 14px; color: #1b5e20; margin-bottom: 1px; }
+        .user-id-info p { font-size: 12px; color: #555; }
 
         /* Portal Buttons */
         .portal-btn {
@@ -72,6 +72,7 @@
         }
         .portal-btn.profile-btn { background: #ffffff; color: #1b5e20; border: 2px solid #2e7d32; justify-content: center; text-align: center; }
         .portal-btn.subadmin-btn { background: #ef6c00; }
+        .portal-btn.gov-btn { background: #0277bd; }
         .portal-btn.dark-btn { background: #37474f; }
         .portal-btn:hover { opacity: 0.9; }
 
@@ -105,7 +106,7 @@
     <!-- Header -->
     <header>
         <div class="logo-area">
-            <h1 id="headerMainTitle">गाँव - डिजिटल पोर्टल</h1>
+            <h1 id="headerMainTitle">MeraGaov - Malkosh</h1>
             <p id="headerSubTitle">मेरा गाँव - मेरी पहचान</p>
         </div>
         <div class="header-right">
@@ -140,8 +141,7 @@
                 <img id="homeUserImg" class="user-id-img" src="" alt="User">
                 <div class="user-id-info">
                     <h4 id="homeUserName"></h4>
-                    <p>गाँव: <span id="homeUserVillage"></span></p>
-                    <p style="color: green; font-weight: bold; font-size: 12px; margin-top: 2px;">✔ Active Profile ID</p>
+                    <p>गाँव: <span id="homeUserVillage"></span> &nbsp; <span style="color: green; font-weight: bold;">✔ Active</span></p>
                 </div>
             </div>
 
@@ -150,9 +150,10 @@
             <button class="portal-btn" onclick="switchSection('services-page')" id="btnServices">🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें ➔</button>
             <button class="portal-btn subadmin-btn" onclick="switchSection('munadi-page')" id="btnMunadi">📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔</button>
             <button class="portal-btn" onclick="switchSection('buysell-page')" id="btnBuySell">🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔</button>
+            <button class="portal-btn gov-btn" onclick="switchSection('haryana-gov-page')" id="btnGov">🏛️ 7. Haryana Govt Schemes & Add ➔</button>
             <button class="portal-btn" onclick="switchSection('gallery-page')" id="btnGallery">📸 4. गाँव की गैलरी (लाइव फोटो) ➔</button>
             <button class="portal-btn" onclick="switchSection('video-page')" id="btnVideo">🎵 5. गाँव के वीडियो और लोक गीत ➔</button>
-            <button class="portal-btn dark-btn" onclick="switchSection('history-page')" id="btnHistory">📚 6. गाँव का इतिहास व जानकारी ➔</button>
+            <button class="portal-btn dark-btn" onclick="switchSection('history-page')" id="btnHistory">📚 6. गाँव का इतिहास व जानकारी Add ➔</button>
         </div>
 
         <!-- PROFILE PAGE -->
@@ -252,7 +253,7 @@
                 <div id="munadiList" style="margin-top: 10px;"></div>
                 
                 <hr style="margin: 20px 0;">
-                <h4 style="color: #ef6c00;">Pending Munadi (Aapki bheji gayi suchnayein jo approval ka intezaar kar rahi hain):</h4>
+                <h4 style="color: #ef6c00;">Pending Munadi (Aapki bheji gayi suchnayein):</h4>
                 <div id="userPendingMunadiList" style="margin-top: 10px;"></div>
             </div>
         </div>
@@ -279,13 +280,60 @@
             </div>
         </div>
 
+        <!-- 6. HISTORY PAGE (Added Add & Delete feature) -->
+        <div id="history-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>📚 गाँव का इतिहास व जानकारी (Add New)</h2>
+                <div id="historyFormArea">
+                    <div class="form-group"><label>शीर्षक (Title):</label><input type="text" id="hTitle" placeholder="उदा. गाँव की स्थापना / बुजुर्गों की बातें"></div>
+                    <div class="form-group"><label>विवरण (Description):</label><textarea id="hDesc" rows="3" placeholder="इतिहास या जानकारी विस्तार से लिखें..."></textarea></div>
+                    <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="hPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('history')">OTP Bhekar Jodein</button>
+                </div>
+                <div id="historyOtpArea" style="display:none; margin-top:15px;">
+                    <p id="historyOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="historyOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Save Karein</button>
+                </div>
+                <hr style="margin: 20px 0;">
+                <h4>गाँव का इतिहास व जोड़ी गई जानकारी:</h4>
+                <div id="historyList" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+
+        <!-- 7. HARYANA GOV SCHEMES PAGE (Added Add & Delete feature) -->
+        <div id="haryana-gov-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>🏛️ Haryana Government Schemes & Add</h2>
+                <p style="margin-bottom: 12px; color: #555;">हरियाणा सरकार की प्रमुख योजनाएं (HKRN, दीन दयाल उपाध्याय, खेती-बाड़ी व अन्य):</p>
+                
+                <div id="govFormArea" style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c8e6c9;">
+                    <h4 style="color: #1b5e20; margin-bottom: 10px;">➕ Nayi Scheme Jodein (OTP Secure):</h4>
+                    <div class="form-group"><label>Scheme ka Naam:</label><input type="text" id="gTitle" placeholder="उदा. Chirayu Yojana / Tractor Subsidy"></div>
+                    <div class="form-group"><label>Scheme ki Jankari:</label><textarea id="gDesc" rows="2" placeholder="Yojana ke baare mein choti jankari..."></textarea></div>
+                    <div class="form-group"><label>Mobile Number:</label><input type="text" id="gPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" style="padding: 10px; font-size: 14px;" onclick="initAddOTP('gov')">OTP Bhekar Scheme Jodein</button>
+                </div>
+                <div id="govOtpArea" style="display:none; margin-top:15px;">
+                    <p id="govOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="govOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem()">Verify & Save Scheme</button>
+                </div>
+
+                <hr style="margin: 20px 0;">
+                <h4>Government Schemes List:</h4>
+                <div id="govList" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+
         <!-- ADMIN & SUB-ADMIN PANEL SECTION -->
         <div id="admin-panel-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a>
             <div class="card content-box">
                 <h2 id="panelTitle">Admin / Sub-Admin Panel</h2>
                 
-                <!-- Password Change Settings -->
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c8e6c9;">
                     <h4 style="color: #1b5e20; margin-bottom: 10px;">🔐 Password Change Settings:</h4>
                     <div class="form-group"><label>Naya Admin Password:</label><input type="text" id="newAdminPass" placeholder="Admin password badlein"></div>
@@ -320,7 +368,6 @@
         <!-- STATIC PAGES -->
         <div id="gallery-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव की गैलरी</h2><p>लाइव तस्वीरें।</p></div></div>
         <div id="video-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव के वीडियो</h2><p>लोक गीत और वीडियो।</p></div></div>
-        <div id="history-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव का इतिहास</h2><p>इतिहास और जानकारी।</p></div></div>
         <div id="policy" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a><div class="card"><h2>Privacy Policy</h2><p style="margin-top:12px;">Surakshit data.</p></div></div>
 
     </div>
@@ -359,13 +406,10 @@
                 document.getElementById('btnServices').innerText = "🛠️ 1B. Essential Services (Mistri etc.) ➔";
                 document.getElementById('btnMunadi').innerText = "📢 2. Announcements & News (Verified) ➔";
                 document.getElementById('btnBuySell').innerText = "🌾 3. Cattle, Wheat, Feed Buy-Sell ➔";
+                document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Add ➔";
                 document.getElementById('btnGallery').innerText = "📸 4. Village Gallery (Live Photos) ➔";
                 document.getElementById('btnVideo').innerText = "🎵 5. Village Videos & Folk Songs ➔";
-                document.getElementById('btnHistory').innerText = "📚 6. Village History & Info ➔";
-                
-                document.getElementById('tNewsTitle').innerText = "Village Live News:";
-                document.getElementById('tMandiTitle').innerText = "Live Mandi Rates:";
-                document.getElementById('tWeatherTitle').innerText = "Live Weather:";
+                document.getElementById('btnHistory').innerText = "📚 6. Village History & Info Add ➔";
             } else {
                 document.getElementById('headerSubTitle').innerText = "मेरा गाँव - मेरी पहचान";
                 document.getElementById('btnProfile').innerText = "👤 मेरी प्रोफाइल / मेरा गाँव सेट करें";
@@ -373,13 +417,10 @@
                 document.getElementById('btnServices').innerText = "🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें ➔";
                 document.getElementById('btnMunadi').innerText = "📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) ➔";
                 document.getElementById('btnBuySell').innerText = "🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔";
+                document.getElementById('btnGov').innerText = "🏛️ 7. Haryana Govt Schemes & Add ➔";
                 document.getElementById('btnGallery').innerText = "📸 4. गाँव की गैलरी (लाइव फोटो) ➔";
                 document.getElementById('btnVideo').innerText = "🎵 5. गाँव के वीडियो और लोक गीत ➔";
-                document.getElementById('btnHistory').innerText = "📚 6. गाँव का इतिहास व जानकारी ➔";
-                
-                document.getElementById('tNewsTitle').innerText = "गाँव की ताज़ा खबर:";
-                document.getElementById('tMandiTitle').innerText = "लाइव मंडी भाव:";
-                document.getElementById('tWeatherTitle').innerText = "लाइव मौसम (Weather):";
+                document.getElementById('btnHistory').innerText = "📚 6. गाँव का इतिहास व जानकारी Add ➔";
             }
         }
 
@@ -459,7 +500,7 @@
             const photo = localStorage.getItem('m_photo');
 
             if(status === 'approved') {
-                document.getElementById('headerMainTitle').innerText = village + ' - डिजिटल पोर्टल';
+                document.getElementById('headerMainTitle').innerText = 'MeraGaov - ' + village;
                 document.getElementById('activeUserCard').style.display = 'flex';
                 document.getElementById('homeUserName').innerText = name;
                 document.getElementById('homeUserVillage').innerText = village;
@@ -472,7 +513,7 @@
                 document.getElementById('sVillage').innerText = village;
                 document.getElementById('sPhoto').src = photo;
             } else {
-                document.getElementById('headerMainTitle').innerText = 'गाँव - डिजिटल पोर्टल';
+                document.getElementById('headerMainTitle').innerText = 'MeraGaov - Malkosh';
                 document.getElementById('activeUserCard').style.display = 'none';
                 document.getElementById('formSection').style.display = 'block';
                 document.getElementById('otpSection').style.display = 'none';
@@ -515,6 +556,18 @@
                 phone = document.getElementById('bPhone').value;
                 if(!text || !bUser || !phone) { alert('Sabhi fields bharein!'); return; }
                 pendingItemData = { title: text, sub: 'By: ' + bUser, phone: phone };
+            } else if(type === 'history') {
+                const hTitle = document.getElementById('hTitle').value;
+                const hDesc = document.getElementById('hDesc').value;
+                phone = document.getElementById('hPhone').value;
+                if(!hTitle || !hDesc || !phone) { alert('Sabhi fields bharein!'); return; }
+                pendingItemData = { title: hTitle, sub: hDesc, phone: phone };
+            } else if(type === 'gov') {
+                const gTitle = document.getElementById('gTitle').value;
+                const gDesc = document.getElementById('gDesc').value;
+                phone = document.getElementById('gPhone').value;
+                if(!gTitle || !gDesc || !phone) { alert('Sabhi fields bharein!'); return; }
+                pendingItemData = { title: gTitle, sub: gDesc, phone: phone };
             }
 
             if(phone.length < 10) { alert('Sahi mobile number dalein!'); return; }
@@ -550,6 +603,8 @@
                 else if(type === 'service') { document.getElementById('sTitle').value=''; document.getElementById('sPerson').value=''; document.getElementById('sPhone').value=''; document.getElementById('serviceOtpInput').value=''; }
                 else if(type === 'munadi') { document.getElementById('mText').value=''; document.getElementById('mUser').value=''; document.getElementById('mPhone').value=''; document.getElementById('munadiOtpInput').value=''; }
                 else if(type === 'buysell') { document.getElementById('bText').value=''; document.getElementById('bUser').value=''; document.getElementById('bPhone').value=''; document.getElementById('buysellOtpInput').value=''; }
+                else if(type === 'history') { document.getElementById('hTitle').value=''; document.getElementById('hDesc').value=''; document.getElementById('hPhone').value=''; document.getElementById('historyOtpInput').value=''; }
+                else if(type === 'gov') { document.getElementById('gTitle').value=''; document.getElementById('gDesc').value=''; document.getElementById('gPhone').value=''; document.getElementById('govOtpInput').value=''; }
             } else {
                 alert('Galat OTP!');
             }
@@ -560,6 +615,8 @@
             renderList('service');
             renderList('munadi');
             renderList('buysell');
+            renderList('history');
+            renderList('gov');
             renderUserPendingMunadi();
         }
 
@@ -567,8 +624,24 @@
             const container = document.getElementById(type + 'List');
             if(!container) return;
             let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
+            
+            // Default static content agar list khali ho (History aur Gov ke liye)
+            if(list.length === 0 && type === 'history') {
+                container.innerHTML = `
+                    <div class="item-card" style="display:block;"><h5 style="color:#1b5e20;">गाँव की स्थापना</h5><p>यह हमारे पुराने बुजुर्गों द्वारा बसाया गया एक समृद्ध गाँव है।</p></div>
+                `;
+                return;
+            }
+            if(list.length === 0 && type === 'gov') {
+                container.innerHTML = `
+                    <div class="item-card" style="display:block;"><h5 style="color: #0277bd;">1. HKRN (Haryana Kaushal Rozgar Nigam)</h5><p>कौशल रोजगार निगम के तहत कच्चे कर्मचारियों और जॉब्स रजिस्ट्रेशन की जानकारी।</p></div>
+                    <div class="item-card" style="display:block;"><h5 style="color: #0277bd;">2. Deen Dayal Upadhyaya Antyodaya Yojana</h5><p>गरीब परिवारों के उत्थान और मकान/प्लॉट से जुड़ी सरकारी सहायता योजनाएं।</p></div>
+                `;
+                return;
+            }
+
             if(list.length === 0) {
-                container.innerHTML = '<p style="color: #777; font-size: 13px;">Abhi koi data nahi hai.</p>';
+                container.innerHTML = '<p style="color: #777; font-size: 13px;">Abhi koi naya data nahi hai.</p>';
                 return;
             }
             container.innerHTML = '';
@@ -578,10 +651,10 @@
                 div.innerHTML = `
                     <div class="item-info">
                         <h5>${item.title}</h5>
-                        <p>${item.sub} | Mob: ${item.phone}</p>
+                        <p>${item.sub} ${item.phone ? '| Mob: ' + item.phone : ''}</p>
                     </div>
                     <div>
-                        <a href="tel:${item.phone}" class="call-btn">📞 Call</a>
+                        ${item.phone ? `<a href="tel:${item.phone}" class="call-btn">📞 Call</a>` : ''}
                         <button class="delete-btn" onclick="deleteItem('${type}', ${index})">Delete</button>
                     </div>
                 `;
