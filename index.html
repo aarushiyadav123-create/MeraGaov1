@@ -1,363 +1,423 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title id="mainTitle">मेरा गाँव - डिजिटल पोर्टल</title>
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>हरियाणा ग्रामीण सेवा निर्देशिका</title>
+
+<!-- React & React DOM -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Tahoma,sans-serif;background:#eef2ee;color:#333}
-header{background:#1b5e20;color:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center}
-h1{font-size:20px;margin:0}.sub{font-size:12px;color:#c8e6c9;margin-top:2px}
-button,.btn{border:0;border-radius:6px;padding:10px 14px;font-weight:bold;cursor:pointer}
-.headerbtn{background:#2e7d32;color:#fff;border:1px solid #81c784}
-.container{max-width:600px;margin:auto;padding:12px}.card{background:white;border-radius:8px;padding:16px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
-h2{color:#1b5e20;font-size:18px;margin-top:0}
-input,select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:14px;margin-top:6px;margin-bottom:10px}
-.mainbtn{width:100%;background:#2e7d32;color:white;margin:5px 0;text-align:left;font-size:15px}
-.mainbtn.blue{background:#0277bd}.mainbtn.orange{background:#ef6c00}.mainbtn.red{background:#c62828}
-.hidden{display:none!important}.back{color:#1b5e20;font-weight:bold;display:inline-block;margin-bottom:10px;cursor:pointer}
-.item{background:#f9f9f9;border-left:4px solid #2e7d32;padding:10px;margin:8px 0;border-radius:4px}
-.small{font-size:12px;color:#666}.success{background:#2e7d32;color:white;width:100%}
-.danger{background:#c62828;color:white;padding:5px 10px;font-size:12px}
-img.photo{width:100%;max-height:250px;object-fit:cover;border-radius:6px;margin-top:6px}
-.ticker{background:#113814;color:#fff;padding:8px;font-size:13px;text-align:center}
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind', sans-serif; }
+body { background-color: #f1f5f9; color: #0f172a; padding: 10px; }
+.container { max-width: 450px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+.top-bar { background: #064e3b; color: #ffffff; padding: 8px 12px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+.top-bar-right { display: flex; gap: 8px; align-items: center; }
+.lang-btn { background: #fbbf24; color: #0f172a; border: none; padding: 3px 8px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
+
+.header { background: #065f46; color: white; padding: 16px; }
+.header-content { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.logo { background: #fbbf24; color: #0f172a; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; }
+.title { font-size: 18px; font-weight: 700; line-height: 1.2; }
+.badge { background: #047857; color: #a7f3d0; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
+.subtitle { font-size: 11px; color: #a7f3d0; margin-top: 4px; }
+
+.btn-group { display: flex; gap: 8px; margin-top: 12px; }
+.btn-mode { flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.btn-admin { background: #fbbf24; color: #0f172a; }
+.btn-user { background: #ffffff; color: #065f46; }
+
+.content { padding: 16px; }
+
+.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; position: relative; }
+.card-title { font-size: 13px; font-weight: 700; color: #065f46; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+.form-group { margin-bottom: 10px; position: relative; }
+.form-group label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; }
+.form-control { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; background: #f8fafc; outline: none; }
+.btn-submit { width: 100%; background: #047857; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 6px; }
+
+.suggestions-list {
+position: absolute;
+top: 100%;
+left: 0;
+right: 0;
+background: #ffffff;
+border: 2px solid #047857;
+border-radius: 8px;
+max-height: 220px;
+overflow-y: auto;
+z-index: 1000;
+box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.suggestion-item { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: #0f172a; display: flex; justify-content: space-between; align-items: center; }
+.suggestion-item:hover, .suggestion-item:active { background: #ecfdf5; color: #047857; font-weight: bold; }
+
+.village-card { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+.v-icon { background: #047857; color: white; width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; flex-shrink: 0; }
+
+.pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+.pill { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid #cbd5e1; background: white; white-space: nowrap; cursor: pointer; }
+.pill.active { background: #065f46; color: white; border-color: #065f46; }
+
+.service-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.service-tag { background: #d1fae5; color: #065f46; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+.service-name { font-size: 13px; font-weight: 700; color: #0f172a; margin: 4px 0; }
+.btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 12px; margin-top: 8px; }
+
+.quick-btn { background: #fef3c7; border: 1px solid #fde047; color: #78350f; font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 6px; cursor: pointer; margin-right: 4px; margin-top: 4px; display: inline-block; }
+
+.empty-state { text-align: center; padding: 30px 15px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; font-size: 13px; }
 </style>
 </head>
 <body>
 
-<header>
-<div><h1 id="title">मेरा गाँव पोर्टल</h1><div class="sub" id="subtitle">डिजिटल ग्राम विकास</div></div>
-<div><button class="headerbtn" id="langBtn">Eng</button></div>
-</header>
+<div id="root"></div>
 
-<div class="ticker">📢 <span id="news">पोर्टल सक्रिय है और सुचारू रूप से चल रहा है।</span></div>
+<script type="text/babel">
+const { useState, useMemo } = React;
 
-<main class="container">
-<!-- HOME SECTION -->
-<section id="home">
-<div id="activeProfileBox" class="card hidden"></div>
-<button class="mainbtn" onclick="nav('profile')">👤 मेरी प्रोफाइल सेट करें</button>
-<button class="mainbtn" onclick="nav('shops')">🏪 गाँव की दुकानें</button>
-<button class="mainbtn" onclick="nav('services')">🔧 आवश्यक सेवाएं / मिस्त्री / पंडित जी</button>
-<button class="mainbtn orange" onclick="nav('munadi')">📢 मुनादी व खबरें</button>
-<button class="mainbtn" onclick="nav('buysell')">🐄 पशु, गेहूँ, चारा खरीद-बेच</button>
-<button class="mainbtn" onclick="nav('gallery')">📷 गाँव की गैलरी</button>
-<button class="mainbtn red" onclick="nav('videos')">▶️ वीडियो गैलरी</button>
-<button class="mainbtn" onclick="nav('admin')">🔒 एडमिन पैनल</button>
-</section>
-
-<!-- PROFILE SECTION -->
-<section id="profile" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>प्रोफाइल और गाँव की जानकारी</h2>
-<div id="profileForm">
-<label>पूरा नाम</label>
-<input id="pName" placeholder="अपना नाम लिखें">
-<label>मोबाइल नंबर</label>
-<input id="pPhone" type="tel" maxlength="10" placeholder="10 अंकों का नंबर">
-<label>गाँव का नाम</label>
-<input id="pVillage" placeholder="गाँव का नाम">
-<label>जिला</label>
-<input id="pDistrict" placeholder="जिला">
-<button class="btn success" id="saveProfBtn">प्रोफाइल सेव करें</button>
-</div>
-<div id="profileDisplay" class="hidden"></div>
-</div>
-</section>
-
-<!-- SHOPS SECTION -->
-<section id="shops" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>गाँव की दुकानें</h2>
-<input id="shopName" placeholder="दुकान का नाम">
-<input id="shopOwner" placeholder="संचालक का नाम">
-<input id="shopPhone" placeholder="मोबाइल नंबर">
-<button class="btn success" id="addShopBtn">दुकान जोड़ें</button>
-<div id="shopsList"></div>
-</div>
-</section>
-
-<!-- SERVICES SECTION -->
-<section id="services" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>आवश्यक सेवाएं (पंडित जी, इलेक्ट्रीशियन, डॉक्टर आदि)</h2>
-<select id="servCat">
-<option value="इलेक्ट्रीशियन">इलेक्ट्रीशियन</option>
-<option value="पंडित जी">पंडित जी</option>
-<option value="गाड़ी / टैक्सी">गाड़ी / टैक्सी</option>
-<option value="डॉक्टर / मेडिकल">डॉक्टर / मेडिकल</option>
-<option value="अन्य">अन्य</option>
-</select>
-<input id="servName" placeholder="नाम / सेवा विवरण">
-<input id="servPhone" placeholder="मोबाइल नंबर">
-<button class="btn success" id="addServBtn">सेवा जोड़ें</button>
-<div id="servicesList"></div>
-</div>
-</section>
-
-<!-- MUNADI SECTION -->
-<section id="munadi" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>मुनादी व खबरें</h2>
-<textarea id="munText" rows="3" placeholder="गाँव की खबर या मुनादी यहाँ लिखें..."></textarea>
-<input id="munUser" placeholder="आपका नाम">
-<input id="munPhone" placeholder="मोबाइल नंबर">
-<button class="btn success" id="addMunBtn">खबर भेजें</button>
-<div id="munadiList"></div>
-</div>
-</section>
-
-<!-- BUY SELL SECTION -->
-<section id="buysell" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>पशु, चारा व अनाज खरीद-बेच</h2>
-<input id="bsText" placeholder="विवरण (जैसे: जर्सी गाय बेचनी है)">
-<input id="bsUser" placeholder="आपका नाम">
-<input id="bsPhone" placeholder="मोबाइल नंबर">
-<button class="btn success" id="addBsBtn">विज्ञापन जोड़ें</button>
-<div id="bsList"></div>
-</div>
-</section>
-
-<!-- GALLERY SECTION -->
-<section id="gallery" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>गाँव की गैलरी (फोटो)</h2>
-<input id="galFile" type="file" accept="image/*">
-<input id="galCaption" placeholder="फोटो का विवरण">
-<button class="btn success" id="addGalBtn">फोटो अपलोड करें</button>
-<div id="galList"></div>
-</div>
-</section>
-
-<!-- VIDEOS SECTION -->
-<section id="videos" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>वीडियो गैलरी</h2>
-<input id="vidTitle" placeholder="वीडियो शीर्षक">
-<input id="vidUrl" placeholder="YouTube लिंक यहाँ डालें">
-<button class="btn success" id="addVidBtn">वीडियो जोड़ें</button>
-<div id="vidList"></div>
-</div>
-</section>
-
-<!-- ADMIN SECTION -->
-<section id="admin" class="hidden">
-<span class="back" onclick="nav('home')">← होम</span>
-<div class="card">
-<h2>एडमिन पैनल</h2>
-<input id="adminPassInput" type="password" placeholder="पासवर्ड दर्ज करें (admin123)">
-<button class="btn success" id="adminLoginBtn">लॉगिन करें</button>
-<div id="adminPanelContent" class="hidden">
-<p style="color:green; font-weight:bold;">✔ एडमिन एक्सेस मिल गया</p>
-<button class="btn danger" id="clearAllBtn">सारा डेटा डिलीट करें</button>
-</div>
-</div>
-</section>
-
-</main>
-
-<script>
-// Firebase Setup
-const firebaseConfig = {
-  apiKey: "AIzaSyBXryxNOlryP4WOXcKOda5dQIjLAc72wG4",
-  authDomain: "meragaov-ab9fb.firebaseapp.com",
-  databaseURL: "https://meragaov-ab9fb-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "meragaov-ab9fb",
-  storageBucket: "meragaov-ab9fb.firebasestorage.app",
-  messagingSenderId: "424538068212",
-  appId: "1:424538068212:web:2d58406aeb0b4d9524faa1"
+const MASTER_DISTRICT_VILLAGES = {
+'rohtak': {
+name: { hi: 'रोहतक (Rohtak)', en: 'Rohtak' },
+villages: [
+{ hi: 'बलम / बलंभा', en: 'Balham' },
+{ hi: 'बालंद', en: 'Baland' },
+{ hi: 'सांपला', en: 'Sampla' },
+{ hi: 'महम', en: 'Meham' },
+{ hi: 'कलानौर', en: 'Kalanaur' },
+{ hi: 'बोहर', en: 'Bohar' },
+{ hi: 'लाखन माजरा', en: 'Lakhan Majra' }
+]
+},
+'charkhi-dadri': {
+name: { hi: 'चरखी दादरी (Charkhi Dadri)', en: 'Charkhi Dadri' },
+villages: [
+{ hi: 'मालकोश', en: 'Malkosh' },
+{ hi: 'बौंद कलां', en: 'Bond Kalan' },
+{ hi: 'बौंद खुर्द', en: 'Bond Khurd' },
+{ hi: 'सांवर', en: 'Sanwar' },
+{ hi: 'झुज्झू', en: 'Jhajhu' }
+]
+},
+'bhiwani': {
+name: { hi: 'भिवानी (Bhiwani)', en: 'Bhiwani' },
+villages: [
+{ hi: 'बावनी खेड़ा', en: 'Bawani Khera' },
+{ hi: 'तोशाम', en: 'Tosham' },
+{ hi: 'सिवानी', en: 'Siwani' }
+]
+}
 };
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
 
-// Navigation Helper
-function nav(sectionId) {
-  document.querySelectorAll("main section").forEach(sec => sec.classList.add("hidden"));
-  document.getElementById(sectionId).classList.remove("hidden");
-  if(sectionId === 'shops') loadData('shops', 'shopsList');
-  if(sectionId === 'services') loadData('services', 'servicesList');
-  if(sectionId === 'munadi') loadData('munadi', 'munadiList');
-  if(sectionId === 'buysell') loadData('buysell', 'bsList');
-  if(sectionId === 'gallery') loadData('gallery', 'galList');
-  if(sectionId === 'videos') loadData('videos', 'vidList');
-}
+const INITIAL_DATA = [
+{ id: 1, titleHi: 'मालकोश जन सेवा एवं सीएससी केंद्र', phone: '9812000111', category: 'CSC', districtId: 'charkhi-dadri', villageHi: 'मालकोश', personName: 'रामनिवास मलिक' },
+{ id: 2, titleHi: 'मालकोश बाबा रामदेव किराना स्टोर', phone: '9991000444', category: 'Kiryana', districtId: 'charkhi-dadri', villageHi: 'मालकोश', personName: 'राजेश यादव' }
+];
 
-// Helper to escape HTML
-function esc(str) {
-  return String(str || "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
+function App() {
+const [lang, setLang] = useState("hi");
+const [view, setView] = useState("user");
+const [selectedDistrict, setSelectedDistrict] = useState("charkhi-dadri");
+const [searchVillage, setSearchVillage] = useState("मालकोश");
+const [activeCategory, setActiveCategory] = useState("all");
+const [showDropdown, setShowDropdown] = useState(false);
 
-// DOM Loaded Event - Ensures all buttons hook up properly without fail
-document.addEventListener("DOMContentLoaded", () => {
-  loadProfileUI();
-
-  // Profile Save
-  document.getElementById("saveProfBtn").addEventListener("click", () => {
-    let name = document.getElementById("pName").value.trim();
-    let phone = document.getElementById("pPhone").value.trim();
-    let village = document.getElementById("pVillage").value.trim();
-    let district = document.getElementById("pDistrict").value.trim();
-    
-    if(!name || !village) {
-      alert("कृपया नाम और गाँव का नाम भरें!");
-      return;
-    }
-    let pData = {name, phone, village, district};
-    localStorage.setItem("user_profile", JSON.stringify(pData));
-    db.ref("users/" + (phone || Date.now())).set(pData);
-    alert("प्रोफाइल सफलतापूर्वक सेव हो गई!");
-    loadProfileUI();
-    nav('home');
-  });
-
-  // Shops Add
-  document.getElementById("addShopBtn").addEventListener("click", () => {
-    let title = document.getElementById("shopName").value.trim();
-    let sub = document.getElementById("shopOwner").value.trim();
-    let phone = document.getElementById("shopPhone").value.trim();
-    if(!title) { alert("दुकान का नाम लिखें"); return; }
-    saveData('shops', {title, sub, phone});
-  });
-
-  // Services Add
-  document.getElementById("addServBtn").addEventListener("click", () => {
-    let cat = document.getElementById("servCat").value;
-    let name = document.getElementById("servName").value.trim();
-    let phone = document.getElementById("servPhone").value.trim();
-    if(!name) { alert("नाम दर्ज करें"); return; }
-    saveData('services', {title: cat + " - " + name, phone});
-  });
-
-  // Munadi Add
-  document.getElementById("addMunBtn").addEventListener("click", () => {
-    let title = document.getElementById("munText").value.trim();
-    let sub = document.getElementById("munUser").value.trim();
-    let phone = document.getElementById("munPhone").value.trim();
-    if(!title) { alert("खबर या मुनादी लिखें"); return; }
-    saveData('munadi', {title, sub, phone});
-  });
-
-  // Buy Sell Add
-  document.getElementById("addBsBtn").addEventListener("click", () => {
-    let title = document.getElementById("bsText").value.trim();
-    let sub = document.getElementById("bsUser").value.trim();
-    let phone = document.getElementById("bsPhone").value.trim();
-    if(!title) { alert("विवरण लिखें"); return; }
-    saveData('buysell', {title, sub, phone});
-  });
-
-  // Video Add
-  document.getElementById("addVidBtn").addEventListener("click", () => {
-    let title = document.getElementById("vidTitle").value.trim();
-    let rawUrl = document.getElementById("vidUrl").value.trim();
-    let match = rawUrl.match(/(?:youtu\.be\/|watch\?v=|embed\/|live\/)([^?&/]+)/);
-    let embedUrl = match ? "https://www.youtube.com/embed/" + match[1] : "";
-    if(!title || !embedUrl) { alert("सही YouTube लिंक दर्ज करें"); return; }
-    saveData('videos', {title, embedUrl});
-  });
-
-  // Gallery Add (Base64 compression)
-  document.getElementById("addGalBtn").addEventListener("click", async () => {
-    let fileInput = document.getElementById("galFile");
-    let caption = document.getElementById("galCaption").value.trim();
-    if(fileInput.files.length === 0) { alert("कृपया फोटो चुनें"); return; }
-    
-    let file = fileInput.files[0];
-    let reader = new FileReader();
-    reader.onload = async function(e) {
-      let img = e.target.result;
-      await saveData('gallery', {img, caption});
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Admin Login
-  document.getElementById("adminLoginBtn").addEventListener("click", () => {
-    let pass = document.getElementById("adminPassInput").value.trim();
-    if(pass === "admin123") {
-      document.getElementById("adminPanelContent").classList.remove("hidden");
-      alert("लॉगिन सफल!");
-    } else {
-      alert("गलत पासवर्ड!");
-    }
-  });
-
-  // Clear Database
-  document.getElementById("clearAllBtn").addEventListener("click", () => {
-    if(confirm("क्या आप सारा डेटा डिलीट करना चाहते हैं?")) {
-      db.ref().remove().then(() => {
-        localStorage.clear();
-        alert("डेटा साफ हो गया!");
-        location.reload();
-      });
-    }
-  });
+const [services, setServices] = useState(() => {
+try {
+const saved = localStorage.getItem("haryana_gramin_v15");
+return saved ? JSON.parse(saved) : INITIAL_DATA;
+} catch (e) { return INITIAL_DATA; }
 });
 
-// Generic Save Function
-function saveData(type, data) {
-  data.createdAt = Date.now();
-  db.ref(type + "_data").push(data).then(() => {
-    alert("सफलतापूर्वक जोड़ दिया गया!");
-    loadData(type, type + "List");
-    // Clear inputs
-    document.querySelectorAll(`#${type} input, #${type} textarea`).forEach(el => el.value = "");
-  }).catch(err => {
-    alert("एरर: " + err.message);
-  });
+const [title, setTitle] = useState("");
+const [phone, setPhone] = useState("");
+const [category, setCategory] = useState("Mistri");
+const [personName, setPersonName] = useState("");
+const [adminDistrict, setAdminDistrict] = useState("charkhi-dadri");
+const [adminVillage, setAdminVillage] = useState("मालकोश");
+
+const currentDistrictVillages = MASTER_DISTRICT_VILLAGES[selectedDistrict].villages;
+
+const suggestedVillages = useMemo(() => {
+const query = searchVillage.trim().toLowerCase();
+if (!query) return currentDistrictVillages;
+return currentDistrictVillages.filter(v =>
+v.hi.toLowerCase().includes(query) || v.en.toLowerCase().includes(query)
+);
+}, [searchVillage, currentDistrictVillages]);
+
+const selectVillageName = (vName) => {
+setSearchVillage(vName);
+setShowDropdown(false);
+};
+
+const handleDistrictChange = (dId) => {
+setSelectedDistrict(dId);
+const firstV = MASTER_DISTRICT_VILLAGES[dId].villages[0].hi;
+setSearchVillage(firstV);
+setShowDropdown(false);
+};
+
+// डेटा सेव करने पर ऑटोमैटिकली उसी गाँव और डिस्ट्रिक्ट को होम स्क्रीन पर सेट करना
+const handleAdd = (e) => {
+e.preventDefault();
+if (!title || !phone || !adminVillage) return alert(lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all details!");
+
+const trimmedVillage = adminVillage.trim();
+const newSrv = {
+id: Date.now(),
+titleHi: title,
+phone: phone,
+category: category,
+districtId: adminDistrict,
+villageHi: trimmedVillage,
+personName: personName || (lang === 'hi' ? "सत्यापित" : "Verified")
+};
+
+const updated = [newSrv, ...services];
+setServices(updated);
+localStorage.setItem("haryana_gramin_v15", JSON.stringify(updated));
+
+// सीधे उसी गाँव का डेटा देखने के लिए स्टेट अपडेट करना
+setSelectedDistrict(adminDistrict);
+setSearchVillage(trimmedVillage);
+setView("user"); // ऑटोमैटिकली होम स्क्रीन पर भेजना
+
+setTitle("");
+setPhone("");
+setPersonName("");
+alert(lang === 'hi' ? `गाँव "${trimmedVillage}" में नई सेवा सफलतापूर्वक जोड़ दी गई!` : `New service added to village "${trimmedVillage}"!`);
+};
+
+const handleDelete = (id) => {
+const updated = services.filter(s => s.id !== id);
+setServices(updated);
+localStorage.setItem("haryana_gramin_v15", JSON.stringify(updated));
+};
+
+const displayServices = useMemo(() => {
+const query = searchVillage.trim().toLowerCase();
+return services.filter(s => {
+const matchDist = s.districtId === selectedDistrict;
+const villageNameLower = s.villageHi.toLowerCase();
+const matchVill = !query || villageNameLower === query || villageNameLower.includes(query);
+const matchCat = activeCategory === "all" || s.category === activeCategory;
+return matchDist && matchVill && matchCat;
+});
+}, [services, selectedDistrict, searchVillage, activeCategory]);
+
+return (
+<div className="container">
+
+<div className="top-bar">
+<span>💡 {lang === 'hi' ? 'संस्थापक: राजेश यादव' : 'Founder: Rajesh Yadav'}</span>
+<button className="lang-btn" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}>
+🌐 {lang === 'hi' ? 'English' : 'हिंदी'}
+</button>
+</div>
+
+<div className="header">
+<div className="header-content">
+<div className="logo">हग</div>
+<div>
+<div className="title">{lang === 'hi' ? 'हरियाणा ग्रामीण सेवा' : 'Haryana Gramin Seva'}</div>
+<span className="badge">{lang === 'hi' ? 'मेरागाँव - मेरी पहचान' : 'Mera Gaov - Meri Pehchan'}</span>
+</div>
+</div>
+<p className="subtitle">{lang === 'hi' ? 'डिजिटल निर्देशिका पोर्टल' : 'Digital Directory Portal'}</p>
+
+<div className="btn-group">
+<button onClick={() => setView("admin")} className="btn-mode btn-admin">⚙️ {lang === 'hi' ? 'डेटा जोड़ें / एडमिन' : 'Add Data / Admin'}</button>
+<button onClick={() => setView("user")} className="btn-mode btn-user">🏠 {lang === 'hi' ? 'होम स्क्रीन' : 'Home Screen'}</button>
+</div>
+</div>
+
+<div className="content">
+
+{view === "admin" && (
+<div>
+<div className="card">
+<div className="card-title">⚙️ {lang === 'hi' ? 'नई दुकान या सेवा दर्ज करें' : 'Add New Service'}</div>
+<form onSubmit={handleAdd}>
+
+<div className="form-group">
+<label>1. {lang === 'hi' ? 'जिला चुनें:' : 'Select District:'}</label>
+<select className="form-control" value={adminDistrict} onChange={e => { setAdminDistrict(e.target.value); setAdminVillage(MASTER_DISTRICT_VILLAGES[e.target.value].villages[0].hi); }}>
+{Object.keys(MASTER_DISTRICT_VILLAGES).map(key => (
+<option key={key} value={key}>{MASTER_DISTRICT_VILLAGES[key].name[lang] || MASTER_DISTRICT_VILLAGES[key].name.hi}</option>
+))}
+</select>
+</div>
+
+<div className="form-group">
+<label>2. {lang === 'hi' ? 'गाँव का नाम:' : 'Village Name:'}</label>
+<input className="form-control" type="text" value={adminVillage} onChange={e => setAdminVillage(e.target.value)} placeholder="उदा: मालकोश / बलम" required />
+</div>
+
+<div className="form-group">
+<label>3. {lang === 'hi' ? 'दुकान/सेवा का नाम:' : 'Shop/Service Name:'}</label>
+<input className="form-control" type="text" placeholder="उदा: यादव किराना स्टोर" value={title} onChange={e => setTitle(e.target.value)} required />
+</div>
+
+<div className="form-group">
+<label>4. {lang === 'hi' ? 'मोबाइल नंबर:' : 'Mobile Number:'}</label>
+<input className="form-control" type="tel" placeholder="उदा: 9812345678" value={phone} onChange={e => setPhone(e.target.value)} required />
+</div>
+
+<div className="form-group">
+<label>5. {lang === 'hi' ? 'संचालक का नाम:' : 'Owner Name:'}</label>
+<input className="form-control" type="text" placeholder="उदा: विकास यादव" value={personName} onChange={e => setPersonName(e.target.value)} />
+</div>
+
+<div className="form-group">
+<label>6. {lang === 'hi' ? 'श्रेणी:' : 'Category:'}</label>
+<select className="form-control" value={category} onChange={e => setCategory(e.target.value)}>
+<option value="Mistri">🔨 मिस्त्री / कारीगर</option>
+<option value="CSC">🏥 दुकान / सीएससी केंद्र</option>
+<option value="Kiryana">🛒 किराना / जनरल स्टोर</option>
+<option value="Agriculture">🌾 कृषि व खाद-बीज</option>
+<option value="Health">💊 स्वास्थ्य / मेडिकल</option>
+</select>
+</div>
+
+<button type="submit" className="btn-submit">+ {lang === 'hi' ? 'सेव करें व गाँव देखें' : 'Save & View Village'}</button>
+</form>
+</div>
+
+<div className="card">
+<div className="card-title">{lang === 'hi' ? 'पंजीकृत दुकानें' : 'Registered Shops'} ({services.length})</div>
+{services.map(s => (
+<div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: '11px' }}>
+<div>
+<b>{s.titleHi}</b> ({s.villageHi})<br />
+<span style={{ color: '#64748b' }}>📞 {s.phone}</span>
+</div>
+<button onClick={() => handleDelete(s.id)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold' }}>{lang === 'hi' ? 'हटाएं' : 'Delete'}</button>
+</div>
+))}
+</div>
+</div>
+)}
+
+{view === "user" && (
+<div>
+<div className="card">
+<div className="card-title">📍 {lang === 'hi' ? 'जिला व गाँव बदलें' : 'Change District & Village'}</div>
+
+<div className="form-group">
+<label>1. {lang === 'hi' ? 'जिला चुनें:' : 'Select District:'}</label>
+<select className="form-control" value={selectedDistrict} onChange={e => handleDistrictChange(e.target.value)}>
+{Object.keys(MASTER_DISTRICT_VILLAGES).map(key => (
+<option key={key} value={key}>{MASTER_DISTRICT_VILLAGES[key].name[lang] || MASTER_DISTRICT_VILLAGES[key].name.hi}</option>
+))}
+</select>
+</div>
+
+<div className="form-group">
+<label>2. {lang === 'hi' ? 'गाँव खोजें:' : 'Search Village:'}</label>
+<input
+className="form-control"
+type="text"
+value={searchVillage}
+onFocus={() => setShowDropdown(true)}
+onClick={() => setShowDropdown(true)}
+onChange={e => { setSearchVillage(e.target.value); setShowDropdown(true); }}
+placeholder={lang === 'hi' ? "गाँव का नाम लिखें..." : "Type village name..."}
+/>
+
+{showDropdown && (
+<div className="suggestions-list">
+{suggestedVillages.length > 0 ? (
+suggestedVillages.map((v, index) => (
+<div key={index} className="suggestion-item" onClick={() => selectVillageName(v.hi)}>
+<span>📍 <b>{v.hi}</b></span>
+<span style={{ fontSize: '11px', color: '#64748b' }}>{v.en}</span>
+</div>
+))
+) : (
+<div style={{ padding: '10px', fontSize: '12px', color: '#64748b' }}>
+{lang === 'hi' ? 'कोई गाँव नहीं मिला' : 'No village found'}
+</div>
+)}
+</div>
+)}
+</div>
+</div>
+
+<div className="village-card">
+<div className="v-icon">{searchVillage ? searchVillage[0] : 'ग'}</div>
+<div style={{ fontSize: '11px' }}>
+<div style={{ fontSize: '14px', fontWeight: 'bold', color: '#064e3b' }}>
+{lang === 'hi' ? 'सक्रिय गाँव' : 'Active Village'}: {searchVillage}
+</div>
+<div style={{ color: '#64748b' }}>
+{MASTER_DISTRICT_VILLAGES[selectedDistrict].name[lang] || MASTER_DISTRICT_VILLAGES[selectedDistrict].name.hi}
+</div>
+</div>
+</div>
+
+<div className="pills">
+{[
+{ id: 'all', name: lang === 'hi' ? 'सभी सेवाएं' : 'All' },
+{ id: 'Mistri', name: lang === 'hi' ? '🔨 मिस्त्री' : 'Mistri' },
+{ id: 'CSC', name: lang === 'hi' ? '🏥 सीएससी' : 'CSC' },
+{ id: 'Kiryana', name: lang === 'hi' ? '🛒 किराना' : 'Kiryana' },
+{ id: 'Agriculture', name: lang === 'hi' ? '🌾 कृषि' : 'Agri' },
+{ id: 'Health', name: lang === 'hi' ? '💊 स्वास्थ्य' : 'Health' }
+].map(cat => (
+<button
+key={cat.id}
+className={`pill ${activeCategory === cat.id ? 'active' : ''}`}
+onClick={() => setActiveCategory(cat.id)}
+>
+{cat.name}
+</button>
+))}
+</div>
+
+<div>
+<div style={{ fontSize: '12px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>
+"{searchVillage}" {lang === 'hi' ? 'की पंजीकृत सेवाएं' : 'Services'} ({displayServices.length})
+</div>
+
+{displayServices.length > 0 ? (
+displayServices.map(s => (
+<div key={s.id} className="service-item">
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+<span className="service-tag">{s.category}</span>
+<span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>✔ {lang === 'hi' ? 'सत्यापित' : 'Verified'}</span>
+</div>
+<div className="service-name">{s.titleHi}</div>
+<div style={{ fontSize: '11px', color: '#64748b' }}>👤 {s.personName}</div>
+<a href={`tel:${s.phone}`} className="btn-call">📞 {lang === 'hi' ? 'कॉल करें' : 'Call Now'} ({s.phone})</a>
+</div>
+))
+) : (
+<div className="empty-state">
+🚫 <b>{searchVillage}</b> {lang === 'hi' ? 'गाँव में अभी कोई दुकान दर्ज नहीं है।' : 'No services listed.'}<br /><br />
+<button onClick={() => setView("admin")} style={{ background: '#047857', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold' }}>
++ {lang === 'hi' ? 'एडमिन से इस गाँव का डेटा जोड़ें' : 'Add Data'}
+</button>
+</div>
+)}
+</div>
+
+</div>
+)}
+
+</div>
+</div>
+);
 }
 
-// Generic Load Function
-function loadData(type, containerId) {
-  let container = document.getElementById(containerId);
-  if(!container) return;
-  container.innerHTML = '<p class="small">लोड हो रहा है...</p>';
-  
-  db.ref(type + "_data").once("value").then(snapshot => {
-    container.innerHTML = "";
-    let val = snapshot.val();
-    if(!val) {
-      container.innerHTML = '<p class="small">अभी कोई डेटा उपलब्ध नहीं है।</p>';
-      return;
-    }
-    Object.entries(val).reverse().forEach(([key, item]) => {
-      let html = `<div class="item">`;
-      if(item.img) html += `<img class="photo" src="${item.img}">`;
-      html += `<b>${esc(item.title)}</b>`;
-      if(item.sub) html += `<div class="small">${esc(item.sub)}</div>`;
-      if(item.phone) html += `<div class="small">📞 <a href="tel:${esc(item.phone)}">${esc(item.phone)}</a></div>`;
-      if(item.embedUrl) html += `<iframe style="width:100%;height:200px;border:0;margin-top:6px" src="${item.embedUrl}" allowfullscreen></iframe>`;
-      html += `</div>`;
-      container.innerHTML += html;
-    });
-  });
-}
-
-// Profile UI Updater
-function loadProfileUI() {
-  let saved = localStorage.getItem("user_profile");
-  let box = document.getElementById("activeProfileBox");
-  if(saved) {
-    let p = JSON.parse(saved);
-    box.classList.remove("hidden");
-    box.innerHTML = `<b>👤 ${esc(p.name)}</b><br><span class="small">📍 गाँव: ${esc(p.village)}, जिला: ${esc(p.district)}</span>`;
-    document.getElementById("title").innerText = p.village + " पोर्टल";
-  } else {
-    box.classList.add("hidden");
-  }
-}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
-
 </body>
 </html>
