@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मेरा गाँव - Malkosh</title>
+    <title>मेरा गाँव - डिजिटल पोर्टल</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -69,10 +69,44 @@
             margin-left: 50px;
         }
 
-        /* Container & Cards */
+        /* Container & Sections */
         .container {
             padding: 12px;
         }
+        
+        /* Profile Setup Modal / Card */
+        .profile-setup-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            margin-top: 20px;
+        }
+        .profile-setup-box h3 { margin-top: 0; color: #1b5e20; }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            background-color: #1b5e20;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Main App Dashboard (Initially Hidden until Profile is created) */
+        #appDashboard {
+            display: none;
+        }
+
         .profile-card {
             background: white;
             margin-bottom: 12px;
@@ -152,9 +186,7 @@
             border-bottom: 1px solid #eee;
             cursor: pointer;
         }
-        .sub-item:last-child {
-            border-bottom: none;
-        }
+        .sub-item:last-child { border-bottom: none; }
 
         /* History Special Box */
         .history-item {
@@ -179,68 +211,92 @@
     <header>
         <button class="icon-btn" onclick="openNav()">☰</button>
         <div class="header-title">
-            <h2>मेरा गाँव - MALKOSH</h2>
-            <p>गाँव को समर्पित डिजिटल पोर्टल</p>
+            <h2 id="headerVillageTitle">मेरा गाँव - पोर्टल</h2>
+            <p>गाँव को समर्पित डिजिटल सेवा</p>
         </div>
         <button class="icon-btn" onclick="toggleLang()">हिन्दी</button>
     </header>
 
     <div class="container">
-        <!-- यूजर प्रोफाइल सेक्शन -->
-        <div class="profile-card">
-            <div class="profile-img">👤</div>
-            <div>
-                <h3 style="margin: 0 0 2px 0; font-size: 15px;">विकास कुमार</h3>
-                <p style="margin: 0; color: #666; font-size: 12px;">गाँव: Malkosh (सक्रिय)</p>
+
+        <!-- स्टेप 1: प्रोफाइल सेटअप फॉर्म (जब तक यूजर प्रोफाइल न बनाए) -->
+        <div id="profileSetupSection" class="profile-setup-box">
+            <h3>🔒 पहले अपनी प्रोफाइल बनाएं</h3>
+            <p style="font-size: 13px; color: #666;">पोर्टल इस्तेमाल करने के लिए कृपया अपनी जानकारी दर्ज करें:</p>
+            
+            <label style="font-size: 13px; font-weight: bold;">आपका नाम:</label>
+            <input type="text" id="inputName" class="input-field" placeholder="अपना पूरा नाम लिखें">
+
+            <label style="font-size: 13px; font-weight: bold;">मोबाइल नंबर:</label>
+            <input type="tel" id="inputPhone" class="input-field" placeholder="10 अंकों का मोबाइल नंबर">
+
+            <label style="font-size: 13px; font-weight: bold;">गाँव का नाम:</label>
+            <input type="text" id="inputVillage" class="input-field" value="Malkosh" placeholder="गाँव का नाम लिखें">
+
+            <button class="submit-btn" onclick="saveProfile()">प्रोफाइल सुरक्षित करें & आगे बढ़ें ➔</button>
+        </div>
+
+        <!-- स्टेप 2: मुख्य डैशबोर्ड (प्रोफाइल बनने के बाद दिखेगा) -->
+        <div id="appDashboard">
+            
+            <!-- यूजर प्रोफाइल कार्ड -->
+            <div class="profile-card">
+                <div class="profile-img">👤</div>
+                <div>
+                    <h3 id="displayUserName" style="margin: 0 0 2px 0; font-size: 15px;">-</h3>
+                    <p id="displayUserVillage" style="margin: 0; color: #666; font-size: 12px;">गाँव: - (सक्रिय)</p>
+                </div>
             </div>
+
+            <!-- 1. दुकान देखें और जोड़ें बटन -->
+            <div class="shop-btn-container">
+                <button class="btn-shop">🏬 दुकान देखें</button>
+                <button class="btn-shop" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">➕ अपनी दुकान जोड़ें</button>
+            </div>
+
+            <!-- 1B. आवश्यक सेवाएं (ड्रॉपडाउन) -->
+            <div class="list-item" onclick="toggleDropdown()">
+                <span>🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि)</span>
+                <span id="arrow">▼</span>
+            </div>
+            <div id="serviceDropdown" class="dropdown-container">
+                <div class="sub-item">🛠️ मिस्त्री & मेडिकल सेवाएं</div>
+                <div class="sub-item">🚜 ट्रैक्टर & गाड़ी किराया</div>
+                <div class="sub-item">📜 पंडित जी & अन्य सेवाएं</div>
+            </div>
+
+            <!-- 2. मुनादी, मेला, भजन व सूचनाएं -->
+            <div class="list-item" style="border-left: 4px solid #ff9800;">
+                <span>📢 2. मुनादी, मेला, भजन व खबरें (Sub-Admin)</span>
+                <span>➔</span>
+            </div>
+
+            <!-- 3. खरीद-बेच और अन्य सेवाएं -->
+            <div class="list-item">
+                <span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच व अन्य श्रेणी</span>
+                <span>➔</span>
+            </div>
+
+            <!-- 4. गाँव की गैलरी -->
+            <div class="list-item">
+                <span>📸 4. गाँव की गैलरी (लाइव फोटो)</span>
+                <span>➔</span>
+            </div>
+
+            <!-- 5. गाँव के वीडियो -->
+            <div class="list-item">
+                <span>🎵 5. गाँव के वीडियो और लोक गीत</span>
+                <span>➔</span>
+            </div>
+
+            <!-- 6. गाँव का इतिहास -->
+            <div class="list-item history-item">
+                <span>📚 6. गाँव का इतिहास, सरपंच व शहीद</span>
+                <span>➔</span>
+            </div>
+
         </div>
 
-        <!-- 1. दुकान देखें और जोड़ें बटन -->
-        <div class="shop-btn-container">
-            <button class="btn-shop">🏬 दुकान देखें</button>
-            <button class="btn-shop" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">➕ अपनी दुकान जोड़ें</button>
-        </div>
-
-        <!-- 1B. आवश्यक सेवाएं (ड्रॉपडाउन / सिंगल बटन) -->
-        <div class="list-item" onclick="toggleDropdown()">
-            <span>🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर, पंडित आदि)</span>
-            <span id="arrow">▼</span>
-        </div>
-        <div id="serviceDropdown" class="dropdown-container">
-            <div class="sub-item">🛠️ मिस्त्री & मेडिकल सेवाएं</div>
-            <div class="sub-item">🚜 ट्रैक्टर & गाड़ी किराया</div>
-            <div class="sub-item">📜 पंडित जी & अन्य सेवाएं</div>
-        </div>
-
-        <!-- 2. मुनादी, मेला, भजन व सूचनाएं -->
-        <div class="list-item" style="border-left: 4px solid #ff9800;">
-            <span>📢 2. मुनादी, मेला, भजन व खबरें (Sub-Admin)</span>
-            <span>➔</span>
-        </div>
-
-        <!-- 3. खरीद-बेच और अन्य सेवाएं -->
-        <div class="list-item">
-            <span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच व अन्य श्रेणी</span>
-            <span>➔</span>
-        </div>
-
-        <!-- 4. गाँव की गैलरी -->
-        <div class="list-item">
-            <span>📸 4. गाँव की गैलरी (लाइव फोटो)</span>
-            <span>➔</span>
-        </div>
-
-        <!-- 5. गाँव के वीडियो -->
-        <div class="list-item">
-            <span>🎵 5. गाँव के वीडियो और लोक गीत</span>
-            <span>➔</span>
-        </div>
-
-        <!-- 6. गाँव का इतिहास -->
-        <div class="list-item history-item">
-            <span>📚 6. गाँव का इतिहास, सरपंच व शहीद</span>
-            <span>➔</span>
-        </div>
     </div>
 
     <script>
@@ -263,6 +319,27 @@
                 dropdown.style.display = "block";
                 arrow.innerHTML = "▲";
             }
+        }
+
+        // प्रोफाइल सेव करने का फंक्शन
+        function saveProfile() {
+            var name = document.getElementById("inputName").value.trim();
+            var phone = document.getElementById("inputPhone").value.trim();
+            var village = document.getElementById("inputVillage").value.trim();
+
+            if(name === "" || phone === "" || village === "") {
+                alert("कृपया अपनी सभी जानकारी सही-सही भरें!");
+                return;
+            }
+
+            // स्क्रीन पर नाम और गाँव सेट करना
+            document.getElementById("displayUserName").innerText = name;
+            document.getElementById("displayUserVillage").innerText = "गाँव: " + village + " (सक्रिय)";
+            document.getElementById("headerVillageTitle").innerText = "मेरा गाँव - " + village.toUpperCase();
+
+            // फॉर्म छुपाकर मेन ऐप दिखाना
+            document.getElementById("profileSetupSection").style.display = "none";
+            document.getElementById("appDashboard").style.display = "block";
         }
     </script>
 
