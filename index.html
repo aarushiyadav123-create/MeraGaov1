@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><span id="siteTitle">डिजिटल पोर्टल</span></title>
+    <title>गाँव - डिजिटल पोर्टल</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f4f9; color: #333; }
@@ -39,7 +39,7 @@
         .section { display: none; }
         .section.active { display: block; }
 
-        /* Active User ID Box on Top of Home */
+        /* Active User ID Card */
         .user-id-card { background: #fff; border: 2px solid #2e7d32; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
         .user-id-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #2e7d32; }
         .user-id-info h4 { font-size: 16px; color: #1b5e20; }
@@ -85,14 +85,19 @@
         .content-box p { font-size: 15px; line-height: 1.6; margin-bottom: 10px; }
         
         .profile-img-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #2e7d32; margin-bottom: 10px; }
-        .dynamic-item { background: #f9f9f9; padding: 10px; border-left: 4px solid #2e7d32; margin-bottom: 8px; border-radius: 4px; font-size: 14px; }
+        
+        /* Dynamic Item Card with Call Button */
+        .item-card { background: #f9f9f9; padding: 12px; border-left: 4px solid #2e7d32; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .item-info h5 { font-size: 15px; color: #1b5e20; margin-bottom: 3px; }
+        .item-info p { font-size: 13px; color: #444; }
+        .call-btn { background: #2e7d32; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; white-space: nowrap; }
     </style>
 </head>
 <body>
 
     <!-- Header -->
     <header>
-        <div class="logo-array">
+        <div class="logo-area">
             <h1 id="headerMainTitle">गाँव - डिजिटल पोर्टल</h1>
             <p>मेरा गाँव - मेरी पहचान</p>
         </div>
@@ -113,7 +118,6 @@
 
         <!-- HOME SECTION -->
         <div id="home" class="section active">
-            <!-- User Active ID Card (Shows after profile is set) -->
             <div id="activeUserCard" class="user-id-card" style="display: none;">
                 <img id="homeUserImg" class="user-id-img" src="" alt="User">
                 <div class="user-id-info">
@@ -127,22 +131,22 @@
                 👤 मेरी प्रोफाइल / मेरा गाँव सेट करें
             </button>
             <button class="portal-btn" onclick="switchSection('dukaan-page')">
-                🏥 1. दुकान देखें / अपनी दुकान जोड़ें (Add) ➔
+                🏥 1. दुकान देखें व OTP से जोड़ें ➔
             </button>
             <button class="portal-btn" onclick="switchSection('services-page')">
-                🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि जोड़ें) ➔
+                🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें ➔
             </button>
             <button class="portal-btn subadmin-btn" onclick="switchSection('munadi-page')">
                 📢 2. मुनादी, मेला व खबरें जोड़ें ➔
             </button>
             <button class="portal-btn" onclick="switchSection('buysell-page')">
-                🌾 3. पशु, गेहूँ, चारा खरीद-बेच (Add Item) ➔
+                🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔
             </button>
             <button class="portal-btn" onclick="switchSection('gallery-page')">
-                📸 4. गाँव की गैलरी (फोटो अपलोड करें) ➔
+                📸 4. गाँव की गैलरी (लाइव फोटो) ➔
             </button>
             <button class="portal-btn" onclick="switchSection('video-page')">
-                🎵 5. गाँव के वीडियो / लोक गीत जोड़ें ➔
+                🎵 5. गाँव के वीडियो और लोक गीत ➔
             </button>
             <button class="portal-btn dark-btn" onclick="switchSection('history-page')">
                 📚 6. गाँव का इतिहास व जानकारी ➔
@@ -158,7 +162,7 @@
                 <div id="formSection">
                     <form onsubmit="submitFullForm(event)">
                         <div class="form-group">
-                            <label>पूरा नाम (उदा. Vikas Kumar):</label>
+                            <label>पूरा नाम:</label>
                             <input type="text" id="userName" required placeholder="अपना नाम लिखें">
                         </div>
                         <div class="form-group">
@@ -200,144 +204,119 @@
             </div>
         </div>
 
-        <!-- 1. DUKAAN PAGE WITH ADD FEATURE -->
+        <!-- 1. DUKAAN PAGE WITH OTP ADD -->
         <div id="dukaan-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>गाँव की दुकानें & Add</h2>
-                <div class="form-group">
-                    <label>नई दुकान का नाम व विवरण जोड़ें:</label>
-                    <input type="text" id="newDukaanInput" placeholder="उदा. Sharma Kirana Store, Ward 2">
-                    <button class="submit-btn" style="margin-top: 10px;" onclick="addDynamicItem('dukaanList', 'newDukaanInput', 'dukaanData')">دکان Jodein (Add)</button>
+                <h2>गाँव की दुकानें & Add (OTP Secure)</h2>
+                <div id="dukaanFormArea">
+                    <div class="form-group"><label>दुकान का नाम:</label><input type="text" id="dName" placeholder="उदा. महाकाल जनरल स्टोर"></div>
+                    <div class="form-group"><label>संचालक/दुकاندار का नाम:</label><input type="text" id="dOwner" placeholder="नाम"></div>
+                    <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="dPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('dukaan')">OTP Bhekar Jodein</button>
                 </div>
-                <hr style="margin: 15px 0;">
-                <h4>उपलब्ध दुकानें:</h4>
+                <div id="dukaanOtpArea" style="display:none; margin-top:15px;">
+                    <p id="dukaanOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="dOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('dukaan')">Verify & Save Karein</button>
+                </div>
+                <hr style="margin: 20px 0;">
+                <h4>उपलब्ध दुकानें (Call Now):</h4>
                 <div id="dukaanList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
-        <!-- 1B. SERVICES PAGE WITH ADD FEATURE -->
+        <!-- 1B. SERVICES PAGE WITH OTP ADD (Mistri etc.) -->
         <div id="services-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>आवश्यक सेवाएं & Add</h2>
-                <div class="form-group">
-                    <label>मिस्त्री या सेवा का नाम व नंबर जोड़ें:</label>
-                    <input type="text" id="newServiceInput" placeholder="उदा. Ramesh Mistri - 98765XXXXX">
-                    <button class="submit-btn" style="margin-top: 10px;" onclick="addDynamicItem('serviceList', 'newServiceInput', 'serviceData')">Seva Jodein (Add)</button>
+                <h2>आवश्यक सेवाएं - मिस्त्री आदि (OTP Secure)</h2>
+                <div id="serviceFormArea">
+                    <div class="form-group"><label>सेवा का नाम (उदा. Mistri / Electrician):</label><input type="text" id="sTitle" placeholder="जैसे: राज मिस्त्री"></div>
+                    <div class="form-group"><label>व्यक्ति का नाम:</label><input type="text" id="sPerson" placeholder="नाम"></div>
+                    <div class="form-group"><label>मोबाइल नंबर (Calling Number):</label><input type="text" id="sPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('service')">OTP Bhekar Jodein</button>
                 </div>
-                <hr style="margin: 15px 0;">
-                <h4>सूची:</h4>
+                <div id="serviceOtpArea" style="display:none; margin-top:15px;">
+                    <p id="serviceOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="sOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('service')">Verify & Save Karein</button>
+                </div>
+                <hr style="margin: 20px 0;">
+                <h4>मिस्त्री व सेवा सूची (Direct Call):</h4>
                 <div id="serviceList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
-        <!-- 2. MUNADI PAGE WITH ADD -->
+        <!-- 2. MUNADI PAGE WITH OTP -->
         <div id="munadi-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>मुनादी, मेला व खबरें Add Karein</h2>
-                <div class="form-group">
-                    <label>नई खबर या मुनादी लिखें:</label>
-                    <textarea id="newMunadiInput" rows="3" placeholder="खबर यहाँ लिखें..."></textarea>
-                    <button class="submit-btn" style="margin-top: 10px;" onclick="addDynamicItem('munadiList', 'newMunadiInput', 'munadiData')">Khabar Jodein (Add)</button>
+                <h2>मुनादी व खबरें (OTP Secure)</h2>
+                <div id="munadiFormArea">
+                    <div class="form-group"><label>खबर / मुनादी विवरण:</label><textarea id="mText" rows="3" placeholder="यहाँ लिखें..."></textarea></div>
+                    <div class="form-group"><label>आपका मोबाइल नंबर:</label><input type="text" id="mPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('munadi')">OTP Bhekar Jodein</button>
                 </div>
-                <hr style="margin: 15px 0;">
+                <div id="munadiOtpArea" style="display:none; margin-top:15px;">
+                    <p id="munadiOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="mOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('munadi')">Verify & Save Karein</button>
+                </div>
+                <hr style="margin: 20px 0;">
                 <h4>ताज़ा खबरें:</h4>
                 <div id="munadiList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
-        <!-- 3. BUY SELL PAGE WITH ADD -->
+        <!-- 3. BUY SELL PAGE -->
         <div id="buysell-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>पशु, गेहूँ, चारा खरीद-बेच Add</h2>
-                <div class="form-group">
-                    <label>खरीदने/बेचने की वस्तु का विवरण लिखें:</label>
-                    <input type="text" id="newBuySellInput" placeholder="उदा. Gehu 20 Quintal available">
-                    <button class="submit-btn" style="margin-top: 10px;" onclick="addDynamicItem('buysellList', 'newBuySellInput', 'buysellData')">Item Jodein (Add)</button>
+                <h2>पशु, गेहूँ, चारा खरीद-बेच (OTP Secure)</h2>
+                <div id="buysellFormArea">
+                    <div class="form-group"><label>विवरण (उदा. Gehu / Pashu):</label><input type="text" id="bText" placeholder="वस्तु का विवरण"></div>
+                    <div class="form-group"><label>संपर्क मोबाइल नंबर:</label><input type="text" id="bPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('buysell')">OTP Bhekar Jodein</button>
                 </div>
-                <hr style="margin: 15px 0;">
+                <div id="buysellOtpArea" style="display:none; margin-top:15px;">
+                    <p id="buysellOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
+                    <div class="form-group"><label>OTP Daalein:</label><input type="text" id="bOtpInput" placeholder="Enter OTP"></div>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('buysell')">Verify & Save Karein</button>
+                </div>
+                <hr style="margin: 20px 0;">
                 <h4>लिस्ट:</h4>
                 <div id="buysellList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
-        <!-- 4. GALLERY -->
-        <div id="gallery-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
-            <div class="card content-box">
-                <h2>गाँव की गैलरी (लाइव फोटो)</h2>
-                <p>• Gaon ke samarak aur karyakramo ke chitra.</p>
-            </div>
-        </div>
-
-        <!-- 5. VIDEO -->
-        <div id="video-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
-            <div class="card content-box">
-                <h2>गाँव के वीडियो और लोक गीत</h2>
-                <p>• Lok sangeet aur video clips.</p>
-            </div>
-        </div>
-
-        <!-- 6. HISTORY -->
-        <div id="history-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
-            <div class="card content-box">
-                <h2>गाँव का इतिहास, सरपंच व शहीद</h2>
-                <p>• Gaon ki parampara aur itihas.</p>
-            </div>
-        </div>
-
-        <!-- FOUNDER -->
-        <div id="founder" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
-            <div class="card">
-                <h2>About Founder</h2>
-                <p style="margin-top: 12px; line-height: 1.6; font-size: 15px;">
-                    <b>Sansthapak (Founder):</b><br>
-                    • User & Team<br><br>
-                    <i>Yeh digital portal aapke gaon ko samarpit hai.</i>
-                </p>
-            </div>
-        </div>
-
-        <!-- POLICY -->
-        <div id="policy" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
-            <div class="card">
-                <h2>Privacy Policy</h2>
-                <p style="margin-top: 12px; font-size: 15px; line-height: 1.6;">Aapka data surakshit hai.</p>
-            </div>
-        </div>
+        <!-- OTHER STATIC PAGES -->
+        <div id="gallery-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव की गैलरी</h2><p>लाइव तस्वीरें जल्द उपलब्ध होंगी।</p></div></div>
+        <div id="video-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव के वीडियो</h2><p>लोक गीत और वीडियो क्लिप्स।</p></div></div>
+        <div id="history-page" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home</a><div class="card content-box"><h2>गाँव का इतिहास</h2><p>इतिहास और जानकारी।</p></div></div>
+        <div id="founder" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a><div class="card"><h2>About Founder</h2><p style="margin-top:12px;">Vikas Kumar & Team</p></div></div>
+        <div id="policy" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a><div class="card"><h2>Privacy Policy</h2><p style="margin-top:12px;">Surakshit data.</p></div></div>
 
     </div>
 
     <!-- JavaScript -->
     <script>
         let generatedOTP = "";
-        let tempFormData = {};
+        let tempProfileData = {};
         let tempImageBase64 = "";
+        let pendingItemData = {};
+        let activeItemType = "";
 
-        function toggleMenu() {
-            document.getElementById('menuContainer').classList.toggle('active');
-        }
-        window.onclick = function(event) {
-            if (!event.target.matches('.menu-toggle')) {
-                document.getElementById('menuContainer').classList.remove('active');
-            }
-        }
+        function toggleMenu() { document.getElementById('menuContainer').classList.toggle('active'); }
+        window.onclick = function(event) { if (!event.target.matches('.menu-toggle')) { document.getElementById('menuContainer').classList.remove('active'); } }
 
         function switchSection(sectionId) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            if(sectionId === 'profile-page') {
-                loadProfileState();
-            }
+            if(sectionId === 'profile-page') loadProfileState();
         }
 
+        // Profile Form Submit
         function submitFullForm(e) {
             e.preventDefault();
             const name = document.getElementById('userName').value;
@@ -345,47 +324,32 @@
             const phone = document.getElementById('userPhone').value;
             const photoInput = document.getElementById('userPhoto');
 
-            if(phone.length < 10) {
-                alert('Kripya sahi 10-digit mobile number dalein!');
-                return;
-            }
-
+            if(phone.length < 10) { alert('Sahi mobile number dalein!'); return; }
             if(photoInput.files && photoInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    tempImageBase64 = uploadEvent.target.result;
-                    proceedToOtp(name, village, phone);
+                reader.onload = function(ev) {
+                    tempImageBase64 = ev.target.result;
+                    tempProfileData = { name, village, phone, photo: tempImageBase64 };
+                    generatedOTP = Math.floor(1000 + Math.random() * 9000);
+                    document.getElementById('formSection').style.display = 'none';
+                    document.getElementById('otpSection').style.display = 'block';
+                    document.getElementById('otpInfoMsg').innerText = `[OTP Sent]: ${generatedOTP}`;
                 };
                 reader.readAsDataURL(photoInput.files[0]);
-            } else {
-                alert('Kripya apni photo select karein!');
-            }
-        }
-
-        function proceedToOtp(name, village, phone) {
-            tempFormData = { name, village, phone, photo: tempImageBase64 };
-            generatedOTP = Math.floor(1000 + Math.random() * 9000);
-
-            document.getElementById('formSection').style.display = 'none';
-            document.getElementById('otpSection').style.display = 'block';
-            document.getElementById('otpInfoMsg').innerText = `[OTP Sent]: Aapke mobile par OTP bheja gaya hai -> ${generatedOTP}`;
+            } else { alert('Photo select karein!'); }
         }
 
         function verifyOtpAndDirectApprove() {
-            const entered = document.getElementById('enteredOtp').value;
-            if(entered == generatedOTP) {
-                localStorage.setItem('m_name', tempFormData.name);
-                localStorage.setItem('m_village', tempFormData.village);
-                localStorage.setItem('m_phone', tempFormData.phone);
-                localStorage.setItem('m_photo', tempFormData.photo);
+            if(document.getElementById('enteredOtp').value == generatedOTP) {
+                localStorage.setItem('m_name', tempProfileData.name);
+                localStorage.setItem('m_village', tempProfileData.village);
+                localStorage.setItem('m_phone', tempProfileData.phone);
+                localStorage.setItem('m_photo', tempProfileData.photo);
                 localStorage.setItem('m_status', 'approved');
-
                 loadProfileState();
                 switchSection('home');
-                alert('OTP Verified! Aapki Profile ID active ho chuki hai.');
-            } else {
-                alert('Galat OTP hai! Dobara check karein.');
-            }
+                alert('Profile Approved!');
+            } else { alert('Galat OTP!'); }
         }
 
         function loadProfileState() {
@@ -395,63 +359,108 @@
             const phone = localStorage.getItem('m_phone');
             const photo = localStorage.getItem('m_photo');
 
-            const formSec = document.getElementById('formSection');
-            const otpSec = document.getElementById('otpSection');
-            const statusSec = document.getElementById('statusSection');
-            const activeUserCard = document.getElementById('activeUserCard');
-
             if(status === 'approved') {
                 document.getElementById('headerMainTitle').innerText = village + ' - डिजिटल पोर्टल';
-                
-                // Show Home Active ID Card
-                activeUserCard.style.display = 'flex';
+                document.getElementById('activeUserCard').style.display = 'flex';
                 document.getElementById('homeUserName').innerText = name;
                 document.getElementById('homeUserVillage').innerText = village;
                 document.getElementById('homeUserPhone').innerText = phone;
                 document.getElementById('homeUserImg').src = photo;
 
-                // Profile Page view
-                formSec.style.display = 'none';
-                otpSec.style.display = 'none';
-                statusSec.style.display = 'block';
+                document.getElementById('formSection').style.display = 'none';
+                document.getElementById('otpSection').style.display = 'none';
+                document.getElementById('statusSection').style.display = 'block';
                 document.getElementById('sName').innerText = name;
                 document.getElementById('sVillage').innerText = village;
                 document.getElementById('sPhone').innerText = phone;
                 document.getElementById('sPhoto').src = photo;
             } else {
                 document.getElementById('headerMainTitle').innerText = 'गाँव - डिजिटल पोर्टल';
-                activeUserCard.style.display = 'none';
-                formSec.style.display = 'block';
-                otpSec.style.display = 'none';
-                statusSec.style.display = 'none';
+                document.getElementById('activeUserCard').style.display = 'none';
+                document.getElementById('formSection').style.display = 'block';
+                document.getElementById('otpSection').style.display = 'none';
+                document.getElementById('statusSection').style.display = 'none';
             }
-
-            // Load all dynamic items
-            renderDynamicItems('dukaanList', 'dukaanData');
-            renderDynamicItems('serviceList', 'serviceData');
-            renderDynamicItems('munadiList', 'munadiData');
-            renderDynamicItems('buysellList', 'buysellData');
+            renderAllLists();
         }
 
-        // Dynamic Add Feature Functions
-        function addDynamicItem(listId, inputId, storageKey) {
-            const val = document.getElementById(inputId).value.trim();
-            if(!val) {
-                alert('Kripya kuch likhein!');
-                return;
-            }
-            let list = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            list.push(val);
-            localStorage.setItem(storageKey, JSON.stringify(list));
-            document.getElementById(inputId).value = '';
-            renderDynamicItems(listId, storageKey);
-            alert('Safaltapurvak jodh diya gaya hai!');
+        function resetProfile() {
+            localStorage.clear();
+            loadProfileState();
+            switchSection('home');
+            alert('Reset ho gaya.');
         }
 
-        function renderDynamicItems(listId, storageKey) {
-            const container = document.getElementById(listId);
+        // --- SECURE OTP ADD SYSTEM FOR ALL BUTTONS ---
+        function initAddOTP(type) {
+            activeItemType = type;
+            let phone = "";
+            if(type === 'dukaan') {
+                const dName = document.getElementById('dName').value;
+                const dOwner = document.getElementById('dOwner').value;
+                phone = document.getElementById('dPhone').value;
+                if(!dName || !phone) { alert('Sabhi fields bharein!'); return; }
+                pendingItemData = { title: dName, sub: 'Sanchalak: ' + dOwner, phone: phone };
+            } else if(type === 'service') {
+                const title = document.getElementById('sTitle').value;
+                const person = document.getElementById('sPerson').value;
+                phone = document.getElementById('sPhone').value;
+                if(!title || !phone) { alert('Sabhi fields bharein!'); return; }
+                pendingItemData = { title: title + ' (' + person + ')', sub: 'Sampark Karein', phone: phone };
+            } else if(type === 'munadi') {
+                const text = document.getElementById('mText').value;
+                phone = document.getElementById('mPhone').value;
+                if(!text || !phone) { alert('Sabhi fields bharein!'); return; }
+                pendingItemData = { title: text, sub: 'Khabar data', phone: phone };
+            } else if(type === 'buysell') {
+                const text = document.getElementById('bText').value;
+                phone = document.getElementById('bPhone').value;
+                if(!text || !phone) { alert('Sabhi fields bharein!'); return; }
+                pendingItemData = { title: text, sub: 'Buy/Sell Item', phone: phone };
+            }
+
+            if(phone.length < 10) { alert('Sahi 10-digit mobile number dalein!'); return; }
+
+            generatedOTP = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById(type + 'FormArea').style.display = 'none';
+            document.getElementById(type + 'OtpArea').style.display = 'block';
+            document.getElementById(type + 'OtpMsg').innerText = `[OTP Sent to ${phone}]: ${generatedOTP}`;
+        }
+
+        function verifyAndSaveItem(type) {
+            const enteredOtp = document.getElementById(type + 'OtpInput').value;
+            if(enteredOtp == generatedOTP) {
+                let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
+                list.push(pendingItemData);
+                localStorage.setItem(type + '_data', JSON.stringify(list));
+
+                alert('OTP Verified! Safaltapurvak jodh diya gaya hai.');
+                document.getElementById(type + 'OtpArea').style.display = 'none';
+                document.getElementById(type + 'FormArea').style.display = 'block';
+                
+                // Clear inputs
+                if(type === 'dukaan') { document.getElementById('dName').value=''; document.getElementById('dOwner').value=''; document.getElementById('dPhone').value=''; document.getElementById('dOtpInput').value=''; }
+                else if(type === 'service') { document.getElementById('sTitle').value=''; document.getElementById('sPerson').value=''; document.getElementById('sPhone').value=''; document.getElementById('sOtpInput').value=''; }
+                else if(type === 'munadi') { document.getElementById('mText').value=''; document.getElementById('mPhone').value=''; document.getElementById('mOtpInput').value=''; }
+                else if(type === 'buysell') { document.getElementById('bText').value=''; document.getElementById('bPhone').value=''; document.getElementById('bOtpInput').value=''; }
+
+                renderList(type);
+            } else {
+                alert('Galat OTP!');
+            }
+        }
+
+        function renderAllLists() {
+            renderList('dukaan');
+            renderList('service');
+            renderList('munadi');
+            renderList('buysell');
+        }
+
+        function renderList(type) {
+            const container = document.getElementById(type + 'List');
             if(!container) return;
-            let list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
             if(list.length === 0) {
                 container.innerHTML = '<p style="color: #777; font-size: 13px;">Abhi koi data nahi joda gaya hai.</p>';
                 return;
@@ -459,22 +468,19 @@
             container.innerHTML = '';
             list.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'dynamic-item';
-                div.innerText = '• ' + item;
+                div.className = 'item-card';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <h5>${item.title}</h5>
+                        <p>${item.sub} | Mob: ${item.phone}</p>
+                    </div>
+                    <a href="tel:${item.phone}" class="call-btn">📞 Call Now</a>
+                `;
                 container.appendChild(div);
             });
         }
 
-        function resetProfile() {
-            localStorage.clear();
-            loadProfileState();
-            switchSection('home');
-            alert('Profile reset ho gayi hai.');
-        }
-
-        window.onload = function() {
-            loadProfileState();
-        }
+        window.onload = function() { loadProfileState(); }
     </script>
 </body>
 </html>
