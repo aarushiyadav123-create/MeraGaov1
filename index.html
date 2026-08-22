@@ -31,7 +31,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 </head>
 <body>
 <header>
-<div><h1 id="title">Mera Gaov Digital Portal</h1><div class="sub">मेरा गाँव - मेरी पहचान[span_1](start_span)[span_1](end_span)</div></div>
+<div><h1 id="title">Mera Gaov Digital Portal</h1><div class="sub">मेरा गाँव - मेरी पहचान</div></div>
 <div><button class="headerbtn" onclick="toggleLang()" id="lang">Eng</button>
 <button class="headerbtn" onclick="toggleMenu()">☰</button></div>
 </header>
@@ -42,7 +42,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <button onclick="go('founder');toggleMenu()">About Founder</button>
 <button onclick="go('policy');toggleMenu()">Privacy Policy</button>
 </div>
-<div class="ticker">📢 <b>गाँव की खबर:</b> <span id="news">पोर्टल लाइव है</span>[span_2](start_span)[span_2](end_span) &nbsp; | &nbsp; 🌤️ <span id="weather">मौसम लोड हो रहा है...</span></div>
+<div class="ticker">📢 <b>गाँव की खबर:</b> <span id="news">पोर्टल लाइव है</span> &nbsp; | &nbsp; 🌤️ <span id="weather">मौसम लोड हो रहा है...</span></div>
 
 <main class="container">
 
@@ -74,7 +74,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <div style="margin-top:10px"><label>गाँव</label><select id="village" disabled><option value="">पहले ब्लॉक चुनें</option></select></div>
 <div style="margin-top:10px"><label>अपनी फोटो</label><input id="photo" type="file" accept="image/*"></div>
 <button class="btn success" style="width:100%;margin-top:12px" onclick="saveProfile()">प्रोफाइल सेव करें</button>
-<p class="status" id="villageStatus">नोट: Firebase से गाँव का डेटा लोड किया जा रहा है।</p>
+<p class="status" id="villageStatus">नोट: Firebase से गाँव का मास्टर डेटा फेच किया जा रहा है...</p>
 </div>
 <div id="profileView" class="hidden"></div>
 </div></section>
@@ -99,8 +99,8 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 
 <section id="gov" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🏛️ Haryana Government</h2><a class="btn" href="https://parivarpehchan.haryana.gov.in/" target="_blank">PPP Portal</a><br><br><a class="btn" href="https://hrye.hry.nic.in/" target="_blank">HKRN Portal</a></div></section>
 
-<section id="founder" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>संस्थापक</h2><p><b>Kusum W/O Rajesh Yadav</b>[span_3](start_span)[span_3](end_span)</p><p class="small">यह पोर्टल हमारे पूरे गाँव को समर्पित है।[span_4](start_span)[span_4](end_span)</p></div></section>
-<section id="policy" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>Privacy Policy</h2><p>पोर्टल में Firebase आधारित डेटा स्टोरेज का उपयोग किया जाता है।[span_5](start_span)[span_5](end_span)</p></div></section>
+<section id="founder" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>संस्थापक</h2><p><b>Kusum W/O Rajesh Yadav</b></p><p class="small">यह पोर्टल हमारे पूरे गाँव को समर्पित है।</p></div></section>
+<section id="policy" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>Privacy Policy</h2><p>पोर्टल में Firebase आधारित डेटा स्टोरेज का उपयोग किया जाता है।</p></div></section>
 
 <section id="admin" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>Admin Panel</h2><h3>लंबित मुनादी</h3><div id="adminPending"></div><button class="btn danger" onclick="clearData()" style="margin-top:15px">सारा डेटा डिलीट करें</button></div></section>
 </main>
@@ -129,7 +129,7 @@ db.ref("villages").once("value").then(snapshot => {
   
   if(states.length === 0) {
     district.innerHTML = '<option value="">जिला data उपलब्ध नहीं है</option>';
-    document.getElementById("villageStatus").innerText = "⚠ Firebase में 'villages' master data नहीं मिला।";
+    document.getElementById("villageStatus").innerText = "⚠ Firebase में 'villages' नोड खाली है। कृपया डेटा डालें।";
     return;
   }
 
@@ -147,6 +147,7 @@ db.ref("villages").once("value").then(snapshot => {
 }).catch(err => {
   console.error(err);
   district.innerHTML = '<option value="">डेटा लोड करने में त्रुटि</option>';
+  document.getElementById("villageStatus").innerText = "⚠ इंटरनेट या कनेक्शन की समस्या।";
 });
 
 // जिला बदलने पर ब्लॉक लोड करना
