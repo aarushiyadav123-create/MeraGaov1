@@ -57,20 +57,26 @@
         const blockSelect = document.getElementById('blockSelect');
         const villageList = document.getElementById('villageList');
 
-        // सीधे 'villages' से डेटा लोड करना
-        db.ref('villages').once('value').then((snapshot) => {
-            villageData = snapshot.val() || {};
-            let districts = Object.keys(villageData).sort();
-            
-            districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
-            districts.forEach(district => {
-                let opt = document.createElement('option');
-                opt.value = district;
-                opt.textContent = district;
-                districtSelect.appendChild(opt);
-            });
-        }).catch(error => {
-            console.error("डेटा लोड करने में त्रुटि:", error);
+        // डेटाबेस के रूट से सीधा डेटा फेच करना
+        db.ref('/').once('value', (snapshot) => {
+            villageData = snapshot.val();
+            console.log("Firebase से आया डेटा:", villageData); // यह F12 कंसोल में दिखेगा
+
+            if (villageData) {
+                let districts = Object.keys(villageData).sort();
+                districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
+                
+                districts.forEach(district => {
+                    let opt = document.createElement('option');
+                    opt.value = district;
+                    opt.textContent = district;
+                    districtSelect.appendChild(opt);
+                });
+            } else {
+                console.log("डेटा खाली मिल रहा है!");
+            }
+        }, (error) => {
+            console.error("Firebase Error:", error);
         });
 
         // District Change Event
