@@ -3,34 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मेरा गाँव - डिजिटल पोर्टल</title>
+    <title>मल्कोश गाँव - डिजिटल पोर्टल</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f4f9; color: #333; }
 
-        /* Header Style (Aapke purane design jaisa) */
-        header { background: #1b5e20; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: relative; }
-        .logo-area h1 { font-size: 20px; font-weight: bold; }
-        .logo-area p { font-size: 12px; color: #c8e6c9; }
+        /* Header Style */
+        header { background: #1b5e20; color: #fff; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .logo-area h1 { font-size: 18px; font-weight: bold; }
+        .logo-area p { font-size: 11px; color: #c8e6c9; }
         
-        .header-right { display: flex; align-items: center; gap: 15px; }
-        .lang-btn { background: #2e7d32; color: white; border: 1px solid #81c784; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        .lang-btn { background: #2e7d32; color: white; border: 1px solid #81c784; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
-        /* Custom Dropdown Menu */
+        /* Chota Menu Button */
         .menu-container { position: relative; display: inline-block; }
-        .menu-toggle { background: #2e7d32; color: white; border: 1px solid #81c784; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .menu-toggle { background: #2e7d32; color: white; border: 1px solid #81c784; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .dropdown-menu {
             display: none;
             position: absolute;
             right: 0;
             background-color: #ffffff;
-            min-width: 160px;
+            min-width: 150px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
             z-index: 10;
             border-radius: 4px;
             overflow: hidden;
         }
-        .dropdown-menu a { color: #333; padding: 10px 14px; text-decoration: none; display: block; font-size: 14px; border-bottom: 1px solid #eee; }
+        .dropdown-menu a { color: #333; padding: 8px 12px; text-decoration: none; display: block; font-size: 13px; border-bottom: 1px solid #eee; }
         .dropdown-menu a:hover { background-color: #f1f8e9; color: #1b5e20; }
         .menu-container.active .dropdown-menu { display: block; }
 
@@ -57,27 +57,26 @@
             border: none;
             width: 100%;
             text-align: left;
-            transition: 0.2s;
         }
         .portal-btn.profile-btn { background: #ffffff; color: #1b5e20; border: 2px solid #2e7d32; justify-content: center; text-align: center; }
-        .portal-btn.subadmin-btn { background: #ef6c00; } /* Orange button like your image */
+        .portal-btn.subadmin-btn { background: #ef6c00; }
         .portal-btn.dark-btn { background: #37474f; }
         .portal-btn:hover { opacity: 0.9; }
 
-        /* Profile & Status Box */
+        /* Card & Forms */
         .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 10px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
         .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
         .submit-btn { background: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
         
-        /* Status Alerts */
-        .alert { padding: 12px; border-radius: 4px; margin-top: 15px; font-weight: bold; text-align: center; }
+        /* Alerts */
+        .alert { padding: 12px; border-radius: 4px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 14px; }
         .alert.pending { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert.approved { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert.rejected { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-        .back-link { display: inline-block; margin-bottom: 15px; color: #1b5e20; text-decoration: none; font-weight: bold; }
+        .back-link { display: inline-block; margin-bottom: 15px; color: #1b5e20; text-decoration: none; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -85,19 +84,19 @@
     <!-- Header -->
     <header>
         <div class="logo-area">
-            <h1>मेरा गाँव - डिजिटल पोर्टल</h1>
+            <h1>मल्कोश गाँव - डिजिटल पोर्टल</h1>
             <p>गाँव को समर्पित डिजिटल सेवा</p>
         </div>
         <div class="header-right">
-            <button class="lang-btn">English</button>
-            <!-- Dropdown Menu Button -->
+            <button class="lang-btn">Eng</button>
+            <!-- Chota Menu Button -->
             <div class="menu-container" id="menuContainer">
-                <button class="menu-toggle" onclick="toggleMenu()">Menu ▾</button>
+                <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
                 <div class="dropdown-menu">
                     <a href="#" onclick="switchSection('home'); return false;">Home</a>
                     <a href="#" onclick="switchSection('founder'); return false;">About Founder</a>
-                    <a href="#" onclick="switchSection('admin'); return false;">Admin</a>
-                    <a href="#" onclick="switchSection('subadmin'); return false;">Sub Admin</a>
+                    <a href="#" onclick="switchSection('admin'); return false;">Admin Panel</a>
+                    <a href="#" onclick="switchSection('subadmin'); return false;">Sub Admin Panel</a>
                     <a href="#" onclick="switchSection('policy'); return false;">Policy</a>
                 </div>
             </div>
@@ -106,7 +105,7 @@
 
     <div class="container">
 
-        <!-- HOME SECTION (Main Buttons) -->
+        <!-- HOME SECTION -->
         <div id="home" class="section active">
             <button class="portal-btn profile-btn" onclick="switchSection('profile-page')">
                 👤 अपनी प्रोफाइल सेट करें / गाँव जोड़ें
@@ -134,82 +133,123 @@
             </button>
         </div>
 
-        <!-- PROFILE & STATUS PAGE -->
+        <!-- PROFILE & OTP VERIFICATION PAGE -->
         <div id="profile-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par wapas jayein</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card">
-                <h3>अपनी प्रोफाइल विवरण</h3><br>
+                <h3>मोबाइल OTP द्वारा प्रोफाइल बनाएं</h3><br>
                 
-                <!-- Form jo user bharega -->
-                <div id="formSection" style="display: none;">
-                    <form id="userProfileForm" onsubmit="submitUserProfile(event)">
+                <!-- Step 1: Mobile Input -->
+                <div id="stepMobile">
+                    <div class="form-group">
+                        <label>मोबाइल नंबर दर्ज करें:</label>
+                        <input type="text" id="userPhoneInput" placeholder="10-digit mobile number">
+                    </div>
+                    <button class="submit-btn" onclick="sendOTP()">OTP Send Karein</button>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="stepOtp" style="display: none;">
+                    <p id="otpMsg" style="color: #2e7d32; font-size: 13px; margin-bottom: 10px; font-weight: bold;"></p>
+                    <div class="form-group">
+                        <label>4-digit OTP Darj Karein:</label>
+                        <input type="text" id="otpInput" placeholder="Enter OTP">
+                    </div>
+                    <button class="submit-btn" onclick="verifyOTP()">OTP Verify Karein</button>
+                </div>
+
+                <!-- Step 3: Profile Details Form -->
+                <div id="stepDetails" style="display: none;">
+                    <form onsubmit="submitFinalProfile(event)">
                         <div class="form-group">
                             <label>पूरा नाम:</label>
-                            <input type="text" id="pName" required placeholder="अपना नाम लिखें">
+                            <input type="text" id="fName" required placeholder="Apna naam likhein">
                         </div>
                         <div class="form-group">
-                            <label>मोबाइल नंबर / WhatsApp:</label>
-                            <input type="text" id="pPhone" required placeholder="मोबाइल नंबर लिखें">
+                            <label>गाँव का विवरण / वार्ड:</label>
+                            <input type="text" id="fVillage" required placeholder="Malkosh mein sthan">
                         </div>
                         <button type="submit" class="submit-btn">Admin ko Submit Karein</button>
                     </form>
                 </div>
 
-                <!-- Status show karne ka area -->
-                <div id="statusSection" style="display: none;">
+                <!-- Step 4: Status Display Area -->
+                <div id="stepStatus" style="display: none;">
                     <div id="statusAlertBox" class="alert"></div>
-                    
-                    <div id="approvedDetails" style="margin-top: 15px; display: none;">
-                        <p><strong>नाम:</strong> <span id="showName"></span></p>
-                        <p><strong>मोबाइल:</strong> <span id="showPhone"></span></p>
-                        <p style="color: green; margin-top: 10px; font-weight: bold;">✔ Aapki profile verified hai.</p>
+                    <div id="approvedView" style="margin-top: 15px; display: none;">
+                        <p><strong>Naam:</strong> <span id="sName"></span></p>
+                        <p><strong>Mobile:</strong> <span id="sPhone"></span></p>
+                        <p style="color: green; margin-top: 5px;">✔ Verified Profile</p>
                     </div>
-
-                    <button onclick="resetProfileData()" style="margin-top: 15px; background: #c62828; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Profile Edit/Reset Karein</button>
+                    <button onclick="resetProfile()" style="margin-top: 15px; background: #c62828; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px;">Reset Profile</button>
                 </div>
 
-                <!-- Testing ke liye Admin Simulation Box -->
-                <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                    <p style="font-size: 12px; color: #666; margin-bottom: 8px;"><b>[Admin Testing Control]:</b> Yahan se status badal kar check karein:</p>
-                    <button onclick="setAdminStatus('approved')" style="background: #2e7d32; color:white; border:none; padding:5px 10px; border-radius:3px; font-size:12px; cursor:pointer;">Approve</button>
-                    <button onclick="setAdminStatus('rejected')" style="background: #c62828; color:white; border:none; padding:5px 10px; border-radius:3px; font-size:12px; cursor:pointer;">Reject</button>
+                <!-- Testing Control -->
+                <div style="margin-top: 20px; padding-top: 10px; border-top: 1px dashed #ccc;">
+                    <p style="font-size: 11px; color: #666;"><b>[Testing Admin Simulation]:</b></p>
+                    <button onclick="simulateAdminStatus('approved')" style="background: #2e7d32; color:white; border:none; padding:4px 8px; border-radius:3px; font-size:11px; cursor:pointer;">Approve</button>
+                    <button onclick="simulateAdminStatus('rejected')" style="background: #c62828; color:white; border:none; padding:4px 8px; border-radius:3px; font-size:11px; cursor:pointer;">Reject</button>
                 </div>
             </div>
         </div>
 
-        <!-- ABOUT FOUNDER SECTION -->
+        <!-- ABOUT FOUNDER (Updated) -->
         <div id="founder" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
             <div class="card">
                 <h2>About Founder</h2>
-                <p style="margin-top: 10px;">Is digital portal ke sansthapak (founder) ke baare mein jankari yahan uplabdh hai.</p>
+                <p style="margin-top: 10px; line-height: 1.6;">
+                    <b>Sansthapak (Founder):</b><br>
+                    • Kusum w/o Rajesh Yadav<br><br>
+                    <i>Yeh digital portal Malkosh gaon ko samarpit hai.</i>
+                </p>
             </div>
         </div>
 
-        <!-- ADMIN SECTION -->
+        <!-- ADMIN PANEL WITH PASSWORD -->
         <div id="admin" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
             <div class="card">
-                <h2>Admin Section</h2>
-                <p style="margin-top: 10px;">Yahan main admin ki details aur management panel ki jankari hai.</p>
+                <h2>Admin Panel Login</h2>
+                <div id="adminLoginBox" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <label>Admin Password:</label>
+                        <input type="password" id="adminPassInput" placeholder="Password dalein (1234)">
+                    </div>
+                    <button class="submit-btn" onclick="checkAdminLogin()">Login Karein</button>
+                </div>
+                <div id="adminDashboard" style="display: none; margin-top: 15px;">
+                    <p style="color: green; font-weight: bold;">✔ Admin Logged In Successfully!</p>
+                    <p style="margin-top: 10px; font-size: 14px;">Yahan se aap user profiles ko approve ya reject kar sakte hain.</p>
+                </div>
             </div>
         </div>
 
-        <!-- SUB ADMIN SECTION -->
+        <!-- SUB ADMIN PANEL WITH PASSWORD -->
         <div id="subadmin" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
             <div class="card">
-                <h2>Sub Admin Section</h2>
-                <p style="margin-top: 10px;">Yahan sub-admin list aur unke adhikar diye gaye hain.</p>
+                <h2>Sub Admin Panel Login</h2>
+                <div id="subAdminLoginBox" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <label>Sub-Admin Password:</label>
+                        <input type="password" id="subAdminPassInput" placeholder="Password dalein (5678)">
+                    </div>
+                    <button class="submit-btn" style="background: #ef6c00;" onclick="checkSubAdminLogin()">Login Karein</button>
+                </div>
+                <div id="subAdminDashboard" style="display: none; margin-top: 15px;">
+                    <p style="color: #ef6c00; font-weight: bold;">✔ Sub-Admin Logged In Successfully!</p>
+                    <p style="margin-top: 10px; font-size: 14px;">Yahan se munadi aur khabrein manage hongi.</p>
+                </div>
             </div>
         </div>
 
-        <!-- POLICY SECTION -->
+        <!-- POLICY -->
         <div id="policy" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
             <div class="card">
                 <h2>Privacy Policy</h2>
-                <p style="margin-top: 10px;">Hamari website ki policy aur terms yahan read kar sakte hain.</p>
+                <p style="margin-top: 10px; font-size: 14px; line-height: 1.5;">Malkosh digital portal ki privacy policy ke tahat aapka data surakshit rakha jata hai.</p>
             </div>
         </div>
 
@@ -217,13 +257,13 @@
 
     <!-- JavaScript -->
     <script>
-        // Menu Toggle Logic
-        function toggleMenu() {
-            const menu = document.getElementById('menuContainer');
-            menu.classList.toggle('active');
-        }
+        let generatedOTP = "";
+        let tempPhone = "";
 
-        // Click outside to close menu
+        // Menu Toggle
+        function toggleMenu() {
+            document.getElementById('menuContainer').classList.toggle('active');
+        }
         window.onclick = function(event) {
             if (!event.target.matches('.menu-toggle')) {
                 document.getElementById('menuContainer').classList.remove('active');
@@ -235,77 +275,118 @@
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             if(sectionId === 'profile-page') {
-                loadProfileStatus();
+                loadProfileState();
             }
         }
 
-        // Profile Form Submit
-        function submitUserProfile(e) {
-            e.preventDefault();
-            const name = document.getElementById('pName').value;
-            const phone = document.getElementById('pPhone').value;
-
-            localStorage.setItem('portal_name', name);
-            localStorage.setItem('portal_phone', phone);
-            localStorage.setItem('portal_status', 'pending'); // Default status on submit
-
-            loadProfileStatus();
+        // OTP System
+        function sendOTP() {
+            const phone = document.getElementById('userPhoneInput').value;
+            if(phone.length < 10) {
+                alert('Kripya sahi 10-digit mobile number dalein!');
+                return;
+            }
+            tempPhone = phone;
+            generatedOTP = Math.floor(1000 + Math.random() * 9000); // 4 digit random OTP
+            
+            document.getElementById('stepMobile').style.display = 'none';
+            document.getElementById('stepOtp').style.display = 'block';
+            document.getElementById('otpMsg').innerText = `[Testing OTP]: Aapka OTP code hai -> ${generatedOTP}`;
         }
 
-        // Load & Check Profile Status
-        function loadProfileStatus() {
-            const status = localStorage.getItem('portal_status');
-            const name = localStorage.getItem('portal_name');
-            const phone = localStorage.getItem('portal_phone');
+        function verifyOTP() {
+            const enteredOTP = document.getElementById('otpInput').value;
+            if(enteredOTP == generatedOTP) {
+                document.getElementById('stepOtp').style.display = 'none';
+                document.getElementById('stepDetails').style.display = 'block';
+            } else {
+                alert('Galat OTP hai! Dubara check karein.');
+            }
+        }
 
-            const formSec = document.getElementById('formSection');
-            const statusSec = document.getElementById('statusSection');
-            const alertBox = document.getElementById('statusAlertBox');
-            const approvedBox = document.getElementById('approvedDetails');
+        function submitFinalProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('fName').value;
+            
+            localStorage.setItem('m_name', name);
+            localStorage.setItem('m_phone', tempPhone);
+            localStorage.setItem('m_status', 'pending');
+
+            loadProfileState();
+        }
+
+        function loadProfileState() {
+            const status = localStorage.getItem('m_status');
+            const name = localStorage.getItem('m_name');
+            const phone = localStorage.getItem('m_phone');
+
+            document.getElementById('stepMobile').style.display = 'none';
+            document.getElementById('stepOtp').style.display = 'none';
+            document.getElementById('stepDetails').style.display = 'none';
+            document.getElementById('stepStatus').style.display = 'none';
 
             if (!status) {
-                formSec.style.display = 'block';
-                statusSec.style.display = 'none';
+                document.getElementById('stepMobile').style.display = 'block';
             } else {
-                formSec.style.display = 'none';
-                statusSec.style.display = 'block';
+                document.getElementById('stepStatus').style.display = 'block';
+                const alertBox = document.getElementById('statusAlertBox');
+                const approvedView = document.getElementById('approvedView');
 
                 if (status === 'pending') {
                     alertBox.className = 'alert pending';
-                    alertBox.innerHTML = '⏳ Aapki profile admin ke paas review ke liye bhej di gayi hai. Status: Pending';
-                    approvedBox.style.display = 'none';
+                    alertBox.innerHTML = '⏳ Aapki profile admin ke paas pending hai!';
+                    approvedView.style.display = 'none';
                 } else if (status === 'approved') {
                     alertBox.className = 'alert approved';
-                    alertBox.innerHTML = '🎉 Badhai ho! Aapki profile Admin dwara Approved kar di gayi hai.';
-                    document.getElementById('showName').innerText = name;
-                    document.getElementById('showPhone').innerText = phone;
-                    approvedBox.style.display = 'block';
+                    alertBox.innerHTML = '🎉 Badhai ho! Profile Approved ho chuki hai.';
+                    document.getElementById('sName').innerText = name;
+                    document.getElementById('sPhone').innerText = phone;
+                    approvedView.style.display = 'block';
                 } else if (status === 'rejected') {
                     alertBox.className = 'alert rejected';
-                    alertBox.innerHTML = '❌ Khed hai! Aapki profile admin dwara reject kar di gayi hai.';
-                    approvedBox.style.display = 'none';
+                    alertBox.innerHTML = '❌ Profile Reject kar di gayi hai.';
+                    approvedView.style.display = 'none';
                 }
             }
         }
 
-        // Admin Simulation Function
-        function setAdminStatus(newStatus) {
-            if(!localStorage.getItem('portal_status')) {
-                alert('Pehle apni profile form bhar kar submit karein!');
+        function simulateAdminStatus(st) {
+            if(!localStorage.getItem('m_status')) {
+                alert('Pehle profile submit karein!');
                 return;
             }
-            localStorage.setItem('portal_status', newStatus);
-            loadProfileStatus();
-            alert('Admin status update ho gaya: ' + newStatus);
+            localStorage.setItem('m_status', st);
+            loadProfileState();
+            alert('Status update ho gaya: ' + st);
         }
 
-        // Reset Profile
-        function resetProfileData() {
-            localStorage.removeItem('portal_status');
-            localStorage.removeItem('portal_name');
-            localStorage.removeItem('portal_phone');
-            document.getElementById('userProfileForm').reset();
-            loadProfileStatus();
+        function resetProfile() {
+            localStorage.clear();
+            document.getElementById('userPhoneInput').value = '';
+            document.getElementById('otpInput').value = '';
+            loadProfileState();
+        }
+
+        // Admin Password Check (Password: 1234)
+        function checkAdminLogin() {
+            const pass = document.getElementById('adminPassInput').value;
+            if(pass === '1234') {
+                document.getElementById('adminLoginBox').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+            } else {
+                alert('Galat Password! Sahi password dalein (1234).');
+            }
+        }
+
+        // Sub Admin Password Check (Password: 5678)
+        function checkSubAdminLogin() {
+            const pass = document.getElementById('subAdminPassInput').value;
+            if(pass === '5678') {
+                document.getElementById('subAdminLoginBox').style.display = 'none';
+                document.getElementById('subAdminDashboard').style.display = 'block';
+            } else {
+                alert('Galat Password! Sahi password dalein (5678).');
+            }
         }
     </script>
 </body>
