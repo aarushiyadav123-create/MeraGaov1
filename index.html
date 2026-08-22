@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">गाँव - डिजिटल पोर्टल (dakshyadav.co.in)</title>
+    <title id="pageTitle">मेरा गाँव - डिजिटल पोर्टल</title>
     
     <!-- jQuery for AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -29,10 +29,8 @@
         const analytics = getAnalytics(app);
         const db = getDatabase(app);
 
-        // Expose Firebase functions globally for use in scripts
         window.firebaseDB = { db, ref, set, get, remove, child, push };
         
-        // Initial load from Firebase database
         window.loadFirebaseData = async function() {
             try {
                 const snapshot = await get(child(ref(db), 'portal_data'));
@@ -48,7 +46,7 @@
                     if(typeof renderAllLists === 'function') renderAllLists();
                 }
             } catch(e) {
-                console.log("Firebase sync fallback to local", e);
+                console.log("Firebase sync fallback", e);
             }
         };
         window.loadFirebaseData();
@@ -151,7 +149,7 @@
 
     <header>
         <div class="logo-area">
-            <h1 id="headerMainTitle">MeraGaov - dakshyadav.co.in</h1>
+            <h1 id="headerMainTitle">Mera Gaov Digital Portal</h1>
             <p id="headerSubTitle">मेरा गाँव - मेरी पहचान</p>
         </div>
         <div class="header-right">
@@ -171,7 +169,7 @@
 
     <div class="live-ticker-container">
         <marquee behavior="scroll" direction="left" scrollamount="5">
-            <span class="ticker-item">📢 <strong id="tNewsTitle">गाँव की ताज़ा खबर:</strong> <span id="tickerNewsText">dakshyadav.co.in पोर्टल पर सभी सेवाएं लाइव हैं।</span></span>
+            <span class="ticker-item">📢 <strong id="tNewsTitle">गाँव की ताज़ा खबर:</strong> <span id="tickerNewsText">पोर्टल पर सभी सेवाएं लाइव हैं।</span></span>
             <span class="ticker-item">| &nbsp; 🌾 <strong id="tMandiTitle">लाइव मंडी भाव:</strong> <span id="tickerMandiText">गेहूँ: ₹2,275/क्विंटल | बाजरा: ₹2,400/क्विंटल | सरसों: ₹5,400/क्विंटल</span></span>
             <span class="ticker-item">| &nbsp; ⛅ <strong id="tWeatherTitle">लाइव मौसम:</strong> <span id="tickerWeatherText">लोकेशन लोड हो रही है...</span></span>
         </marquee>
@@ -204,20 +202,20 @@
         <div id="profile-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card">
-                <h3>प्रोफाइल और गाँव सेट करें (Fast2SMS Live)</h3>
+                <h3>प्रोफाइल और गाँव सेट करें</h3>
                 <div id="formSection">
                     <form onsubmit="submitFullForm(event)">
                         <div class="form-group"><label>पूरा नाम:</label><input type="text" id="userName" required placeholder="अपना नाम लिखें"></div>
                         <div class="form-group"><label>गाँव का नाम (Mera Gaon):</label><input type="text" id="userVillage" required placeholder="गाँव का नाम लिखें"></div>
                         <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="userPhone" required placeholder="10-digit mobile number"></div>
                         <div class="form-group"><label>अपनी फोटो अपलोड करें:</label><input type="file" id="userPhoto" accept="image/*" required></div>
-                        <button type="submit" class="submit-btn">Fast2SMS Real OTP Bhejein</button>
+                        <button type="submit" class="submit-btn">OTP भेजें</button>
                     </form>
                 </div>
                 <div id="otpSection" style="display: none;">
                     <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px;"></p>
                     <div class="form-group"><label>4-digit OTP Darj Karein:</label><input type="text" id="enteredOtp" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyOtpAndDirectApprove()">OTP Verify & Firebase Save Karein</button>
+                    <button class="submit-btn" onclick="verifyOtpAndDirectApprove()">OTP Verify & Save Karein</button>
                 </div>
                 <div id="statusSection" style="display: none; text-align: center;">
                     <div class="alert approved">🎉 Badhai ho! Profile Verified & Live Save Ho Chuki Hai.</div>
@@ -235,12 +233,12 @@
         <div id="dukaan-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>गाँव की दुकानें & Add (Fast2SMS + Firebase)</h2>
+                <h2>गाँव की दुकानें & Add</h2>
                 <div id="dukaanFormArea">
                     <div class="form-group"><label>दुकान का नाम:</label><input type="text" id="dName" placeholder="दुकान का नाम"></div>
                     <div class="form-group"><label>संचालक का नाम:</label><input type="text" id="dOwner" placeholder="नाम"></div>
                     <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="dPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('dukaan')">Fast2SMS OTP Bhekar Jodein</button>
+                    <button class="submit-btn" onclick="initAddOTP('dukaan')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="dukaanOtpArea" style="display:none; margin-top:15px;">
                     <p id="dukaanOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
@@ -256,12 +254,12 @@
         <div id="services-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>आवश्यक सेवाएं - मिस्त्री आदि (Fast2SMS OTP)</h2>
+                <h2>आवश्यक सेवाएं - मिस्त्री आदि</h2>
                 <div id="serviceFormArea">
                     <div class="form-group"><label>सेवा का नाम (उदा. Mistri):</label><input type="text" id="sTitle" placeholder="जैसे: राज मिस्त्री"></div>
                     <div class="form-group"><label>व्यक्ति का नाम:</label><input type="text" id="sPerson" placeholder="नाम"></div>
                     <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="sPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('service')">Fast2SMS OTP Bhekar Jodein</button>
+                    <button class="submit-btn" onclick="initAddOTP('service')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="serviceOtpArea" style="display:none; margin-top:15px;">
                     <p id="serviceOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
@@ -282,7 +280,7 @@
                     <div class="form-group"><label>खबर / मुनादी विवरण:</label><textarea id="mText" rows="3" placeholder="यहाँ लिखें..."></textarea></div>
                     <div class="form-group"><label>आपका नाम:</label><input type="text" id="mUser" placeholder="अपना नाम"></div>
                     <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="mPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('munadi')">Fast2SMS OTP Bhekar Submit Karein</button>
+                    <button class="submit-btn" onclick="initAddOTP('munadi')">OTP भेजकर सबमिट करें</button>
                 </div>
                 <div id="munadiOtpArea" style="display:none; margin-top:15px;">
                     <p id="munadiOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
@@ -302,12 +300,12 @@
         <div id="buysell-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>पशु, गेहूँ, चारा खरीद-बेच (Fast2SMS OTP)</h2>
+                <h2>पशु, गेहूँ, चारा खरीद-बेच</h2>
                 <div id="buysellFormArea">
                     <div class="form-group"><label>विवरण:</label><input type="text" id="bText" placeholder="वस्तु का विवरण"></div>
                     <div class="form-group"><label>बेचने वाले का नाम:</label><input type="text" id="bUser" placeholder="नाम"></div>
                     <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="bPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('buysell')">Fast2SMS OTP Bhekar Jodein</button>
+                    <button class="submit-btn" onclick="initAddOTP('buysell')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="buysellOtpArea" style="display:none; margin-top:15px;">
                     <p id="buysellOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
@@ -351,12 +349,12 @@
         <div id="history-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card content-box">
-                <h2>📚 गाँव का इतिहास व जानकारी (Fast2SMS OTP)</h2>
+                <h2>📚 गाँव का इतिहास व जानकारी</h2>
                 <div id="historyFormArea">
                     <div class="form-group"><label>शीर्षक:</label><input type="text" id="hTitle" placeholder="उदा. गाँव की स्थापना"></div>
                     <div class="form-group"><label>विवरण:</label><textarea id="hDesc" rows="3" placeholder="इतिहास विस्तार से लिखें..."></textarea></div>
                     <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="hPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('history')">Fast2SMS OTP Bhekar Jodein</button>
+                    <button class="submit-btn" onclick="initAddOTP('history')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="historyOtpArea" style="display:none; margin-top:15px;">
                     <p id="historyOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;"></p>
@@ -438,7 +436,6 @@
         let activeItemType = "";
         let currentLang = "hi";
         
-        // Your Fast2SMS API Key
         const FAST2SMS_API_KEY = "KD70zpGC1a892js3cUynqJrIWLbXYdf5kxVSNBRHE4ZmoAPQglDq4FUvrsLpQMS05eHbyVT8fXh7PAdl";
 
         function toggleMenu() { document.getElementById('menuContainer').classList.toggle('active'); }
@@ -469,26 +466,24 @@
                 });
         }
 
-        // Direct Real Fast2SMS Sender with CORS bypass / fallback handler
-        function sendFast2SMSOTP(phone, otp, infoElementId) {
+        // Direct Original SMS Sender without mentioning Fast2SMS
+        function sendRealSMSOTP(phone, otp, infoElementId) {
             generatedOTP = otp;
-            const message = `MeraGaov Portal OTP code ${otp} hai. Kripya kisi ke sath share na karein.`;
-            document.getElementById(infoElementId).innerText = `Fast2SMS se mobile ${phone} par live OTP bheja ja raha hai...`;
+            const message = `Aapka OTP code ${otp} hai. Kripya ise kisi ke sath share na karein.`;
+            document.getElementById(infoElementId).innerText = `आपके मोबाइल ${phone} पर ओटीपी भेजा जा रहा है... कृपया प्रतीक्षा करें।`;
 
-            // Using GET request with JSONP / CORS proxy approach or direct API call
             const apiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=q&message=${encodeURIComponent(message)}&language=english&flash=0&numbers=${phone}`;
 
             fetch(apiUrl, { method: 'GET', mode: 'no-cors' })
                 .then(() => {
-                    document.getElementById(infoElementId).innerText = `✔ Fast2SMS API triggered successfully! Mobile par SMS check karein. (OTP: ${otp} backup)`;
+                    document.getElementById(infoElementId).innerText = `✔ ओटीपी सफलतापूर्वक भेज दिया गया है। कृपया अपना एसएमएस चेक करें।`;
                 })
                 .catch(err => {
                     console.error("SMS Error:", err);
-                    document.getElementById(infoElementId).innerText = `✔ Live Request Sent! OTP: ${otp}`;
+                    document.getElementById(infoElementId).innerText = `✔ ओटीपी अनुरोध भेज दिया गया है।`;
                 });
         }
 
-        // Sync data to Firebase Realtime Database
         function syncDataToFirebase(category, dataList) {
             if(window.firebaseDB) {
                 const { db, ref, set } = window.firebaseDB;
@@ -577,7 +572,7 @@
                     document.getElementById('formSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
                     
-                    sendFast2SMSOTP(phone, otp, 'otpInfoMsg');
+                    sendRealSMSOTP(phone, otp, 'otpInfoMsg');
                 };
                 reader.readAsDataURL(photoInput.files[0]);
             } else { alert('Photo select karein!'); }
@@ -591,7 +586,6 @@
                 localStorage.setItem('m_photo', tempProfileData.photo);
                 localStorage.setItem('m_status', 'approved');
 
-                // Save profile to Firebase
                 if(window.firebaseDB) {
                     const { db, ref, set } = window.firebaseDB;
                     set(ref(db, 'portal_data/profile'), tempProfileData);
@@ -610,7 +604,7 @@
             const photo = localStorage.getItem('m_photo');
 
             if(status === 'approved') {
-                document.getElementById('headerMainTitle').innerText = 'MeraGaov - ' + village;
+                document.getElementById('headerMainTitle').innerText = village + ' डिजिटल पोर्टल';
                 document.getElementById('activeUserCard').style.display = 'flex';
                 document.getElementById('homeUserName').innerText = name;
                 document.getElementById('homeUserVillage').innerText = village;
@@ -623,7 +617,7 @@
                 document.getElementById('sVillage').innerText = village;
                 document.getElementById('sPhoto').src = photo;
             } else {
-                document.getElementById('headerMainTitle').innerText = 'MeraGaov - dakshyadav.co.in';
+                document.getElementById('headerMainTitle').innerText = 'Mera Gaov Digital Portal';
                 document.getElementById('activeUserCard').style.display = 'none';
                 document.getElementById('formSection').style.display = 'block';
                 document.getElementById('otpSection').style.display = 'none';
@@ -777,7 +771,7 @@
             document.getElementById(type + 'FormArea').style.display = 'none';
             document.getElementById(type + 'OtpArea').style.display = 'block';
             
-            sendFast2SMSOTP(phone, otp, type + 'OtpMsg');
+            sendRealSMSOTP(phone, otp, type + 'OtpMsg');
         }
 
         function verifyAndSaveItem() {
@@ -924,7 +918,7 @@
             let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
             list.splice(index, 1);
             localStorage.setItem(type + '_data', JSON.stringify(list));
-            syncDataToFirebase(type, list);
+            syncData`ToFirebase(type, list);
             renderList(type);
             alert('Data Deleted Successfully!');
         }
