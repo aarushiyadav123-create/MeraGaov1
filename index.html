@@ -93,19 +93,27 @@
             justify-content: center;
             font-size: 22px;
         }
+        
+        /* Shop Buttons Layout */
+        .shop-btn-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
         .btn-shop {
             background: linear-gradient(135deg, #ff9800, #f57c00);
             color: white;
             border: none;
-            padding: 14px;
-            width: 100%;
+            padding: 12px;
+            flex: 1;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            margin-bottom: 15px;
             cursor: pointer;
+            text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
+
         .section-title {
             font-size: 16px;
             font-weight: bold;
@@ -157,13 +165,14 @@
         <button class="icon-btn" onclick="openNav()">☰</button>
         <div class="header-title">
             <h2>मेरा गाँव - MALKOSH</h2>
-            <p>हरियाणा ग्रामीण सेवा</p>
+            <p>गाँव को समर्पित डिजिटल पोर्टल</p>
         </div>
         <button class="icon-btn" onclick="toggleLang()">हिन्दी</button>
     </header>
 
     <div class="container">
         <!-- यूजर प्रोफाइल सेक्शन (सिर्फ नाम और फोटो) -->
+        .
         <div class="profile-card">
             <div class="profile-img">👤</div>
             <div>
@@ -172,8 +181,11 @@
             </div>
         </div>
 
-        <!-- गाँव की नंबर 1 शॉप बटन -->
-        <button class="btn-shop">⭐ गाँव की नं. 1 शॉप / दुकान</button>
+        <!-- दुकान देखने और जोड़ने के बटन -->
+        <div class="shop-btn-container">
+            <button class="btn-shop">🏬 दुकान देखें</button>
+            <button class="btn-shop" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);">➕ अपनी दुकान जोड़ें</button>
+        </div>
 
         <!-- आवश्यक सेवाएं -->
         <div class="section-title">गाँव की आवश्यक सेवाएं</div>
@@ -184,15 +196,15 @@
             <div class="menu-item">📢 मुनादी & सूचना (Admin)</div>
         </div>
 
-        <!-- खरीद-बेच और प्रॉपर्टी -->
-        <div class="section-title">खरीद - बेच & प्रॉपर्टी</div>
+        <!-- खरीद-बेच और अन्य सेवाएं -->
+        <div class="section-title">खरीद-बेच और अन्य सेवाएं</div>
         <div class="grid-menu">
             <div class="menu-item">🌾 पशु, गेहूँ, तूड़ा, चारा</div>
-            <div class="menu-item">🧱 प्लॉट या किला (Buy/Sell)</div>
+            <div class="menu-item">📋 अन्य सेवा / श्रेणी जोड़ें</div>
         </div>
 
-        <!-- अतिरिक्त फीचर्स (गैलरी और ऑडियो/गाने) -->
-        <div class="section-title">मनोरंजन और यादें</div>
+        <!-- मनोरंजन और यादें -->
+        <div class="section-title">गाँव की झलकियां और मनोरंजन</div>
         <div class="full-width-item">📸 गाँव की गैलरी (लाइव फोटो)</div>
         <div class="full-width-item">🎵 गाँव के वीडियो और लोक गीत</div>
     </div>
