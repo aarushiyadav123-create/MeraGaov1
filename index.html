@@ -102,6 +102,9 @@
         
         .portal-link-box { display: block; background: #e3f2fd; border: 1px solid #90caf9; padding: 14px; border-radius: 6px; margin-bottom: 12px; text-decoration: none; color: #0d47a1; font-weight: bold; font-size: 15px; transition: 0.2s; }
         .portal-link-box:hover { background: #bbdefb; }
+        
+        .otp-display-box { background: #fffde7; border: 2px dashed #fbc02d; padding: 10px; text-align: center; margin-bottom: 15px; border-radius: 6px; }
+        .otp-display-box span { font-size: 22px; font-weight: bold; color: #d32f2f; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -116,11 +119,11 @@
             <div class="menu-container" id="menuContainer">
                 <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
                 <div class="dropdown-menu">
-                    <a href="#" onclick="switchSection('home'); return false;">Home</a>
-                    <a href="#" onclick="openAdminModal('admin')">🔒 Admin Login</a>
-                    <a href="#" onclick="openAdminModal('subadmin')">🛡️ Sub-Admin Login</a>
-                    <a href="#" onclick="switchSection('founder'); return false;">About Founder</a>
-                    <a href="#" onclick="switchSection('policy'); return false;">Policy</a>
+                    <a href="#" onclick="switchSection('home'); return false;" id="menuHome">Home</a>
+                    <a href="#" onclick="openAdminModal('admin')" id="menuAdmin">🔒 Admin Login</a>
+                    <a href="#" onclick="openAdminModal('subadmin')" id="menuSubAdmin">🛡️ Sub-Admin Login</a>
+                    <a href="#" onclick="switchSection('founder'); return false;" id="menuFounder">About Founder</a>
+                    <a href="#" onclick="switchSection('policy'); return false;" id="menuPolicy">Policy</a>
                 </div>
             </div>
         </div>
@@ -159,22 +162,26 @@
         </div>
 
         <div id="profile-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome1">होम पर जाएं</a>
             <div class="card">
-                <h3>प्रोफाइल और गाँव सेट करें</h3>
+                <h3 id="profileCardTitle">प्रोफाइल और गाँव सेट करें</h3>
                 <div id="formSection">
                     <form onsubmit="submitFullForm(event)">
-                        <div class="form-group"><label>पूरा नाम:</label><input type="text" id="userName" required placeholder="अपना नाम लिखें"></div>
-                        <div class="form-group"><label>गाँव का नाम:</label><input type="text" id="userVillage" required placeholder="गाँव का नाम लिखें"></div>
-                        <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="userPhone" required placeholder="10-digit mobile number"></div>
-                        <div class="form-group"><label>अपनी फोटो अपलोड करें:</label><input type="file" id="userPhoto" accept="image/*" required></div>
-                        <button type="submit" class="submit-btn">OTP भेजें</button>
+                        <div class="form-group"><label id="lblUserName">पूरा नाम:</label><input type="text" id="userName" required placeholder="अपना नाम लिखें"></div>
+                        <div class="form-group"><label id="lblUserVillage">गाँव का नाम:</label><input type="text" id="userVillage" required placeholder="गाँव का नाम लिखें"></div>
+                        <div class="form-group"><label id="lblUserPhone">मोबाइल नंबर:</label><input type="text" id="userPhone" required placeholder="10-digit mobile number"></div>
+                        <div class="form-group"><label id="lblUserPhoto">अपनी फोटो अपलोड करें:</label><input type="file" id="userPhoto" accept="image/*" required></div>
+                        <button type="submit" class="submit-btn" id="btnSendOtp">OTP भेजें</button>
                     </form>
                 </div>
                 <div id="otpSection" style="display: none;">
-                    <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
+                    <div class="otp-display-box">
+                        <p style="font-size: 13px; color: #555; margin-bottom: 4px;">आपका वेरिफिकेशन OTP कोड:</p>
+                        <span id="screenOtpValue">1234</span>
+                    </div>
+                    <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px; text-align: center;">ऊपर दिया गया OTP नीचे दर्ज करें।</p>
                     <div class="form-group"><label>OTP दर्ज करें:</label><input type="text" id="enteredOtp" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyOtpAndDirectApprove()">OTP वेरीफाई करें</button>
+                    <button class="submit-btn" onclick="verifyOtpAndDirectApprove()" id="btnVerifyOtp">OTP वेरीफाई करें</button>
                 </div>
                 <div id="statusSection" style="display: none; text-align: center;">
                     <div class="alert approved">🎉 बधाई हो! प्रोफाइल वेरीफाई हो चुकी है।</div>
@@ -184,7 +191,7 @@
                         <p><strong>गाँव:</strong> <span id="sVillage"></span></p>
                         <p style="color: green; margin-top: 8px; font-weight: bold;">✔ Active</p>
                     </div>
-                    <button onclick="resetProfile()" style="margin-top: 25px; background: #c62828; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: bold;">प्रोफाइल एडिट / रीसेट करें</button>
+                    <button onclick="resetProfile()" style="margin-top: 25px; background: #c62828; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: bold;" id="btnResetProfile">प्रोफाइल एडिट / रीसेट करें</button>
                 </div>
             </div>
         </div>
@@ -200,7 +207,8 @@
                     <button class="submit-btn" onclick="initAddOTP('dukaan')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="dukaanOtpArea" style="display:none; margin-top:15px;">
-                    <p id="dukaanOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
+                    <div class="otp-display-box"><span id="dukaanScreenOtp">1234</span></div>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="dukaanOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
@@ -221,7 +229,8 @@
                     <button class="submit-btn" onclick="initAddOTP('service')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="serviceOtpArea" style="display:none; margin-top:15px;">
-                    <p id="serviceOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
+                    <div class="otp-display-box"><span id="serviceScreenOtp">1234</span></div>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="serviceOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
@@ -242,7 +251,8 @@
                     <button class="submit-btn" onclick="initAddOTP('munadi')">OTP भेजकर सबमिट करें</button>
                 </div>
                 <div id="munadiOtpArea" style="display:none; margin-top:15px;">
-                    <p id="munadiOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
+                    <div class="otp-display-box"><span id="munadiScreenOtp">1234</span></div>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="munadiOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सब-एडमिन को भेजें</button>
                 </div>
@@ -267,7 +277,8 @@
                     <button class="submit-btn" onclick="initAddOTP('buysell')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="buysellOtpArea" style="display:none; margin-top:15px;">
-                    <p id="buysellOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
+                    <div class="otp-display-box"><span id="buysellScreenOtp">1234</span></div>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="buysellOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
@@ -316,7 +327,8 @@
                     <button class="submit-btn" onclick="initAddOTP('history')">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="historyOtpArea" style="display:none; margin-top:15px;">
-                    <p id="historyOtpMsg" style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px;">आपके मोबाइल पर OTP भेज दिया गया है।</p>
+                    <div class="otp-display-box"><span id="historyScreenOtp">1234</span></div>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="historyOtpInput" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
                 </div>
@@ -401,8 +413,6 @@
         let pendingItemData = {};
         let activeItemType = "";
         let currentLang = "hi";
-        
-        const FAST2SMS_API_KEY = "KD70zpGC1a892js3cUynqJrIWLbXYdf5kxVSNBRHE4ZmoAPQglDq4FUvrsLpQMS05eHbyVT8fXh7PAdl";
 
         function toggleMenu() { document.getElementById('menuContainer').classList.toggle('active'); }
         window.onclick = function(event) { if (!event.target.matches('.menu-toggle')) { document.getElementById('menuContainer').classList.remove('active'); } }
@@ -424,32 +434,83 @@
                 .then(data => {
                     if(data && data.current_weather) {
                         const temp = data.current_weather.temperature;
-                        document.getElementById('tickerWeatherText').innerText = `${villageName} - तापमान: ${temp}°C, साफ आसमान`;
+                        if(currentLang === 'hi') {
+                            document.getElementById('tickerWeatherText').innerText = `${villageName} - तापमान: ${temp}°C, साफ आसमान`;
+                        } else {
+                            document.getElementById('tickerWeatherText').innerText = `${villageName} - Temp: ${temp}°C, Clear Sky`;
+                        }
                     }
                 })
                 .catch(() => {
-                    document.getElementById('tickerWeatherText').innerText = "तापमान: 32°C, साफ आसमान";
+                    document.getElementById('tickerWeatherText').innerText = currentLang === 'hi' ? "तापमान: 32°C, साफ आसमान" : "Temp: 32°C, Clear Sky";
                 });
         }
 
-        function sendRealSMSOTP(phone, otp) {
+        function triggerScreenOTP(type, otp) {
             generatedOTP = otp;
-            const message = `Aapka OTP code ${otp} hai. Kripya ise kisi ke sath share na karein.`;
-            const realApiUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=q&message=${encodeURIComponent(message)}&language=english&flash=0&numbers=${phone}`;
-
-            console.log("GENERATED OTP FOR TESTING: ", otp);
-            
-            fetch(realApiUrl, { method: 'GET', mode: 'no-cors' }).catch(err => console.log(err));
-
-            const img = new Image();
-            img.src = realApiUrl;
-            
-            alert("OTP भेज दिया गया है! (यदि नेटवर्क ब्लॉक हो तो टेस्टिंग के लिए कंसोल/अर्ट में OTP: " + otp + ")");
+            if(type === 'profile') {
+                document.getElementById('screenOtpValue').innerText = otp;
+            } else {
+                const otpBox = document.getElementById(type + 'ScreenOtp');
+                if(otpBox) otpBox.innerText = otp;
+            }
         }
 
         function toggleLanguage() {
             currentLang = (currentLang === "hi") ? "en" : "hi";
-            document.getElementById('langToggleBtn').innerText = (currentLang === "hi") ? "Eng" : "हिन्दी";
+            const btn = document.getElementById('langToggleBtn');
+            btn.innerText = (currentLang === "hi") ? "Eng" : "हिन्दी";
+
+            if(currentLang === "en") {
+                document.getElementById('pageTitle').innerText = "Mera Gaov - Digital Portal";
+                document.getElementById('headerSubTitle').innerText = "Our Village - Our Identity";
+                document.getElementById('menuHome').innerText = "Home";
+                document.getElementById('menuAdmin').innerText = "🔒 Admin Login";
+                document.getElementById('menuSubAdmin').innerText = "🛡️ Sub-Admin Login";
+                document.getElementById('menuFounder').innerText = "About Founder";
+                document.getElementById('menuPolicy').innerText = "Privacy Policy";
+                
+                document.getElementById('tNewsTitle').innerText = "Village Latest News:";
+                document.getElementById('tMandiTitle').innerText = "Live Mandi Rates:";
+                document.getElementById('tWeatherTitle').innerText = "Live Weather:";
+
+                document.getElementById('btnProfile').innerText = "Set Profile & Village";
+                document.getElementById('btnDukaan').innerText = "View & Add Shops";
+                document.getElementById('btnServices').innerText = "Essential Services (Workers)";
+                document.getElementById('btnMunadi').innerText = "Announcements & News";
+                document.getElementById('btnBuySell').innerText = "Cattle, Wheat, Fodder Buy/Sell";
+                document.getElementById('btnGallery').innerText = "Village Gallery (Live Photos)";
+                document.getElementById('btnVideo').innerText = "Videos & Live Programs";
+                document.getElementById('btnHistory').innerText = "Village History & Info";
+                document.getElementById('btnPashu').innerText = "Cattle Care & Health Advice";
+                document.getElementById('btnEdu').innerText = "Children Education & Study";
+                document.getElementById('btnGov').innerText = "Haryana Govt Schemes";
+            } else {
+                document.getElementById('pageTitle').innerText = "मेरा गाँव - डिजिटल पोर्टल";
+                document.getElementById('headerSubTitle').innerText = "मेरा गाँव - मेरी पहचान";
+                document.getElementById('menuHome').innerText = "Home";
+                document.getElementById('menuAdmin').innerText = "🔒 Admin Login";
+                document.getElementById('menuSubAdmin').innerText = "🛡️ Sub-Admin Login";
+                document.getElementById('menuFounder').innerText = "About Founder";
+                document.getElementById('menuPolicy').innerText = "Policy";
+                
+                document.getElementById('tNewsTitle').innerText = "गाँव की ताज़ा खबर:";
+                document.getElementById('tMandiTitle').innerText = "लाइव मंडी भाव:";
+                document.getElementById('tWeatherTitle').innerText = "लाइव मौसम:";
+
+                document.getElementById('btnProfile').innerText = "मेरी प्रोफाइल व गाँव सेट करें";
+                document.getElementById('btnDukaan').innerText = "दुकान देखें व जोड़ें";
+                document.getElementById('btnServices').innerText = "आवश्यक सेवाएं (मिस्त्री आदि)";
+                document.getElementById('btnMunadi').innerText = "मुनादी व खबरें";
+                document.getElementById('btnBuySell').innerText = "पशु, गेहूँ, चारा खरीद-बेच";
+                document.getElementById('btnGallery').innerText = "गाँव की गैलरी (लाइव फोटो)";
+                document.getElementById('btnVideo').innerText = "वीडियो और लाइव प्रोग्राम";
+                document.getElementById('btnHistory').innerText = "गाँव का इतिहास व जानकारी";
+                document.getElementById('btnPashu').innerText = "पशु सेवा एवं स्वास्थ्य सलाह";
+                document.getElementById('btnEdu').innerText = "बच्चों की शिक्षा व पढ़ाई";
+                document.getElementById('btnGov').innerText = "Haryana Govt Schemes";
+            }
+            fetchLiveWeather();
         }
 
         function getAdminPass() { return localStorage.getItem('admin_pass') || 'admin123'; }
@@ -496,7 +557,7 @@
                     document.getElementById('formSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
                     
-                    sendRealSMSOTP(phone, otp);
+                    triggerScreenOTP('profile', otp);
                 };
                 reader.readAsDataURL(photoInput.files[0]);
             } else { alert('फोटो सेलेक्ट करें!'); }
@@ -510,12 +571,14 @@
                 localStorage.setItem('m_photo', tempProfileData.photo);
                 localStorage.setItem('m_status', 'approved');
 
-                // Firebase पर प्रोफाइल सेव करें
-                db.ref('users/' + tempProfileData.phone.replace(/[^0-9]/g, '')).set(tempProfileData);
-
-                loadProfileState();
-                switchSection('home');
-                alert('प्रोफाइल वेरीफाई होकर सेव हो चुकी है!');
+                // Firebase पर सुरक्षित और सही तरीके से सेव करें
+                db.ref('users/' + tempProfileData.phone.replace(/[^0-9]/g, '')).set(tempProfileData).then(() => {
+                    loadProfileState();
+                    switchSection('home');
+                    alert('प्रोफाइल वेरीफाई होकर फायरबेस पर सेव हो चुकी है!');
+                }).catch((err) => {
+                    alert('सेव करने में त्रुटि: ' + err.message);
+                });
             } else { alert('गलत OTP!'); }
         }
 
@@ -708,7 +771,7 @@
             document.getElementById(type + 'FormArea').style.display = 'none';
             document.getElementById(type + 'OtpArea').style.display = 'block';
             
-            sendRealSMSOTP(phone, otp);
+            triggerScreenOTP(type, otp);
         }
 
         function verifyAndSaveItem() {
@@ -716,14 +779,22 @@
             const enteredOtp = document.getElementById(type + 'OtpInput').value;
             if(enteredOtp == generatedOTP) {
                 if(type === 'munadi') {
-                    db.ref('munadi_pending').push(pendingItemData, () => {
-                        renderUserPendingMunadi();
-                        alert('OTP वेरीफाई हो गया! सूचना सत्यापन के लिए भेज दी गई है।');
+                    db.ref('munadi_pending').push(pendingItemData, (error) => {
+                        if(!error) {
+                            renderUserPendingMunadi();
+                            alert('OTP वेरीफाई हो गया! सूचना सत्यापन के लिए भेज दी गई है।');
+                        } else {
+                            alert('त्रुटि: ' + error.message);
+                        }
                     });
                 } else {
-                    db.ref(type + '_data').push(pendingItemData, () => {
-                        alert('OTP वेरीफाई होकर फायरबेस पर सेव हो गया है!');
-                        renderList(type);
+                    db.ref(type + '_data').push(pendingItemData, (error) => {
+                        if(!error) {
+                            alert('OTP वेरीफाई होकर फायरबेस पर सेव हो गया है!');
+                            renderList(type);
+                        } else {
+                            alert('त्रुटि: ' + error.message);
+                        }
                     });
                 }
 
