@@ -3,239 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Dashboard & Profile System</title>
+    <title>मेरा गाँव - डिजिटल पोर्टल</title>
     <style>
-        /* Basic Reset & Styling */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f4f9; color: #333; }
 
-        /* Navigation Bar */
-        nav { background: #2c3e50; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; position: relative; }
-        .logo { font-size: 20px; font-weight: bold; }
-        .menu { list-style: none; display: flex; gap: 20px; }
-        .menu li { position: relative; }
-        .menu a { color: #fff; text-decoration: none; padding: 8px 12px; display: block; border-radius: 4px; transition: 0.3s; }
-        .menu a:hover, .menu a.active { background: #34495e; }
+        /* Header Style (Aapke purane design jaisa) */
+        header { background: #1b5e20; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .logo-area h1 { font-size: 20px; font-weight: bold; }
+        .logo-area p { font-size: 12px; color: #c8e6c9; }
+        
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .lang-btn { background: #2e7d32; color: white; border: 1px solid #81c784; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
 
-        /* Dropdown Menu */
-        .dropdown-content {
+        /* Custom Dropdown Menu */
+        .menu-container { position: relative; display: inline-block; }
+        .menu-toggle { background: #2e7d32; color: white; border: 1px solid #81c784; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .dropdown-menu {
             display: none;
             position: absolute;
-            background-color: #34495e;
+            right: 0;
+            background-color: #ffffff;
             min-width: 160px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-            z-index: 1;
-            top: 100%;
-            left: 0;
+            z-index: 10;
             border-radius: 4px;
             overflow: hidden;
         }
-        .dropdown-content a { color: white; padding: 10px 14px; text-decoration: none; display: block; }
-        .dropdown-content a:hover { background-color: #2c3e50; }
-        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-menu a { color: #333; padding: 10px 14px; text-decoration: none; display: block; font-size: 14px; border-bottom: 1px solid #eee; }
+        .dropdown-menu a:hover { background-color: #f1f8e9; color: #1b5e20; }
+        .menu-container.active .dropdown-menu { display: block; }
 
-        /* Main Container */
-        .container { max-width: 800px; margin: 30px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        /* Main Container & Sections */
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
         .section { display: none; }
         .section.active { display: block; }
 
-        /* Forms & Buttons */
-        h2 { margin-bottom: 20px; color: #2c3e50; }
+        /* Portal Buttons */
+        .portal-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #2e7d32;
+            color: white;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
+            transition: 0.2s;
+        }
+        .portal-btn.profile-btn { background: #ffffff; color: #1b5e20; border: 2px solid #2e7d32; justify-content: center; text-align: center; }
+        .portal-btn.subadmin-btn { background: #ef6c00; } /* Orange button like your image */
+        .portal-btn.dark-btn { background: #37474f; }
+        .portal-btn:hover { opacity: 0.9; }
+
+        /* Profile & Status Box */
+        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 10px; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { background: #27ae60; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #219653; }
-
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { background: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
+        
         /* Status Alerts */
-        .alert { padding: 15px; border-radius: 4px; margin-top: 15px; font-weight: bold; }
-        .alert.pending { background: #f39c12; color: #fff; }
-        .alert.approved { background: #27ae60; color: #fff; }
-        .alert.rejected { background: #c0392b; color: #fff; }
+        .alert { padding: 12px; border-radius: 4px; margin-top: 15px; font-weight: bold; text-align: center; }
+        .alert.pending { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert.approved { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert.rejected { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-        /* Admin Controls Simulation */
-        .admin-box { background: #ecf0f1; padding: 15px; margin-top: 20px; border-radius: 4px; border-left: 5px solid #e74c3c; }
+        .back-link { display: inline-block; margin-bottom: 15px; color: #1b5e20; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Bar -->
-    <nav>
-        <div class="logo">MeraApp</div>
-        <ul class="menu">
-            <li><a href="#" onclick="showSection('home', this)" class="active">Home</a></li>
-            
-            <!-- Dropdown Menu -->
-            <li class="dropdown">
-                <a href="#">Menu ▾</a>
-                <div class="dropdown-content">
-                    <a href="#" onclick="showSection('founder', this)">About Founder</a>
-                    <a href="#" onclick="showSection('admin', this)">Admin</a>
-                    <a href="#" onclick="showSection('subadmin', this)">Sub Admin</a>
-                    <a href="#" onclick="showSection('policy', this)">Policy</a>
+    <!-- Header -->
+    <header>
+        <div class="logo-area">
+            <h1>मेरा गाँव - डिजिटल पोर्टल</h1>
+            <p>गाँव को समर्पित डिजिटल सेवा</p>
+        </div>
+        <div class="header-right">
+            <button class="lang-btn">English</button>
+            <!-- Dropdown Menu Button -->
+            <div class="menu-container" id="menuContainer">
+                <button class="menu-toggle" onclick="toggleMenu()">Menu ▾</button>
+                <div class="dropdown-menu">
+                    <a href="#" onclick="switchSection('home'); return false;">Home</a>
+                    <a href="#" onclick="switchSection('founder'); return false;">About Founder</a>
+                    <a href="#" onclick="switchSection('admin'); return false;">Admin</a>
+                    <a href="#" onclick="switchSection('subadmin'); return false;">Sub Admin</a>
+                    <a href="#" onclick="switchSection('policy'); return false;">Policy</a>
                 </div>
-            </li>
+            </div>
+        </div>
+    </header>
 
-            <li><a href="#" onclick="showSection('profile', this)">Profile / Status</a></li>
-        </ul>
-    </nav>
-
-    <!-- Content Sections -->
     <div class="container">
-        
-        <!-- Home Section -->
+
+        <!-- HOME SECTION (Main Buttons) -->
         <div id="home" class="section active">
-            <h2>Welcome to Home Page</h2>
-            <p>Sabhi buttons live hain. Upar menu se aap alag-alag pages par ja sakte hain.</p>
+            <button class="portal-btn profile-btn" onclick="switchSection('profile-page')">
+                👤 अपनी प्रोफाइल सेट करें / गाँव जोड़ें
+            </button>
+            <button class="portal-btn" onclick="alert('Dukaan section khul raha hai')">
+                🏥 1. दुकान देखें / अपनी दुकान जोड़ें ➔
+            </button>
+            <button class="portal-btn" onclick="alert('Essential services section')">
+                🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि) ➔
+            </button>
+            <button class="portal-btn subadmin-btn" onclick="alert('Munadi section')">
+                📢 2. मुनादी, मेला व खबरें (Sub-Admin Approved) ➔
+            </button>
+            <button class="portal-btn" onclick="alert('Buy/Sell section')">
+                🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔
+            </button>
+            <button class="portal-btn" onclick="alert('Gallery section')">
+                📸 4. गाँव की गैलरी (लाइव फोटो) ➔
+            </button>
+            <button class="portal-btn" onclick="alert('Videos section')">
+                🎵 5. गाँव के वीडियो और लोक गीत ➔
+            </button>
+            <button class="portal-btn dark-btn" onclick="alert('History section')">
+                📚 6. गाँव का इतिहास, सरपंच व शहीद ➔
+            </button>
         </div>
 
-        <!-- About Founder Section -->
-        <div id="founder" class="section">
-            <h2>About Founder</h2>
-            <p>Yahan founder ke baare mein jankari di gayi hai.</p>
-        </div>
+        <!-- PROFILE & STATUS PAGE -->
+        <div id="profile-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par wapas jayein</a>
+            <div class="card">
+                <h3>अपनी प्रोफाइल विवरण</h3><br>
+                
+                <!-- Form jo user bharega -->
+                <div id="formSection" style="display: none;">
+                    <form id="userProfileForm" onsubmit="submitUserProfile(event)">
+                        <div class="form-group">
+                            <label>पूरा नाम:</label>
+                            <input type="text" id="pName" required placeholder="अपना नाम लिखें">
+                        </div>
+                        <div class="form-group">
+                            <label>मोबाइल नंबर / WhatsApp:</label>
+                            <input type="text" id="pPhone" required placeholder="मोबाइल नंबर लिखें">
+                        </div>
+                        <button type="submit" class="submit-btn">Admin ko Submit Karein</button>
+                    </form>
+                </div>
 
-        <!-- Admin Section -->
-        <div id="admin" class="section">
-            <h2>Admin Section</h2>
-            <p>Yeh main admin ka page hai.</p>
-        </div>
-
-        <!-- Sub Admin Section -->
-        <div id="subadmin" class="section">
-            <h2>Sub Admin Section</h2>
-            <p>Yeh sub-admin ki details ka page hai.</p>
-        </div>
-
-        <!-- Policy Section -->
-        <div id="policy" class="section">
-            <h2>Privacy Policy</h2>
-            <p>Hamari website ki privacy policy aur terms & conditions yahan hain.</p>
-        </div>
-
-        <!-- Profile & Status Section -->
-        <div id="profile" class="section">
-            <h2>User Profile & Status</h2>
-            
-            <div id="form-container">
-                <form id="profileForm" onsubmit="submitProfile(event)">
-                    <div class="form-group">
-                        <label>Aapka Naam:</label>
-                        <input type="text" id="userName" required placeholder="Naam likhein">
+                <!-- Status show karne ka area -->
+                <div id="statusSection" style="display: none;">
+                    <div id="statusAlertBox" class="alert"></div>
+                    
+                    <div id="approvedDetails" style="margin-top: 15px; display: none;">
+                        <p><strong>नाम:</strong> <span id="showName"></span></p>
+                        <p><strong>मोबाइल:</strong> <span id="showPhone"></span></p>
+                        <p style="color: green; margin-top: 10px; font-weight: bold;">✔ Aapki profile verified hai.</p>
                     </div>
-                    <div class="form-group">
-                        <label>Email ID:</label>
-                        <input type="email" id="userEmail" required placeholder="Email likhein">
-                    </div>
-                    <button type="submit">Admin ko Submit Karein</button>
-                </form>
-            </div>
 
-            <!-- Status Display Area -->
-            <div id="statusContainer" style="display: none;">
-                <div id="statusMessage" class="alert"></div>
-                <div id="approvedContent" style="display: none; margin-top: 15px;">
-                    <h3>Aapki Approved Profile:</h3>
-                    <p><strong>Naam:</strong> <span id="displayName"></span></p>
-                    <p><strong>Email:</strong> <span id="displayEmail"></span></p>
+                    <button onclick="resetProfileData()" style="margin-top: 15px; background: #c62828; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Profile Edit/Reset Karein</button>
+                </div>
+
+                <!-- Testing ke liye Admin Simulation Box -->
+                <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #ccc;">
+                    <p style="font-size: 12px; color: #666; margin-bottom: 8px;"><b>[Admin Testing Control]:</b> Yahan se status badal kar check karein:</p>
+                    <button onclick="setAdminStatus('approved')" style="background: #2e7d32; color:white; border:none; padding:5px 10px; border-radius:3px; font-size:12px; cursor:pointer;">Approve</button>
+                    <button onclick="setAdminStatus('rejected')" style="background: #c62828; color:white; border:none; padding:5px 10px; border-radius:3px; font-size:12px; cursor:pointer;">Reject</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Testing ke liye Admin Panel Simulation -->
-            <div class="admin-box">
-                <h4>[Testing Tool] Admin Panel Simulation:</h4>
-                <p>Yahan se aap status change karke check kar sakte hain:</p>
-                <br>
-                <button onclick="changeStatus('approved')" style="background: #27ae60;">Approve Karein</button>
-                <button onclick="changeStatus('rejected')" style="background: #c0392b;">Reject Karein</button>
-                <button onclick="resetProfile()" style="background: #7f8c8d;">Reset Karein</button>
+        <!-- ABOUT FOUNDER SECTION -->
+        <div id="founder" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
+            <div class="card">
+                <h2>About Founder</h2>
+                <p style="margin-top: 10px;">Is digital portal ke sansthapak (founder) ke baare mein jankari yahan uplabdh hai.</p>
+            </div>
+        </div>
+
+        <!-- ADMIN SECTION -->
+        <div id="admin" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
+            <div class="card">
+                <h2>Admin Section</h2>
+                <p style="margin-top: 10px;">Yahan main admin ki details aur management panel ki jankari hai.</p>
+            </div>
+        </div>
+
+        <!-- SUB ADMIN SECTION -->
+        <div id="subadmin" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
+            <div class="card">
+                <h2>Sub Admin Section</h2>
+                <p style="margin-top: 10px;">Yahan sub-admin list aur unke adhikar diye gaye hain.</p>
+            </div>
+        </div>
+
+        <!-- POLICY SECTION -->
+        <div id="policy" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Wapas</a>
+            <div class="card">
+                <h2>Privacy Policy</h2>
+                <p style="margin-top: 10px;">Hamari website ki policy aur terms yahan read kar sakte hain.</p>
             </div>
         </div>
 
     </div>
 
-    <!-- JavaScript for Interactivity -->
+    <!-- JavaScript -->
     <script>
-        // Section Switching Logic (Live Buttons)
-        function showSection(sectionId, element) {
-            // Sections hide/show
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+        // Menu Toggle Logic
+        function toggleMenu() {
+            const menu = document.getElementById('menuContainer');
+            menu.classList.toggle('active');
+        }
 
-            // Menu active class handling (agar zaroori ho)
-            if(element && !element.closest('.dropdown-content')) {
-                document.querySelectorAll('.menu > li > a').forEach(a => a.classList.remove('active'));
-                element.classList.add('active');
+        // Click outside to close menu
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-toggle')) {
+                document.getElementById('menuContainer').classList.remove('active');
             }
         }
 
-        // Profile Form Submit Logic
-        function submitProfile(event) {
-            event.preventDefault();
-            const name = document.getElementById('userName').value;
-            const email = document.getElementById('userEmail').value;
-
-            localStorage.setItem('profileName', name);
-            localStorage.setItem('profileEmail', email);
-            localStorage.setItem('profileStatus', 'pending');
-
-            loadProfileState();
+        // Section Switcher
+        function switchSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            if(sectionId === 'profile-page') {
+                loadProfileStatus();
+            }
         }
 
-        // Load Status on Page Load
-        function loadProfileState() {
-            const status = localStorage.getItem('profileStatus');
-            const name = localStorage.getItem('profileName');
-            const email = localStorage.getItem('profileEmail');
+        // Profile Form Submit
+        function submitUserProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const phone = document.getElementById('pPhone').value;
 
-            const formContainer = document.getElementById('form-container');
-            const statusContainer = document.getElementById('statusContainer');
-            const statusMessage = document.getElementById('statusMessage');
-            const approvedContent = document.getElementById('approvedContent');
+            localStorage.setItem('portal_name', name);
+            localStorage.setItem('portal_phone', phone);
+            localStorage.setItem('portal_status', 'pending'); // Default status on submit
+
+            loadProfileStatus();
+        }
+
+        // Load & Check Profile Status
+        function loadProfileStatus() {
+            const status = localStorage.getItem('portal_status');
+            const name = localStorage.getItem('portal_name');
+            const phone = localStorage.getItem('portal_phone');
+
+            const formSec = document.getElementById('formSection');
+            const statusSec = document.getElementById('statusSection');
+            const alertBox = document.getElementById('statusAlertBox');
+            const approvedBox = document.getElementById('approvedDetails');
 
             if (!status) {
-                formContainer.style.display = 'block';
-                statusContainer.style.display = 'none';
+                formSec.style.display = 'block';
+                statusSec.style.display = 'none';
             } else {
-                formContainer.style.display = 'none';
-                statusContainer.style.display = 'block';
+                formSec.style.display = 'none';
+                statusSec.style.display = 'block';
 
                 if (status === 'pending') {
-                    statusMessage.className = 'alert pending';
-                    statusMessage.innerHTML = 'Aapki profile admin ke paas review ke liye pending hai. Kripya intezaar karein!';
-                    approvedContent.style.display = 'none';
+                    alertBox.className = 'alert pending';
+                    alertBox.innerHTML = '⏳ Aapki profile admin ke paas review ke liye bhej di gayi hai. Status: Pending';
+                    approvedBox.style.display = 'none';
                 } else if (status === 'approved') {
-                    statusMessage.className = 'alert approved';
-                    statusMessage.innerHTML = 'Badhai ho! Aapki profile Admin dwara Approve kar di gayi hai.';
-                    document.getElementById('displayName').innerText = name;
-                    document.getElementById('displayEmail').innerText = email;
-                    approvedContent.style.display = 'block';
+                    alertBox.className = 'alert approved';
+                    alertBox.innerHTML = '🎉 Badhai ho! Aapki profile Admin dwara Approved kar di gayi hai.';
+                    document.getElementById('showName').innerText = name;
+                    document.getElementById('showPhone').innerText = phone;
+                    approvedBox.style.display = 'block';
                 } else if (status === 'rejected') {
-                    statusMessage.className = 'alert rejected';
-                    statusMessage.innerHTML = 'Khed hai! Aapki profile reject kar di gayi hai.';
-                    approvedContent.style.display = 'none';
+                    alertBox.className = 'alert rejected';
+                    alertBox.innerHTML = '❌ Khed hai! Aapki profile admin dwara reject kar di gayi hai.';
+                    approvedBox.style.display = 'none';
                 }
             }
         }
 
-        // Admin Simulation Functions
-        function changeStatus(newStatus) {
-            if(!localStorage.getItem('profileStatus')) {
-                alert('Pehle koi profile submit karein!');
+        // Admin Simulation Function
+        function setAdminStatus(newStatus) {
+            if(!localStorage.getItem('portal_status')) {
+                alert('Pehle apni profile form bhar kar submit karein!');
                 return;
             }
-            localStorage.setItem('profileStatus', newStatus);
-            loadProfileState();
+            localStorage.setItem('portal_status', newStatus);
+            loadProfileStatus();
+            alert('Admin status update ho gaya: ' + newStatus);
         }
 
-        function resetProfile() {
-            localStorage.clear();
-            document.getElementById('profileForm').reset();
-            loadProfileState();
+        // Reset Profile
+        function resetProfileData() {
+            localStorage.removeItem('portal_status');
+            localStorage.removeItem('portal_name');
+            localStorage.removeItem('portal_phone');
+            document.getElementById('userProfileForm').reset();
+            loadProfileStatus();
         }
-
-        // Page load hone par status check karein
-        window.onload = loadProfileState;
     </script>
 </body>
 </html>
