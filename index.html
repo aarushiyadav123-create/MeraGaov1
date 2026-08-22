@@ -3,125 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>हरियाणा ग्रामीण सेवा - परिवार पहचान पत्र पोर्टल</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>मेरा गाँव - Malkosh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1b5e20;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .profile-card {
+            background: white;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #555;
+        }
+        .container {
+            padding: 0 15px;
+        }
+        .btn-shop {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .menu-item {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+<body>
 
-    <div class="w-full max-w-xl bg-white shadow-lg rounded-lg p-6 mt-6 border-t-4 border-blue-700">
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-blue-800">हरियाणा ग्रामीण सेवा पोर्टल</h1>
-            <p class="text-sm text-gray-600 mt-1">परिवार पहचान पत्र (PPP) एवं ग्राम सूची चयन</p>
-        </div>
+    <header>
+        <h2>मेरा गाँव - MALKOSH</h2>
+        <p style="margin: 0; font-size: 14px;">हरियाणा ग्रामीण सेवा</p>
+    </header>
 
-        <!-- District Selection -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2">ज़िला चुनें (Select District):</label>
-            <select id="districtSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                <option value="">-- ज़िला चुनें --</option>
-            </select>
-        </div>
-
-        <!-- Block Selection -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2">ब्लॉक / तहसील चुनें (Select Block):</label>
-            <select id="blockSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" disabled>
-                <option value="">-- पहले ज़िला चुनें --</option>
-            </select>
-        </div>
-
-        <!-- Village Selection / Display -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2">गाँव की सूची (Villages List):</label>
-            <div id="villageList" class="p-4 border border-gray-300 rounded-lg bg-gray-50 min-h-[120px] max-h-60 overflow-y-auto text-gray-800">
-                <span class="text-gray-400">गाँव देखने के लिए पहले ज़िला और ब्लॉक चुनें...</span>
-            </div>
+    <!-- यूजर प्रोफाइल सेक्शन -->
+    <div class="profile-card">
+        <div class="profile-img">👤</div>
+        <div>
+            <h3 id="userName" style="margin: 0 0 5px 0;">विकास कुमार</h3>
+            <p style="margin: 0; color: #666; font-size: 14px;">गाँव: Malkosh (सक्रिय)</p>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <div class="container">
+        <!-- गाँव की नंबर 1 शॉप बटन -->
+        <button class="btn-shop">⭐ गाँव की नं. 1 शॉप / दुकान</button>
 
-    <script>
-        const firebaseConfig = {
-            databaseURL: "https://meragaov-ab9fb-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
+        <!-- श्रेणियां (Categories) -->
+        <h3>गाँव की आवश्यक सेवाएं</h3>
+        <div class="grid-menu">
+            <div class="menu-item">🛠️ मिस्त्री & मेडिकल</div>
+            <div class="menu-item">🚜 ट्रैक्टर & गाड़ी किराया</div>
+            <div class="menu-item">📜 पंडित जी & सेवाएं</div>
+            <div class="menu-item">📢 मुनादी & सूचना (Admin)</div>
+        </div>
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        <!-- खरीद-बेच और प्रॉपर्टी -->
+        <h3>खरीद - बेच & प्रॉपर्टी</h3>
+        <div class="grid-menu">
+            <div class="menu-item">🌾 पशु, गेहूँ, तूड़ा, चारा</div>
+            <div class="menu-item">🧱 प्लॉट या किला (Buy/Sell)</div>
+        </div>
+    </div>
 
-        let villageData = {};
-
-        const districtSelect = document.getElementById('districtSelect');
-        const blockSelect = document.getElementById('blockSelect');
-        const villageList = document.getElementById('villageList');
-
-        // डेटाबेस के रूट से सीधा डेटा फेच करना
-        db.ref('/').once('value', (snapshot) => {
-            villageData = snapshot.val();
-            console.log("Firebase से आया डेटा:", villageData); // यह F12 कंसोल में दिखेगा
-
-            if (villageData) {
-                let districts = Object.keys(villageData).sort();
-                districtSelect.innerHTML = '<option value="">-- ज़िला चुनें --</option>';
-                
-                districts.forEach(district => {
-                    let opt = document.createElement('option');
-                    opt.value = district;
-                    opt.textContent = district;
-                    districtSelect.appendChild(opt);
-                });
-            } else {
-                console.log("डेटा खाली मिल रहा है!");
-            }
-        }, (error) => {
-            console.error("Firebase Error:", error);
-        });
-
-        // District Change Event
-        districtSelect.addEventListener('change', function() {
-            const selectedDist = this.value;
-            blockSelect.innerHTML = '<option value="">-- ब्लॉक चुनें --</option>';
-            villageList.innerHTML = '<span class="text-gray-400">गाँव देखने के लिए ब्लॉक चुनें...</span>';
-            blockSelect.disabled = true;
-
-            if (selectedDist && villageData[selectedDist]) {
-                blockSelect.disabled = false;
-                let blocks = Object.keys(villageData[selectedDist]).sort();
-                blocks.forEach(block => {
-                    let opt = document.createElement('option');
-                    opt.value = block;
-                    opt.textContent = block;
-                    blockSelect.appendChild(opt);
-                });
-            }
-        });
-
-        // Block Change Event
-        blockSelect.addEventListener('change', function() {
-            const selectedDist = districtSelect.value;
-            const selectedBlock = this.value;
-            villageList.innerHTML = '';
-
-            if (selectedDist && selectedBlock && villageData[selectedDist][selectedBlock]) {
-                let villages = villageData[selectedDist][selectedBlock];
-                if (Array.isArray(villages) && villages.length > 0) {
-                    let ul = document.createElement('ul');
-                    ul.className = 'list-disc pl-5 space-y-1';
-                    villages.forEach(village => {
-                        let li = document.createElement('li');
-                        li.textContent = village;
-                        ul.appendChild(li);
-                    });
-                    villageList.appendChild(ul);
-                } else {
-                    villageList.textContent = 'इस ब्लॉक में कोई गाँव उपलब्ध नहीं है।';
-                }
-            } else {
-                villageList.innerHTML = '<span class="text-gray-400">गाँव देखने के लिए ब्लॉक चुनें...</span>';
-            }
-        });
-    </script>
 </body>
 </html>
