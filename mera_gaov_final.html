@@ -74,7 +74,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <div style="margin-top:10px"><label>गाँव</label><select id="village" disabled><option value="">पहले ब्लॉक चुनें</option></select></div>
 <div style="margin-top:10px"><label>अपनी फोटो</label><input id="photo" type="file" accept="image/*"></div>
 <button class="btn success" style="width:100%;margin-top:12px" onclick="saveProfile()">प्रोफाइल सेव करें</button>
-<p class="status">नोट: गाँव की सूची उपलब्ध LGD/डेटा फ़ाइल से जोड़ी जा सकती है।</p>
+<p class="status">नोट: गाँव की सूची उपलब्ध LGD/डेटा फ़ाइल से जोड़ी जा सकती है।[span_1](start_span)[span_1](end_span)</p>
 </div>
 <div id="profileView" class="hidden"></div>
 </div></section>
@@ -99,8 +99,8 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 
 <section id="gov" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🏛️ Haryana Government</h2><a class="btn" href="https://parivarpehchan.haryana.gov.in/" target="_blank">PPP Portal</a><br><br><a class="btn" href="https://hrye.hry.nic.in/" target="_blank">HKRN Portal</a></div></section>
 
-<section id="founder" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>संस्थापक</h2><p><b>Kusum W/O Rajesh Yadav</b></p><p class="small">यह पोर्टल हमारे पूरे गाँव को समर्पित है।</p></div></section>
-<section id="policy" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>Privacy Policy</h2><p>पोर्टल में Firebase आधारित डेटा स्टोरेज का उपयोग किया जाता है।</p></div></section>
+<section id="founder" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>संस्थापक</h2><p><b>Kusum W/O Rajesh Yadav</b></p><p class="small">यह पोर्टल हमारे पूरे गाँव को समर्पित है।[span_2](start_span)[span_2](end_span)</p></div></section>
+<section id="policy" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>Privacy Policy</h2><p>पोर्टल में Firebase आधारित डेटा स्टोरेज का उपयोग किया जाता है।[span_3](start_span)[span_3](end_span)</p></div></section>
 
 <section id="admin" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>Admin Panel</h2><h3>लंबित मुनादी</h3><div id="adminPending"></div><button class="btn danger" onclick="clearData()" style="margin-top:15px">सारा डेटा डिलीट करें</button></div></section>
 </main>
@@ -115,21 +115,69 @@ messagingSenderId:"424538068212",appId:"1:424538068212:web:2d58406aeb0b4d9524faa
 measurementId:"G-86FH5M7NP1"};
 const app=firebase.initializeApp(firebaseConfig),db=firebase.database();
 
+// यहाँ जिले, ब्लॉक और गाँवों का डेटा सही रूप से जोड़ा गया है
 const DATA={
-"Haryana":{blocks:{"Rohtak":["Rohtak"],"Bhiwani":["Bhiwani"],"Hisar":["Hisar"],"Jhajjar":["Jhajjar"],"Jind":["Jind"],"Sonipat":["Sonipat"],"Panipat":["Panipat"],"Rewari":["Rewari"],"Gurugram":["Gurugram"],"Faridabad":["Faridabad"]}}
+  "Haryana": {
+    "blocks": {
+      "Rohtak": {
+        "Rohtak": ["Ismaila", "Kalanaur", "Bhalout", "Sanghi", "Pakasma", "Kharawar"],
+        "Meham": ["Meham", "Mansi", "Bainsi", "Kharak Jatan", "Rithal"]
+      },
+      "Jhajjar": {
+        "Jhajjar": ["Jhajjar Rural", "Chhara", "Khedi Jat", "Badli", "Jharli"],
+        "Bahadurgarh": ["Bahadurgarh Rural", "Asaudha", "Barah", "Kachroli"]
+      },
+      "Bhiwani": {
+        "Bhiwani": ["Bhiwani Rural", "Dinod", "Talu", "Nimri"],
+        "Siwani": ["Siwani", "Dhana", "Gharwal"]
+      },
+      "Hisar": {
+        "Hisar": ["Hisar Rural", "Agroha", "Khedar", "Barwala"],
+        "Hansi": ["Hansi Rural", "Uklana", "Narnaund"]
+      },
+      "Sonipat": {
+        "Sonipat": ["Sonipat Rural", "Ganaur", "Rai", "Kharkhoda"],
+        "Ganaur": ["Pirthi Pur", "Teori", "Jatheri"]
+      }
+    }
+  }
 };
+
 let admin=false;
 
 function v(id){return document.getElementById(id).value.trim()}
 function toggleMenu(){document.getElementById("menu").classList.toggle("hidden")}
 function go(id){document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");if(id==="profile")loadProfile();if(["shops","services","buysell","history"].includes(id))render(id);if(id==="munadi")renderMunadi();if(id==="gallery")renderGallery();if(id==="videos")renderVideos();if(id==="admin")renderAdmin()}
 function toggleLang(){document.getElementById("lang").innerText=document.getElementById("lang").innerText==="Eng"?"हिन्दी":"Eng"}
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function esc(s){return String(s?="" "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
 const district=document.getElementById("district"),block=document.getElementById("block"),village=document.getElementById("village");
+
 Object.keys(DATA).forEach(d=>{let o=document.createElement("option");o.value=d;o.textContent=d;district.appendChild(o)});
-district.onchange=()=>{block.innerHTML='<option value="">ब्लॉक चुनें</option>';village.innerHTML='<option value="">गाँव चुनें</option>';village.disabled=true;if(!district.value){block.disabled=true;return}block.disabled=false;Object.keys(DATA[district.value].blocks).forEach(b=>{let o=document.createElement("option");o.value=b;o.textContent=b;block.appendChild(o)})};
-block.onchange=()=>{village.innerHTML='<option value="">गाँव चुनें</option>';village.disabled=true;if(!block.value)return;DATA[district.value].blocks[block.value].forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;village.appendChild(o)});village.disabled=false};
+
+district.onchange=()=>{
+  block.innerHTML='<option value="">ब्लॉक चुनें</option>';
+  village.innerHTML='<option value="">गाँव चुनें</option>';
+  village.disabled=true;
+  if(!district.value){block.disabled=true;return}
+  block.disabled=false;
+  Object.keys(DATA[district.value].blocks).forEach(b=>{
+    let o=document.createElement("option");o.value=b;o.textContent=b;block.appendChild(o)
+  })
+};
+
+block.onchange=()=>{
+  village.innerHTML='<option value="">गाँव चुनें</option>';
+  village.disabled=true;
+  if(!block.value)return;
+  let villages = DATA[district.value].blocks[block.value];
+  if(villages){
+    villages.forEach(x=>{
+      let o=document.createElement("option");o.value=x;o.textContent=x;village.appendChild(o)
+    });
+    village.disabled=false;
+  }
+};
 
 function compress(file,max=700){return new Promise((res,rej)=>{let r=new FileReader();r.onload=e=>{let im=new Image();im.onload=()=>{let c=document.createElement("canvas"),scale=Math.min(1,max/im.width,max/im.height);c.width=im.width*scale;c.height=im.height*scale;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.72))};im.src=e.target.result};r.onerror=rej;r.readAsDataURL(file)})}
 
