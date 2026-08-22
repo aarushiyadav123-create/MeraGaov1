@@ -74,7 +74,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <div style="margin-top:10px"><label>गाँव</label><select id="village" disabled><option value="">पहले ब्लॉक चुनें</option></select></div>
 <div style="margin-top:10px"><label>अपनी फोटो</label><input id="photo" type="file" accept="image/*"></div>
 <button class="btn success" style="width:100%;margin-top:12px" onclick="saveProfile()">प्रोफाइल सेव करें</button>
-<p class="status" id="villageStatus">नोट: Firebase से गाँव का मास्टर डेटा फेच किया जा रहा है...</p>
+<p class="status" id="villageStatus">नोट: Firebase से डेटा कनेक्ट किया जा रहा है...</p>
 </div>
 <div id="profileView" class="hidden"></div>
 </div></section>
@@ -122,33 +122,37 @@ const district = document.getElementById("district");
 const block = document.getElementById("block");
 const village = document.getElementById("village");
 
-// Firebase से villages डेटा लोड करना
-db.ref("villages").once("value").then(snapshot => {
-  villageDataCache = snapshot.val() || {};
-  let states = Object.keys(villageDataCache);
-  
-  if(states.length === 0) {
-    district.innerHTML = '<option value="">जिला data उपलब्ध नहीं है</option>';
-    document.getElementById("villageStatus").innerText = "⚠ Firebase में 'villages' नोड खाली है। कृपया डेटा डालें।";
-    return;
+// सुरक्षित तरीके से Firebase से डेटा फेच करना
+async function loadVillagesData() {
+  try {
+    let snapshot = await db.ref("villages").get();
+    if (snapshot.exists()) {
+      villageDataCache = snapshot.val();
+      let states = Object.keys(villageDataCache);
+      
+      district.innerHTML = '<option value="">जिला चुनें</option>';
+      states.forEach(state => {
+        let districts = Object.keys(villageDataCache[state] || {});
+        districts.forEach(d => {
+          let o = document.createElement("option");
+          o.value = d;
+          o.textContent = d;
+          district.appendChild(o);
+        });
+      });
+      document.getElementById("villageStatus").innerText = "✔ डेटा सफलतापूर्वक लोड हो गया है।";
+    } else {
+      district.innerHTML = '<option value="">कोई डेटा नहीं मिला</option>';
+      document.getElementById("villageStatus").innerText = "⚠ Firebase में 'villages' नोड खाली है।";
+    }
+  } catch (error) {
+    console.error(error);
+    district.innerHTML = '<option value="">कनेक्शन त्रुटि</option>';
+    document.getElementById("villageStatus").innerText = "⚠ डेटा लोड करने में विफल (Rules चेक करें)।";
   }
+}
 
-  district.innerHTML = '<option value="">जिला चुनें</option>';
-  states.forEach(state => {
-    let districts = Object.keys(villageDataCache[state] || {});
-    districts.forEach(d => {
-      let o = document.createElement("option");
-      o.value = d;
-      o.textContent = d;
-      district.appendChild(o);
-    });
-  });
-  document.getElementById("villageStatus").innerText = "✔ डेटा सफलतापूर्वक लोड हो गया है।";
-}).catch(err => {
-  console.error(err);
-  district.innerHTML = '<option value="">डेटा लोड करने में त्रुटि</option>';
-  document.getElementById("villageStatus").innerText = "⚠ इंटरनेट या कनेक्शन की समस्या।";
-});
+loadVillagesData();
 
 // जिला बदलने पर ब्लॉक लोड करना
 district.onchange = () => {
