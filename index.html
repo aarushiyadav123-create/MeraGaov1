@@ -5,66 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>मेरा गाँव - डिजिटल पोर्टल</title>
     <style>
-        body { font-family: sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
-        header { background-color: #1b5e20; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        
+        /* हेडर - पूरी पट्टी और सही डिजाइन */
+        header { 
+            background-color: #1b5e20; 
+            color: white; 
+            padding: 12px 15px; 
+            text-align: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        header h2 { margin: 0; font-size: 18px; }
+        header p { margin: 2px 0 0 0; font-size: 11px; color: #d0f8d8; }
+
         .container { padding: 12px; }
         
         /* प्रोफाइल बटन स्टाइल */
         .profile-btn {
             background-color: #fff; border: 2px solid #1b5e20; color: #1b5e20;
             padding: 12px; width: 100%; border-radius: 8px; font-weight: bold;
-            margin-bottom: 15px; cursor: pointer; text-align: center;
+            margin-bottom: 12px; cursor: pointer; text-align: center; font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         /* डैशबोर्ड बटन्स */
         .btn-main {
-            background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-weight: 600; 
-            display: flex; justify-content: space-between; align-items: center;
+            background: white; padding: 14px; margin-bottom: 10px; border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 600; color: #333;
+            display: flex; justify-content: space-between; align-items: center; font-size: 14px;
+            cursor: pointer;
         }
         
-        /* प्रोफाइल मोडल्स */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal-content { background: white; margin: 20% auto; padding: 20px; width: 80%; border-radius: 8px; }
-        .input-field { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; box-sizing: border-box; }
+        /* प्रोफाइल पॉपअप (Modal) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
+        .modal-content { 
+            background: white; margin: 15% auto; padding: 20px; width: 85%; max-width: 400px; 
+            border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .modal-content h3 { margin-top: 0; color: #1b5e20; font-size: 16px; }
+        .input-field { 
+            width: 100%; padding: 10px; margin: 6px 0 12px 0; border: 1px solid #ccc; 
+            border-radius: 6px; box-sizing: border-box; font-size: 14px; 
+        }
+        .submit-btn {
+            background-color: #1b5e20; color: white; padding: 10px; width: 100%; 
+            border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer;
+        }
+        .close-link { display: block; text-align: center; margin-top: 10px; color: #d32f2f; font-size: 13px; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <header>मेरा गाँव - डिजिटल पोर्टल</header>
+    <!-- परफेक्ट हेडर -->
+    <header>
+        <h2>मेरा गाँव - डिजिटल पोर्टल</h2>
+        <p>गाँव को समर्पित डिजिटल सेवा</p>
+    </header>
 
     <div class="container">
-        <!-- प्रोफाइल बटन (यहाँ से यूजर अपनी जानकारी अपडेट करेगा) -->
-        <button class="profile-btn" onclick="openModal()">👤 अपनी प्रोफाइल सेट करें</button>
+        <!-- प्रोफाइल बटन -->
+        <button class="profile-btn" onclick="openModal()">👤 अपनी प्रोफाइल सेट करें / गाँव जोड़ें</button>
 
-        <!-- पूरा डैशबोर्ड हमेशा दिखेगा -->
-        <div class="btn-main">🏬 दुकान देखें / जोड़ें <span>➔</span></div>
-        <div class="btn-main">🛠️ 1B. गाँव की आवश्यक सेवाएं <span>➔</span></div>
-        <div class="btn-main">📢 2. मुनादी, मेला व खबरें <span>➔</span></div>
+        <!-- 7 मुख्य बटन (डैशबोर्ड) -->
+        <div class="btn-main">🏬 1. दुकान देखें / अपनी दुकान जोड़ें <span>➔</span></div>
+        <div class="btn-main">🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि) <span>➔</span></div>
+        <div class="btn-main" style="border-left: 4px solid #ff9800;">📢 2. मुनादी, मेला व खबरें (Sub-Admin) <span>➔</span></div>
         <div class="btn-main">🌾 3. पशु, गेहूँ, चारा खरीद-बेच <span>➔</span></div>
-        <div class="btn-main">📸 4. गाँव की गैलरी <span>➔</span></div>
-        <div class="btn-main">🎵 5. गाँव के वीडियो <span>➔</span></div>
-        <div class="btn-main" style="background: #b71c1c; color: white;">📚 6. गाँव का इतिहास <span>➔</span></div>
+        <div class="btn-main">📸 4. गाँव की गैलरी (लाइव फोटो) <span>➔</span></div>
+        <div class="btn-main">🎵 5. गाँव के वीडियो और लोक गीत <span>➔</span></div>
+        <div class="btn-main" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: white;">📚 6. गाँव का इतिहास, सरपंच व शहीद <span>➔</span></div>
     </div>
 
-    <!-- प्रोफाइल पॉपअप -->
+    <!-- प्रोफाइल और गाँव अप्रूवल का पॉपअप -->
     <div id="profileModal" class="modal">
         <div class="modal-content">
-            <h3>अपनी जानकारी भरें</h3>
-            <input type="text" id="name" class="input-field" placeholder="नाम">
-            <input type="tel" id="phone" class="input-field" placeholder="मोबाइल नंबर">
-            <input type="text" id="village" class="input-field" placeholder="गाँव का नाम">
-            <input type="text" id="district" class="input-field" placeholder="जिला">
-            <button onclick="saveProfile()" style="background:#1b5e20; color:white; padding:10px; width:100%; border:none;">सेव करें</button>
+            <h3>🔒 सुरक्षित प्रोफाइल & गाँव वेरिफिकेशन</h3>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">पिनकोड और सही जानकारी भरें ताकि एडमिन इसे वेरीफाई कर सके।</p>
+            
+            <label style="font-size: 12px; font-weight: bold;">आपका नाम:</label>
+            <input type="text" id="userName" class="input-field" placeholder="अपना पूरा नाम">
+
+            <label style="font-size: 12px; font-weight: bold;">मोबाइल नंबर:</label>
+            <input type="tel" id="userPhone" class="input-field" placeholder="10 अंकों का मोबाइल नंबर">
+
+            <label style="font-size: 12px; font-weight: bold;">गाँव का नाम:</label>
+            <input type="text" id="userVillage" class="input-field" placeholder="गाँव का नाम">
+
+            <label style="font-size: 12px; font-weight: bold;">जिला (District):</label>
+            <input type="text" id="userDistrict" class="input-field" placeholder="जिला (जैसे: रोहतक)">
+
+            <label style="font-size: 12px; font-weight: bold;">पिन कोड (Pin Code):</label>
+            <input type="number" id="userPincode" class="input-field" placeholder="6 अंकों का पिनकोड">
+
+            <button class="submit-btn" onclick="submitProfile()">एडमिन के पास अप्रूवल के लिए भेजें ➔</button>
+            <a class="close-link" onclick="closeModal()">बंद करें (Cancel)</a>
         </div>
     </div>
 
     <script>
-        function openModal() { document.getElementById('profileModal').style.display = "block"; }
-        function saveProfile() {
-            // यहाँ डेटा सेव होगा
-            alert("प्रोफाइल सुरक्षित हो गई!");
-            document.getElementById('profileModal').style.display = "none";
+        function openModal() { 
+            document.getElementById('profileModal').style.display = "block"; 
+        }
+        function closeModal() { 
+            document.getElementById('profileModal').style.display = "none"; 
+        }
+        
+        function submitProfile() {
+            var name = document.getElementById('userName').value.trim();
+            var phone = document.getElementById('userPhone').value.trim();
+            var village = document.getElementById('userVillage').value.trim();
+            var district = document.getElementById('userDistrict').value.trim();
+            var pincode = document.getElementById('userPincode').value.trim();
+
+            if(name === "" || phone === "" || village === "" || district === "" || pincode === "") {
+                alert("कृपया सभी जानकारी (नाम, फोन, गाँव, जिला, पिनकोड) सही-सही भरें!");
+                return;
+            }
+
+            if(pincode.length !== 6) {
+                alert("कृपया सही 6 अंकों का पिनकोड दर्ज करें!");
+                return;
+            }
+
+            alert("धन्यवाद " + name + "! आपकी प्रोफाइल और गाँव (" + village + ", " + district + ") की जानकारी एडमिन अप्रूवल के लिए चली गई है। वेरीफाई होते ही यह एक्टिव हो जाएगी।");
+            closeModal();
         }
     </script>
 </body>
