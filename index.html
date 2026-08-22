@@ -1,41 +1,84 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="hi" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मेरा गाँव - डिजिटल पोर्टल</title>
+    <title id="pageTitle">मेरा गाँव - डिजिटल पोर्टल</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
         
-        /* हेडर - पूरी पट्टी और सही डिजाइन */
+        /* हेडर - हरी पट्टी और भाषा बदलने का बटन */
         header { 
             background-color: #1b5e20; 
             color: white; 
             padding: 12px 15px; 
-            text-align: center; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        header h2 { margin: 0; font-size: 18px; }
-        header p { margin: 2px 0 0 0; font-size: 11px; color: #d0f8d8; }
+        .header-title h2 { margin: 0; font-size: 17px; }
+        .header-title p { margin: 2px 0 0 0; font-size: 11px; color: #d0f8d8; }
+        
+        .lang-btn {
+            background: rgba(255,255,255,0.25);
+            border: 1px solid white;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
         .container { padding: 12px; }
         
-        /* प्रोफाइल बटन स्टाइल */
+        /* प्रोफाइल बटन */
         .profile-btn {
-            background-color: #fff; border: 2px solid #1b5e20; color: #1b5e20;
-            padding: 12px; width: 100%; border-radius: 8px; font-weight: bold;
-            margin-bottom: 12px; cursor: pointer; text-align: center; font-size: 14px;
+            background-color: #ffffff; 
+            border: 2px solid #1b5e20; 
+            color: #1b5e20;
+            padding: 12px; 
+            width: 100%; 
+            border-radius: 8px; 
+            font-weight: bold;
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            text-align: center; 
+            font-size: 14px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* डैशबोर्ड बटन्स */
+        /* सभी मुख्य बटन - शानदार हरा बैकग्राउंड (Green Theme) */
         .btn-main {
-            background: white; padding: 14px; margin-bottom: 10px; border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 600; color: #333;
-            display: flex; justify-content: space-between; align-items: center; font-size: 14px;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20); 
+            color: white;
+            padding: 14px; 
+            margin-bottom: 10px; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15); 
+            font-weight: 600; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 14px;
             cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
         }
-        
+        .btn-main span { font-size: 16px; }
+
+        /* इतिहास बटन का खास रंग */
+        .history-btn {
+            background: linear-gradient(135deg, #37474f, #263238) !important;
+        }
+
+        /* एडमिन और सब-एडमिन स्पेशल बटन */
+        .admin-btn {
+            background: linear-gradient(135deg, #ff8f00, #e65100) !important;
+        }
+
         /* प्रोफाइल पॉपअप (Modal) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; }
         .modal-content { 
@@ -56,60 +99,85 @@
 </head>
 <body>
 
-    <!-- परफेक्ट हेडर -->
+    <!-- हेडर -->
     <header>
-        <h2>मेरा गाँव - डिजिटल पोर्टल</h2>
-        <p>गाँव को समर्पित डिजिटल सेवा</p>
+        <div class="header-title">
+            <h2 id="mainHeading">मेरा गाँव - डिजिटल पोर्टल</h2>
+            <p id="subHeading">गाँव को समर्पित डिजिटल सेवा</p>
+        </div>
+        <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">English</button>
     </header>
 
     <div class="container">
         <!-- प्रोफाइल बटन -->
-        <button class="profile-btn" onclick="openModal()">👤 अपनी प्रोफाइल सेट करें / गाँव जोड़ें</button>
+        <button class="profile-btn" id="profileBtnText" onclick="openModal()">👤 अपनी प्रोफाइल सेट करें / गाँव जोड़ें</button>
 
-        <!-- 7 मुख्य बटन (डैशबोर्ड) -->
-        <div class="btn-main">🏬 1. दुकान देखें / अपनी दुकान जोड़ें <span>➔</span></div>
-        <div class="btn-main">🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि) <span>➔</span></div>
-        <div class="btn-main" style="border-left: 4px solid #ff9800;">📢 2. मुनादी, मेला व खबरें (Sub-Admin) <span>➔</span></div>
-        <div class="btn-main">🌾 3. पशु, गेहूँ, चारा खरीद-बेच <span>➔</span></div>
-        <div class="btn-main">📸 4. गाँव की गैलरी (लाइव फोटो) <span>➔</span></div>
-        <div class="btn-main">🎵 5. गाँव के वीडियो और लोक गीत <span>➔</span></div>
-        <div class="btn-main" style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: white;">📚 6. गाँव का इतिहास, सरपंच व शहीद <span>➔</span></div>
+        <!-- सभी 7 + एडमिन बटन (हरा बैकग्राउंड) -->
+        <button class="btn-main" onclick="clickAction('दुकान देखें और जोड़ें')">
+            <span id="b1">🏬 1. दुकान देखें / अपनी दुकान जोड़ें</span> <span>➔</span>
+        </button>
+
+        <button class="btn-main" onclick="clickAction('गाँव की आवश्यक सेवाएं')">
+            <span id="b2">🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि)</span> <span>➔</span>
+        </button>
+
+        <button class="btn-main admin-btn" onclick="clickAction('मुनादी और खबरें')">
+            <span id="b3">📢 2. मुनादी, मेला व खबरें (Sub-Admin Approved)</span> <span>➔</span>
+        </button>
+
+        <button class="btn-main" onclick="clickAction('खरीद-बेच')">
+            <span id="b4">🌾 3. पशु, गेहूँ, चारा खरीद-बेच</span> <span>➔</span>
+        </button>
+
+        <button class="btn-main" onclick="clickAction('गाँव की गैलरी')">
+            <span id="b5">📸 4. गाँव की गैलरी (लाइव फोटो)</span> <span>➔</span>
+        </button>
+
+        <button class="btn-main" onclick="clickAction('गाँव के वीडियो')">
+            <span id="b6">🎵 5. गाँव के वीडियो और लोक गीत</span> <span>➔</span>
+        </button>
+
+        <button class="btn-main history-btn" onclick="clickAction('गाँव का इतिहास')">
+            <span id="b7">📚 6. गाँव का इतिहास, सरपंच व शहीद</span> <span>➔</span>
+        </button>
     </div>
 
     <!-- प्रोफाइल और गाँव अप्रूवल का पॉपअप -->
     <div id="profileModal" class="modal">
         <div class="modal-content">
-            <h3>🔒 सुरक्षित प्रोफाइल & गाँव वेरिफिकेशन</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">पिनकोड और सही जानकारी भरें ताकि एडमिन इसे वेरीफाई कर सके।</p>
+            <h3 id="modalTitle">🔒 सुरक्षित प्रोफाइल & गाँव वेरिफिकेशन</h3>
+            <p id="modalDesc" style="font-size: 12px; color: #666; margin-bottom: 10px;">पिनकोड और सही जानकारी भरें ताकि एडमिन इसे वेरीफाई कर सके।</p>
             
-            <label style="font-size: 12px; font-weight: bold;">आपका नाम:</label>
+            <label id="lName" style="font-size: 12px; font-weight: bold;">आपका नाम:</label>
             <input type="text" id="userName" class="input-field" placeholder="अपना पूरा नाम">
 
-            <label style="font-size: 12px; font-weight: bold;">मोबाइल नंबर:</label>
+            <label id="lPhone" style="font-size: 12px; font-weight: bold;">मोबाइल नंबर:</label>
             <input type="tel" id="userPhone" class="input-field" placeholder="10 अंकों का मोबाइल नंबर">
 
-            <label style="font-size: 12px; font-weight: bold;">गाँव का नाम:</label>
+            <label id="lVillage" style="font-size: 12px; font-weight: bold;">गाँव का नाम:</label>
             <input type="text" id="userVillage" class="input-field" placeholder="गाँव का नाम">
 
-            <label style="font-size: 12px; font-weight: bold;">जिला (District):</label>
+            <label id="lDistrict" style="font-size: 12px; font-weight: bold;">जिला (District):</label>
             <input type="text" id="userDistrict" class="input-field" placeholder="जिला (जैसे: रोहतक)">
 
-            <label style="font-size: 12px; font-weight: bold;">पिन कोड (Pin Code):</label>
+            <label id="lPincode" style="font-size: 12px; font-weight: bold;">पिन कोड (Pin Code):</label>
             <input type="number" id="userPincode" class="input-field" placeholder="6 अंकों का पिनकोड">
 
-            <button class="submit-btn" onclick="submitProfile()">एडमिन के पास अप्रूवल के लिए भेजें ➔</button>
-            <a class="close-link" onclick="closeModal()">बंद करें (Cancel)</a>
+            <button class="submit-btn" id="submitBtnText" onclick="submitProfile()">एडमिन के पास अप्रूवल के लिए भेजें ➔</button>
+            <a class="close-link" id="closeText" onclick="closeModal()">बंद करें (Cancel)</a>
         </div>
     </div>
 
     <script>
-        function openModal() { 
-            document.getElementById('profileModal').style.display = "block"; 
-        }
-        function closeModal() { 
-            document.getElementById('profileModal').style.display = "none"; 
-        }
+        var currentLang = 'hi';
+
+        function openModal() { document.getElementById('profileModal').style.display = "block"; }
+        function closeModal() { document.getElementById('profileModal').style.display = "none"; }
         
+        function clickAction(featureName) {
+            alert(featureName + " सेक्शन जल्द ही पूरी तरह लाइव हो रहा है!");
+        }
+
         function submitProfile() {
             var name = document.getElementById('userName').value.trim();
             var phone = document.getElementById('userPhone').value.trim();
@@ -118,17 +186,74 @@
             var pincode = document.getElementById('userPincode').value.trim();
 
             if(name === "" || phone === "" || village === "" || district === "" || pincode === "") {
-                alert("कृपया सभी जानकारी (नाम, फोन, गाँव, जिला, पिनकोड) सही-सही भरें!");
+                alert(currentLang === 'hi' ? "कृपया सभी जानकारी सही-सही भरें!" : "Please fill all details correctly!");
                 return;
             }
 
             if(pincode.length !== 6) {
-                alert("कृपया सही 6 अंकों का पिनकोड दर्ज करें!");
+                alert(currentLang === 'hi' ? "कृपया सही 6 अंकों का पिनकोड दर्ज करें!" : "Please enter a valid 6-digit pincode!");
                 return;
             }
 
-            alert("धन्यवाद " + name + "! आपकी प्रोफाइल और गाँव (" + village + ", " + district + ") की जानकारी एडमिन अप्रूवल के लिए चली गई है। वेरीफाई होते ही यह एक्टिव हो जाएगी।");
+            alert(currentLang === 'hi' ? "धन्यवाद! आपकी जानकारी एडमिन अप्रूवल के लिए चली गई है।" : "Thank you! Your details have been sent for admin approval.");
             closeModal();
+        }
+
+        // हिंदी और अंग्रेजी बदलने का फंक्शन
+        function toggleLanguage() {
+            if (currentLang === 'hi') {
+                currentLang = 'en';
+                document.getElementById('htmlRoot').setAttribute('lang', 'en');
+                document.getElementById('pageTitle').innerText = "My Village - Digital Portal";
+                document.getElementById('mainHeading').innerText = "My Village - Digital Portal";
+                document.getElementById('subHeading').innerText = "Digital Service Dedicated to Village";
+                document.getElementById('langToggleBtn').innerText = "हिन्दी";
+                document.getElementById('profileBtnText').innerText = "👤 Set Profile / Add Village";
+
+                document.getElementById('b1').innerText = "🏬 1. View / Add Shop";
+                document.getElementById('b2').innerText = "🛠️ 1B. Village Essential Services";
+                document.getElementById('b3').innerText = "📢 2. Announcements & News (Sub-Admin)";
+                document.getElementById('b4').innerText = "🌾 3. Buy & Sell (Cattle, Crops)";
+                document.getElementById('b5').innerText = "📸 4. Village Gallery (Live Photos)";
+                document.getElementById('b6').innerText = "🎵 5. Village Videos & Folk Songs";
+                document.getElementById('b7').innerText = "📚 6. Village History, Sarpanch & Martyrs";
+
+                document.getElementById('modalTitle').innerText = "🔒 Secure Profile & Village Verification";
+                document.getElementById('modalDesc').innerText = "Enter correct pincode and details for admin verification.";
+                document.getElementById('lName').innerText = "Your Name:";
+                document.getElementById('lPhone').innerText = "Mobile Number:";
+                document.getElementById('lVillage').innerText = "Village Name:";
+                document.getElementById('lDistrict').innerText = "District:";
+                document.getElementById('lPincode').innerText = "Pin Code:";
+                document.getElementById('submitBtnText').innerText = "Send for Admin Approval ➔";
+                document.getElementById('closeText').innerText = "Close (Cancel)";
+            } else {
+                currentLang = 'hi';
+                document.getElementById('htmlRoot').setAttribute('lang', 'hi');
+                document.getElementById('pageTitle').innerText = "मेरा गाँव - डिजिटल पोर्टल";
+                document.getElementById('mainHeading').innerText = "मेरा गाँव - डिजिटल पोर्टल";
+                document.getElementById('subHeading').innerText = "गाँव को समर्पित डिजिटल सेवा";
+                document.getElementById('langToggleBtn').innerText = "English";
+                document.getElementById('profileBtnText').innerText = "👤 अपनी प्रोफाइल सेट करें / गाँव जोड़ें";
+
+                document.getElementById('b1').innerText = "🏬 1. दुकान देखें / अपनी दुकान जोड़ें";
+                document.getElementById('b2').innerText = "🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि)";
+                document.getElementById('b3').innerText = "📢 2. मुनादी, मेला व खबरें (Sub-Admin Approved)";
+                document.getElementById('b4').innerText = "🌾 3. पशु, गेहूँ, चारा खरीद-बेच";
+                document.getElementById('b5').innerText = "📸 4. गाँव की गैलरी (लाइव फोटो)";
+                document.getElementById('b6').innerText = "🎵 5. गाँव के वीडियो और लोक गीत";
+                document.getElementById('b7').innerText = "📚 6. गाँव का इतिहास, सरपंच व शहीद";
+
+                document.getElementById('modalTitle').innerText = "🔒 सुरक्षित प्रोफाइल & गाँव वेरिफिकेशन";
+                document.getElementById('modalDesc').innerText = "पिनकोड और सही जानकारी भरें ताकि एडमिन इसे वेरीफाई कर सके।";
+                document.getElementById('lName').innerText = "आपका नाम:";
+                document.getElementById('lPhone').innerText = "मोबाइल नंबर:";
+                document.getElementById('lVillage').innerText = "गाँव का नाम:";
+                document.getElementById('lDistrict').innerText = "जिला (District):";
+                document.getElementById('lPincode').innerText = "पिन कोड (Pin Code):";
+                document.getElementById('submitBtnText').innerText = "एडमिन के पास अप्रूवल के लिए भेजें ➔";
+                document.getElementById('closeText').innerText = "बंद करें (Cancel)";
+            }
         }
     </script>
 </body>
