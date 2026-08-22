@@ -32,8 +32,8 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <body>
 <header>
 <div><h1 id="title">Mera Gaon Digital Portal</h1><div class="sub" id="subtitle">मेरा गाँव - मेरी पहचान</div></div>
-<div><button class="headerbtn" onclick="toggleLang()" id="langBtn">Eng</button>
-<button class="headerbtn" onclick="toggleMenu()">☰</button></div>
+<div><button class="headerbtn" id="langBtn">Eng</button>
+<button class="headerbtn" id="menuBtn">☰</button></div>
 </header>
 <div id="menu" class="hidden">
 <button onclick="go('home');toggleMenu()">🏠 <span data-i="m1">होम</span></button>
@@ -74,7 +74,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <div style="margin-top:10px" id="otpBox" class="hidden">
 <label data-i="lblOtp">OTP दर्ज करें (डिफ़ॉल्ट: 1234)</label>
 <input id="otpInput" inputmode="numeric" maxlength="4" placeholder="4 अंक का OTP डालें">
-<button class="btn success" style="width:100%;margin-top:8px" onclick="verifyOtp()" data-i="btnVerify">OTP सत्यापित करें</button>
+<button class="btn success" id="verifyOtpBtn" style="width:100%;margin-top:8px" data-i="btnVerify">OTP सत्यापित करें</button>
 </div>
 <div id="mainProfileInputs" class="hidden">
 <div class="grid two" style="margin-top:10px">
@@ -83,19 +83,19 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 </div>
 <div style="margin-top:10px"><label data-i="lblVill">गाँव का नाम</label><input id="village" placeholder="अपने गाँव का नाम लिखें"></div>
 <div style="margin-top:10px"><label data-i="lblPhoto">लाइव फोटो (कैमरा से)</label><input id="photo" type="file" accept="image/*" capture="environment"></div>
-<div style="margin-top:10px"><label data-i="lblLoc">लाइव लोकेशन (GPS)</label><button class="btn blue" type="button" onclick="getLocation()" data-i="btnLoc">📍 मेरी लाइव लोकेशन प्राप्त करें</button><p id="locStatus" class="small" style="margin-top:5px;color:#0277bd;"></p></div>
-<button class="btn success" style="width:100%;margin-top:12px" onclick="saveProfile()" data-i="btnSave">प्रोफाइल सेव करें</button>
+<div style="margin-top:10px"><label data-i="lblLoc">लाइव लोकेशन (GPS)</label><button class="btn blue" type="button" id="locBtn" data-i="btnLoc">📍 मेरी लाइव लोकेशन प्राप्त करें</button><p id="locStatus" class="small" style="margin-top:5px;color:#0277bd;"></p></div>
+<button class="btn success" id="saveProfileBtn" style="width:100%;margin-top:12px" data-i="btnSave">प्रोफाइल सेव करें</button>
 </div>
-<button id="sendOtpBtn" class="btn success" style="width:100%;margin-top:12px" onclick="sendOtp()" data-i="btnOtp">OTP भेजें</button>
+<button id="sendOtpBtn" class="btn success" style="width:100%;margin-top:12px" data-i="btnOtp">OTP भेजें</button>
 <p class="status" id="profileStatus"></p>
 </div>
 <div id="profileView" class="hidden"></div>
 </div></section>
 
 <!-- Shops Section -->
-<section id="shops" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="sHeader">🏪 गाँव की दुकानें</h2><div class="grid two"><input id="shopName" placeholder="दुकान का नाम"><input id="shopOwner" placeholder="संचालक"><input id="shopPhone" placeholder="मोबाइल नंबर"></div><button class="btn success" style="margin-top:10px" onclick="addWithOtp('shops',{title:v('shopName'),sub:v('shopOwner'),phone:v('shopPhone')})" data-i="btnAdd">जोड़ें (OTP के साथ)</button><div id="shopsList"></div></div></section>
+<section id="shops" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="sHeader">🏪 गाँव की दुकानें</h2><div class="grid two"><input id="shopName" placeholder="दुकान का नाम"><input id="shopOwner" placeholder="संचालक"><input id="shopPhone" placeholder="मोबाइल नंबर"></div><button class="btn success" id="addShopBtn" style="margin-top:10px" data-i="btnAdd">जोड़ें (OTP के साथ)</button><div id="shopsList"></div></div></section>
 
-<!-- Services Section (Pandit ji, Medical, Electrician, Gaadi Kiraya etc) -->
+<!-- Services Section -->
 <section id="services" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="servHeader">🔧 आवश्यक सेवाएं (पंडित जी, गाड़ी किराए, मेडिकल, इलेक्ट्रीशियन)</h2>
 <div style="margin-bottom:10px">
 <label data-i="lblServCat">सेवा चुनें या लिखें</label>
@@ -110,30 +110,30 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 </div>
 <input id="serviceTitle" placeholder="व्यक्ति का नाम / दुकान का नाम">
 <input id="servicePhone" placeholder="मोबाइल नंबर" style="margin-top:8px">
-<button class="btn success" style="margin-top:10px" onclick="addServiceWithOtp()" data-i="btnAdd">सेवा जोड़ें</button><div id="servicesList"></div></div></section>
+<button class="btn success" id="addServiceBtn" style="margin-top:10px" data-i="btnAdd">सेवा जोड़ें</button><div id="servicesList"></div></div></section>
 
 <!-- Munadi Section -->
-<section id="munadi" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="munHeader">📢 मुनादी व खबरें</h2><textarea id="munadiText" rows="3" placeholder="खबर / मुनादी लिखें"></textarea><input id="munadiUser" placeholder="आपका नाम" style="margin-top:8px"><input id="munadiPhone" placeholder="मोबाइल नंबर" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="submitMunadi()" data-i="munBtn">सत्यापन के लिए भेजें</button><h3 data-i="munAppr">स्वीकृत खबरें</h3><div id="munadiList"></div><h3 data-i="munPend">लंबित खबरें</h3><div id="pendingList"></div></div></section>
+<section id="munadi" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="munHeader">📢 मुनादी व खबरें</h2><textarea id="munadiText" rows="3" placeholder="खबर / मुनादी लिखें"></textarea><input id="munadiUser" placeholder="आपका नाम" style="margin-top:8px"><input id="munadiPhone" placeholder="मोबाइल नंबर" style="margin-top:8px"><button class="btn success" id="submitMunadiBtn" style="margin-top:10px" data-i="munBtn">सत्यापन के लिए भेजें</button><h3 data-i="munAppr">स्वीकृत खबरें</h3><div id="munadiList"></div><h3 data-i="munPend">लंबित खबरें</h3><div id="pendingList"></div></div></section>
 
-<!-- Buy & Sell Section with Photo Upload -->
+<!-- Buy & Sell Section -->
 <section id="buysell" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="bsHeader">🐄 पशु, गेहूँ, चारा खरीद-बेच</h2>
 <input id="buyText" placeholder="विवरण (जैसे: बछड़ी बेचनी है, गेहूँ आदि)">
 <input id="buyUser" placeholder="आपका नाम" style="margin-top:8px">
 <input id="buyPhone" placeholder="मोबाइल नंबर" style="margin-top:8px">
 <div style="margin-top:8px"><label data-i="lblBsPhoto">वस्तु की फोटो (वैकल्पिक)</label><input id="buyPhoto" type="file" accept="image/*"></div>
-<button class="btn success" style="margin-top:10px" onclick="addBuySell()" data-i="btnAdd">जोड़ें</button><div id="buysellList"></div></div></section>
+<button class="btn success" id="addBuySellBtn" style="margin-top:10px" data-i="btnAdd">जोड़ें</button><div id="buysellList"></div></div></section>
 
 <!-- Gallery Section -->
-<section id="gallery" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="galHeader">📷 गाँव की गैलरी</h2><input id="galleryFile" type="file" accept="image/*" capture="environment"><input id="galleryCaption" placeholder="फोटो का विवरण" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="uploadPhoto()" data-i="galBtn">अपलोड करें</button><div id="galleryList"></div></div></section>
+<section id="gallery" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="galHeader">📷 गाँव की गैलरी</h2><input id="galleryFile" type="file" accept="image/*" capture="environment"><input id="galleryCaption" placeholder="फोटो का विवरण" style="margin-top:8px"><button class="btn success" id="uploadPhotoBtn" style="margin-top:10px" data-i="galBtn">अपलोड करें</button><div id="galleryList"></div></div></section>
 
-<!-- Live Video Section (In-app playback) -->
-<section id="livevideo" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="liveHeader">🔴 लाइव वीडियो और प्रोग्राम</h2><input id="liveTitle" placeholder="कार्यक्रम का शीर्षक"><input id="liveUrl" placeholder="YouTube Live लिंक यहाँ डालें" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="addLiveVideo()" data-i="liveBtn">लाइव जोड़ें</button><div id="liveVideoList"></div></div></section>
+<!-- Live Video Section -->
+<section id="livevideo" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="liveHeader">🔴 लाइव वीडियो और प्रोग्राम</h2><input id="liveTitle" placeholder="कार्यक्रम का शीर्षक"><input id="liveUrl" placeholder="YouTube Live लिंक यहाँ डालें" style="margin-top:8px"><button class="btn success" id="addLiveBtn" style="margin-top:10px" data-i="liveBtn">लाइव जोड़ें</button><div id="liveVideoList"></div></div></section>
 
 <!-- Videos Gallery Section -->
-<section id="videos" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="vidHeader">▶️ वीडियो गैलरी</h2><input id="videoTitle" placeholder="शीर्षक"><input id="videoUrl" placeholder="YouTube लिंक" style="margin-top:8px"><button class="btn success" style="margin-top:10px" onclick="addVideo()" data-i="btnAdd">जोड़ें</button><div id="videoList"></div></div></section>
+<section id="videos" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="vidHeader">▶️ वीडियो गैलरी</h2><input id="videoTitle" placeholder="शीर्षक"><input id="videoUrl" placeholder="YouTube लिंक" style="margin-top:8px"><button class="btn success" id="addVideoBtn" style="margin-top:10px" data-i="btnAdd">जोड़ें</button><div id="videoList"></div></div></section>
 
 <!-- History Section -->
-<section id="history" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="histHeader">📜 गाँव का इतिहास</h2><input id="histTitle" placeholder="शीर्षक"><textarea id="histDesc" rows="4" placeholder="विवरण" style="margin-top:8px"></textarea><button class="btn success" style="margin-top:10px" onclick="addWithOtp('history',{title:v('histTitle'),sub:v('histDesc')})" data-i="btnAdd">जोड़ें</button><div id="historyList"></div></div></section>
+<section id="history" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="histHeader">📜 गाँव का इतिहास</h2><input id="histTitle" placeholder="शीर्षक"><textarea id="histDesc" rows="4" placeholder="विवरण" style="margin-top:8px"></textarea><button class="btn success" id="addHistoryBtn" style="margin-top:10px" data-i="btnAdd">जोड़ें</button><div id="historyList"></div></div></section>
 
 <section id="animal" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2 data-i="animHeader">🐄 पशु सेवा एवं स्वास्थ्य</h2><div class="item"><b data-i="animSub">टीकाकरण</b><p data-i="animDesc">मुंहपका-खुरपका और अन्य रोगों से बचाव के लिए पशु चिकित्सक की सलाह से समय पर टीकाकरण करवाएं।</p></div></div></section>
 
@@ -144,7 +144,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <section id="founder" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2 data-i="fHeader">संस्थापक</h2><p><b>Kusum W/O Rajesh Yadav</b></p></div></section>
 <section id="policy" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2 data-i="polHeader">Privacy Policy</h2><p data-i="polDesc">Firebase डेटा स्टोरेज उपयोग किया जाता है।</p></div></section>
 
-<section id="admin" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2>Admin Panel</h2><h3 data-i="admPend">लंबित मुनादी</h3><div id="adminPending"></div><button class="btn danger" onclick="clearData()" style="margin-top:15px" data-i="admDel">सारा डेटा डिलीट करें</button></div></section>
+<section id="admin" class="hidden"><span class="back" onclick="go('home')">← <span data-i="back">होम</span></span><div class="card"><h2>Admin Panel</h2><h3 data-i="admPend">लंबित मुनादी</h3><div id="adminPending"></div><button class="btn danger" id="clearDataBtn" style="margin-top:15px" data-i="admDel">सारा डेटा डिलीट करें</button></div></section>
 </main>
 
 <script>
@@ -200,6 +200,27 @@ const texts = {
   }
 };
 
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("langBtn").addEventListener("click", toggleLang);
+  document.getElementById("menuBtn").addEventListener("click", toggleMenu);
+  document.getElementById("sendOtpBtn").addEventListener("click", sendOtp);
+  document.getElementById("verifyOtpBtn").addEventListener("click", verifyOtp);
+  document.getElementById("locBtn").addEventListener("click", getLocation);
+  document.getElementById("saveProfileBtn").addEventListener("click", saveProfile);
+  document.getElementById("addShopBtn").addEventListener("click", () => addWithOtp('shops', {title: v('shopName'), sub: v('shopOwner'), phone: v('shopPhone')}));
+  document.getElementById("addServiceBtn").addEventListener("click", addServiceWithOtp);
+  document.getElementById("submitMunadiBtn").addEventListener("click", submitMunadi);
+  document.getElementById("addBuySellBtn").addEventListener("click", addBuySell);
+  document.getElementById("uploadPhotoBtn").addEventListener("click", uploadPhoto);
+  document.getElementById("addLiveBtn").addEventListener("click", addLiveVideo);
+  document.getElementById("addVideoBtn").addEventListener("click", addVideo);
+  document.getElementById("addHistoryBtn").addEventListener("click", () => addWithOtp('history', {title: v('histTitle'), sub: v('histDesc')}));
+  document.getElementById("clearDataBtn").addEventListener("click", clearData);
+
+  loadProfile();
+  fetchWeather();
+});
+
 function toggleLang(){
   currentLang = currentLang === "hi" ? "en" : "hi";
   document.getElementById("langBtn").innerText = currentLang === "hi" ? "Eng" : "हिन्दी";
@@ -237,7 +258,7 @@ function sendOtp(){
     document.getElementById("otpBox").classList.remove("hidden");
     document.getElementById("sendOtpBtn").classList.add("hidden");
     document.getElementById("profileStatus").innerText = "✔ OTP भेजा गया!";
-  }, 500);
+  }, 400);
 }
 
 function verifyOtp(){
@@ -258,7 +279,7 @@ function getLocation(){
       userLat = pos.coords.latitude;
       userLng = pos.coords.longitude;
       document.getElementById("locStatus").innerText = `✔ लोकेशन मिल गई`;
-    }, err=>{
+    }, ()=>{
       document.getElementById("locStatus").innerText = "⚠ लोकेशन अनुमति नहीं मिली (वैकल्पिक, आगे बढ़ें)।";
     });
   } else {
@@ -368,7 +389,7 @@ async function uploadPhoto(){
 }
 function renderGallery(){db.ref("gallery_photos").once("value").then(s=>{let c=document.getElementById("galleryList");c.innerHTML="";Object.entries(s.val()||{}).reverse().forEach(([k,x])=>c.innerHTML+=`<div class="item"><img class="photo" src="${x.img}"><p>${esc(x.caption)}</p>${admin?`<button class="danger" onclick="del('gallery_photos/${k}')">डिलीट</button>`:""}</div>`)})}
 
-function yt(u){let m=u.match(/(?:youtu\.be\/|watch\?v=|embed\/)([^?&/]+)/);return m?"https://www.youtube.com/embed/"+m[1]:""}
+function yt(u){let m=u.match(/(?:youtu\.be\/|watch\?v=|embed\/|live\/)([^?&/]+)/);return m?"https://www.youtube.com/embed/"+m[1]:""}
 
 function addLiveVideo(){let t=v("liveTitle"),u=yt(v("liveUrl"));if(!t||!u){alert("सही YouTube Live लिंक डालें");return}db.ref("village_live").push({title:t,embedUrl:u,createdAt:Date.now()}).then(()=>{alert("लाइव प्रोग्राम जोड़ दिया गया");renderLiveVideos()})}
 function renderLiveVideos(){db.ref("village_live").once("value").then(s=>{let c=document.getElementById("liveVideoList");c.innerHTML="";let d=s.val();if(!d){c.innerHTML='<p class="small">अभी कोई लाइव प्रोग्राम नहीं चल रहा है।</p>';return}Object.entries(d).reverse().forEach(([k,x])=>c.innerHTML+=`<div class="item"><b>🔴 ${esc(x.title)}</b><iframe style="width:100%;height:220px;border:0;margin-top:8px" src="${x.embedUrl}" allowfullscreen></iframe>${admin?`<button class="danger" onclick="del('village_live/${k}')">डिलीट</button>`:""}</div>`)})}
@@ -376,8 +397,9 @@ function renderLiveVideos(){db.ref("village_live").once("value").then(s=>{let c=
 function addVideo(){let t=v("videoTitle"),u=yt(v("videoUrl"));if(!t||!u){alert("सही YouTube लिंक डालें");return}db.ref("village_media").push({title:t,embedUrl:u,createdAt:Date.now()}).then(()=>{alert("वीडियो जोड़ दिया");renderVideos()})}
 function renderVideos(){db.ref("village_media").once("value").then(s=>{let c=document.getElementById("videoList");c.innerHTML="";Object.entries(s.val()||{}).reverse().forEach(([k,x])=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><iframe style="width:100%;height:220px;border:0;margin-top:8px" src="${x.embedUrl}" allowfullscreen></iframe>${admin?`<button class="danger" onclick="del('village_media/${k}')">डिलीट</button>`:""}</div>`)})}
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=28.85&longitude=76.6&current_weather=true").then(r=>r.json()).then(x=>{if(x.current_weather)document.getElementById("weather").innerText="तापमान: "+x.current_weather.temperature+"°C"}).catch(()=>document.getElementById("weather").innerText="मौसम उपलब्ध नहीं");
-loadProfile();
+function fetchWeather(){
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=28.85&longitude=76.6&current_weather=true").then(r=>r.json()).then(x=>{if(x.current_weather)document.getElementById("weather").innerText="तापमान: "+x.current_weather.temperature+"°C"}).catch(()=>document.getElementById("weather").innerText="मौसम उपलब्ध नहीं");
+}
 </script>
 </body>
 </html>
