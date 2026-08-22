@@ -31,7 +31,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 </head>
 <body>
 <header>
-<div><h1 id="title">Mera Gaov Digital Portal</h1><div class="sub">मेरा गाँव - मेरी पहचान</div></div>
+<div><h1 id="title">Mera Gaov Digital Portal</h1><div class="sub">मेरा गाँव - मेरी पहचान[span_1](start_span)[span_1](end_span)</div></div>
 <div><button class="headerbtn" onclick="toggleLang()" id="lang">Eng</button>
 <button class="headerbtn" onclick="toggleMenu()">☰</button></div>
 </header>
@@ -42,7 +42,7 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <button onclick="go('founder');toggleMenu()">About Founder</button>
 <button onclick="go('policy');toggleMenu()">Privacy Policy</button>
 </div>
-<div class="ticker">📢 <b>गाँव की खबर:</b> <span id="news">पोर्टल लाइव है</span> &nbsp; | &nbsp; 🌤️ <span id="weather">मौसम लोड हो रहा है...</span></div>
+<div class="ticker">📢 <b>गाँव की खबर:</b> <span id="news">पोर्टल लाइव है</span>[span_2](start_span)[span_2](end_span) &nbsp; | &nbsp; 🌤️ <span id="weather">मौसम लोड हो रहा है...</span></div>
 
 <main class="container">
 
@@ -69,12 +69,12 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 <div><label>पूरा नाम</label><input id="name"></div>
 <div><label>मोबाइल नंबर</label><input id="phone" inputmode="numeric" maxlength="10"></div>
 </div>
-<div style="margin-top:10px"><label>जिला</label><select id="district"><option value="">जिला चुनें</option></select></div>
+<div style="margin-top:10px"><label>जिला</label><select id="district"><option value="">लोड हो रहा है...</option></select></div>
 <div style="margin-top:10px"><label>ब्लॉक</label><select id="block" disabled><option value="">पहले जिला चुनें</option></select></div>
 <div style="margin-top:10px"><label>गाँव</label><select id="village" disabled><option value="">पहले ब्लॉक चुनें</option></select></div>
 <div style="margin-top:10px"><label>अपनी फोटो</label><input id="photo" type="file" accept="image/*"></div>
 <button class="btn success" style="width:100%;margin-top:12px" onclick="saveProfile()">प्रोफाइल सेव करें</button>
-<p class="status">नोट: गाँव की सूची उपलब्ध LGD/डेटा फ़ाइल से जोड़ी जा सकती है।[span_1](start_span)[span_1](end_span)</p>
+<p class="status" id="villageStatus">नोट: Firebase से गाँव का डेटा लोड किया जा रहा है।</p>
 </div>
 <div id="profileView" class="hidden"></div>
 </div></section>
@@ -99,8 +99,8 @@ img.photo{width:100%;max-height:300px;object-fit:cover;border-radius:8px}
 
 <section id="gov" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>🏛️ Haryana Government</h2><a class="btn" href="https://parivarpehchan.haryana.gov.in/" target="_blank">PPP Portal</a><br><br><a class="btn" href="https://hrye.hry.nic.in/" target="_blank">HKRN Portal</a></div></section>
 
-<section id="founder" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>संस्थापक</h2><p><b>Kusum W/O Rajesh Yadav</b></p><p class="small">यह पोर्टल हमारे पूरे गाँव को समर्पित है।[span_2](start_span)[span_2](end_span)</p></div></section>
-<section id="policy" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>Privacy Policy</h2><p>पोर्टल में Firebase आधारित डेटा स्टोरेज का उपयोग किया जाता है।[span_3](start_span)[span_3](end_span)</p></div></section>
+<section id="founder" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>संस्थापक</h2><p><b>Kusum W/O Rajesh Yadav</b>[span_3](start_span)[span_3](end_span)</p><p class="small">यह पोर्टल हमारे पूरे गाँव को समर्पित है।[span_4](start_span)[span_4](end_span)</p></div></section>
+<section id="policy" class="hidden"><span class="back" onclick="go('home')">← वापस</span><div class="card"><h2>Privacy Policy</h2><p>पोर्टल में Firebase आधारित डेटा स्टोरेज का उपयोग किया जाता है।[span_5](start_span)[span_5](end_span)</p></div></section>
 
 <section id="admin" class="hidden"><span class="back" onclick="go('home')">← होम</span><div class="card"><h2>Admin Panel</h2><h3>लंबित मुनादी</h3><div id="adminPending"></div><button class="btn danger" onclick="clearData()" style="margin-top:15px">सारा डेटा डिलीट करें</button></div></section>
 </main>
@@ -115,69 +115,111 @@ messagingSenderId:"424538068212",appId:"1:424538068212:web:2d58406aeb0b4d9524faa
 measurementId:"G-86FH5M7NP1"};
 const app=firebase.initializeApp(firebaseConfig),db=firebase.database();
 
-// यहाँ जिले, ब्लॉक और गाँवों का डेटा सही रूप से जोड़ा गया है
-const DATA={
-  "Haryana": {
-    "blocks": {
-      "Rohtak": {
-        "Rohtak": ["Ismaila", "Kalanaur", "Bhalout", "Sanghi", "Pakasma", "Kharawar"],
-        "Meham": ["Meham", "Mansi", "Bainsi", "Kharak Jatan", "Rithal"]
-      },
-      "Jhajjar": {
-        "Jhajjar": ["Jhajjar Rural", "Chhara", "Khedi Jat", "Badli", "Jharli"],
-        "Bahadurgarh": ["Bahadurgarh Rural", "Asaudha", "Barah", "Kachroli"]
-      },
-      "Bhiwani": {
-        "Bhiwani": ["Bhiwani Rural", "Dinod", "Talu", "Nimri"],
-        "Siwani": ["Siwani", "Dhana", "Gharwal"]
-      },
-      "Hisar": {
-        "Hisar": ["Hisar Rural", "Agroha", "Khedar", "Barwala"],
-        "Hansi": ["Hansi Rural", "Uklana", "Narnaund"]
-      },
-      "Sonipat": {
-        "Sonipat": ["Sonipat Rural", "Ganaur", "Rai", "Kharkhoda"],
-        "Ganaur": ["Pirthi Pur", "Teori", "Jatheri"]
-      }
-    }
+let admin=false;
+let villageDataCache = {};
+
+const district = document.getElementById("district");
+const block = document.getElementById("block");
+const village = document.getElementById("village");
+
+// Firebase से villages डेटा लोड करना
+db.ref("villages").once("value").then(snapshot => {
+  villageDataCache = snapshot.val() || {};
+  let states = Object.keys(villageDataCache);
+  
+  if(states.length === 0) {
+    district.innerHTML = '<option value="">जिला data उपलब्ध नहीं है</option>';
+    document.getElementById("villageStatus").innerText = "⚠ Firebase में 'villages' master data नहीं मिला।";
+    return;
   }
+
+  district.innerHTML = '<option value="">जिला चुनें</option>';
+  states.forEach(state => {
+    let districts = Object.keys(villageDataCache[state] || {});
+    districts.forEach(d => {
+      let o = document.createElement("option");
+      o.value = d;
+      o.textContent = d;
+      district.appendChild(o);
+    });
+  });
+  document.getElementById("villageStatus").innerText = "✔ डेटा सफलतापूर्वक लोड हो गया है।";
+}).catch(err => {
+  console.error(err);
+  district.innerHTML = '<option value="">डेटा लोड करने में त्रुटि</option>';
+});
+
+// जिला बदलने पर ब्लॉक लोड करना
+district.onchange = () => {
+  block.innerHTML = '<option value="">ब्लॉक चुनें</option>';
+  village.innerHTML = '<option value="">गाँव चुनें</option>';
+  village.disabled = true;
+  
+  if (!district.value) {
+    block.disabled = true;
+    return;
+  }
+  
+  block.disabled = false;
+  let selectedDist = district.value;
+  
+  Object.keys(villageDataCache).forEach(state => {
+    let dists = villageDataCache[state];
+    if (dists && dists[selectedDist]) {
+      let blocks = Object.keys(dists[selectedDist]);
+      blocks.forEach(b => {
+        let o = document.createElement("option");
+        o.value = b;
+        o.textContent = b;
+        block.appendChild(o);
+      });
+    }
+  });
 };
 
-let admin=false;
+// ब्लॉक बदलने पर गाँव लोड करना
+block.onchange = () => {
+  village.innerHTML = '<option value="">गाँव चुनें</option>';
+  village.disabled = true;
+  
+  if (!block.value) return;
+  
+  let selectedDist = district.value;
+  let selectedBlock = block.value;
+  
+  Object.keys(villageDataCache).forEach(state => {
+    let dists = villageDataCache[state];
+    if (dists && dists[selectedDist]) {
+      let blocks = dists[selectedDist];
+      if (blocks && blocks[selectedBlock]) {
+        let villagesList = blocks[selectedBlock];
+        if (Array.isArray(villagesList)) {
+          villagesList.forEach(x => {
+            let o = document.createElement("option");
+            o.value = x;
+            o.textContent = x;
+            village.appendChild(o);
+          });
+          village.disabled = false;
+        } else if (typeof villagesList === 'object' && villagesList !== null) {
+          Object.values(villagesList).forEach(x => {
+            let o = document.createElement("option");
+            o.value = x;
+            o.textContent = x;
+            village.appendChild(o);
+          });
+          village.disabled = false;
+        }
+      }
+    }
+  });
+};
 
 function v(id){return document.getElementById(id).value.trim()}
 function toggleMenu(){document.getElementById("menu").classList.toggle("hidden")}
 function go(id){document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");if(id==="profile")loadProfile();if(["shops","services","buysell","history"].includes(id))render(id);if(id==="munadi")renderMunadi();if(id==="gallery")renderGallery();if(id==="videos")renderVideos();if(id==="admin")renderAdmin()}
 function toggleLang(){document.getElementById("lang").innerText=document.getElementById("lang").innerText==="Eng"?"हिन्दी":"Eng"}
-function esc(s){return String(s?="" "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-
-const district=document.getElementById("district"),block=document.getElementById("block"),village=document.getElementById("village");
-
-Object.keys(DATA).forEach(d=>{let o=document.createElement("option");o.value=d;o.textContent=d;district.appendChild(o)});
-
-district.onchange=()=>{
-  block.innerHTML='<option value="">ब्लॉक चुनें</option>';
-  village.innerHTML='<option value="">गाँव चुनें</option>';
-  village.disabled=true;
-  if(!district.value){block.disabled=true;return}
-  block.disabled=false;
-  Object.keys(DATA[district.value].blocks).forEach(b=>{
-    let o=document.createElement("option");o.value=b;o.textContent=b;block.appendChild(o)
-  })
-};
-
-block.onchange=()=>{
-  village.innerHTML='<option value="">गाँव चुनें</option>';
-  village.disabled=true;
-  if(!block.value)return;
-  let villages = DATA[district.value].blocks[block.value];
-  if(villages){
-    villages.forEach(x=>{
-      let o=document.createElement("option");o.value=x;o.textContent=x;village.appendChild(o)
-    });
-    village.disabled=false;
-  }
-};
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
 function compress(file,max=700){return new Promise((res,rej)=>{let r=new FileReader();r.onload=e=>{let im=new Image();im.onload=()=>{let c=document.createElement("canvas"),scale=Math.min(1,max/im.width,max/im.height);c.width=im.width*scale;c.height=im.height*scale;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.72))};im.src=e.target.result};r.onerror=rej;r.readAsDataURL(file)})}
 
@@ -188,7 +230,7 @@ function add(type,data){if(!data.title){alert("जानकारी भरे�
 function render(type){let c=document.getElementById(type+"List");if(!c)return;db.ref(type+"_data").once("value").then(s=>{c.innerHTML="";let d=s.val();if(!d){c.innerHTML='<p class="small">अभी कोई डेटा नहीं है।</p>';return}Object.entries(d).reverse().forEach(([k,x])=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><div class="small">${esc(x.sub||"")} ${x.phone?"| 📞 "+esc(x.phone):""}</div>${x.phone?`<a href="tel:${esc(x.phone)}">कॉल करें</a>`:""} ${admin?`<button class="danger" onclick="del('${type}_data/${k}')">डिलीट</button>`:""}</div>`)})}
 function submitMunadi(){let x={title:v("munadiText"),sub:v("munadiUser"),phone:v("munadiPhone"),createdAt:Date.now()};if(!x.title||!x.sub||!/^\d{10}$/.test(x.phone)){alert("सही जानकारी भरें");return}db.ref("munadi_pending").push(x).then(()=>{alert("मुनादी सत्यापन के लिए भेज दी गई");renderMunadi()})}
 function renderMunadi(){db.ref("munadi_data").once("value").then(s=>{let c=document.getElementById("munadiList");c.innerHTML="";Object.values(s.val()||{}).reverse().forEach(x=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><div class="small">${esc(x.sub)}</div></div>`)});db.ref("munadi_pending").once("value").then(s=>{let c=document.getElementById("pendingList");c.innerHTML="";Object.values(s.val()||{}).reverse().forEach(x=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><div class="small">${esc(x.sub)} | लंबित</div></div>`)})}
-function renderAdmin(){if(!admin)return;db.ref("munadi_pending").once("value").then(s=>{let c=document.getElementById("adminPending");c.innerHTML="";Object.entries(s.val()||{}).forEach(([k,x])=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><p class="small">${esc(x.sub)} | ${esc(x.phone)}</p><button class="success" onclick="approve('${k}')">स्वीकृत</button><button class="danger" onclick="del('munadi_pending/${k}')">खारिज</button></div>`)})}
+function renderAdmin(){if(!admin)return;db.ref("munadi_pending").once("value").then(s=>{let c=document.getElementById("adminPending");c.innerHTML="";Object.entries(s.val()||{}).forEach(([k,x])=>c.innerHTML+=`<div class="item"><b>${esc(x.title)}</b><p class="small">${esc(x.sub)} | ${esc(x.phone)}</p><button class="success" onclick="approve('${k}')">स्वीकृत</button><button class="danger" onclick="del('munadi_pending/'+k)">खारिज</button></div>`)})}
 function approve(k){db.ref("munadi_pending/"+k).once("value").then(s=>{let x=s.val();if(!x)return;return db.ref("munadi_data").push(x).then(()=>db.ref("munadi_pending/"+k).remove()).then(()=>renderAdmin())})}
 function del(path){if(!admin){alert("Admin अनुमति जरूरी है");return}if(confirm("डिलीट करें?"))db.ref(path).remove().then(()=>{alert("डिलीट हो गया");renderAdmin()})}
 function adminLogin(){let p=prompt("Admin password");if(p===(localStorage.getItem("admin_pass")||"admin123")){admin=true;go("admin")}else if(p!==null)alert("गलत password")}
