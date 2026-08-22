@@ -14,28 +14,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind', sans-serif; }
-body { background-color: #f1f5f9; color: #0f172a; padding: 10px; }
-.container { max-width: 450px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+body { background-color: #064e3b; color: #0f172a; padding: 10px; }
+.container { max-width: 450px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
-.top-bar { background: #064e3b; color: #ffffff; padding: 8px 12px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
-.top-bar-right { display: flex; gap: 8px; align-items: center; }
-.lang-btn { background: #fbbf24; color: #0f172a; border: none; padding: 3px 8px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
+.top-bar { background: #064e3b; color: #ffffff; padding: 10px 16px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #047857; }
+.lang-btn { background: #10b981; color: white; border: none; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
 .header { background: #065f46; color: white; padding: 16px; }
-.header-content { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-.logo { background: #fbbf24; color: #0f172a; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; }
-.title { font-size: 18px; font-weight: 700; line-height: 1.2; }
-.badge { background: #047857; color: #a7f3d0; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
-.subtitle { font-size: 11px; color: #a7f3d0; margin-top: 4px; }
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.title { font-size: 17px; font-weight: 700; line-height: 1.2; color: #ffffff; }
+.subtitle { font-size: 12px; color: #a7f3d0; }
+
+.ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; display: flex; gap: 12px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
+
+.menu-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 13px; color: #065f46; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; text-decoration: none; }
+.menu-card:active { background: #f8fafc; transform: scale(0.98); }
+.menu-card.orange { background: #ea580c; color: white; }
 
 .btn-group { display: flex; gap: 8px; margin-top: 12px; }
-.btn-mode { flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.btn-mode { flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; text-align: center; }
 .btn-admin { background: #fbbf24; color: #0f172a; }
 .btn-user { background: #ffffff; color: #065f46; }
 
-.content { padding: 16px; }
+.content { padding: 16px; background: #f8fafc; min-height: 400px; }
 
-.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; position: relative; }
+.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
 .card-title { font-size: 13px; font-weight: 700; color: #065f46; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
 
 .form-group { margin-bottom: 10px; position: relative; }
@@ -43,21 +46,9 @@ body { background-color: #f1f5f9; color: #0f172a; padding: 10px; }
 .form-control { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; background: #f8fafc; outline: none; }
 .btn-submit { width: 100%; background: #047857; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 6px; }
 
-.suggestions-list {
-position: absolute;
-top: 100%;
-left: 0;
-right: 0;
-background: #ffffff;
-border: 2px solid #047857;
-border-radius: 8px;
-max-height: 220px;
-overflow-y: auto;
-z-index: 1000;
-box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-}
-.suggestion-item { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: #0f172a; display: flex; justify-content: space-between; align-items: center; }
-.suggestion-item:hover, .suggestion-item:active { background: #ecfdf5; color: #047857; font-weight: bold; }
+.suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: #ffffff; border: 2px solid #047857; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+.suggestion-item { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: #0f172a; display: flex; justify-content: space-between; }
+.suggestion-item:hover { background: #ecfdf5; color: #047857; font-weight: bold; }
 
 .village-card { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
 .v-icon { background: #047857; color: white; width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; flex-shrink: 0; }
@@ -70,10 +61,7 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 .service-tag { background: #d1fae5; color: #065f46; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
 .service-name { font-size: 13px; font-weight: 700; color: #0f172a; margin: 4px 0; }
 .btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 12px; margin-top: 8px; }
-
-.quick-btn { background: #fef3c7; border: 1px solid #fde047; color: #78350f; font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 6px; cursor: pointer; margin-right: 4px; margin-top: 4px; display: inline-block; }
-
-.empty-state { text-align: center; padding: 30px 15px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; font-size: 13px; }
+.empty-state { text-align: center; padding: 30px 15px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -90,10 +78,7 @@ villages: [
 { hi: 'बलम / बलंभा', en: 'Balham' },
 { hi: 'बालंद', en: 'Baland' },
 { hi: 'सांपला', en: 'Sampla' },
-{ hi: 'महम', en: 'Meham' },
-{ hi: 'कलानौर', en: 'Kalanaur' },
-{ hi: 'बोहर', en: 'Bohar' },
-{ hi: 'लाखन माजरा', en: 'Lakhan Majra' }
+{ hi: 'महम', en: 'Meham' }
 ]
 },
 'charkhi-dadri': {
@@ -101,23 +86,20 @@ name: { hi: 'चरखी दादरी (Charkhi Dadri)', en: 'Charkhi Dadri' 
 villages: [
 { hi: 'मालकोश', en: 'Malkosh' },
 { hi: 'बौंद कलां', en: 'Bond Kalan' },
-{ hi: 'बौंद खुर्द', en: 'Bond Khurd' },
-{ hi: 'सांवर', en: 'Sanwar' },
-{ hi: 'झुज्झू', en: 'Jhajhu' }
+{ hi: 'सांवर', en: 'Sanwar' }
 ]
 },
 'bhiwani': {
 name: { hi: 'भिवानी (Bhiwani)', en: 'Bhiwani' },
 villages: [
 { hi: 'बावनी खेड़ा', en: 'Bawani Khera' },
-{ hi: 'तोशाम', en: 'Tosham' },
-{ hi: 'सिवानी', en: 'Siwani' }
+{ hi: 'तोशाम', en: 'Tosham' }
 ]
 }
 };
 
 const INITIAL_DATA = [
-{ id: 1, titleHi: 'मालकोश जन सेवा एवं सीएससी केंद्र', phone: '9812000111', category: 'CSC', districtId: 'charkhi-dadri', villageHi: 'मालकोश', personName: 'रामनिवास मलिक' },
+{ id: 1, titleHi: 'मालकोश जन सेवा व सीएससी केंद्र', phone: '9812000111', category: 'CSC', districtId: 'charkhi-dadri', villageHi: 'मालकोश', personName: 'रामनिवास मलिक' },
 { id: 2, titleHi: 'मालकोश बाबा रामदेव किराना स्टोर', phone: '9991000444', category: 'Kiryana', districtId: 'charkhi-dadri', villageHi: 'मालकोश', personName: 'राजेश यादव' }
 ];
 
@@ -128,10 +110,11 @@ const [selectedDistrict, setSelectedDistrict] = useState("charkhi-dadri");
 const [searchVillage, setSearchVillage] = useState("मालकोश");
 const [activeCategory, setActiveCategory] = useState("all");
 const [showDropdown, setShowDropdown] = useState(false);
+const [subView, setSubView] = useState("home"); // home, shops, mistri, munadi, agri, gallery, video
 
 const [services, setServices] = useState(() => {
 try {
-const saved = localStorage.getItem("haryana_gramin_v15");
+const saved = localStorage.getItem("haryana_gramin_v16");
 return saved ? JSON.parse(saved) : INITIAL_DATA;
 } catch (e) { return INITIAL_DATA; }
 });
@@ -165,10 +148,10 @@ setSearchVillage(firstV);
 setShowDropdown(false);
 };
 
-// डेटा सेव करने पर ऑटोमैटिकली उसी गाँव और डिस्ट्रिक्ट को होम स्क्रीन पर सेट करना
+// डेटा सेव होते ही सीधे उसी गाँव का डेटा एक्टिव करके होम पर ले जाएगा
 const handleAdd = (e) => {
 e.preventDefault();
-if (!title || !phone || !adminVillage) return alert(lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all details!");
+if (!title || !phone || !adminVillage) return alert("कृपया सभी जानकारी भरें!");
 
 const trimmedVillage = adminVillage.trim();
 const newSrv = {
@@ -178,28 +161,23 @@ phone: phone,
 category: category,
 districtId: adminDistrict,
 villageHi: trimmedVillage,
-personName: personName || (lang === 'hi' ? "सत्यापित" : "Verified")
+personName: personName || "सत्यापित"
 };
 
 const updated = [newSrv, ...services];
 setServices(updated);
-localStorage.setItem("haryana_gramin_v15", JSON.stringify(updated));
+localStorage.setItem("haryana_gramin_v16", JSON.stringify(updated));
 
-// सीधे उसी गाँव का डेटा देखने के लिए स्टेट अपडेट करना
+// तुरंत नया जोड़ा गया गाँव और जिला सेट करें
 setSelectedDistrict(adminDistrict);
 setSearchVillage(trimmedVillage);
-setView("user"); // ऑटोमैटिकली होम स्क्रीन पर भेजना
+setView("user");
+setSubView("home");
 
 setTitle("");
 setPhone("");
 setPersonName("");
-alert(lang === 'hi' ? `गाँव "${trimmedVillage}" में नई सेवा सफलतापूर्वक जोड़ दी गई!` : `New service added to village "${trimmedVillage}"!`);
-};
-
-const handleDelete = (id) => {
-const updated = services.filter(s => s.id !== id);
-setServices(updated);
-localStorage.setItem("haryana_gramin_v15", JSON.stringify(updated));
+alert(`गाँव "${trimmedVillage}" में नई सेवा सफलतापूर्वक जोड़ दी गई है!`);
 };
 
 const displayServices = useMemo(() => {
@@ -217,26 +195,30 @@ return (
 <div className="container">
 
 <div className="top-bar">
-<span>💡 {lang === 'hi' ? 'संस्थापक: राजेश यादव' : 'Founder: Rajesh Yadav'}</span>
+<span><b>MeraGaov</b> - dakshyadav.co.in</span>
 <button className="lang-btn" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}>
-🌐 {lang === 'hi' ? 'English' : 'हिंदी'}
+🌐 {lang === 'hi' ? 'Eng' : 'हिंदी'}
 </button>
 </div>
 
 <div className="header">
-<div className="header-content">
-<div className="logo">हग</div>
+<div className="header-top">
 <div>
-<div className="title">{lang === 'hi' ? 'हरियाणा ग्रामीण सेवा' : 'Haryana Gramin Seva'}</div>
-<span className="badge">{lang === 'hi' ? 'मेरागाँव - मेरी पहचान' : 'Mera Gaov - Meri Pehchan'}</span>
+<div className="title">MeraGaov - dakshyadav.co.in</div>
+<div className="subtitle">{lang === 'hi' ? 'मेरा गाँव - मेरी पहचान' : 'My Village - My Identity'}</div>
 </div>
 </div>
-<p className="subtitle">{lang === 'hi' ? 'डिजिटल निर्देशिका पोर्टल' : 'Digital Directory Portal'}</p>
 
 <div className="btn-group">
-<button onClick={() => setView("admin")} className="btn-mode btn-admin">⚙️ {lang === 'hi' ? 'डेटा जोड़ें / एडमिन' : 'Add Data / Admin'}</button>
-<button onClick={() => setView("user")} className="btn-mode btn-user">🏠 {lang === 'hi' ? 'होम स्क्रीन' : 'Home Screen'}</button>
+<button onClick={() => setView("admin")} className="btn-mode btn-admin">⚙️ {lang === 'hi' ? 'डेटा जोड़ें / एडमिन' : 'Add Data'}</button>
+<button onClick={() => { setView("user"); setSubView("home"); }} className="btn-mode btn-user">🏠 {lang === 'hi' ? 'मुख्य मेनू' : 'Main Menu'}</button>
 </div>
+</div>
+
+<div className="ticker">
+<span>🌾 सरसों: ₹5,400/क्विंटल</span>
+<span>|</span>
+<span>🌤️ लाइव मौसम: Haryana - तापमान सामान्य</span>
 </div>
 
 <div className="content">
@@ -244,11 +226,10 @@ return (
 {view === "admin" && (
 <div>
 <div className="card">
-<div className="card-title">⚙️ {lang === 'hi' ? 'नई दुकान या सेवा दर्ज करें' : 'Add New Service'}</div>
+<div className="card-title">⚙️ {lang === 'hi' ? 'नई दुकान या सेवा दर्ज करें' : 'Add New Listing'}</div>
 <form onSubmit={handleAdd}>
-
 <div className="form-group">
-<label>1. {lang === 'hi' ? 'जिला चुनें:' : 'Select District:'}</label>
+<label>1. जिला चुनें:</label>
 <select className="form-control" value={adminDistrict} onChange={e => { setAdminDistrict(e.target.value); setAdminVillage(MASTER_DISTRICT_VILLAGES[e.target.value].villages[0].hi); }}>
 {Object.keys(MASTER_DISTRICT_VILLAGES).map(key => (
 <option key={key} value={key}>{MASTER_DISTRICT_VILLAGES[key].name[lang] || MASTER_DISTRICT_VILLAGES[key].name.hi}</option>
@@ -257,27 +238,27 @@ return (
 </div>
 
 <div className="form-group">
-<label>2. {lang === 'hi' ? 'गाँव का नाम:' : 'Village Name:'}</label>
-<input className="form-control" type="text" value={adminVillage} onChange={e => setAdminVillage(e.target.value)} placeholder="उदा: मालकोश / बलम" required />
+<label>2. गाँव का नाम (लिखें या सुधारें):</label>
+<input className="form-control" type="text" value={adminVillage} onChange={e => setAdminVillage(e.target.value)} required />
 </div>
 
 <div className="form-group">
-<label>3. {lang === 'hi' ? 'दुकान/सेवा का नाम:' : 'Shop/Service Name:'}</label>
+<label>3. दुकान/सेवा का नाम:</label>
 <input className="form-control" type="text" placeholder="उदा: यादव किराना स्टोर" value={title} onChange={e => setTitle(e.target.value)} required />
 </div>
 
 <div className="form-group">
-<label>4. {lang === 'hi' ? 'मोबाइल नंबर:' : 'Mobile Number:'}</label>
+<label>4. मोबाइल नंबर:</label>
 <input className="form-control" type="tel" placeholder="उदा: 9812345678" value={phone} onChange={e => setPhone(e.target.value)} required />
 </div>
 
 <div className="form-group">
-<label>5. {lang === 'hi' ? 'संचालक का नाम:' : 'Owner Name:'}</label>
+<label>5. संचालक का नाम:</label>
 <input className="form-control" type="text" placeholder="उदा: विकास यादव" value={personName} onChange={e => setPersonName(e.target.value)} />
 </div>
 
 <div className="form-group">
-<label>6. {lang === 'hi' ? 'श्रेणी:' : 'Category:'}</label>
+<label>6. श्रेणी:</label>
 <select className="form-control" value={category} onChange={e => setCategory(e.target.value)}>
 <option value="Mistri">🔨 मिस्त्री / कारीगर</option>
 <option value="CSC">🏥 दुकान / सीएससी केंद्र</option>
@@ -287,32 +268,18 @@ return (
 </select>
 </div>
 
-<button type="submit" className="btn-submit">+ {lang === 'hi' ? 'सेव करें व गाँव देखें' : 'Save & View Village'}</button>
+<button type="submit" className="btn-submit">+ सेव करें व तुरंत गाँव देखें</button>
 </form>
-</div>
-
-<div className="card">
-<div className="card-title">{lang === 'hi' ? 'पंजीकृत दुकानें' : 'Registered Shops'} ({services.length})</div>
-{services.map(s => (
-<div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f1f5f9', fontSize: '11px' }}>
-<div>
-<b>{s.titleHi}</b> ({s.villageHi})<br />
-<span style={{ color: '#64748b' }}>📞 {s.phone}</span>
-</div>
-<button onClick={() => handleDelete(s.id)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold' }}>{lang === 'hi' ? 'हटाएं' : 'Delete'}</button>
-</div>
-))}
 </div>
 </div>
 )}
 
-{view === "user" && (
+{view === "user" && subView === "home" && (
 <div>
-<div className="card">
-<div className="card-title">📍 {lang === 'hi' ? 'जिला व गाँव बदलें' : 'Change District & Village'}</div>
-
+<div className="card" style={{ background: '#ecfdf5', border: '1px solid #a7f3d0' }}>
+<div className="card-title" style={{ color: '#064e3b' }}>📍 जिला व गाँव चुनें / बदलें</div>
 <div className="form-group">
-<label>1. {lang === 'hi' ? 'जिला चुनें:' : 'Select District:'}</label>
+<label>जिला चुनें:</label>
 <select className="form-control" value={selectedDistrict} onChange={e => handleDistrictChange(e.target.value)}>
 {Object.keys(MASTER_DISTRICT_VILLAGES).map(key => (
 <option key={key} value={key}>{MASTER_DISTRICT_VILLAGES[key].name[lang] || MASTER_DISTRICT_VILLAGES[key].name.hi}</option>
@@ -320,8 +287,8 @@ return (
 </select>
 </div>
 
-<div className="form-group">
-<label>2. {lang === 'hi' ? 'गाँव खोजें:' : 'Search Village:'}</label>
+<div className="form-group" style={{ marginBottom: 0 }}>
+<label>गाँव खोजें:</label>
 <input
 className="form-control"
 type="text"
@@ -329,48 +296,78 @@ value={searchVillage}
 onFocus={() => setShowDropdown(true)}
 onClick={() => setShowDropdown(true)}
 onChange={e => { setSearchVillage(e.target.value); setShowDropdown(true); }}
-placeholder={lang === 'hi' ? "गाँव का नाम लिखें..." : "Type village name..."}
+placeholder="गाँव का नाम लिखें..."
 />
-
 {showDropdown && (
 <div className="suggestions-list">
 {suggestedVillages.length > 0 ? (
 suggestedVillages.map((v, index) => (
 <div key={index} className="suggestion-item" onClick={() => selectVillageName(v.hi)}>
 <span>📍 <b>{v.hi}</b></span>
-<span style={{ fontSize: '11px', color: '#64748b' }}>{v.en}</span>
+<span style={{ color: '#64748b', fontSize: '11px' }}>{v.en}</span>
 </div>
 ))
 ) : (
-<div style={{ padding: '10px', fontSize: '12px', color: '#64748b' }}>
-{lang === 'hi' ? 'कोई गाँव नहीं मिला' : 'No village found'}
-</div>
+<div style={{ padding: '10px', fontSize: '12px', color: '#64748b' }}>कोई गाँव नहीं मिला</div>
 )}
 </div>
 )}
 </div>
 </div>
 
+<div style={{ fontSize: '12px', fontWeight: 'bold', color: '#334155', marginBottom: '8px' }}>
+सक्रिय गाँव: <span style={{ color: '#059669' }}>{searchVillage}</span>
+</div>
+
+{/* स्क्रीनशॉट के अनुसार सभी मेनू कार्ड्स */}
+<div className="menu-card" onClick={() => { setActiveCategory('CSC'); setSubView('list'); }}>
+<span>🏥 1. दुकान देखें व OTP से जोड़ें →</span>
+</div>
+
+<div className="menu-card" onClick={() => { setActiveCategory('Mistri'); setSubView('list'); }}>
+<span>🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें →</span>
+</div>
+
+<div className="menu-card orange" onClick={() => alert("मुनादी व खबरें सेक्शन जल्द सक्रिय होगा!")}>
+<span>📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) →</span>
+</div>
+
+<div className="menu-card" onClick={() => { setActiveCategory('Agriculture'); setSubView('list'); }}>
+<span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच →</span>
+</div>
+
+<div className="menu-card" onClick={() => alert("गाँव की गैलरी जल्द लाइव होगी!")}>
+<span>📸 4. गाँव की गैलरी (लाइव फोटो) →</span>
+</div>
+
+<div className="menu-card" onClick={() => alert("लाइव वीडियो प्रोग्राम जल्द शुरू होंगे!")}>
+<span>🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera) →</span>
+</div>
+
+</div>
+)}
+
+{view === "user" && subView === "list" && (
+<div>
+<button onClick={() => setSubView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+← मुख्य मेनू पर वापस जाएं
+</button>
+
 <div className="village-card">
-<div className="v-icon">{searchVillage ? searchVillage[0] : 'ग'}</div>
-<div style={{ fontSize: '11px' }}>
-<div style={{ fontSize: '14px', fontWeight: 'bold', color: '#064e3b' }}>
-{lang === 'hi' ? 'सक्रिय गाँव' : 'Active Village'}: {searchVillage}
-</div>
-<div style={{ color: '#64748b' }}>
-{MASTER_DISTRICT_VILLAGES[selectedDistrict].name[lang] || MASTER_DISTRICT_VILLAGES[selectedDistrict].name.hi}
-</div>
+<div className="v-icon">{searchVillage[0]}</div>
+<div style={{ fontSize: '12px' }}>
+<div style={{ fontSize: '14px', fontWeight: 'bold', color: '#064e3b' }}>गाँव: {searchVillage}</div>
+<div style={{ color: '#64748b' }}>केवल सत्यापित और ओरिजिनल लिस्टिंग</div>
 </div>
 </div>
 
 <div className="pills">
 {[
-{ id: 'all', name: lang === 'hi' ? 'सभी सेवाएं' : 'All' },
-{ id: 'Mistri', name: lang === 'hi' ? '🔨 मिस्त्री' : 'Mistri' },
-{ id: 'CSC', name: lang === 'hi' ? '🏥 सीएससी' : 'CSC' },
-{ id: 'Kiryana', name: lang === 'hi' ? '🛒 किराना' : 'Kiryana' },
-{ id: 'Agriculture', name: lang === 'hi' ? '🌾 कृषि' : 'Agri' },
-{ id: 'Health', name: lang === 'hi' ? '💊 स्वास्थ्य' : 'Health' }
+{ id: 'all', name: 'सभी सेवाएं' },
+{ id: 'Mistri', name: '🔨 मिस्त्री' },
+{ id: 'CSC', name: '🏥 सीएससी' },
+{ id: 'Kiryana', name: '🛒 किराना' },
+{ id: 'Agriculture', name: '🌾 कृषि' }
 ].map(cat => (
 <button
 key={cat.id}
@@ -384,7 +381,7 @@ onClick={() => setActiveCategory(cat.id)}
 
 <div>
 <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>
-"{searchVillage}" {lang === 'hi' ? 'की पंजीकृत सेवाएं' : 'Services'} ({displayServices.length})
+"{searchVillage}" की सेवाएं ({displayServices.length})
 </div>
 
 {displayServices.length > 0 ? (
@@ -392,23 +389,22 @@ displayServices.map(s => (
 <div key={s.id} className="service-item">
 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 <span className="service-tag">{s.category}</span>
-<span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>✔ {lang === 'hi' ? 'सत्यापित' : 'Verified'}</span>
+<span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>✔ सत्यापित</span>
 </div>
 <div className="service-name">{s.titleHi}</div>
-<div style={{ fontSize: '11px', color: '#64748b' }}>👤 {s.personName}</div>
-<a href={`tel:${s.phone}`} className="btn-call">📞 {lang === 'hi' ? 'कॉल करें' : 'Call Now'} ({s.phone})</a>
+<div style={{ fontSize: '11px', color: '#64748b' }}>👤 संचालक: {s.personName}</div>
+<a href={`tel:${s.phone}`} className="btn-call">📞 कॉल करें ({s.phone})</a>
 </div>
 ))
 ) : (
 <div className="empty-state">
-🚫 <b>{searchVillage}</b> {lang === 'hi' ? 'गाँव में अभी कोई दुकान दर्ज नहीं है।' : 'No services listed.'}<br /><br />
-<button onClick={() => setView("admin")} style={{ background: '#047857', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold' }}>
-+ {lang === 'hi' ? 'एडमिन से इस गाँव का डेटा जोड़ें' : 'Add Data'}
+🚫 <b>{searchVillage}</b> गाँव में इस श्रेणी में अभी कोई दुकान दर्ज नहीं है।<br /><br />
+<button onClick={() => setView("admin")} style={{ background: '#047857', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>
++ एडमिन पैनल से इस गाँव का डेटा जोड़ें
 </button>
 </div>
 )}
 </div>
-
 </div>
 )}
 
