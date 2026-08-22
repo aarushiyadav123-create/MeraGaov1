@@ -63,7 +63,7 @@
         .portal-btn.dark-btn { background: #37474f; }
         .portal-btn:hover { opacity: 0.9; }
 
-        /* Card & Forms (Badi aur saaf screen) */
+        /* Card & Forms */
         .card { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 10px; }
         .card h3 { font-size: 20px; color: #1b5e20; margin-bottom: 15px; }
         .form-group { margin-bottom: 18px; }
@@ -78,6 +78,7 @@
         .alert.rejected { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         .back-link { display: inline-block; margin-bottom: 15px; color: #1b5e20; text-decoration: none; font-weight: bold; font-size: 15px; }
+        .content-box p { font-size: 15px; line-height: 1.6; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -111,55 +112,65 @@
             <button class="portal-btn profile-btn" onclick="switchSection('profile-page')">
                 👤 अपनी प्रोफाइल सेट करें / गाँव जोड़ें
             </button>
-            <button class="portal-btn" onclick="alert('Dukaan section khul raha hai')">
+            <button class="portal-btn" onclick="switchSection('dukaan-page')">
                 🏥 1. दुकान देखें / अपनी दुकान जोड़ें ➔
             </button>
-            <button class="portal-btn" onclick="alert('Essential services section')">
+            <button class="portal-btn" onclick="switchSection('services-page')">
                 🛠️ 1B. गाँव की आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि) ➔
             </button>
-            <button class="portal-btn subadmin-btn" onclick="alert('Munadi section')">
+            <button class="portal-btn subadmin-btn" onclick="switchSection('munadi-page')">
                 📢 2. मुनादी, मेला व खबरें (Sub-Admin Approved) ➔
             </button>
-            <button class="portal-btn" onclick="alert('Buy/Sell section')">
+            <button class="portal-btn" onclick="switchSection('buysell-page')">
                 🌾 3. पशु, गेहूँ, चारा खरीद-बेच ➔
             </button>
-            <button class="portal-btn" onclick="alert('Gallery section')">
+            <button class="portal-btn" onclick="switchSection('gallery-page')">
                 📸 4. गाँव की गैलरी (लाइव फोटो) ➔
             </button>
-            <button class="portal-btn" onclick="alert('Videos section')">
+            <button class="portal-btn" onclick="switchSection('video-page')">
                 🎵 5. गाँव के वीडियो और लोक गीत ➔
             </button>
-            <button class="portal-btn dark-btn" onclick="alert('History section')">
+            <button class="portal-btn dark-btn" onclick="switchSection('history-page')">
                 📚 6. गाँव का इतिहास, सरपंच व शहीद ➔
             </button>
         </div>
 
-        <!-- PROFILE & SUBMISSION PAGE (Single Page Form) -->
+        <!-- 1. PROFILE & OTP VERIFICATION PAGE (Single Form + OTP Last Step) -->
         <div id="profile-page" class="section">
             <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
             <div class="card">
                 <h3>अपनी प्रोफाइल सबमिट करें</h3>
                 
-                <!-- Single Form for Profile Submission -->
+                <!-- Full Form -->
                 <div id="formSection">
-                    <form onsubmit="submitSingleForm(event)">
+                    <form onsubmit="submitFullForm(event)">
                         <div class="form-group">
                             <label>पूरा नाम:</label>
                             <input type="text" id="userName" required placeholder="अपना नाम लिखें">
                         </div>
                         <div class="form-group">
-                            <label>मोबाइल नंबर (OTP verification के साथ):</label>
+                            <label>मोबाइल नंबर:</label>
                             <input type="text" id="userPhone" required placeholder="10-digit mobile number">
                         </div>
                         <div class="form-group">
                             <label>गाँव का विवरण / वार्ड:</label>
                             <input type="text" id="userVillage" required placeholder="गाँव में आपका स्थान / वार्ड">
                         </div>
-                        <button type="submit" class="submit-btn">Admin ko Submit Karein</button>
+                        <button type="submit" class="submit-btn">OTP Prapt Karein & Submit Karein</button>
                     </form>
                 </div>
 
-                <!-- Status Display Area (After Submit) -->
+                <!-- OTP Verification Box (Appears after form fill) -->
+                <div id="otpSection" style="display: none;">
+                    <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px;"></p>
+                    <div class="form-group">
+                        <label>4-digit OTP Darj Karein:</label>
+                        <input type="text" id="enteredOtp" placeholder="Enter OTP">
+                    </div>
+                    <button class="submit-btn" onclick="verifyOtpAndFinalize()">OTP Verify Karein & Complete Karein</button>
+                </div>
+
+                <!-- Status Display Area (After Verification) -->
                 <div id="statusSection" style="display: none;">
                     <div id="statusAlertBox" class="alert"></div>
                     <div id="approvedView" style="margin-top: 15px; display: none; font-size: 15px; line-height: 1.6;">
@@ -177,6 +188,78 @@
                     <button onclick="simulateAdminStatus('approved')" style="background: #2e7d32; color:white; border:none; padding:6px 12px; border-radius:4px; font-size:12px; cursor:pointer;">Approve Karein</button>
                     <button onclick="simulateAdminStatus('rejected')" style="background: #c62828; color:white; border:none; padding:6px 12px; border-radius:4px; font-size:12px; cursor:pointer;">Reject Karein</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- 2. DUKAAN SECTION -->
+        <div id="dukaan-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>गाँव की दुकानें</h2>
+                <p>Yahan Malkosh gaon ki sabhi general stores, medical aur kirana dukano ki list milegi.</p>
+                <p>• <b>Sharma Kirana Store:</b> Ward No. 2</p>
+                <p>• <b>Yadav Medical Store:</b> Main Chowk</p>
+            </div>
+        </div>
+
+        <!-- 3. SERVICES SECTION -->
+        <div id="services-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>आवश्यक सेवाएं (मिस्त्री, ट्रैक्टर आदि)</h2>
+                <p>• <b>Ramesh Mistri (Mechanic):</b> 98765XXXXX</p>
+                <p>• <b>Vikram Tractor Service:</b> 91234XXXXX</p>
+            </div>
+        </div>
+
+        <!-- 4. MUNADI SECTION -->
+        <div id="munadi-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>मुनादी, मेला व ताज़ा खबरें</h2>
+                <p style="color: #ef6c00; font-weight: bold;">[Sub-Admin Verified Updates]</p>
+                <p>• Agle hafte mandir par vishesh satsang aur bhandara hai.</p>
+                <p>• Gaon mein safai abhiyan somwar ko shuru hoga.</p>
+            </div>
+        </div>
+
+        <!-- 5. BUY / SELL SECTION -->
+        <div id="buysell-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>पशु, गेहूँ, चारा खरीद-बेच</h2>
+                <p>• <b>Gehu (Wheat):</b> 25 Quintal available for sale.</p>
+                <p>• <b>Desi Cow:</b> Good quality milk cattle available.</p>
+            </div>
+        </div>
+
+        <!-- 6. GALLERY SECTION -->
+        <div id="gallery-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>गाँव की गैलरी (लाइव फोटो)</h2>
+                <p>Yahan gaon ke samuhik karyakramo aur mandir ki tasveerein hain.</p>
+                <p style="color: #666; font-style: italic;">[Photos loading from Malkosh live storage...]</p>
+            </div>
+        </div>
+
+        <!-- 7. VIDEO SECTION -->
+        <div id="video-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>गाँव के वीडियो और लोक गीत</h2>
+                <p>• Malkosh gaon ka itihaas song.</p>
+                <p>• Sthaniye tyoharon ke video clips.</p>
+            </div>
+        </div>
+
+        <!-- 8. HISTORY SECTION -->
+        <div id="history-page" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;">← Home par jayein</a>
+            <div class="card content-box">
+                <h2>गाँव का इतिहास, सरपंच व शहीद</h2>
+                <p>Malkosh ek samriddh itihaas wala gaon hai. Yahan deshbhakto aur shahido ki smritiyan hain.</p>
+                <p>• <b>Vartaman Sarpanch:</b> Gram Panchayat Malkosh</p>
             </div>
         </div>
 
@@ -244,6 +327,9 @@
 
     <!-- JavaScript -->
     <script>
+        let generatedOTP = "";
+        let tempFormData = {};
+
         // Menu Toggle
         function toggleMenu() {
             document.getElementById('menuContainer').classList.toggle('active');
@@ -263,8 +349,8 @@
             }
         }
 
-        // Single Form Submission
-        function submitSingleForm(e) {
+        // Step 1: Full Form Submit -> Send OTP Step
+        function submitFullForm(e) {
             e.preventDefault();
             const name = document.getElementById('userName').value;
             const phone = document.getElementById('userPhone').value;
@@ -275,13 +361,28 @@
                 return;
             }
 
-            localStorage.setItem('m_name', name);
-            localStorage.setItem('m_phone', phone);
-            localStorage.setItem('m_village', village);
-            localStorage.setItem('m_status', 'pending'); // Default status
+            tempFormData = { name, phone, village };
+            generatedOTP = Math.floor(1000 + Math.random() * 9000); // 4 digit random OTP
 
-            loadProfileState();
-            alert('OTP Verified & Profile Admin ko submit ho gayi!');
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('otpSection').style.display = 'block';
+            document.getElementById('otpInfoMsg').innerText = `[Testing OTP]: Aapke mobile par OTP bheja gaya hai -> ${generatedOTP}`;
+        }
+
+        // Step 2: Verify OTP & Finalize
+        function verifyOtpAndFinalize() {
+            const entered = document.getElementById('enteredOtp').value;
+            if(entered == generatedOTP) {
+                localStorage.setItem('m_name', tempFormData.name);
+                localStorage.setItem('m_phone', tempFormData.phone);
+                localStorage.setItem('m_village', tempFormData.village);
+                localStorage.setItem('m_status', 'pending'); // Default pending status
+
+                loadProfileState();
+                alert('OTP Verified! Profile successfully Admin ke paas bhej di gayi hai.');
+            } else {
+                alert('Galat OTP hai! Dobara check karein.');
+            }
         }
 
         // Load Status & Form State
@@ -292,15 +393,18 @@
             const village = localStorage.getItem('m_village');
 
             const formSec = document.getElementById('formSection');
+            const otpSec = document.getElementById('otpSection');
             const statusSec = document.getElementById('statusSection');
             const alertBox = document.getElementById('statusAlertBox');
             const approvedView = document.getElementById('approvedView');
 
             if (!status) {
                 formSec.style.display = 'block';
+                otpSec.style.display = 'none';
                 statusSec.style.display = 'none';
             } else {
                 formSec.style.display = 'none';
+                otpSec.style.display = 'none';
                 statusSec.style.display = 'block';
 
                 if (status === 'pending') {
@@ -325,7 +429,7 @@
         // Admin Simulation
         function simulateAdminStatus(st) {
             if(!localStorage.getItem('m_status')) {
-                alert('Pehle apni profile form bhar kar submit karein!');
+                alert('Pehle apni profile form bhar kar verify karein!');
                 return;
             }
             localStorage.setItem('m_status', st);
@@ -339,6 +443,7 @@
             document.getElementById('userName').value = '';
             document.getElementById('userPhone').value = '';
             document.getElementById('userVillage').value = '';
+            document.getElementById('enteredOtp').value = '';
             loadProfileState();
         }
 
