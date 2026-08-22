@@ -8,21 +8,21 @@
     <!-- jQuery for AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Firebase SDKs (Modular) -->
+    <!-- Firebase SDKs (Modular with your Real Keys) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
         import { getDatabase, ref, set, get, remove, child, push } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDMYacgjfb6gW3J5lv7Jyu3bpJenpL0Nzo",
-            authDomain: "mera-gaov.firebaseapp.com",
-            databaseURL: "https://mera-gaov-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "mera-gaov",
-            storageBucket: "mera-gaov.firebasestorage.app",
-            messagingSenderId: "574021786245",
-            appId: "1:574021786245:web:7f4c042f347d0cab54a7ec",
-            measurementId: "G-757L4D3657"
+            apiKey: "AIzaSyBXryxNOlryP4WOXcKOda5dQIjLAc72wG4",
+            authDomain: "meragaov-ab9fb.firebaseapp.com",
+            databaseURL: "https://meragaov-ab9fb-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "meragaov-ab9fb",
+            storageBucket: "meragaov-ab9fb.firebasestorage.app",
+            messagingSenderId: "424538068212",
+            appId: "1:424538068212:web:2d58406aeb0b4d9524faa1",
+            measurementId: "G-86FH5M7NP1"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -466,7 +466,6 @@
                 });
         }
 
-        // Direct Original SMS Sender without mentioning Fast2SMS
         function sendRealSMSOTP(phone, otp, infoElementId) {
             generatedOTP = otp;
             const message = `Aapka OTP code ${otp} hai. Kripya ise kisi ke sath share na karein.`;
@@ -918,7 +917,7 @@
             let list = JSON.parse(localStorage.getItem(type + '_data') || '[]');
             list.splice(index, 1);
             localStorage.setItem(type + '_data', JSON.stringify(list));
-            syncData`ToFirebase(type, list);
+            syncDataToFirebase(type, list);
             renderList(type);
             alert('Data Deleted Successfully!');
         }
