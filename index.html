@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>हरियाणा ग्रामीण सेवा निर्देशिका</title>
+<title>MeraGaov - मेरी पहचान</title>
 
 <!-- React & React DOM -->
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -27,14 +27,12 @@ body { background-color: #064e3b; color: #0f172a; padding: 10px; }
 
 .ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; display: flex; gap: 12px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
 
-.menu-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 13px; color: #065f46; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; text-decoration: none; }
+.menu-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 13px; color: #065f46; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .menu-card:active { background: #f8fafc; transform: scale(0.98); }
 .menu-card.orange { background: #ea580c; color: white; }
 
-.btn-group { display: flex; gap: 8px; margin-top: 12px; }
-.btn-mode { flex: 1; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px; border: none; cursor: pointer; text-align: center; }
-.btn-admin { background: #fbbf24; color: #0f172a; }
-.btn-user { background: #ffffff; color: #065f46; }
+.btn-group { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.btn-mode { padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; border: none; cursor: pointer; text-align: center; background: #fbbf24; color: #0f172a; }
 
 .content { padding: 16px; background: #f8fafc; min-height: 400px; }
 
@@ -105,16 +103,15 @@ const INITIAL_DATA = [
 
 function App() {
 const [lang, setLang] = useState("hi");
-const [view, setView] = useState("user");
+const [view, setView] = useState("home"); // home, admin, subadmin, about, policy, list
 const [selectedDistrict, setSelectedDistrict] = useState("charkhi-dadri");
 const [searchVillage, setSearchVillage] = useState("मालकोश");
 const [activeCategory, setActiveCategory] = useState("all");
 const [showDropdown, setShowDropdown] = useState(false);
-const [subView, setSubView] = useState("home"); // home, shops, mistri, munadi, agri, gallery, video
 
 const [services, setServices] = useState(() => {
 try {
-const saved = localStorage.getItem("haryana_gramin_v16");
+const saved = localStorage.getItem("haryana_gramin_v17");
 return saved ? JSON.parse(saved) : INITIAL_DATA;
 } catch (e) { return INITIAL_DATA; }
 });
@@ -148,7 +145,6 @@ setSearchVillage(firstV);
 setShowDropdown(false);
 };
 
-// डेटा सेव होते ही सीधे उसी गाँव का डेटा एक्टिव करके होम पर ले जाएगा
 const handleAdd = (e) => {
 e.preventDefault();
 if (!title || !phone || !adminVillage) return alert("कृपया सभी जानकारी भरें!");
@@ -166,13 +162,11 @@ personName: personName || "सत्यापित"
 
 const updated = [newSrv, ...services];
 setServices(updated);
-localStorage.setItem("haryana_gramin_v16", JSON.stringify(updated));
+localStorage.setItem("haryana_gramin_v17", JSON.stringify(updated));
 
-// तुरंत नया जोड़ा गया गाँव और जिला सेट करें
 setSelectedDistrict(adminDistrict);
 setSearchVillage(trimmedVillage);
-setView("user");
-setSubView("home");
+setView("home");
 
 setTitle("");
 setPhone("");
@@ -195,7 +189,7 @@ return (
 <div className="container">
 
 <div className="top-bar">
-<span><b>MeraGaov</b> - dakshyadav.co.in</span>
+<span><b>MeraGaov</b> - {searchVillage}</span>
 <button className="lang-btn" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}>
 🌐 {lang === 'hi' ? 'Eng' : 'हिंदी'}
 </button>
@@ -204,14 +198,16 @@ return (
 <div className="header">
 <div className="header-top">
 <div>
-<div className="title">MeraGaov - dakshyadav.co.in</div>
+<div className="title">MeraGaov - {searchVillage}</div>
 <div className="subtitle">{lang === 'hi' ? 'मेरा गाँव - मेरी पहचान' : 'My Village - My Identity'}</div>
 </div>
 </div>
 
 <div className="btn-group">
-<button onClick={() => setView("admin")} className="btn-mode btn-admin">⚙️ {lang === 'hi' ? 'डेटा जोड़ें / एडमिन' : 'Add Data'}</button>
-<button onClick={() => { setView("user"); setSubView("home"); }} className="btn-mode btn-user">🏠 {lang === 'hi' ? 'मुख्य मेनू' : 'Main Menu'}</button>
+<button onClick={() => setView("admin")} className="btn-mode">⚙️ Admin</button>
+<button onClick={() => setView("subadmin")} className="btn-mode">🛡️ Sub-Admin</button>
+<button onClick={() => setView("about")} className="btn-mode">ℹ️ About</button>
+<button onClick={() => setView("policy")} className="btn-mode">📄 Policy</button>
 </div>
 </div>
 
@@ -225,8 +221,11 @@ return (
 
 {view === "admin" && (
 <div>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+← होम पर जाएं
+</button>
 <div className="card">
-<div className="card-title">⚙️ {lang === 'hi' ? 'नई दुकान या सेवा दर्ज करें' : 'Add New Listing'}</div>
+<div className="card-title">⚙️ नई दुकान या सेवा दर्ज करें</div>
 <form onSubmit={handleAdd}>
 <div className="form-group">
 <label>1. जिला चुनें:</label>
@@ -238,7 +237,7 @@ return (
 </div>
 
 <div className="form-group">
-<label>2. गाँव का नाम (लिखें या सुधारें):</label>
+<label>2. गाँव का नाम:</label>
 <input className="form-control" type="text" value={adminVillage} onChange={e => setAdminVillage(e.target.value)} required />
 </div>
 
@@ -268,13 +267,56 @@ return (
 </select>
 </div>
 
-<button type="submit" className="btn-submit">+ सेव करें व तुरंत गाँव देखें</button>
+<button type="submit" className="btn-submit">सेव करें व गाँव देखें</button>
 </form>
 </div>
 </div>
 )}
 
-{view === "user" && subView === "home" && (
+{view === "subadmin" && (
+<div>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+← होम पर जाएं
+</button>
+<div className="card">
+<div className="card-title">🛡️ Sub-Admin पैनल</div>
+<p style={{ fontSize: '12px', color: '#475569' }}>यहाँ से सब-एडमिन अपने क्षेत्र की मुनादी और खबरों को वेरीफाई कर सकते हैं।</p>
+</div>
+</div>
+)}
+
+{view === "about" && (
+<div>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+← होम पर जाएं
+</button>
+<div className="card" style={{ textAlign: 'center', padding: '20px' }}>
+<div className="card-title" style={{ justifyContent: 'center' }}>ℹ️ About / परिचय</div>
+<p style={{ fontSize: '14px', fontWeight: 'bold', color: '#064e3b', marginBottom: '10px' }}>
+Founder: Kusum w/o Rajesh
+</p>
+<p style={{ fontSize: '13px', color: '#334155' }}>
+यह पोर्टल हमारे गाँव को डिजिटल रूप से सशक्त बनाने और हर ग्रामीण सेवा को एक क्लिक पर उपलब्ध कराने के लिए समर्पित है।
+</p>
+</div>
+</div>
+)}
+
+{view === "policy" && (
+<div>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+← होम पर जाएं
+</button>
+<div className="card">
+<div className="card-title">📄 Privacy Policy & Terms</div>
+<p style={{ fontSize: '12px', color: '#475569', lineHeight: '1.5' }}>
+यह प्लेटफ़ॉर्म ग्रामीण डेटा की सुरक्षा और सही जानकारी प्रदान करने के लिए प्रतिबद्ध है। दर्ज की गई सभी सूचियाँ स्थानीय सत्यापन के आधार पर प्रदर्शित की जाती हैं।
+</p>
+</div>
+</div>
+)}
+
+{view === "home" && (
 <div>
 <div className="card" style={{ background: '#ecfdf5', border: '1px solid #a7f3d0' }}>
 <div className="card-title" style={{ color: '#064e3b' }}>📍 जिला व गाँव चुनें / बदलें</div>
@@ -319,12 +361,11 @@ suggestedVillages.map((v, index) => (
 सक्रिय गाँव: <span style={{ color: '#059669' }}>{searchVillage}</span>
 </div>
 
-{/* स्क्रीनशॉट के अनुसार सभी मेनू कार्ड्स */}
-<div className="menu-card" onClick={() => { setActiveCategory('CSC'); setSubView('list'); }}>
+<div className="menu-card" onClick={() => { setActiveCategory('CSC'); setView('list'); }}>
 <span>🏥 1. दुकान देखें व OTP से जोड़ें →</span>
 </div>
 
-<div className="menu-card" onClick={() => { setActiveCategory('Mistri'); setSubView('list'); }}>
+<div className="menu-card" onClick={() => { setActiveCategory('Mistri'); setView('list'); }}>
 <span>🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें →</span>
 </div>
 
@@ -332,7 +373,7 @@ suggestedVillages.map((v, index) => (
 <span>📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) →</span>
 </div>
 
-<div className="menu-card" onClick={() => { setActiveCategory('Agriculture'); setSubView('list'); }}>
+<div className="menu-card" onClick={() => { setActiveCategory('Agriculture'); setView('list'); }}>
 <span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच →</span>
 </div>
 
@@ -347,9 +388,9 @@ suggestedVillages.map((v, index) => (
 </div>
 )}
 
-{view === "user" && subView === "list" && (
+{view === "list" && (
 <div>
-<button onClick={() => setSubView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
 ← मुख्य मेनू पर वापस जाएं
 </button>
 
