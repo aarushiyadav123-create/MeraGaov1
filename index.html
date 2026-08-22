@@ -117,7 +117,7 @@
         <div class="header-right">
             <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">Eng</button>
             <div class="menu-container" id="menuContainer">
-                <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
+                <button class="menu-toggle" onclick="toggleMenu()" id="menuBtnText">☰ Menu</button>
                 <div class="dropdown-menu">
                     <a href="#" onclick="switchSection('home'); return false;" id="menuHome">Home</a>
                     <a href="#" onclick="openAdminModal('admin')" id="menuAdmin">🔒 Admin Login</a>
@@ -144,7 +144,7 @@
                 <img id="homeUserImg" class="user-id-img" src="" alt="User">
                 <div class="user-id-info">
                     <h4 id="homeUserName"></h4>
-                    <p>गाँव: <span id="homeUserVillage"></span> &nbsp; <span style="color: green; font-weight: bold;">✔ Active</span></p>
+                    <p><span id="txtVillageLabel">गाँव:</span> <span id="homeUserVillage"></span> &nbsp; <span style="color: green; font-weight: bold;" id="txtActiveStatus">✔ Active</span></p>
                 </div>
             </div>
 
@@ -176,20 +176,20 @@
                 </div>
                 <div id="otpSection" style="display: none;">
                     <div class="otp-display-box">
-                        <p style="font-size: 13px; color: #555; margin-bottom: 4px;">आपका वेरिफिकेशन OTP कोड:</p>
+                        <p style="font-size: 13px; color: #555; margin-bottom: 4px;" id="lblOtpSub">आपका वेरिफिकेशन OTP कोड:</p>
                         <span id="screenOtpValue">1234</span>
                     </div>
                     <p id="otpInfoMsg" style="color: #2e7d32; font-weight: bold; margin-bottom: 12px; font-size: 14px; text-align: center;">ऊपर दिया गया OTP नीचे दर्ज करें।</p>
-                    <div class="form-group"><label>OTP दर्ज करें:</label><input type="text" id="enteredOtp" placeholder="Enter OTP"></div>
+                    <div class="form-group"><label id="lblEnterOtpHere">OTP दर्ज करें:</label><input type="text" id="enteredOtp" placeholder="Enter OTP"></div>
                     <button class="submit-btn" onclick="verifyOtpAndDirectApprove()" id="btnVerifyOtp">OTP वेरीफाई करें</button>
                 </div>
                 <div id="statusSection" style="display: none; text-align: center;">
-                    <div class="alert approved">🎉 बधाई हो! प्रोफाइल वेरीफाई हो चुकी है।</div>
+                    <div class="alert approved" id="alertProfileSuccess">🎉 बधाई हो! प्रोफाइल वेरीफाई हो चुकी है।</div>
                     <div id="approvedView" style="margin-top: 20px; font-size: 16px; line-height: 1.8;">
                         <img id="sPhoto" class="profile-img-preview" src="" alt="Photo">
-                        <p><strong>नाम:</strong> <span id="sName"></span></p>
-                        <p><strong>गाँव:</strong> <span id="sVillage"></span></p>
-                        <p style="color: green; margin-top: 8px; font-weight: bold;">✔ Active</p>
+                        <p><strong id="lblSName">नाम:</strong> <span id="sName"></span></p>
+                        <p><strong id="lblSVillage">गाँव:</strong> <span id="sVillage"></span></p>
+                        <p style="color: green; margin-top: 8px; font-weight: bold;" id="sActiveText">✔ Active</p>
                     </div>
                     <button onclick="resetProfile()" style="margin-top: 25px; background: #c62828; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: bold;" id="btnResetProfile">प्रोफाइल एडिट / रीसेट करें</button>
                 </div>
@@ -198,106 +198,106 @@
 
         <!-- DUKAAN PAGE -->
         <div id="dukaan-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome2">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>गाँव की दुकानें व जोड़ें</h2>
+                <h2 id="dukaanTitle">गाँव की दुकानें व जोड़ें</h2>
                 <div id="dukaanFormArea">
-                    <div class="form-group"><label>दुकान का नाम:</label><input type="text" id="dName" placeholder="दुकान का नाम"></div>
-                    <div class="form-group"><label>संचालक का नाम:</label><input type="text" id="dOwner" placeholder="नाम"></div>
-                    <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="dPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('dukaan')">OTP भेजकर जोड़ें</button>
+                    <div class="form-group"><label id="lblDName">दुकान का नाम:</label><input type="text" id="dName" placeholder="दुकान का नाम"></div>
+                    <div class="form-group"><label id="lblDOwner">संचालक का नाम:</label><input type="text" id="dOwner" placeholder="नाम"></div>
+                    <div class="form-group"><label id="lblDPhone">मोबाइल नंबर:</label><input type="text" id="dPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('dukaan')" id="btnDukaanOtp">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="dukaanOtpArea" style="display:none; margin-top:15px;">
                     <div class="otp-display-box"><span id="dukaanScreenOtp">1234</span></div>
-                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;" id="txtDukaanOtpMsg">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="dukaanOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('dukaan')" id="btnDukaanVerify">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
-                <h4>उपलब्ध दुकानें:</h4>
+                <h4 id="lblDukaanList">उपलब्ध दुकानें:</h4>
                 <div id="dukaanList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
         <div id="services-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome3">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>आवश्यक सेवाएं - मिस्त्री आदि</h2>
+                <h2 id="serviceTitle">आवश्यक सेवाएं - मिस्त्री आदि</h2>
                 <div id="serviceFormArea">
-                    <div class="form-group"><label>सेवा का नाम:</label><input type="text" id="sTitle" placeholder="जैसे: राज मिस्त्री"></div>
-                    <div class="form-group"><label>व्यक्ति का नाम:</label><input type="text" id="sPerson" placeholder="नाम"></div>
-                    <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="sPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('service')">OTP भेजकर जोड़ें</button>
+                    <div class="form-group"><label id="lblSTitle">सेवा का नाम:</label><input type="text" id="sTitle" placeholder="जैसे: राज मिस्त्री"></div>
+                    <div class="form-group"><label id="lblSPerson">व्यक्ति का नाम:</label><input type="text" id="sPerson" placeholder="नाम"></div>
+                    <div class="form-group"><label id="lblSPhone">मोबाइल नंबर:</label><input type="text" id="sPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('service')" id="btnServiceOtp">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="serviceOtpArea" style="display:none; margin-top:15px;">
                     <div class="otp-display-box"><span id="serviceScreenOtp">1234</span></div>
-                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;" id="txtServiceOtpMsg">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="serviceOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('service')" id="btnServiceVerify">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
-                <h4>मिस्त्री व सेवा सूची:</h4>
+                <h4 id="lblServiceList">मिस्त्री व सेवा सूची:</h4>
                 <div id="serviceList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
         <div id="munadi-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome4">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>मुनादी व खबरें</h2>
+                <h2 id="munadiTitle">मुनादी व खबरें</h2>
                 <div id="munadiFormArea">
-                    <div class="form-group"><label>खबर / मुनादी विवरण:</label><textarea id="mText" rows="3" placeholder="यहाँ लिखें..."></textarea></div>
-                    <div class="form-group"><label>आपका नाम:</label><input type="text" id="mUser" placeholder="अपना नाम"></div>
-                    <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="mPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('munadi')">OTP भेजकर सबमिट करें</button>
+                    <div class="form-group"><label id="lblMText">खबर / मुनादी विवरण:</label><textarea id="mText" rows="3" placeholder="यहाँ लिखें..."></textarea></div>
+                    <div class="form-group"><label id="lblMUser">आपका नाम:</label><input type="text" id="mUser" placeholder="अपना नाम"></div>
+                    <div class="form-group"><label id="lblMPhone">मोबाइल नंबर:</label><input type="text" id="mPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('munadi')" id="btnMunadiOtp">OTP भेजकर सबमिट करें</button>
                 </div>
                 <div id="munadiOtpArea" style="display:none; margin-top:15px;">
                     <div class="otp-display-box"><span id="munadiScreenOtp">1234</span></div>
-                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;" id="txtMunadiOtpMsg">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="munadiOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सब-एडमिन को भेजें</button>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('munadi')" id="btnMunadiVerify">वेरीफाई कर सब-एडमिन को भेजें</button>
                 </div>
                 <hr style="margin: 20px 0;">
-                <h4>स्वीकृत ताज़ा खबरें:</h4>
+                <h4 id="lblMunadiList">स्वीकृत ताज़ा खबरें:</h4>
                 <div id="munadiList" style="margin-top: 10px;"></div>
                 
                 <hr style="margin: 20px 0;">
-                <h4 style="color: #ef6c00;">लंबित मुनादी:</h4>
+                <h4 style="color: #ef6c00;" id="lblPendingMunadiList">लंबित मुनादी:</h4>
                 <div id="userPendingMunadiList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
         <div id="buysell-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome5">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>पशु, गेहूँ, चारा खरीद-बेच</h2>
+                <h2 id="buySellTitle">पशु, गेहूँ, चारा खरीद-बेच</h2>
                 <div id="buysellFormArea">
-                    <div class="form-group"><label>विवरण:</label><input type="text" id="bText" placeholder="वस्तु का विवरण"></div>
-                    <div class="form-group"><label>बेचने वाले का नाम:</label><input type="text" id="bUser" placeholder="नाम"></div>
-                    <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="bPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('buysell')">OTP भेजकर जोड़ें</button>
+                    <div class="form-group"><label id="lblBText">विवरण:</label><input type="text" id="bText" placeholder="वस्तु का विवरण"></div>
+                    <div class="form-group"><label id="lblBUser">बेचने वाले का नाम:</label><input type="text" id="bUser" placeholder="नाम"></div>
+                    <div class="form-group"><label id="lblBPhone">मोबाइल नंबर:</label><input type="text" id="bPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('buysell')" id="btnBuySellOtp">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="buysellOtpArea" style="display:none; margin-top:15px;">
                     <div class="otp-display-box"><span id="buysellScreenOtp">1234</span></div>
-                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;" id="txtBuySellOtpMsg">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="buysellOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('buysell')" id="btnBuySellVerify">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
-                <h4>सूची:</h4>
+                <h4 id="lblBuySellList">सूची:</h4>
                 <div id="buysellList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
         <div id="gallery-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome6">होम</a>
             <div class="card content-box">
-                <h2>गाँव की गैलरी (लाइव फोटो)</h2>
+                <h2 id="galleryTitle">गाँव की गैलरी (लाइव फोटो)</h2>
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 8px;">अपनी फोटो अपलोड करें:</h4>
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;" id="lblUploadPhoto">अपनी फोटो अपलोड करें:</h4>
                     <input type="file" id="galleryPhotoInput" accept="image/*" style="margin-bottom: 10px; width: 100%;">
                     <input type="text" id="galleryPhotoCaption" placeholder="फोटो का विवरण (जैसे: चौपाल)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button class="submit-btn" onclick="uploadGalleryPhoto()">फोटो अपलोड करें</button>
+                    <button class="submit-btn" onclick="uploadGalleryPhoto()" id="btnUploadPhoto">फोटो अपलोड करें</button>
                 </div>
                 <div id="galleryContainer" style="margin-top: 15px;"></div>
             </div>
@@ -305,99 +305,121 @@
 
         <!-- VIDEO & LIVE PROGRAM PAGE -->
         <div id="video-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome7">होम</a>
             <div class="card content-box">
-                <h2>वीडियो और लाइव प्रोग्राम</h2>
+                <h2 id="videoTitle">वीडियो और लाइव प्रोग्राम</h2>
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin: 15px 0; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 8px;">नया वीडियो लिंक जोड़ें:</h4>
+                    <h4 style="color: #1b5e20; margin-bottom: 8px;" id="lblAddVideo">नया वीडियो लिंक जोड़ें:</h4>
                     <input type="text" id="mediaTitleInput" placeholder="शीर्षक (जैसे: भजन / लाइव प्रोग्राम)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     <input type="text" id="mediaUrlInput" placeholder="YouTube लिंक पेस्ट करें" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button class="submit-btn" onclick="addLiveMedia()">जोड़ें</button>
+                    <button class="submit-btn" onclick="addLiveMedia()" id="btnAddVideo">जोड़ें</button>
                 </div>
                 <div id="mediaListContainer" style="margin-top: 15px;"></div>
             </div>
         </div>
 
         <div id="history-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome8">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>गाँव का इतिहास व जानकारी</h2>
+                <h2 id="historyTitle">गाँव का इतिहास व जानकारी</h2>
                 <div id="historyFormArea">
-                    <div class="form-group"><label>शीर्षक:</label><input type="text" id="hTitle" placeholder="उदा. गाँव की स्थापना"></div>
-                    <div class="form-group"><label>विवरण:</label><textarea id="hDesc" rows="3" placeholder="इतिहास विस्तार से लिखें..."></textarea></div>
-                    <div class="form-group"><label>मोबाइल नंबर:</label><input type="text" id="hPhone" placeholder="10-digit number"></div>
-                    <button class="submit-btn" onclick="initAddOTP('history')">OTP भेजकर जोड़ें</button>
+                    <div class="form-group"><label id="lblHTitle">शीर्षक:</label><input type="text" id="hTitle" placeholder="उदा. गाँव की स्थापना"></div>
+                    <div class="form-group"><label id="lblHDesc">विवरण:</label><textarea id="hDesc" rows="3" placeholder="इतिहास विस्तार से लिखें..."></textarea></div>
+                    <div class="form-group"><label id="lblHPhone">मोबाइल नंबर:</label><input type="text" id="hPhone" placeholder="10-digit number"></div>
+                    <button class="submit-btn" onclick="initAddOTP('history')" id="btnHistoryOtp">OTP भेजकर जोड़ें</button>
                 </div>
                 <div id="historyOtpArea" style="display:none; margin-top:15px;">
                     <div class="otp-display-box"><span id="historyScreenOtp">1234</span></div>
-                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;">ऊपर दिया गया OTP दर्ज करें।</p>
+                    <p style="color:#2e7d32; font-weight:bold; font-size:14px; margin-bottom:10px; text-align:center;" id="txtHistoryOtpMsg">ऊपर दिया गया OTP दर्ज करें।</p>
                     <div class="form-group"><label>OTP डालें:</label><input type="text" id="historyOtpInput" placeholder="Enter OTP"></div>
-                    <button class="submit-btn" onclick="verifyAndSaveItem()">वेरीफाई कर सेव करें</button>
+                    <button class="submit-btn" onclick="verifyAndSaveItem('history')" id="btnHistoryVerify">वेरीफाई कर सेव करें</button>
                 </div>
                 <hr style="margin: 20px 0;">
-                <h4>गाँव का इतिहास व जानकारी:</h4>
+                <h4 id="lblHistoryList">गाँव का इतिहास व जानकारी:</h4>
                 <div id="historyList" style="margin-top: 10px;"></div>
             </div>
         </div>
 
         <div id="pashu-sewa-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome9">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>पशु सेवा एवं स्वास्थ्य सलाह</h2>
-                <p style="margin-bottom: 15px; color: #555;">पशुपालकों के लिए महत्वपूर्ण जानकारियां:</p>
+                <h2 id="pashuTitle">पशु सेवा एवं स्वास्थ्य सलाह</h2>
+                <p style="margin-bottom: 15px; color: #555;" id="pashuSubText">पशुपालकों के लिए महत्वपूर्ण जानकारियां:</p>
+                
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 5px;">1. टीकाकरण</h4>
-                    <p style="font-size: 14px; color: #444;">मुंहपका-खुरपका और गलघोटू से बचाव के लिए समय पर टीका लगवाएं।</p>
+                    <h4 style="color: #1b5e20; margin-bottom: 5px;" id="pashuHead1">1. टीकाकरण (Vaccination)</h4>
+                    <p style="font-size: 14px; color: #444;" id="pashuDesc1">मुंहपका-खुरपका (FMD), गलघोटू (HS) और लंपी वायरस से बचाव के समय पर टीका अवश्य लगवाएं।</p>
+                </div>
+
+                <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #c8e6c9;">
+                    <h4 style="color: #1b5e20; margin-bottom: 5px;" id="pashuHead2">2. संतुलित आहार व खनिज मिश्रण (Mineral Mixture)</h4>
+                    <p style="font-size: 14px; color: #444;" id="pashuDesc2">दैनिक आहार में हरा चारा, सूखा भूसा और दाने के साथ 50 ग्राम मिनरल मिक्सचर जरूर दें जिससे दूध की मात्रा और फैट बढ़े।</p>
+                </div>
+
+                <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #c8e6c9;">
+                    <h4 style="color: #1b5e20; margin-bottom: 5px;" id="pashuHead3">3. प्राथमिक उपचार और कृमिनाशक दवा (Deworming)</h4>
+                    <p style="font-size: 14px; color: #444;" id="pashuDesc3">पेट के कीड़े मारने की दवा पशु चिकित्सक की सलाह से हर 3 महीने में पशु को दें।</p>
+                </div>
+
+                <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #ffe0b2;">
+                    <h4 style="color: #e65100; margin-bottom: 5px;" id="pashuHead4">4. आपातकालीन हेल्पलाइन (Helpline)</h4>
+                    <p style="font-size: 14px; color: #444;" id="pashuDesc4">पशुओं के बीमार होने पर तुरंत नजदीकी सरकारी पशु अस्पताल या मोबाइल वेटरनरी वैन (1962) पर संपर्क करें।</p>
                 </div>
             </div>
         </div>
 
         <div id="education-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome10">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>बच्चों की शिक्षा व पढ़ाई</h2>
+                <h2 id="eduTitle">बच्चों की शिक्षा व पढ़ाई</h2>
                 <a href="https://ncert.nic.in/" target="_blank" class="portal-link-box">1. NCERT Online Books</a>
                 <a href="https://bseh.org.in/" target="_blank" class="portal-link-box">2. BSEH Haryana Board</a>
             </div>
         </div>
 
         <div id="haryana-gov-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम पर जाएं</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome11">होम पर जाएं</a>
             <div class="card content-box">
-                <h2>Haryana Government Schemes</h2>
+                <h2 id="govTitle">Haryana Government Schemes</h2>
                 <a href="https://parivarpehchan.haryana.gov.in/" target="_blank" class="portal-link-box">1. PPP Portal (परिवार पहचान पत्र)</a>
                 <a href="https://hrye.hry.nic.in/" target="_blank" class="portal-link-box">2. HKRN Portal</a>
             </div>
         </div>
 
         <div id="admin-panel-page" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">होम</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome12">होम</a>
             <div class="card content-box">
                 <h2 id="panelTitle">एडमिन पैनल</h2>
                 <div style="background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c8e6c9;">
-                    <h4 style="color: #1b5e20; margin-bottom: 10px;">पासवर्ड बदलें:</h4>
-                    <div class="form-group"><label>नया एडमिन पासवर्ड:</label><input type="text" id="newAdminPass" placeholder="Admin password"></div>
-                    <button class="submit-btn" style="padding: 8px; font-size: 14px; margin-bottom: 12px;" onclick="changeAdminPassword()">पासवर्ड अपडेट करें</button>
+                    <h4 style="color: #1b5e20; margin-bottom: 10px;" id="lblAdminChangePass">पासवर्ड बदलें:</h4>
+                    <div class="form-group"><label id="lblNewAdminPass">नया एडमिन पासवर्ड:</label><input type="text" id="newAdminPass" placeholder="Admin password"></div>
+                    <button class="submit-btn" style="padding: 8px; font-size: 14px; margin-bottom: 12px;" onclick="changeAdminPassword()" id="btnUpdatePass">पासवर्ड अपडेट करें</button>
                 </div>
                 <div id="pendingMunadiSection" style="margin-bottom: 20px;">
-                    <h4 style="color: #ef6c00; margin-bottom: 10px;">सत्यापन के लिए लंबित मुनादी:</h4>
+                    <h4 style="color: #ef6c00; margin-bottom: 10px;" id="lblPendingMunadiHeader">सत्यापन के लिए लंबित मुनादी:</h4>
                     <div id="pendingMunadiList"></div>
                 </div>
                 <hr style="margin: 15px 0;">
-                <button class="submit-btn" style="background: #c62828;" onclick="clearAllData()">सारा डेटा डिलीट करें</button>
+                <button class="submit-btn" style="background: #c62828;" onclick="clearAllData()" id="btnClearAll">सारा डेटा डिलीट करें</button>
             </div>
         </div>
 
         <div id="founder" class="section">
-            <a href="#" class="back-link" onclick="switchSection('home'); return false;">वापस</a>
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome13">वापस</a>
             <div class="card">
-                <h2>संस्थापक के बारे में</h2>
+                <h2 id="founderTitle">संस्थापक के बारे में</h2>
                 <p style="margin-top:12px; font-size: 16px; font-weight: bold; color: #1b5e20;">Kusum W/O Rajesh Yadav</p>
-                <p style="margin-top:5px; font-size: 14px; color: #555;">dakshyadav.co.in - यह पोर्टल हमारे पूरे गाँव को समर्पित है।</p>
+                <p style="margin-top:5px; font-size: 14px; color: #555;" id="founderSubText">dakshyadav.co.in - यह पोर्टल हमारे पूरे गाँव को समर्पित है।</p>
             </div>
         </div>
 
-        <div id="policy" class="section"><a href="#" class="back-link" onclick="switchSection('home'); return false;">वापस</a><div class="card"><h2>प्राइवेसी पॉलिसी</h2><p style="margin-top:12px;">फायरबेस क्लाउड डेटा स्टोरेज।</p></div></div>
+        <div id="policy" class="section">
+            <a href="#" class="back-link" onclick="switchSection('home'); return false;" id="backHome14">वापस</a>
+            <div class="card">
+                <h2 id="policyTitle">प्राइवेसी पॉलिसी</h2>
+                <p style="margin-top:12px;" id="policyDesc">फायरबेस क्लाउड डेटा स्टोरेज।</p>
+            </div>
+        </div>
 
     </div>
 
@@ -459,10 +481,308 @@
             }
         }
 
+        // --- LANGUAGE TRANSLATIONS ---
         function toggleLanguage() {
             currentLang = (currentLang === "hi") ? "en" : "hi";
             const btn = document.getElementById('langToggleBtn');
             btn.innerText = (currentLang === "hi") ? "Eng" : "हिन्दी";
+
+            if(currentLang === "en") {
+                document.getElementById('headerMainTitle').innerText = localStorage.getItem('m_village') ? localStorage.getItem('m_village') + " Digital Portal" : "Mera Gaov Digital Portal";
+                document.getElementById('headerSubTitle').innerText = "My Village - My Identity";
+                document.getElementById('menuBtnText').innerText = "☰ Menu";
+                document.getElementById('menuHome').innerText = "Home";
+                document.getElementById('menuAdmin').innerText = "🔒 Admin Login";
+                document.getElementById('menuSubAdmin').innerText = "🛡️ Sub-Admin Login";
+                document.getElementById('menuFounder').innerText = "About Founder";
+                document.getElementById('menuPolicy').innerText = "Policy";
+
+                document.getElementById('tNewsTitle').innerText = "Village News:";
+                document.getElementById('tMandiTitle').innerText = "Live Mandi Rates:";
+                document.getElementById('tWeatherTitle').innerText = "Live Weather:";
+
+                document.getElementById('btnProfile').innerText = "Set My Profile & Village";
+                document.getElementById('btnDukaan').innerText = "View & Add Shops";
+                document.getElementById('btnServices').innerText = "Essential Services (Masons etc.)";
+                document.getElementById('btnMunadi').innerText = "Announcements & News";
+                document.getElementById('btnBuySell').innerText = "Buy/Sell Cattle, Wheat, Fodder";
+                document.getElementById('btnGallery').innerText = "Village Gallery (Live Photos)";
+                document.getElementById('btnVideo').innerText = "Videos & Live Programs";
+                document.getElementById('btnHistory').innerText = "Village History & Info";
+                document.getElementById('btnPashu').innerText = "Cattle Care & Health Advice";
+                document.getElementById('btnEdu').innerText = "Children Education & Study";
+                document.getElementById('btnGov').innerText = "Haryana Govt Schemes";
+
+                // Profile Page
+                document.getElementById('backHome1').innerText = "Go to Home";
+                document.getElementById('profileCardTitle').innerText = "Set Profile and Village";
+                document.getElementById('lblUserName').innerText = "Full Name:";
+                document.getElementById('lblUserVillage').innerText = "Village Name:";
+                document.getElementById('lblUserPhone').innerText = "Mobile Number:";
+                document.getElementById('lblUserPhoto').innerText = "Upload Your Photo:";
+                document.getElementById('btnSendOtp').innerText = "Send OTP";
+                document.getElementById('lblOtpSub').innerText = "Your Verification OTP Code:";
+                document.getElementById('otpInfoMsg').innerText = "Enter the OTP given above.";
+                document.getElementById('lblEnterOtpHere').innerText = "Enter OTP:";
+                document.getElementById('btnVerifyOtp').innerText = "Verify OTP";
+                document.getElementById('alertProfileSuccess').innerText = "🎉 Congratulations! Profile verified successfully.";
+                document.getElementById('lblSName').innerText = "Name:";
+                document.getElementById('lblSVillage').innerText = "Village:";
+                document.getElementById('btnResetProfile').innerText = "Edit / Reset Profile";
+
+                // Dukaan Page
+                document.getElementById('backHome2').innerText = "Go to Home";
+                document.getElementById('dukaanTitle').innerText = "Village Shops & Add";
+                document.getElementById('lblDName').innerText = "Shop Name:";
+                document.getElementById('lblDOwner').innerText = "Owner Name:";
+                document.getElementById('lblDPhone').innerText = "Mobile Number:";
+                document.getElementById('btnDukaanOtp').innerText = "Send OTP & Add";
+                document.getElementById('txtDukaanOtpMsg').innerText = "Enter the OTP given above.";
+                document.getElementById('btnDukaanVerify').innerText = "Verify & Save";
+                document.getElementById('lblDukaanList').innerText = "Available Shops:";
+
+                // Services Page
+                document.getElementById('backHome3').innerText = "Go to Home";
+                document.getElementById('serviceTitle').innerText = "Essential Services - Masons etc.";
+                document.getElementById('lblSTitle').innerText = "Service Name:";
+                document.getElementById('lblSPerson').innerText = "Person Name:";
+                document.getElementById('lblSPhone').innerText = "Mobile Number:";
+                document.getElementById('btnServiceOtp').innerText = "Send OTP & Add";
+                document.getElementById('txtServiceOtpMsg').innerText = "Enter the OTP given above.";
+                document.getElementById('btnServiceVerify').innerText = "Verify & Save";
+                document.getElementById('lblServiceList').innerText = "Mason & Service List:";
+
+                // Munadi Page
+                document.getElementById('backHome4').innerText = "Go to Home";
+                document.getElementById('munadiTitle').innerText = "Announcements & News";
+                document.getElementById('lblMText').innerText = "News / Announcement Details:";
+                document.getElementById('lblMUser').innerText = "Your Name:";
+                document.getElementById('lblMPhone').innerText = "Mobile Number:";
+                document.getElementById('btnMunadiOtp').innerText = "Send OTP & Submit";
+                document.getElementById('txtMunadiOtpMsg').innerText = "Enter the OTP given above.";
+                document.getElementById('btnMunadiVerify').innerText = "Verify & Send to Sub-Admin";
+                document.getElementById('lblMunadiList').innerText = "Approved Latest News:";
+                document.getElementById('lblPendingMunadiList').innerText = "Pending Announcements:";
+
+                // Buy Sell Page
+                document.getElementById('backHome5').innerText = "Go to Home";
+                document.getElementById('buySellTitle').innerText = "Cattle, Wheat, Fodder Buy-Sell";
+                document.getElementById('lblBText').innerText = "Description:";
+                document.getElementById('lblBUser').innerText = "Seller Name:";
+                document.getElementById('lblBPhone').innerText = "Mobile Number:";
+                document.getElementById('btnBuySellOtp').innerText = "Send OTP & Add";
+                document.getElementById('txtBuySellOtpMsg').innerText = "Enter the OTP given above.";
+                document.getElementById('btnBuySellVerify').innerText = "Verify & Save";
+                document.getElementById('lblBuySellList').innerText = "List:";
+
+                // Gallery Page
+                document.getElementById('backHome6').innerText = "Home";
+                document.getElementById('galleryTitle').innerText = "Village Gallery (Live Photos)";
+                document.getElementById('lblUploadPhoto').innerText = "Upload Your Photo:";
+                document.getElementById('btnUploadPhoto').innerText = "Upload Photo";
+
+                // Video Page
+                document.getElementById('backHome7').innerText = "Home";
+                document.getElementById('videoTitle').innerText = "Videos & Live Programs";
+                document.getElementById('lblAddVideo').innerText = "Add New Video Link:";
+                document.getElementById('btnAddVideo').innerText = "Add";
+
+                // History Page
+                document.getElementById('backHome8').innerText = "Go to Home";
+                document.getElementById('historyTitle').innerText = "Village History & Info";
+                document.getElementById('lblHTitle').innerText = "Title:";
+                document.getElementById('lblHDesc').innerText = "Description:";
+                document.getElementById('lblHPhone').innerText = "Mobile Number:";
+                document.getElementById('btnHistoryOtp').innerText = "Send OTP & Add";
+                document.getElementById('txtHistoryOtpMsg').innerText = "Enter the OTP given above.";
+                document.getElementById('btnHistoryVerify').innerText = "Verify & Save";
+                document.getElementById('lblHistoryList').innerText = "Village History & Info:";
+
+                // Pashu Sewa Page
+                document.getElementById('backHome9').innerText = "Go to Home";
+                document.getElementById('pashuTitle').innerText = "Cattle Care & Health Advice";
+                document.getElementById('pashuSubText').innerText = "Important information for cattle owners:";
+                document.getElementById('pashuHead1').innerText = "1. Vaccination";
+                document.getElementById('pashuDesc1').innerText = "Timely vaccinate against FMD, HS, and Lumpy virus.";
+                document.getElementById('pashuHead2').innerText = "2. Balanced Diet & Mineral Mixture";
+                document.getElementById('pashuDesc2').innerText = "Provide 50g mineral mixture daily with green fodder and grains to increase milk and fat.";
+                document.getElementById('pashuHead3').innerText = "3. Deworming";
+                document.getElementById('pashuDesc3').innerText = "Give deworming medicine every 3 months under veterinary advice.";
+                document.getElementById('pashuHead4').innerText = "4. Emergency Helpline";
+                document.getElementById('pashuDesc4').innerText = "Contact nearest government veterinary hospital or mobile veterinary van (1962) immediately in case of illness.";
+
+                // Education Page
+                document.getElementById('backHome10').innerText = "Go to Home";
+                document.getElementById('eduTitle').innerText = "Children Education & Study";
+
+                // Gov Page
+                document.getElementById('backHome11').innerText = "Go to Home";
+                document.getElementById('govTitle').innerText = "Haryana Government Schemes";
+
+                // Admin Panel
+                document.getElementById('backHome12').innerText = "Home";
+                document.getElementById('panelTitle').innerText = "Admin Panel";
+                document.getElementById('lblAdminChangePass').innerText = "Change Password:";
+                document.getElementById('lblNewAdminPass').innerText = "New Admin Password:";
+                document.getElementById('btnUpdatePass').innerText = "Update Password";
+                document.getElementById('lblPendingMunadiHeader').innerText = "Pending Announcements for Verification:";
+                document.getElementById('btnClearAll').innerText = "Delete All Data";
+
+                // Founder & Policy
+                document.getElementById('backHome13').innerText = "Back";
+                document.getElementById('founderTitle').innerText = "About Founder";
+                document.getElementById('founderSubText').innerText = "dakshyadav.co.in - This portal is dedicated to our entire village.";
+                document.getElementById('backHome14').innerText = "Back";
+                document.getElementById('policyTitle').innerText = "Privacy Policy";
+                document.getElementById('policyDesc').innerText = "Firebase Cloud Data Storage.";
+
+            } else {
+                loadProfileState();
+                document.getElementById('menuBtnText').innerText = "☰ Menu";
+                document.getElementById('menuHome').innerText = "Home";
+                document.getElementById('menuAdmin').innerText = "🔒 Admin Login";
+                document.getElementById('menuSubAdmin').innerText = "🛡️ Sub-Admin Login";
+                document.getElementById('menuFounder').innerText = "About Founder";
+                document.getElementById('menuPolicy').innerText = "Policy";
+                document.getElementById('tNewsTitle').innerText = "गाँव की ताज़ा खबर:";
+                document.getElementById('tMandiTitle').innerText = "लाइव मंडी भाव:";
+                document.getElementById('tWeatherTitle').innerText = "लाइव मौसम:";
+
+                document.getElementById('btnProfile').innerText = "मेरी प्रोफाइल व गाँव सेट करें";
+                document.getElementById('btnDukaan').innerText = "दुकान देखें व जोड़ें";
+                document.getElementById('btnServices').innerText = "आवश्यक सेवाएं (मिस्त्री आदि)";
+                document.getElementById('btnMunadi').innerText = "मुनादी व खबरें";
+                document.getElementById('btnBuySell').innerText = "पशु, गेहूँ, चारा खरीद-बेच";
+                document.getElementById('btnGallery').innerText = "गाँव की गैलरी (लाइव फोटो)";
+                document.getElementById('btnVideo').innerText = "वीडियो और लाइव प्रोग्राम";
+                document.getElementById('btnHistory').innerText = "गाँव का इतिहास व जानकारी";
+                document.getElementById('btnPashu').innerText = "पशु सेवा एवं स्वास्थ्य सलाह";
+                document.getElementById('btnEdu').innerText = "बच्चों की शिक्षा व पढ़ाई";
+                document.getElementById('btnGov').innerText = "Haryana Govt Schemes";
+
+                // Profile Page
+                document.getElementById('backHome1').innerText = "होम पर जाएं";
+                document.getElementById('profileCardTitle').innerText = "प्रोफाइल और गाँव सेट करें";
+                document.getElementById('lblUserName').innerText = "पूरा नाम:";
+                document.getElementById('lblUserVillage').innerText = "गाँव का नाम:";
+                document.getElementById('lblUserPhone').innerText = "मोबाइल नंबर:";
+                document.getElementById('lblUserPhoto').innerText = "अपनी फोटो अपलोड करें:";
+                document.getElementById('btnSendOtp').innerText = "OTP भेजें";
+                document.getElementById('lblOtpSub').innerText = "आपका वेरिफिकेशन OTP कोड:";
+                document.getElementById('otpInfoMsg').innerText = "ऊपर दिया गया OTP नीचे दर्ज करें।";
+                document.getElementById('lblEnterOtpHere').innerText = "OTP दर्ज करें:";
+                document.getElementById('btnVerifyOtp').innerText = "OTP वेरीफाई करें";
+                document.getElementById('alertProfileSuccess').innerText = "🎉 बधाई हो! प्रोफाइल वेरीफाई हो चुकी है।";
+                document.getElementById('lblSName').innerText = "नाम:";
+                document.getElementById('lblSVillage').innerText = "गाँव:";
+                document.getElementById('btnResetProfile').innerText = "प्रोफाइल एडिट / रीसेट करें";
+
+                // Dukaan Page
+                document.getElementById('backHome2').innerText = "होम पर जाएं";
+                document.getElementById('dukaanTitle').innerText = "गाँव की दुकानें व जोड़ें";
+                document.getElementById('lblDName').innerText = "दुकान का नाम:";
+                document.getElementById('lblDOwner').innerText = "संचालक का नाम:";
+                document.getElementById('lblDPhone').innerText = "मोबाइल नंबर:";
+                document.getElementById('btnDukaanOtp').innerText = "OTP भेजकर जोड़ें";
+                document.getElementById('txtDukaanOtpMsg').innerText = "ऊपर दिया गया OTP दर्ज करें।";
+                document.getElementById('btnDukaanVerify').innerText = "वेरीफाई कर सेव करें";
+                document.getElementById('lblDukaanList').innerText = "उपलब्ध दुकानें:";
+
+                // Services Page
+                document.getElementById('backHome3').innerText = "होम पर जाएं";
+                document.getElementById('serviceTitle').innerText = "आवश्यक सेवाएं - मिस्त्री आदि";
+                document.getElementById('lblSTitle').innerText = "सेवा का नाम:";
+                document.getElementById('lblSPerson').innerText = "व्यक्ति का नाम:";
+                document.getElementById('lblSPhone').innerText = "मोबाइल नंबर:";
+                document.getElementById('btnServiceOtp').innerText = "OTP भेजकर जोड़ें";
+                document.getElementById('txtServiceOtpMsg').innerText = "ऊपर दिया गया OTP दर्ज करें।";
+                document.getElementById('btnServiceVerify').innerText = "वेरीफाई कर सेव करें";
+                document.getElementById('lblServiceList').innerText = "मिस्त्री व सेवा सूची:";
+
+                // Munadi Page
+                document.getElementById('backHome4').innerText = "होम पर जाएं";
+                document.getElementById('munadiTitle').innerText = "मुनादी व खबरें";
+                document.getElementById('lblMText').innerText = "खबर / मुनादी विवरण:";
+                document.getElementById('lblMUser').innerText = "आपका नाम:";
+                document.getElementById('lblMPhone').innerText = "मोबाइल नंबर:";
+                document.getElementById('btnMunadiOtp').innerText = "OTP भेजकर सबमिट करें";
+                document.getElementById('txtMunadiOtpMsg').innerText = "ऊपर दिया गया OTP दर्ज करें।";
+                document.getElementById('btnMunadiVerify').innerText = "वेरीफाई कर सब-एडमिन को भेजें";
+                document.getElementById('lblMunadiList').innerText = "स्वीकृत ताज़ा खबरें:";
+                document.getElementById('lblPendingMunadiList').innerText = "लंबित मुनादी:";
+
+                // Buy Sell Page
+                document.getElementById('backHome5').innerText = "होम पर जाएं";
+                document.getElementById('buySellTitle').innerText = "पशु, गेहूँ, चारा खरीद-बेच";
+                document.getElementById('lblBText').innerText = "विवरण:";
+                document.getElementById('lblBUser').innerText = "बेचने वाले का नाम:";
+                document.getElementById('lblBPhone').innerText = "मोबाइल नंबर:";
+                document.getElementById('btnBuySellOtp').innerText = "OTP भेजकर जोड़ें";
+                document.getElementById('txtBuySellOtpMsg').innerText = "ऊपर दिया गया OTP दर्ज करें।";
+                document.getElementById('btnBuySellVerify').innerText = "वेरीफाई कर सेव करें";
+                document.getElementById('lblBuySellList').innerText = "सूची:";
+
+                // Gallery Page
+                document.getElementById('backHome6').innerText = "होम";
+                document.getElementById('galleryTitle').innerText = "गाँव की गैलरी (लाइव फोटो)";
+                document.getElementById('lblUploadPhoto').innerText = "अपनी फोटो अपलोड करें:";
+                document.getElementById('btnUploadPhoto').innerText = "फोटो अपलोड करें";
+
+                // Video Page
+                document.getElementById('backHome7').innerText = "होम";
+                document.getElementById('videoTitle').innerText = "वीडियो और लाइव प्रोग्राम";
+                document.getElementById('lblAddVideo').innerText = "नया वीडियो लिंक जोड़ें:";
+                document.getElementById('btnAddVideo').innerText = "जोड़ें";
+
+                // History Page
+                document.getElementById('backHome8').innerText = "होम पर जाएं";
+                document.getElementById('historyTitle').innerText = "गाँव का इतिहास व जानकारी";
+                document.getElementById('lblHTitle').innerText = "शीर्षक:";
+                document.getElementById('lblHDesc').innerText = "विवरण:";
+                document.getElementById('lblHPhone').innerText = "मोबाइल नंबर:";
+                document.getElementById('btnHistoryOtp').innerText = "OTP भेजकर जोड़ें";
+                document.getElementById('txtHistoryOtpMsg').innerText = "ऊपर दिया गया OTP दर्ज करें।";
+                document.getElementById('btnHistoryVerify').innerText = "वेरीफाई कर सेव करें";
+                document.getElementById('lblHistoryList').innerText = "गाँव का इतिहास व जानकारी:";
+
+                // Pashu Sewa Page
+                document.getElementById('backHome9').innerText = "होम पर जाएं";
+                document.getElementById('pashuTitle').innerText = "पशु सेवा एवं स्वास्थ्य सलाह";
+                document.getElementById('pashuSubText').innerText = "पशुपालकों के लिए महत्वपूर्ण जानकारियां:";
+                document.getElementById('pashuHead1').innerText = "1. टीकाकरण";
+                document.getElementById('pashuDesc1').innerText = "मुंहपका-खुरपका और गलघोटू से बचाव के लिए समय पर टीका लगवाएं।";
+                document.getElementById('pashuHead2').innerText = "2. संतुलित आहार व खनिज मिश्रण";
+                document.getElementById('pashuDesc2').innerText = "दैनिक आहार में हरा चारा, सूखा भूसा और दाने के साथ 50 ग्राम मिनरल मिक्सचर जरूर दें जिससे दूध की मात्रा और फैट बढ़े।";
+                document.getElementById('pashuHead3').innerText = "3. प्राथमिक उपचार और कृमिनाशक दवा";
+                document.getElementById('pashuDesc3').innerText = "पेट के कीड़े मारने की दवा पशु चिकित्सक की सलाह से हर 3 महीने में पशु को दें।";
+                document.getElementById('pashuHead4').innerText = "4. आपातकालीन हेल्पलाइन";
+                document.getElementById('pashuDesc4').innerText = "पशुओं के बीमार होने पर तुरंत नजदीकी सरकारी पशु अस्पताल या मोबाइल वेटरनरी वैन (1962) पर संपर्क करें।";
+
+                // Education Page
+                document.getElementById('backHome10').innerText = "होम पर जाएं";
+                document.getElementById('eduTitle').innerText = "बच्चों की शिक्षा व पढ़ाई";
+
+                // Gov Page
+                document.getElementById('backHome11').innerText = "होम पर जाएं";
+                document.getElementById('govTitle').innerText = "Haryana Government Schemes";
+
+                // Admin Panel
+                document.getElementById('backHome12').innerText = "होम";
+                document.getElementById('panelTitle').innerText = "एडमिन पैनल";
+                document.getElementById('lblAdminChangePass').innerText = "पासवर्ड बदलें:";
+                document.getElementById('lblNewAdminPass').innerText = "नया एडमिन पासवर्ड:";
+                document.getElementById('btnUpdatePass').innerText = "पासवर्ड अपडेट करें";
+                document.getElementById('lblPendingMunadiHeader').innerText = "सत्यापन के लिए लंबित मुनादी:";
+                document.getElementById('btnClearAll').innerText = "सारा डेटा डिलीट करें";
+
+                // Founder & Policy
+                document.getElementById('backHome13').innerText = "वापस";
+                document.getElementById('founderTitle').innerText = "संस्थापक के बारे में";
+                document.getElementById('founderSubText').innerText = "dakshyadav.co.in - यह पोर्टल हमारे पूरे गाँव को समर्पित है।";
+                document.getElementById('backHome14').innerText = "वापस";
+                document.getElementById('policyTitle').innerText = "प्राइवेसी पॉलिसी";
+                document.getElementById('policyDesc').innerText = "फायरबेस क्लाउड डेटा स्टोरेज।";
+            }
             fetchLiveWeather();
         }
 
@@ -545,7 +865,7 @@
             const photo = localStorage.getItem('m_photo');
 
             if(status === 'approved') {
-                document.getElementById('headerMainTitle').innerText = village + ' डिजिटल पोर्टल';
+                document.getElementById('headerMainTitle').innerText = village + (currentLang === 'en' ? ' Digital Portal' : ' डिजिटल पोर्टल');
                 document.getElementById('activeUserCard').style.display = 'flex';
                 document.getElementById('homeUserName').innerText = name;
                 document.getElementById('homeUserVillage').innerText = village;
@@ -558,7 +878,7 @@
                 document.getElementById('sVillage').innerText = village;
                 document.getElementById('sPhoto').src = photo;
             } else {
-                document.getElementById('headerMainTitle').innerText = 'Mera Gaov Digital Portal';
+                document.getElementById('headerMainTitle').innerText = currentLang === 'en' ? 'Mera Gaov Digital Portal' : 'Mera Gaov Digital Portal';
                 document.getElementById('activeUserCard').style.display = 'none';
                 document.getElementById('formSection').style.display = 'block';
                 document.getElementById('otpSection').style.display = 'none';
@@ -587,9 +907,10 @@
                     if (!error) {
                         document.getElementById('galleryPhotoCaption').value = '';
                         fileInput.value = '';
-                        alert('फोटो सफलतापूर्वक अपलोड हो गई है!');
+                        alert('फोटो सफलतापूर्वक अपलोड हो गई है और ऐप में दिखाई देगी!');
+                        renderGalleryPhotos();
                     } else {
-                        alert('अपलोड करने में त्रुटि!');
+                        alert('अपलोड करने में त्रुटि: ' + error.message);
                     }
                 });
             };
@@ -613,7 +934,7 @@
                     div.style.marginBottom = '12px';
                     div.style.padding = '10px';
                     div.innerHTML = `
-                        <img src="${item.img}" style="width: 100%; border-radius: 6px; max-height: 250px; object-fit: cover; margin-bottom: 8px;">
+                        <img src="${item.img}" style="width: 100%; border-radius: 6px; max-height: 280px; object-fit: contain; background: #000; margin-bottom: 8px;">
                         <p style="font-size: 14px; font-weight: bold; color: #333;">${item.caption}</p>
                         ${isAdminLoggedIn ? `<button class="delete-btn" style="display:inline-block; margin-top: 8px;" onclick="deleteGalleryPhoto('${key}')">डिलीट करें</button>` : ''}
                     `;
@@ -635,6 +956,8 @@
                 videoId = url.split('watch?v=')[1]?.split('&')[0];
             } else if (url.includes('embed/')) {
                 videoId = url.split('embed/')[1]?.split('?')[0];
+            } else if (url.length === 11) {
+                videoId = url;
             }
             return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
         }
@@ -651,7 +974,10 @@
                 if(!error) {
                     document.getElementById('mediaTitleInput').value = '';
                     document.getElementById('mediaUrlInput').value = '';
-                    alert('वीडियो सफलतापूर्वक जोड़ दिया गया है!');
+                    alert('वीडियो सफलतापूर्वक जोड़ दिया गया है और अब ऐप में चलेगा!');
+                    renderMediaList();
+                } else {
+                    alert('जोड़ने में त्रुटि: ' + error.message);
                 }
             });
         }
@@ -732,8 +1058,7 @@
             triggerScreenOTP(type, otp);
         }
 
-        function verifyAndSaveItem() {
-            const type = activeItemType;
+        function verifyAndSaveItem(type) {
             const enteredOtp = document.getElementById(type + 'OtpInput').value;
             if(enteredOtp == generatedOTP) {
                 if(type === 'munadi') {
