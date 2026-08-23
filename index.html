@@ -10,6 +10,27 @@
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXryxNOlryP4WOXcKOda5dQIjLAc72wG4",
+    authDomain: "meragaov-ab9fb.firebaseapp.com",
+    databaseURL: "https://meragaov-ab9fb-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "meragaov-ab9fb",
+    storageBucket: "meragaov-ab9fb.firebasestorage.app",
+    messagingSenderId: "424538068212",
+    appId: "1:424538068212:web:2d58406aeb0b4d9524faa1",
+    measurementId: "G-86FH5M7NP1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  window.firebaseDb = { db, ref, set, onValue, push };
+</script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
 
@@ -41,14 +62,14 @@ body { background-color: #064e3b; color: #0f172a; padding: 8px; }
 .menu-card:active { transform: scale(0.97); }
 
 /* हर बटन का अलग आकर्षक रंग */
-.bg-1 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } /* नीला */
-.bg-2 { background: linear-gradient(135deg, #0d9488, #0f766e); } /* सियान/टीेल */
-.bg-3 { background: linear-gradient(135deg, #ea580c, #c2410c); } /* नारंगी */
-.bg-4 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } /* पर्पल */
-.bg-5 { background: linear-gradient(135deg, #db2777, #be185d); } /* पिंक */
-.bg-6 { background: linear-gradient(135deg, #ca8a04, #a16207); } /* गोल्डन */
-.bg-7 { background: linear-gradient(135deg, #059669, #047857); } /* हरा */
-.bg-8 { background: linear-gradient(135deg, #4f46e5, #4338ca); } /* इंडिगो */
+.bg-1 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } 
+.bg-2 { background: linear-gradient(135deg, #0d9488, #0f766e); } 
+.bg-3 { background: linear-gradient(135deg, #ea580c, #c2410c); } 
+.bg-4 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } 
+.bg-5 { background: linear-gradient(135deg, #db2777, #be185d); } 
+.bg-6 { background: linear-gradient(135deg, #ca8a04, #a16207); } 
+.bg-7 { background: linear-gradient(135deg, #059669, #047857); } 
+.bg-8 { background: linear-gradient(135deg, #4f46e5, #4338ca); } 
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -81,7 +102,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 8px; }
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState, useMemo } = React;
+const { useState, useEffect, useMemo } = React;
 
 const MASTER_DISTRICT_VILLAGES = {
 'rohtak': {
@@ -124,12 +145,25 @@ const [activeCategory, setActiveCategory] = useState("all");
 const [showDropdown, setShowDropdown] = useState(false);
 const [showMenuPopup, setShowMenuPopup] = useState(false);
 
-const [services, setServices] = useState(() => {
-try {
-const saved = localStorage.getItem("haryana_gramin_v21");
-return saved ? JSON.parse(saved) : INITIAL_DATA;
-} catch (e) { return INITIAL_DATA; }
+const [services, setServices] = useState(INITIAL_DATA);
+
+// Firebase Realtime Database Sync
+useEffect(() => {
+if (window.firebaseDb) {
+const { db, ref, onValue } = window.firebaseDb;
+const servicesRef = ref(db, 'services');
+onValue(servicesRef, (snapshot) => {
+const data = snapshot.val();
+if (data) {
+const loadedServices = Object.keys(data).map(key => ({
+id: key,
+...data[key]
+}));
+setServices(loadedServices.reverse());
+}
 });
+}
+}, []);
 
 const [title, setTitle] = useState("");
 const [phone, setPhone] = useState("");
@@ -166,7 +200,6 @@ if (!title || !phone || !adminVillage) return alert("कृपया सभी �
 
 const trimmedVillage = adminVillage.trim();
 const newSrv = {
-id: Date.now(),
 titleHi: title,
 phone: phone,
 category: category,
@@ -175,25 +208,32 @@ villageHi: trimmedVillage,
 personName: personName || "सत्यापित"
 };
 
-const updated = [newSrv, ...services];
-setServices(updated);
-localStorage.setItem("haryana_gramin_v21", JSON.stringify(updated));
-
+if (window.firebaseDb) {
+const { db, ref, push } = window.firebaseDb;
+const servicesRef = ref(db, 'services');
+push(servicesRef, newSrv)
+.then(() => {
+alert(`गाँव "${trimmedVillage}" में नई सेवा ऑनलाइन (Firebase) सफलतापर्वक जोड़ दी गई है!`);
 setSelectedDistrict(adminDistrict);
 setSearchVillage(trimmedVillage);
 setView("home");
-
 setTitle("");
 setPhone("");
 setPersonName("");
-alert(`गाँव "${trimmedVillage}" में नई सेवा सफलतापूर्वक जोड़ दी गई है!`);
+})
+.catch((error) => {
+alert("डेटा जोड़ने में त्रुटि: " + error.message);
+});
+} else {
+alert("Firebase कनेक्ट नहीं है!");
+}
 };
 
 const displayServices = useMemo(() => {
 const query = searchVillage.trim().toLowerCase();
 return services.filter(s => {
 const matchDist = s.districtId === selectedDistrict;
-const villageNameLower = s.villageHi.toLowerCase();
+const villageNameLower = s.villageHi ? s.villageHi.toLowerCase() : "";
 const matchVill = !query || villageNameLower === query || villageNameLower.includes(query);
 const matchCat = activeCategory === "all" || s.category === activeCategory;
 return matchDist && matchVill && matchCat;
@@ -207,7 +247,7 @@ return (
 <div className="header">
 <div className="title-box">
 <div className="title">MeraGaov - {searchVillage}</div>
-<div className="subtitle">{lang === 'hi' ? 'मेरा गाँव - मेरी पहचान' : 'My Village - My Identity'}</div>
+<div className="subtitle">{lang === 'hi' ? 'मेरा गाँव - मेरी पहचान (Live)' : 'My Village - My Identity'}</div>
 </div>
 
 <div className="header-right" onClick={(e) => e.stopPropagation()}>
@@ -243,7 +283,7 @@ return (
 ← होम पर जाएं
 </button>
 <div className="card">
-<div className="card-title">⚙️ नई दुकान या सेवा दर्ज करें</div>
+<div className="card-title">⚙️ नई दुकान या सेवा दर्ज करें (Live)</div>
 <form onSubmit={handleAdd}>
 <div className="form-group">
 <label>1. जिला चुनें:</label>
@@ -285,7 +325,7 @@ return (
 </select>
 </div>
 
-<button type="submit" className="btn-submit">सेव करें व गाँव देखें</button>
+<button type="submit" className="btn-submit">ऑनलाइन सेव करें व लाइव देखें</button>
 </form>
 </div>
 </div>
@@ -470,7 +510,7 @@ displayServices.map(s => (
 <div key={s.id} className="service-item">
 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 <span className="service-tag">{s.category}</span>
-<span style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>✔ सत्यापित</span>
+<span style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>✔ सत्यापित (Live)</span>
 </div>
 <div className="service-name">{s.titleHi}</div>
 <div style={{ fontSize: '12px', color: '#64748b' }}>👤 संचालक: {s.personName}</div>
