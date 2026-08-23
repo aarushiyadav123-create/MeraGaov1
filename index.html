@@ -127,7 +127,6 @@ villages: [
 }
 };
 
-// बहुभाषी शब्दकोश (Dictionary for Hindi & English UI)
 const DICT = {
 hi: {
 appTitle: "मेरा गाँव - मेरी पहचान (Live)",
@@ -183,7 +182,6 @@ const [showMenuPopup, setShowMenuPopup] = useState(false);
 const [services, setServices] = useState([]);
 const t = DICT[lang];
 
-// Firebase Realtime Database Sync
 useEffect(() => {
 if (window.firebaseDb) {
 const { db, ref, onValue } = window.firebaseDb;
@@ -279,7 +277,6 @@ return matchDist && matchVill && matchCat;
 return (
 <div className="container" onClick={() => { if(showMenuPopup) setShowMenuPopup(false); }}>
 
-{/* हेडर */}
 <div className="header">
 <div className="title-box">
 <div className="title">MeraGaov - {searchVillage}</div>
@@ -311,7 +308,6 @@ return (
 
 <div className="content">
 
-{/* ADMIN VIEW */}
 {view === "admin" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -364,7 +360,6 @@ return (
 </div>
 )}
 
-{/* SUB-ADMIN VIEW */}
 {view === "subadmin" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -375,7 +370,6 @@ return (
 </div>
 )}
 
-{/* ABOUT VIEW */}
 {view === "about" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -391,7 +385,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* POLICY VIEW */}
 {view === "policy" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -404,7 +397,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* ACTIVE BUTTON 3: ANNOUNCEMENTS */}
 {view === "announcements" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -417,7 +409,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* ACTIVE BUTTON 4: CATTLE & AGRICULTURE MARKET */}
 {view === "market" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -430,7 +421,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* ACTIVE BUTTON 5: GALLERY */}
 {view === "gallery" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -443,7 +433,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* ACTIVE BUTTON 6: VIDEOS */}
 {view === "videos" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -456,7 +445,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* ACTIVE BUTTON 7: EDUCATION */}
 {view === "education" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -469,7 +457,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* ACTIVE BUTTON 8: ANIMAL HEALTH */}
 {view === "animals" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -482,7 +469,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* ACTIVE BUTTON 9: GOVT SCHEMES */}
 {view === "schemes" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
@@ -495,7 +481,6 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
-{/* HOME VIEW */}
 {view === "home" && (
 <div>
 <div className="card" style={{ background: '#ecfdf5', border: '1px solid #a7f3d0' }}>
@@ -541,7 +526,6 @@ suggestedVillages.map((v, index) => (
 {t.activeVillage} <span style={{ color: '#059669' }}>{searchVillage}</span>
 </div>
 
-{/* सभी 8 बटन्स अब पूरी तरह एक्टिव हैं */}
 <div className="menu-card bg-1" onClick={() => { setActiveCategory('CSC'); setView('list'); }}>
 <span>{t.menu1}</span>
 <span>→</span>
@@ -590,7 +574,6 @@ suggestedVillages.map((v, index) => (
 </div>
 )}
 
-{/* LIST VIEW */}
 {view === "list" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{lang === 'hi' ? '← मुख्य मेनू पर वापस जाएं' : '← Back to Main Menu'}</button>
@@ -655,7 +638,7 @@ displayServices.map(s => (
 );
 }
 
-ReactDOM.createRoot(getElementById('root')).render(<App />);
+document.getElementById('root') ? ReactDOM.createRoot(document.getElementById('root')).render(<App />) : null;
 </script>
 </body>
 </html>
