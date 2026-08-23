@@ -35,8 +35,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind', sans-serif; }
-body { background-color: #064e3b; color: #0f172a; padding: 8px; }
-.container { max-width: 450px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+body { background-color: #064e3b; color: #0f172a; padding: 6px; }
+.container { max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
 
 .header { background: linear-gradient(135deg, #065f46, #047857); color: white; padding: 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #059669; position: relative; }
 .title-box { display: flex; flex-direction: column; }
@@ -52,7 +52,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 8px; }
 .dropdown-item:hover { background: #ecfdf5; color: #047857; }
 
 .ticker { background: #047857; color: #fbbf24; padding: 8px 14px; font-size: 12px; font-weight: bold; display: flex; gap: 15px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
-.content { padding: 18px; background: #f8fafc; min-height: 450px; }
+.content { padding: 18px; background: #f8fafc; min-height: 480px; }
 
 .menu-card { border-radius: 14px; padding: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.12); transition: transform 0.1s ease; }
 .menu-card:active { transform: scale(0.97); }
@@ -236,7 +236,6 @@ const [personName, setPersonName] = useState("");
 const [adminDistrict, setAdminDistrict] = useState("charkhi-dadri");
 const [adminVillage, setAdminVillage] = useState("मालकोश");
 
-// Live Upload States for specific modules
 const [uploadText, setUploadText] = useState("");
 const [uploadMedia, setUploadMedia] = useState("");
 
@@ -328,7 +327,8 @@ setTitle(""); setPhone(""); setPersonName("");
 <div className="form-group"><label>मोबाइल:</label><input className="form-control" value={phone} onChange={e => setPhone(e.target.value)} required /></div>
 <div className="form-group"><label>श्रेणी:</label>
 <select className="form-control" value={category} onChange={e => setCategory(e.target.value)}>
-<option value="Mistri">🔨 मिस्त्री</option><option value="CSC">🏥 सीएससी</option><option value="Kiryana">🛒 किराना</option>
+<option value="Mistri">🔨 मिस्त्री / कारीगर</option><option value="CSC">🏥 दुकान / सीएससी</option><option value="Kiryana">🛒 किराना स्टोर</option>
+<option value="Agriculture">🌾 कृषि व खाद-बीज</option><option value="Health">💊 स्वास्थ्य / मेडिकल</option>
 </select></div>
 <button type="submit" className="btn-submit">{t.saveOnline}</button>
 </form>
@@ -336,22 +336,16 @@ setTitle(""); setPhone(""); setPersonName("");
 </div>
 )}
 
-{view === "subadmin" && (<div><button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button><div className="card"><div className="card-title">🛡️ Sub-Admin Panel</div></div></div>)}
-{view === "about" && (<div><button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button><div className="card" style={{textAlign:'center'}}><h3>Founder: Kusum w/o Rajesh</h3></div></div>)}
-{view === "policy" && (<div><button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button><div className="card">📄 Privacy Policy</div></div>)}
-{view === "announcements" && (<div><button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button><div className="card">📢 मुनादी, मेला व खबरें</div></div>)}
-
-{/* 3. MARKET & CATTLE BUY-SELL WITH LIVE PHOTO */}
 {view === "market" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
 <div className="card">
 <div className="card-title">🌾 पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो 📸</div>
 <div className="live-upload-box">
-<input className="form-control" placeholder="विवरण (उदा: बिकाऊ दुधारू भैंस, रेट ₹80,000)..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="विवरण लिखें..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('market', { text: uploadText, image: uploadMedia }, "विज्ञापन लाइव फोटो के साथ जुड़ गया!"); }}>📸 लाइव पोस्ट करें</button>
+<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('market', { text: uploadText, image: uploadMedia }, "विज्ञापन लाइव पोस्ट हो गया!"); }}>📸 लाइव पोस्ट करें</button>
 </div>
 <div className="media-grid">
 {marketItems.filter(m => m.villageHi === searchVillage).map(item => (
@@ -365,17 +359,16 @@ setTitle(""); setPhone(""); setPersonName("");
 </div>
 )}
 
-{/* 4. GALLERY WITH LIVE PHOTO */}
 {view === "gallery" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
 <div className="card">
 <div className="card-title">📸 गाँव की गैलरी (Live Photos)</div>
 <div className="live-upload-box">
-<input className="form-control" placeholder="फोटो का शीर्षक (Caption)..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="फोटो का शीर्षक..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadMedia) return alert("फोटो चुनें!"); saveDynamicData('gallery', { caption: uploadText, image: uploadMedia }, "फोटो गैलरी में लाइव जोड़ दी गई!"); }}>📸 कैमरा से लाइव फोटो जोड़ें</button>
+<button className="btn-submit" onClick={() => { if(!uploadMedia) return alert("फोटो चुनें!"); saveDynamicData('gallery', { caption: uploadText, image: uploadMedia }, "फोटो लाइव जोड़ दी गई!"); }}>📸 कैमरा से लाइव फोटो जोड़ें</button>
 </div>
 <div className="media-grid">
 {galleryItems.filter(g => g.villageHi === searchVillage).map(item => (
@@ -389,17 +382,16 @@ setTitle(""); setPhone(""); setPersonName("");
 </div>
 )}
 
-{/* 5. VIDEOS & LIVE PLAY IN APP */}
 {view === "videos" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
 <div className="card">
-<div className="card-title">🎵 वीडियो और लाइव प्रोग्राम (Live & Camera Play)</div>
+<div className="card-title">🎵 वीडियो और लाइव प्रोग्राम</div>
 <div className="live-upload-box">
-<input className="form-control" placeholder="वीडियो का नाम / शीर्षक..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="वीडियो का शीर्षक..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="video/*" capture="environment" onChange={e => handleVideoCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <video src={uploadMedia} controls style={{width:'100%', height:'140px', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadMedia) return alert("वीडियो चुनें!"); saveDynamicData('videos', { title: uploadText, video: uploadMedia }, "वीडियो ऐप में लाइव जोड़ दी गई!"); }}>🎥 वीडियो ऐप में लाइव जोड़ें</button>
+<button className="btn-submit" onClick={() => { if(!uploadMedia) return alert("वीडियो चुनें!"); saveDynamicData('videos', { title: uploadText, video: uploadMedia }, "वीडियो लाइव जोड़ दी गई!"); }}>🎥 वीडियो ऐप में लाइव जोड़ें</button>
 </div>
 <div className="media-grid">
 {videoItems.filter(v => v.villageHi === searchVillage).map(item => (
@@ -413,17 +405,16 @@ setTitle(""); setPhone(""); setPersonName("");
 </div>
 )}
 
-{/* 6. EDUCATION WITH LIVE PHOTO */}
 {view === "education" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
 <div className="card">
-<div className="card-title">📚 बच्चों की शिक्षा व स्कूल/कोचिंग (Live Photo)</div>
+<div className="card-title">📚 बच्चों की शिक्षा व स्कूल/कोचिंग</div>
 <div className="live-upload-box">
-<input className="form-control" placeholder="स्कूल/कोचिंग का नाम व विवरण..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="विवरण..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('education', { text: uploadText, image: uploadMedia }, "शिक्षा से जुड़ी जानकारी लाइव जोड़ दी गई!"); }}>📸 लाइव जोड़ें</button>
+<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('education', { text: uploadText, image: uploadMedia }, "शिक्षा जानकारी लाइव जोड़ दी गई!"); }}>📸 लाइव जोड़ें</button>
 </div>
 <div className="media-grid">
 {eduItems.filter(e => e.villageHi === searchVillage).map(item => (
@@ -437,14 +428,13 @@ setTitle(""); setPhone(""); setPersonName("");
 </div>
 )}
 
-{/* 7. ANIMAL DISEASES WITH LIVE PHOTO */}
 {view === "animals" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
 <div className="card">
-<div className="card-title">🐄 पशु की बीमारी व रोकथाम के उपाय (Live Photo)</div>
+<div className="card-title">🐄 पशु की बीमारी व रोकथाम के उपाय</div>
 <div className="live-upload-box">
-<input className="form-control" placeholder="पशु की बीमारी या उपचार का विवरण..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="उपचार या बीमारी का विवरण..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
 <button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('animals', { text: uploadText, image: uploadMedia }, "पशु चिकित्सा जानकारी लाइव जोड़ दी गई!"); }}>📸 लाइव जोड़ें</button>
@@ -507,20 +497,42 @@ setTitle(""); setPhone(""); setPersonName("");
 
 {view === "list" && (
 <div>
-<button className="back-btn" onClick={() => setView("home")}>← वापस</button>
-<div className="village-card"><div className="v-icon">{searchVillage[0]}</div><div><b>गाँव:</b> {searchVillage}</div></div>
+<div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'14px'}}>
+<button className="back-btn" onClick={() => setView("home")} style={{margin:0}}>← वापस</button>
+<button onClick={() => setView("admin")} style={{background:'#047857', color:'white', border:'none', padding:'8px 12px', borderRadius:'8px', fontSize:'12px', fontWeight:'bold', cursor:'pointer'}}>+ दुकान/सेवा जोड़ें</button>
+</div>
+
+<div className="village-card">
+<div className="v-icon">{searchVillage[0]}</div>
+<div><b>गाँव:</b> {searchVillage}</div>
+</div>
+
 <div className="pills">
-{[{id:'all', name:'सभी'}, {id:'Mistri', name:'🔨 मिस्त्री'}, {id:'CSC', name:'🏥 सीएससी'}, {id:'Kiryana', name:'🛒 किराना'}].map(c => (
+{[
+{id:'all', name:'सभी'},
+{id:'Mistri', name:'🔨 मिस्त्री'},
+{id:'CSC', name:'🏥 सीएससी'},
+{id:'Kiryana', name:'🛒 किराना'},
+{id:'Agriculture', name:'🌾 कृषि'},
+{id:'Health', name:'💊 स्वास्थ्य'}
+].map(c => (
 <button key={c.id} className={`pill ${activeCategory === c.id ? 'active' : ''}`} onClick={() => setActiveCategory(c.id)}>{c.name}</button>
 ))}
 </div>
+
 {displayServices.length > 0 ? displayServices.map(s => (
 <div key={s.id} className="service-item">
 <span className="service-tag">{s.category}</span>
 <div className="service-name">{s.titleHi}</div>
+<div style={{ fontSize: '12px', color: '#64748b' }}>👤 संचालक: {s.personName}</div>
 <a href={`tel:${s.phone}`} className="btn-call">📞 कॉल करें ({s.phone})</a>
 </div>
-)) : <div className="empty-state">कोई दुकान नहीं मिली।</div>}
+)) : (
+<div className="empty-state">
+कोई दुकान या सेवा दर्ज नहीं है।<br/><br/>
+<button onClick={() => setView("admin")} style={{background:'#047857', color:'white', border:'none', padding:'8px 14px', borderRadius:'8px', fontSize:'12px', cursor:'pointer', fontWeight:'bold'}}>+ इस गाँव में नया जोड़ें</button>
+</div>
+)}
 </div>
 )}
 
