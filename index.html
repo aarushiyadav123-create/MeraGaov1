@@ -17,27 +17,30 @@
 body { background-color: #064e3b; color: #0f172a; padding: 10px; }
 .container { max-width: 450px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
-.top-bar { background: #064e3b; color: #ffffff; padding: 10px 16px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #047857; }
-.lang-btn { background: #10b981; color: white; border: none; padding: 4px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
+.header { background: #065f46; color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #047857; position: relative; }
+.title-box { display: flex; flex-direction: column; }
+.title { font-size: 16px; font-weight: 700; line-height: 1.2; color: #ffffff; }
+.subtitle { font-size: 11px; color: #a7f3d0; }
 
-.header { background: #065f46; color: white; padding: 16px; }
-.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-.title { font-size: 17px; font-weight: 700; line-height: 1.2; color: #ffffff; }
-.subtitle { font-size: 12px; color: #a7f3d0; }
+.header-right { display: flex; gap: 8px; align-items: center; }
+.lang-btn { background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
+.menu-dropdown-btn { background: #fbbf24; color: #0f172a; border: none; padding: 5px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-.ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; display: flex; gap: 12px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
+/* ड्रॉपडाउन मेनू */
+.dropdown-menu { position: absolute; top: 55px; right: 16px; background: white; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid #cbd5e1; width: 170px; z-index: 1000; overflow: hidden; }
+.dropdown-item { padding: 10px 14px; font-size: 12px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.dropdown-item:hover { background: #ecfdf5; color: #047857; }
+
+.ticker { background: #047857; color: #fbbf24; padding: 7px 12px; font-size: 11px; font-weight: bold; display: flex; gap: 12px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
 
 .menu-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 13px; color: #065f46; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .menu-card:active { background: #f8fafc; transform: scale(0.98); }
 .menu-card.orange { background: #ea580c; color: white; }
 
-.btn-group { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
-.btn-mode { padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; border: none; cursor: pointer; text-align: center; background: #fbbf24; color: #0f172a; }
-
 .content { padding: 16px; background: #f8fafc; min-height: 400px; }
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
-.card-title { font-size: 13px; font-weight: 700; color: #065f46; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.card-title { font-size: 13px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
 
 .form-group { margin-bottom: 10px; position: relative; }
 .form-group label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; }
@@ -56,7 +59,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 10px; }
 .pill.active { background: #065f46; color: white; border-color: #065f46; }
 
 .service-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
-.service-tag { background: #d1fae5; color: #065f46; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+.service-tag { background: #d1fae5; color: #064e3b; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
 .service-name { font-size: 13px; font-weight: 700; color: #0f172a; margin: 4px 0; }
 .btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 12px; margin-top: 8px; }
 .empty-state { text-align: center; padding: 30px 15px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; font-size: 13px; }
@@ -108,10 +111,11 @@ const [selectedDistrict, setSelectedDistrict] = useState("charkhi-dadri");
 const [searchVillage, setSearchVillage] = useState("मालकोश");
 const [activeCategory, setActiveCategory] = useState("all");
 const [showDropdown, setShowDropdown] = useState(false);
+const [showMenuPopup, setShowMenuPopup] = useState(false);
 
 const [services, setServices] = useState(() => {
 try {
-const saved = localStorage.getItem("haryana_gramin_v17");
+const saved = localStorage.getItem("haryana_gramin_v18");
 return saved ? JSON.parse(saved) : INITIAL_DATA;
 } catch (e) { return INITIAL_DATA; }
 });
@@ -162,7 +166,7 @@ personName: personName || "सत्यापित"
 
 const updated = [newSrv, ...services];
 setServices(updated);
-localStorage.setItem("haryana_gramin_v17", JSON.stringify(updated));
+localStorage.setItem("haryana_gramin_v18", JSON.stringify(updated));
 
 setSelectedDistrict(adminDistrict);
 setSearchVillage(trimmedVillage);
@@ -186,28 +190,32 @@ return matchDist && matchVill && matchCat;
 }, [services, selectedDistrict, searchVillage, activeCategory]);
 
 return (
-<div className="container">
+<div className="container" onClick={() => { if(showMenuPopup) setShowMenuPopup(false); }}>
 
-<div className="top-bar">
-<span><b>MeraGaov</b> - {searchVillage}</span>
-<button className="lang-btn" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}>
-🌐 {lang === 'hi' ? 'Eng' : 'हिंदी'}
-</button>
-</div>
-
+{/* सिंगल साफ़ हेडर */}
 <div className="header">
-<div className="header-top">
-<div>
+<div className="title-box">
 <div className="title">MeraGaov - {searchVillage}</div>
 <div className="subtitle">{lang === 'hi' ? 'मेरा गाँव - मेरी पहचान' : 'My Village - My Identity'}</div>
 </div>
-</div>
 
-<div className="btn-group">
-<button onClick={() => setView("admin")} className="btn-mode">⚙️ Admin</button>
-<button onClick={() => setView("subadmin")} className="btn-mode">🛡️ Sub-Admin</button>
-<button onClick={() => setView("about")} className="btn-mode">ℹ️ About</button>
-<button onClick={() => setView("policy")} className="btn-mode">📄 Policy</button>
+<div className="header-right" onClick={(e) => e.stopPropagation()}>
+<button className="menu-dropdown-btn" onClick={() => setShowMenuPopup(!showMenuPopup)}>
+☰ Menu
+</button>
+<button className="lang-btn" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}>
+🌐 {lang === 'hi' ? 'Eng' : 'हिंदी'}
+</button>
+
+{/* मेनू के अंदर के विकल्प */}
+{showMenuPopup && (
+<div className="dropdown-menu">
+<div className="dropdown-item" onClick={() => { setView('admin'); setShowMenuPopup(false); }}>⚙️ Admin</div>
+<div className="dropdown-item" onClick={() => { setView('subadmin'); setShowMenuPopup(false); }}>🛡️ Sub-Admin</div>
+<div className="dropdown-item" onClick={() => { setView('about'); setShowMenuPopup(false); }}>ℹ️ About</div>
+<div className="dropdown-item" onClick={() => { setView('policy'); setShowMenuPopup(false); }}>📄 Policy</div>
+</div>
+)}
 </div>
 </div>
 
@@ -295,7 +303,7 @@ return (
 <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#064e3b', marginBottom: '10px' }}>
 Founder: Kusum w/o Rajesh
 </p>
-<p style={{ fontSize: '13px', color: '#334155' }}>
+<p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.6' }}>
 यह पोर्टल हमारे गाँव को डिजिटल रूप से सशक्त बनाने और हर ग्रामीण सेवा को एक क्लिक पर उपलब्ध कराने के लिए समर्पित है।
 </p>
 </div>
