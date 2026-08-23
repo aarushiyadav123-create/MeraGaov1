@@ -102,6 +102,8 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .media-card { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; text-align: left; position: relative; }
 .media-card img, .media-card video { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 6px; }
 .delete-btn { background: #dc2626; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+
+.mandi-card { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 </style>
 </head>
 <body>
@@ -141,7 +143,7 @@ villages: [
 const DICT = {
 hi: {
 appTitle: "मेरा गाँव - मेरी पहचान (Live)",
-ticker: "🌾 सरसों: ₹5,400/क्विंटल | 🌤️ लाइव मौसम: Haryana - तापमान सामान्य",
+ticker: "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: Haryana - तापमान सामान्य व साफ़ आसमान",
 selectDistVill: "📍 जिला व गाँव चुनें / बदलें",
 selectDistrict: "जिला चुनें:",
 searchVillageLabel: "गाँव खोजें:",
@@ -154,13 +156,14 @@ menu5: "📸 4. गाँव की गैलरी (लाइव फोटो)"
 menu6: "🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera)",
 menu7: "📚 6. बच्चों की शिक्षा व पोर्टल",
 menu8: "🐄 7. पशु की बीमारी, रोकथाम व किसान पूछताछ",
-menu9: "🏛️ 8. हरियाणा सरकार की योजनाएं",
-menu10: "📜 9. गाँव का इतिहास व सभी सरपंच (Date-wise)",
+menu9: "🌤️ 8. लाइव मौसम और ताज़ा मंडी भाव",
+menu10: "🏛️ 9. हरियाणा सरकार की योजनाएं",
+menu11: "📜 10. गाँव का इतिहास व सभी सरपंच (Date-wise)",
 backHome: "← होम पर जाएं"
 },
 en: {
 appTitle: "My Village - My Identity (Live)",
-ticker: "🌾 Mustard: ₹5,400/Quintal | 🌤️ Live Weather: Haryana - Normal Temp",
+ticker: "🌾 Mustard: ₹5,400/Quintal | 🌾 Wheat: ₹2,425/Quintal | 🌤️ Live Weather: Haryana - Normal Temp",
 selectDistVill: "📍 Select / Change District & Village",
 selectDistrict: "Select District:",
 searchVillageLabel: "Search Village:",
@@ -173,8 +176,9 @@ menu5: "📸 4. Village Gallery (Live Photos)",
 menu6: "🎵 5. Videos & Live Programs",
 menu7: "📚 6. Children Education & Portals",
 menu8: "🐄 7. Animal Diseases, Prevention & Farmer Inquiry",
-menu9: "🏛️ 8. Haryana Government Schemes",
-menu10: "📜 9. Village History & Sarpanch List",
+menu9: "🌤️ 8. Live Weather & Mandi Rates",
+menu10: "🏛️ 9. Haryana Government Schemes",
+menu11: "📜 10. Village History & Sarpanch List",
 backHome: "← Go to Home"
 }
 };
@@ -196,6 +200,7 @@ const [eduItems, setEduItems] = useState([]);
 const [animalItems, setAnimalItems] = useState([]);
 const [announcementItems, setAnnouncementItems] = useState([]);
 const [historyItems, setHistoryItems] = useState([]);
+const [mandiItems, setMandiItems] = useState([]);
 
 const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 const [isSubAdminLoggedIn, setIsSubAdminLoggedIn] = useState(false);
@@ -239,6 +244,15 @@ setAnnouncementItems(data ? Object.keys(data).map(k => ({id: k, ...data[k]})).re
 onValue(ref(db, 'history'), (snapshot) => {
 const data = snapshot.val();
 setHistoryItems(data ? Object.keys(data).map(k => ({id: k, ...data[k]})).reverse() : []);
+});
+onValue(ref(db, 'mandi'), (snapshot) => {
+const data = snapshot.val();
+setMandiItems(data ? Object.keys(data).map(k => ({id: k, ...data[k]})).reverse() : [
+{id: '1', crop: 'सरसों (Mustard)', price: '₹5,400 / क्विंटल', mandi: 'चरखी दादरी / रोहतक मंडी'},
+{id: '2', crop: 'गेहूँ (Wheat)', price: '₹2,425 / क्विंटल', mandi: 'हरियाणा सरकारी न्यूनतम समर्थन मूल्य'},
+{id: '3', crop: 'बाजरा (Bajra)', price: '₹2,500 / क्विंटल', mandi: 'स्थानीय मंडी भाव'},
+{id: '4', crop: 'चना (Gram)', price: '₹5,650 / क्विंटल', mandi: 'हरियाणा मंडी'}
+]);
 });
 }
 }, []);
@@ -415,7 +429,7 @@ return (
 <div style={{fontSize:'13px', lineHeight:'1.6', color:'#334155'}}>
 <p style={{marginBottom:'10px'}}><b>1. परिचय:</b> "मेरा गाँव - मेरी पहचान" ऐप आपके गाँव की जानकारी, स्थानीय सेवाओं, और सूचनाओं को आपस में साझा करने का एक डिजिटल माध्यम है। आपकी गोपनीयता हमारे लिए अत्यंत महत्वपूर्ण है।</p>
 <p style={{marginBottom:'10px'}}><b>2. जानकारी का संग्रह:</b> हम केवल वही जानकारी एकत्र करते हैं जो उपयोगकर्ता स्वयं अपनी इच्छा से (जैसे दुकान का नाम, मोबाइल नंबर, पशु सवाल या लाइव फोटो) दर्ज करते हैं।</p>
-<p style={{marginBottom:'10px'}}><b>3. डेटा सुरक्षा:</b> आपके द्वारा दर्ज की गई सभी सूچनाएं सुरक्षित डेटाबेस (Firebase) पर संग्रहीत की जाती हैं ताकि गाँव के अन्य लोग इसका लाभ उठा सकें। हम आपकी व्यक्तिगत जानकारी किसी तीसरे पक्ष को नहीं बेचते।</p>
+<p style={{marginBottom:'10px'}}><b>3. डेटा सुरक्षा:</b> आपके द्वारा दर्ज की गई सभी सूचनाएं सुरक्षित डेटाबेस (Firebase) पर संग्रहीत की जाती हैं ताकि गाँव के अन्य लोग इसका लाभ उठा सकें। हम आपकी व्यक्तिगत जानकारी किसी तीसरे पक्ष को नहीं बेचते।</p>
 <p style={{marginBottom:'10px'}}><b>4. उपयोग:</b> इस ऐप का उद्देश्य केवल सामाजिक सहभागिता, ग्रामीण विकास, कृषि सहायता और स्थानीय व्यापार को बढ़ावा देना है।</p>
 <p>किसी भी सहायता या सुधार के लिए आप एडमिन पैनल के माध्यम से संपर्क कर सकते हैं।</p>
 </div>
@@ -423,17 +437,17 @@ return (
 </div>
 )}
 
-{/* ANNOUNCEMENTS WITH LIVE PHOTO & MOBILE ADD */}
+{/* ANNOUNCEMENTS WITH LIVE PHOTO & MOBILE ADD (PANCHAYAT CHAT / DISCUSSION) */}
 {view === "announcements" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
 <div className="card">
-<div className="card-title">📢 मुनादी, मेला व खबरें (लाइव फोटो व मोबाइल से जोड़ें)</div>
+<div className="card-title">📢 मुनादी, मेला, खबरें व पंचायत चर्चा (लाइव फोटो)</div>
 <div className="live-upload-box">
-<input className="form-control" placeholder="मुनादी या खबर का विवरण लिखें..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="अपनी बात, मुनादी या गाँव की समस्या यहाँ लिखें..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('announcements', { text: uploadText, image: uploadMedia }, "मुनादी लाइव पोस्ट कर दी गई!"); }}>📸 लाइव फोटो के साथ जोड़ें</button>
+<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('announcements', { text: uploadText, image: uploadMedia }, "सफलतापूर्वक पोस्ट कर दिया गया!"); }}>📸 लाइव फोटो के साथ जोड़ें</button>
 </div>
 <div className="media-grid">
 {announcementItems.filter(a => a.villageHi === searchVillage).map(item => (
@@ -578,6 +592,31 @@ return (
 </div>
 )}
 
+{/* LIVE WEATHER & MANDI RATES */}
+{view === "weather_mandi" && (
+<div>
+<button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
+<div className="card">
+<div className="card-title">🌤️ लाइव मौसम और ताज़ा मंडी भाव (Haryana)</div>
+<div style={{background:'#f0fdf4', border:'1px solid #10b981', padding:'12px', borderRadius:'10px', marginBottom:'15px'}}>
+<p style={{fontSize:'13px', fontWeight:'bold', color:'#065f46'}}>🌡️ वर्तमान मौसम अपडेट:</p>
+<p style={{fontSize:'13px', color:'#1e293b', marginTop:'4px'}}>हरियाणा क्षेत्र में मौसम बिल्कुल साफ़ व अनुकूल है। तापमान सामान्य बना हुआ है, जो खेती-किसानी के लिए उत्तम है।</p>
+</div>
+
+<div style={{fontSize:'13px', fontWeight:'bold', color:'#047857', marginBottom:'10px'}}>🌾 आज के प्रमुख मंडी भाव:</div>
+{mandiItems.map(item => (
+<div key={item.id} className="mandi-card">
+<div>
+<div style={{fontSize:'13px', fontWeight:'bold', color:'#0f172a'}}>{item.crop}</div>
+<div style={{fontSize:'11px', color:'#64748b'}}>{item.mandi}</div>
+</div>
+<div style={{fontSize:'13px', fontWeight:'bold', color:'#047857', background:'white', padding:'6px 10px', borderRadius:'8px', border:'1px solid #a7f3d0'}}>{item.price}</div>
+</div>
+))}
+</div>
+</div>
+)}
+
 {/* SCHEMES - WIDER SCREEN & WORKING PORTALS */}
 {view === "schemes" && (
 <div>
@@ -594,7 +633,7 @@ return (
 </div>
 )}
 
-{/* 9TH BUTTON: VILLAGE HISTORY & SARPANCH LIST (DATE WISE) */}
+{/* VILLAGE HISTORY & SARPANCH LIST (DATE WISE) */}
 {view === "history" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
@@ -649,8 +688,9 @@ return (
 <div className="menu-card bg-6" onClick={() => setView('videos')}><span>{t.menu6}</span><span>→</span></div>
 <div className="menu-card bg-7" onClick={() => setView('education')}><span>{t.menu7}</span><span>→</span></div>
 <div className="menu-card bg-8" onClick={() => setView('animals')}><span>{t.menu8}</span><span>→</span></div>
-<div className="menu-card bg-1" onClick={() => setView('schemes')}><span>{t.menu9}</span><span>→</span></div>
-<div className="menu-card bg-2" onClick={() => setView('history')}><span>{t.menu10}</span><span>→</span></div>
+<div className="menu-card bg-1" onClick={() => setView('weather_mandi')}><span>{t.menu9}</span><span>→</span></div>
+<div className="menu-card bg-2" onClick={() => setView('schemes')}><span>{t.menu10}</span><span>→</span></div>
+<div className="menu-card bg-3" onClick={() => setView('history')}><span>{t.menu11}</span><span>→</span></div>
 </div>
 )}
 
