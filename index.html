@@ -67,6 +67,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .bg-8 { background: linear-gradient(135deg, #4f46e5, #4338ca); } 
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.card-wide { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); width: 100%; }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 
 .form-group { margin-bottom: 12px; position: relative; }
@@ -92,7 +93,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .empty-state { text-align: center; padding: 25px 15px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 14px; color: #64748b; font-size: 13px; }
 .back-btn { background: #065f46; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 14px; }
 
-.scheme-box { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.scheme-box { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; width: 100%; }
 .scheme-title { font-size: 13px; font-weight: 700; color: #064e3b; margin-bottom: 4px; }
 .scheme-btn { display: inline-block; background: #2563eb; color: white; text-decoration: none; font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 6px; }
 
@@ -509,20 +510,18 @@ return (
 <div className="card">
 <div className="card-title">🐄 पशु की बीमारी, रोकथाम व किसान पूछताछ</div>
 
-{/* जानकारी बॉक्स - जिसे किसान पढ़ सकें */}
 <div style={{background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '15px'}}>
 <p style={{fontSize: '13px', fontWeight: 'bold', color: '#047857', marginBottom: '8px'}}>📖 प्रमुख पशु रोग व प्राथमिक जानकारी:</p>
 <div style={{fontSize: '12px', color: '#334155', lineHeight: '1.5', marginBottom: '8px'}}>
-<b>1. खुरपका-मुँहपका रोग (FMD):</b> पैरों के खुरों और मुँह में छाले होना, लार गिरना।<br/>
+<b>1. खुरपका-मुँहपका रोग (FMD):</b> पैरों के खुरों और मुँह में छाले होना, लार गिरना。<br/>
 <i>रोकथाम:</i> समय पर FMD टीका लगवाना, गौशाला/बाड़े में साफ-सफाई रखना और फिनाइल से सफाई करना।
 </div>
 <div style={{fontSize: '12px', color: '#334155', lineHeight: '1.5'}}>
-<b>2. थनैला रोग (Mastitis):</b> थनों में सूजन, दूध में खून या छिलके आना।<br/>
+<b>2. थनैला रोग (Mastitis):</b> थनों में सूजन, दूध में खून या छिलके आना。<br/>
 <i>रोकथाम:</i> दुहने के बाद थनों को पोटेशियम परमैंगनेट के पानी से धोना, पशु को तुरंत सूखा व साफ स्थान पर बैठाना।
 </div>
 </div>
 
-{/* किसान पूछताछ फॉर्म */}
 <div className="live-upload-box" style={{borderColor: '#2563eb', background: '#eff6ff'}}>
 <p style={{fontSize:'13px', fontWeight:'bold', color:'#1e40af', marginBottom:'8px'}}>👨‍🌾 किसान पूछताछ / नया सवाल पूछें:</p>
 <input className="form-control" placeholder="किसान का नाम व मोबाइल नंबर लिखें..." value={extraInput} onChange={e => setExtraInput(e.target.value)} style={{marginBottom:'8px'}} />
@@ -546,14 +545,18 @@ return (
 </div>
 )}
 
-{/* SCHEMES */}
+{/* SCHEMES - WIDER SCREEN & MORE SCHEMES ADDED */}
 {view === "schemes" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
-<div className="card">
-<div className="card-title">🏛️ हरियाणा सरकार की योजनाएं</div>
-<div className="scheme-box"><div className="scheme-title">1. सामाजिक सुरक्षा पेंशन</div><a href="https://socialjustice.hry.gov.in/" target="_blank" className="scheme-btn">🔗 आवेदन देखें</a></div>
-<div className="scheme-box"><div className="scheme-title">2. चिरायु हरियाणा योजना</div><a href="https://chirayu.hry.gov.in/" target="_blank" className="scheme-btn">🔗 आयुष्मान कार्ड</a></div>
+<div className="card-wide">
+<div className="card-title">🏛️ हरियाणा सरकार व केंद्र की प्रमुख योजनाएं</div>
+<div className="scheme-box"><div className="scheme-title">1. सामाजिक सुरक्षा पेंशन (बुढ़ापा/विधवा/दिव्यांग)</div><a href="https://socialjustice.hry.gov.in/" target="_blank" className="scheme-btn">🔗 आवेदन व स्टेटस देखें</a></div>
+<div className="scheme-box"><div className="scheme-title">2. चिरायु हरियाणा योजना (आयुष्मान कार्ड)</div><a href="https://chirayu.hry.gov.in/" target="_blank" className="scheme-btn">🔗 आयुष्मान कार्ड डाउनलोड</a></div>
+<div className="scheme-box"><div className="scheme-title">3. मुख्यमंत्री परिवार समृद्धि योजना (MKPSY)</div><a href="https://meraparivar.haryana.gov.in/" target="_blank" className="scheme-btn">🔗 पोर्टल विजिट करें</a></div>
+<div className="scheme-box"><div className="scheme-title">4. प्रधानमंत्री किसान सम्मान निधि योजना</div><a href="https://pmkisan.gov.in/" target="_blank" className="scheme-btn">🔗 किसान किस्त चेक करें</a></div>
+<div className="scheme-box"><div className="scheme-title">5. हरियाणा पशुधन बीमा योजना</div><a href="http://www.hortharyana.gov.in/" target="_blank" className="scheme-btn">🔗 जानकारी व लाभ</a></div>
+<div className="scheme-box"><div className="scheme-title">6. मुख्यमंत्री विवाह शगुन योजना</div><a href="https://shaadi.hry.gov.in/" target="_blank" className="scheme-btn">🔗 शगुन आवेदन देखें</a></div>
 </div>
 </div>
 )}
@@ -673,7 +676,7 @@ setView("list");
 }}>
 <div className="form-group"><label>नाम (दुकान/व्यक्ति):</label><input className="form-control" value={title} onChange={e => setTitle(e.target.value)} required /></div>
 <div className="form-group"><label>संचालक का नाम:</label><input className="form-control" value={personName} onChange={e => setPersonName(e.target.value)} /></div>
-<div className="form-group"><label>मोबाइल:</label><input className="form-control" value={phone} onChange={e => setPhone(e.target.value)} required /></div>
+<div className="form-group"><label>मोबाइल:</label><input className="form-control" value="" value={phone} onChange={e => setPhone(e.target.value)} required /></div>
 <div className="form-group"><label>श्रेणी:</label>
 <select className="form-control" value={category} onChange={e => setCategory(e.target.value)}>
 <option value="Mistri">🔨 मिस्त्री / कारीगर</option>
