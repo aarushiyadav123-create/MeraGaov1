@@ -91,6 +91,12 @@ body { background-color: #064e3b; color: #0f172a; padding: 8px; }
 .btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 13px; margin-top: 10px; }
 .empty-state { text-align: center; padding: 35px 20px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 14px; color: #64748b; font-size: 13px; }
 .back-btn { background: #065f46; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 14px; }
+
+/* Scheme Card styling */
+.scheme-box { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.scheme-title { font-size: 13px; font-weight: 700; color: #064e3b; margin-bottom: 4px; }
+.scheme-desc { font-size: 12px; color: #475569; margin-bottom: 8px; }
+.scheme-btn { display: inline-block; background: #2563eb; color: white; text-decoration: none; font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 6px; }
 </style>
 </head>
 <body>
@@ -469,14 +475,43 @@ Founder: Kusum w/o Rajesh
 </div>
 )}
 
+{/* HARYANA SCHEMES VIEW - WITH FULL ACTION BUTTONS */}
 {view === "schemes" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>{t.backHome}</button>
 <div className="card">
-<div className="card-title">🏛️ हरियाणा सरकार की योजनाएं</div>
-<div className="empty-state">
-{lang === 'hi' ? 'हरियाणा सरकार की कृषि, पेंशन और जनकल्याणकारी योजनाएं।' : 'Haryana government agriculture, pension, and welfare schemes.'}
+<div className="card-title">🏛️ हरियाणा सरकार की योजनाएं (Schemes)</div>
+
+<div className="scheme-box">
+<div className="scheme-title">1. सामाजिक सुरक्षा पेंशन (Old Age / Widow / Disability Pension)</div>
+<div className="scheme-desc">बुजुर्गों, विधवाओं और दिव्यांगों के लिए मासिक पेंशन योजना।</div>
+<a href="https://socialjustice.hry.gov.in/" target="_blank" className="scheme-btn">🔗 आवेदन / स्थिति देखें (Apply)</a>
 </div>
+
+<div className="scheme-box">
+<div className="scheme-title">2. चिरायु हरियाणा योजना (Ayushman / Chirayu Yojana)</div>
+<div className="scheme-desc">परिवार पहचान पत्र के आधार पर ₹5 लाख तक का मुफ्त इलाज।</div>
+<a href="https://chirayu.hry.gov.in/" target="_blank" className="scheme-btn">🔗 आयुष्मान कार्ड डाउनलोड करें</a>
+</div>
+
+<div className="scheme-box">
+<div className="scheme-title">3. मेरी फसल मेरा ब्योरा (Agri Portal)</div>
+<div className="scheme-desc">फसल पंजीकरण, मुआवजा और सरकारी खरीद के लिए पोर्टल।</div>
+<a href="https://fasal.haryana.gov.in/" target="_blank" className="scheme-btn">🔗 फसल पंजीकरण करें</a>
+</div>
+
+<div className="scheme-box">
+<div className="scheme-title">4. मुख्यमंत्री परिवार समृद्धि योजना (CMPSY)</div>
+<div className="scheme-desc">हरियाणा के गरीब परिवारों को सामाजिक सुरक्षा और वित्तीय सहायता।</div>
+<a href="https://schemes.haryana.gov.in/" target="_blank" className="scheme-btn">🔗 योजना विवरण व आवेदन</a>
+</div>
+
+<div className="scheme-box">
+<div className="scheme-title">5. पशुधन बीमा योजना (Livestock Insurance)</div>
+<div className="scheme-desc">गायों, भैंसों और अन्य मवेशियों के लिए कम प्रीमियम पर बीमा।</div>
+<a href="http://pashudhanharyana.gov.in/" target="_blank" className="scheme-btn">🔗 पशु बीमा जानकारी</a>
+</div>
+
 </div>
 </div>
 )}
