@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -143,7 +142,7 @@ villages: [
 
 const DICT = {
 hi: {
-appTitle: "मेरा गाँव - मेरी पहचान (Live)",
+appTitle: "मेरा गाँव - मेरा हरियाणा (Live)",
 ticker: "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: Haryana - तापमान सामान्य व साफ़ आसमान",
 selectDistVill: "📍 जिला व गाँव चुनें / बदलें",
 selectDistrict: "जिला चुनें:",
@@ -163,7 +162,7 @@ menu11: "📜 10. गाँव का इतिहास व सभी सरप
 backHome: "← होम पर जाएं"
 },
 en: {
-appTitle: "My Village - My Identity (Live)",
+appTitle: "Mera Gaov Mera Haryana (Live)",
 ticker: "🌾 Mustard: ₹5,400/Quintal | 🌾 Wheat: ₹2,425/Quintal | 🌤️ Live Weather: Haryana - Normal Temp",
 selectDistVill: "📍 Select / Change District & Village",
 selectDistrict: "Select District:",
@@ -188,7 +187,7 @@ function App() {
 const [lang, setLang] = useState("hi");
 const [view, setView] = useState("home"); 
 const [selectedDistrict, setSelectedDistrict] = useState("charkhi-dadri");
-const [searchVillage, setSearchVillage] = useState("मालकोश");
+const [searchVillage, setSearchVillage] = useState("Mera Gaov Mera Haryana");
 const [activeCategory, setActiveCategory] = useState("all");
 const [showDropdown, setShowDropdown] = useState(false);
 const [showMenuPopup, setShowMenuPopup] = useState(false);
@@ -402,14 +401,14 @@ return (
 </div>
 )}
 
-{/* ABOUT US - KUSUM W/O RAJESH YADAV & DEDICATED TO VILLAGE */}
+{/* ABOUT US */}
 {view === "about" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
 <div className="card" style={{textAlign:'center', padding:'20px'}}>
 <div className="card-title" style={{justifyContent:'center'}}>ℹ️ हमारे बारे में (About Us)</div>
 <div style={{fontSize:'14px', lineHeight:'1.8', color:'#334155', margin:'15px 0'}}>
-<p style={{fontWeight:'bold', color:'#047857', fontSize:'16px', marginBottom:'8px'}}>🌾 "मेरा गाँव - मेरी पहचान" ऐप</p>
+<p style={{fontWeight:'bold', color:'#047857', fontSize:'16px', marginBottom:'8px'}}>🌾 "मेरा गाँव - मेरा हरियाणा" ऐप</p>
 <p style={{marginBottom:'10px'}}>यह डिजिटल मंच हमारे सम्पूर्ण ग्रामीण अंचल और गाँव को समर्पित है, जिससे गाँव की हर छोटी-बड़ी खबर, दुकानें, सेवाएं, पशुपालन, और सरकारी योजनाएं हर नागरिक तक आसानी से पहुँच सकें।</p>
 <div style={{background:'#ecfdf5', border:'1px solid #a7f3d0', padding:'12px', borderRadius:'10px', marginTop:'15px'}}>
 <p style={{fontSize:'13px', fontWeight:'bold', color:'#065f46'}}>Founder / निर्माता:</p>
@@ -428,7 +427,7 @@ return (
 <div className="card">
 <div className="card-title">📄 गोपनीयता नीति (Privacy Policy)</div>
 <div style={{fontSize:'13px', lineHeight:'1.6', color:'#334155'}}>
-<p style={{marginBottom:'10px'}}><b>1. परिचय:</b> "मेरा गाँव - मेरी पहचान" ऐप आपके गाँव की जानकारी, स्थानीय सेवाओं, और सूचनाओं को आपस में साझा करने का एक डिजिटल माध्यम है। आपकी गोपनीयता हमारे लिए अत्यंत महत्वपूर्ण है।</p>
+<p style={{marginBottom:'10px'}}><b>1. परिचय:</b> "मेरा गाँव - मेरा हरियाणा" ऐप आपके गाँव की जानकारी, स्थानीय सेवाओं, और सूचनाओं को आपस में साझा करने का एक डिजिटल माध्यम है। आपकी गोपनीयता हमारे लिए अत्यंत महत्वपूर्ण है।</p>
 <p style={{marginBottom:'10px'}}><b>2. जानकारी का संग्रह:</b> हम केवल वही जानकारी एकत्र करते हैं जो उपयोगकर्ता स्वयं अपनी इच्छा से (जैसे दुकान का नाम, मोबाइल नंबर, पशु सवाल या लाइव फोटो) दर्ज करते हैं।</p>
 <p style={{marginBottom:'10px'}}><b>3. डेटा सुरक्षा:</b> आपके द्वारा दर्ज की गई सभी सूचनाएं सुरक्षित डेटाबेस (Firebase) पर संग्रहीत की जाती हैं ताकि गाँव के अन्य लोग इसका लाभ उठा सकें। हम आपकी व्यक्तिगत जानकारी किसी तीसरे पक्ष को नहीं बेचते।</p>
 <p style={{marginBottom:'10px'}}><b>4. उपयोग:</b> इस ऐप का उद्देश्य केवल सामाजिक सहभागिता, ग्रामीण विकास, कृषि सहायता और स्थानीय व्यापार को बढ़ावा देना है।</p>
@@ -438,7 +437,7 @@ return (
 </div>
 )}
 
-{/* ANNOUNCEMENTS WITH LIVE PHOTO & MOBILE ADD (PANCHAYAT CHAT / DISCUSSION) */}
+{/* ANNOUNCEMENTS */}
 {view === "announcements" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
@@ -455,7 +454,7 @@ return (
 <div key={item.id} className="media-card">
 <p style={{fontSize:'13px', fontWeight:'bold'}}>{item.text}</p>
 {item.image && <img src={item.image} />}
-{(isAdminLoggedIn || isSubAdminLoggedIn) && <button className="delete-btn" onClick={() => deleteItem('announcements', item.id)}>🗑️ डिलीट / अप्रूव्ड</button>}
+{(isAdminLoggedIn || isSubAdminLoggedIn) && <button className="delete-btn" onClick={() => deleteItem('announcements', item.id)}>🗑️ डिलीट</button>}
 </div>
 ))}
 </div>
@@ -551,7 +550,7 @@ return (
 </div>
 )}
 
-{/* ANIMAL DISEASES, GUIDELINES & FARMER INQUIRY */}
+{/* ANIMALS */}
 {view === "animals" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
@@ -593,7 +592,7 @@ return (
 </div>
 )}
 
-{/* LIVE WEATHER & MANDI RATES */}
+{/* WEATHER & MANDI */}
 {view === "weather_mandi" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
@@ -618,7 +617,7 @@ return (
 </div>
 )}
 
-{/* SCHEMES - WIDER SCREEN & WORKING PORTALS */}
+{/* SCHEMES */}
 {view === "schemes" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
@@ -634,7 +633,7 @@ return (
 </div>
 )}
 
-{/* VILLAGE HISTORY & SARPANCH LIST (DATE WISE) */}
+{/* HISTORY */}
 {view === "history" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
