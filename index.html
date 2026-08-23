@@ -33,7 +33,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 10px; }
 
 .ticker { background: #047857; color: #fbbf24; padding: 7px 12px; font-size: 11px; font-weight: bold; display: flex; gap: 12px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
 
-.menu-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 13px; color: #065f46; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.menu-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 13px; color: #065f46; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .menu-card:active { background: #f8fafc; transform: scale(0.98); }
 .menu-card.orange { background: #ea580c; color: white; }
 
@@ -106,7 +106,7 @@ const INITIAL_DATA = [
 
 function App() {
 const [lang, setLang] = useState("hi");
-const [view, setView] = useState("home"); // home, admin, subadmin, about, policy, list
+const [view, setView] = useState("home"); 
 const [selectedDistrict, setSelectedDistrict] = useState("charkhi-dadri");
 const [searchVillage, setSearchVillage] = useState("मालकोश");
 const [activeCategory, setActiveCategory] = useState("all");
@@ -115,7 +115,7 @@ const [showMenuPopup, setShowMenuPopup] = useState(false);
 
 const [services, setServices] = useState(() => {
 try {
-const saved = localStorage.getItem("haryana_gramin_v18");
+const saved = localStorage.getItem("haryana_gramin_v20");
 return saved ? JSON.parse(saved) : INITIAL_DATA;
 } catch (e) { return INITIAL_DATA; }
 });
@@ -166,7 +166,7 @@ personName: personName || "सत्यापित"
 
 const updated = [newSrv, ...services];
 setServices(updated);
-localStorage.setItem("haryana_gramin_v18", JSON.stringify(updated));
+localStorage.setItem("haryana_gramin_v20", JSON.stringify(updated));
 
 setSelectedDistrict(adminDistrict);
 setSearchVillage(trimmedVillage);
@@ -207,7 +207,6 @@ return (
 🌐 {lang === 'hi' ? 'Eng' : 'हिंदी'}
 </button>
 
-{/* मेनू के अंदर के विकल्प */}
 {showMenuPopup && (
 <div className="dropdown-menu">
 <div className="dropdown-item" onClick={() => { setView('admin'); setShowMenuPopup(false); }}>⚙️ Admin</div>
@@ -381,8 +380,8 @@ suggestedVillages.map((v, index) => (
 <span>📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) →</span>
 </div>
 
-<div className="menu-card" onClick={() => { setActiveCategory('Agriculture'); setView('list'); }}>
-<span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच →</span>
+<div className="menu-card" onClick={() => alert("पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो सेक्शन जल्द शुरू होगा!")}>
+<span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो 📸 →</span>
 </div>
 
 <div className="menu-card" onClick={() => alert("गाँव की गैलरी जल्द लाइव होगी!")}>
@@ -391,6 +390,18 @@ suggestedVillages.map((v, index) => (
 
 <div className="menu-card" onClick={() => alert("लाइव वीडियो प्रोग्राम जल्द शुरू होंगे!")}>
 <span>🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera) →</span>
+</div>
+
+<div className="menu-card" onClick={() => alert("बच्चों की शिक्षा सेक्शन जल्द अपडेट होगा!")}>
+<span>📚 6. बच्चों की शिक्षा व स्कूल/कोचिंग →</span>
+</div>
+
+<div className="menu-card" onClick={() => alert("पशुओं की बीमारी व रोकथाम की जानकारी जल्द जोड़ी जाएगी!")}>
+<span>🐄 7. पशु की बीमारी व रोकथाम के उपाय →</span>
+</div>
+
+<div className="menu-card" onClick={() => alert("हरियाणा सरकार की योजनाएं जल्द अपडेट होंगी!")}>
+<span>🏛️ 8. हरियाणा सरकार की योजनाएं →</span>
 </div>
 
 </div>
