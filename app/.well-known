@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.aarushi.meragaov",
+        "sha256_cert_fingerprints": ["EE:CA:9A:7E:5D:90:3A:35:84:09:96:86:45:C4:17:D8:CA:4B:84:08:53:3B:56:AC:D5:3F:48:3E:A0:75:CA:41"]
+      }
+    }]
