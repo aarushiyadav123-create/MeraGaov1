@@ -14,55 +14,66 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind', sans-serif; }
-body { background-color: #064e3b; color: #0f172a; padding: 10px; }
-.container { max-width: 450px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+body { background-color: #064e3b; color: #0f172a; padding: 8px; }
+.container { max-width: 450px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
 
-.header { background: #065f46; color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #047857; position: relative; }
+/* बड़ा और आकर्षक हेडर */
+.header { background: linear-gradient(135deg, #065f46, #047857); color: white; padding: 18px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #059669; position: relative; }
 .title-box { display: flex; flex-direction: column; }
-.title { font-size: 16px; font-weight: 700; line-height: 1.2; color: #ffffff; }
-.subtitle { font-size: 11px; color: #a7f3d0; }
+.title { font-size: 18px; font-weight: 700; line-height: 1.2; color: #ffffff; }
+.subtitle { font-size: 12px; color: #a7f3d0; margin-top: 2px; }
 
 .header-right { display: flex; gap: 8px; align-items: center; }
-.lang-btn { background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; }
-.menu-dropdown-btn { background: #fbbf24; color: #0f172a; border: none; padding: 5px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
+.lang-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+.menu-dropdown-btn { background: #fbbf24; color: #0f172a; border: none; padding: 6px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
 /* ड्रॉपडाउन मेनू */
-.dropdown-menu { position: absolute; top: 55px; right: 16px; background: white; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid #cbd5e1; width: 170px; z-index: 1000; overflow: hidden; }
-.dropdown-item { padding: 10px 14px; font-size: 12px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.dropdown-menu { position: absolute; top: 65px; right: 18px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 180px; z-index: 1000; overflow: hidden; }
+.dropdown-item { padding: 12px 16px; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .dropdown-item:hover { background: #ecfdf5; color: #047857; }
 
-.ticker { background: #047857; color: #fbbf24; padding: 7px 12px; font-size: 11px; font-weight: bold; display: flex; gap: 12px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
+.ticker { background: #047857; color: #fbbf24; padding: 8px 14px; font-size: 12px; font-weight: bold; display: flex; gap: 15px; white-space: nowrap; overflow-x: auto; border-top: 1px solid #064e3b; }
 
-.menu-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 13px; color: #065f46; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.menu-card:active { background: #f8fafc; transform: scale(0.98); }
-.menu-card.orange { background: #ea580c; color: white; }
+.content { padding: 18px; background: #f8fafc; min-height: 450px; }
 
-.content { padding: 16px; background: #f8fafc; min-height: 400px; }
+/* रंग-बिरंगे और खूबसूरत मेनू कार्ड */
+.menu-card { border-radius: 14px; padding: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.12); transition: transform 0.1s ease; }
+.menu-card:active { transform: scale(0.97); }
 
-.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
-.card-title { font-size: 13px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+/* हर बटन का अलग आकर्षक रंग */
+.bg-1 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } /* नीला */
+.bg-2 { background: linear-gradient(135deg, #0d9488, #0f766e); } /* सियान/टीेल */
+.bg-3 { background: linear-gradient(135deg, #ea580c, #c2410c); } /* नारंगी */
+.bg-4 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } /* पर्पल */
+.bg-5 { background: linear-gradient(135deg, #db2777, #be185d); } /* पिंक */
+.bg-6 { background: linear-gradient(135deg, #ca8a04, #a16207); } /* गोल्डन */
+.bg-7 { background: linear-gradient(135deg, #059669, #047857); } /* हरा */
+.bg-8 { background: linear-gradient(135deg, #4f46e5, #4338ca); } /* इंडिगो */
 
-.form-group { margin-bottom: 10px; position: relative; }
-.form-group label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; }
-.form-control { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; background: #f8fafc; outline: none; }
-.btn-submit { width: 100%; background: #047857; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 6px; }
+.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 
-.suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: #ffffff; border: 2px solid #047857; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-.suggestion-item { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: #0f172a; display: flex; justify-content: space-between; }
+.form-group { margin-bottom: 12px; position: relative; }
+.form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; }
+.form-control { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; background: #f8fafc; outline: none; }
+.btn-submit { width: 100%; background: #047857; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 10px rgba(4,120,87,0.3); }
+
+.suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: #ffffff; border: 2px solid #047857; border-radius: 10px; max-height: 200px; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+.suggestion-item { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid #f1f5f9; cursor: pointer; color: #0f172a; display: flex; justify-content: space-between; }
 .suggestion-item:hover { background: #ecfdf5; color: #047857; font-weight: bold; }
 
-.village-card { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px; display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
-.v-icon { background: #047857; color: white; width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; flex-shrink: 0; }
+.village-card { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 14px; padding: 14px; display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+.v-icon { background: #047857; color: white; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; flex-shrink: 0; }
 
-.pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
-.pill { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid #cbd5e1; background: white; white-space: nowrap; cursor: pointer; }
+.pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; }
+.pill { padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: bold; border: 1px solid #cbd5e1; background: white; white-space: nowrap; cursor: pointer; }
 .pill.active { background: #065f46; color: white; border-color: #065f46; }
 
-.service-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
-.service-tag { background: #d1fae5; color: #064e3b; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
-.service-name { font-size: 13px; font-weight: 700; color: #0f172a; margin: 4px 0; }
-.btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 12px; margin-top: 8px; }
-.empty-state { text-align: center; padding: 30px 15px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; font-size: 13px; }
+.service-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+.service-tag { background: #d1fae5; color: #064e3b; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 6px; }
+.service-name { font-size: 14px; font-weight: 700; color: #0f172a; margin: 6px 0; }
+.btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 13px; margin-top: 10px; }
+.empty-state { text-align: center; padding: 35px 20px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 14px; color: #64748b; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -115,7 +126,7 @@ const [showMenuPopup, setShowMenuPopup] = useState(false);
 
 const [services, setServices] = useState(() => {
 try {
-const saved = localStorage.getItem("haryana_gramin_v20");
+const saved = localStorage.getItem("haryana_gramin_v21");
 return saved ? JSON.parse(saved) : INITIAL_DATA;
 } catch (e) { return INITIAL_DATA; }
 });
@@ -166,7 +177,7 @@ personName: personName || "सत्यापित"
 
 const updated = [newSrv, ...services];
 setServices(updated);
-localStorage.setItem("haryana_gramin_v20", JSON.stringify(updated));
+localStorage.setItem("haryana_gramin_v21", JSON.stringify(updated));
 
 setSelectedDistrict(adminDistrict);
 setSearchVillage(trimmedVillage);
@@ -228,7 +239,7 @@ return (
 
 {view === "admin" && (
 <div>
-<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '14px' }}>
 ← होम पर जाएं
 </button>
 <div className="card">
@@ -282,24 +293,24 @@ return (
 
 {view === "subadmin" && (
 <div>
-<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '14px' }}>
 ← होम पर जाएं
 </button>
 <div className="card">
 <div className="card-title">🛡️ Sub-Admin पैनल</div>
-<p style={{ fontSize: '12px', color: '#475569' }}>यहाँ से सब-एडमिन अपने क्षेत्र की मुनादी और खबरों को वेरीफाई कर सकते हैं।</p>
+<p style={{ fontSize: '13px', color: '#475569' }}>यहाँ से सब-एडमिन अपने क्षेत्र की मुनादी और खबरों को वेरीफाई कर सकते हैं।</p>
 </div>
 </div>
 )}
 
 {view === "about" && (
 <div>
-<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '14px' }}>
 ← होम पर जाएं
 </button>
-<div className="card" style={{ textAlign: 'center', padding: '20px' }}>
+<div className="card" style={{ textAlign: 'center', padding: '24px' }}>
 <div className="card-title" style={{ justifyContent: 'center' }}>ℹ️ About / परिचय</div>
-<p style={{ fontSize: '14px', fontWeight: 'bold', color: '#064e3b', marginBottom: '10px' }}>
+<p style={{ fontSize: '15px', fontWeight: 'bold', color: '#064e3b', marginBottom: '10px' }}>
 Founder: Kusum w/o Rajesh
 </p>
 <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.6' }}>
@@ -311,12 +322,12 @@ Founder: Kusum w/o Rajesh
 
 {view === "policy" && (
 <div>
-<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '14px' }}>
 ← होम पर जाएं
 </button>
 <div className="card">
 <div className="card-title">📄 Privacy Policy & Terms</div>
-<p style={{ fontSize: '12px', color: '#475569', lineHeight: '1.5' }}>
+<p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6' }}>
 यह प्लेटफ़ॉर्म ग्रामीण डेटा की सुरक्षा और सही जानकारी प्रदान करने के लिए प्रतिबद्ध है। दर्ज की गई सभी सूचियाँ स्थानीय सत्यापन के आधार पर प्रदर्शित की जाती हैं।
 </p>
 </div>
@@ -364,44 +375,54 @@ suggestedVillages.map((v, index) => (
 </div>
 </div>
 
-<div style={{ fontSize: '12px', fontWeight: 'bold', color: '#334155', marginBottom: '8px' }}>
+<div style={{ fontSize: '13px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>
 सक्रिय गाँव: <span style={{ color: '#059669' }}>{searchVillage}</span>
 </div>
 
-<div className="menu-card" onClick={() => { setActiveCategory('CSC'); setView('list'); }}>
-<span>🏥 1. दुकान देखें व OTP से जोड़ें →</span>
+{/* कलरफुल बटन 1 से 8 */}
+<div className="menu-card bg-1" onClick={() => { setActiveCategory('CSC'); setView('list'); }}>
+<span>🏥 1. दुकान देखें व OTP से जोड़ें</span>
+<span>→</span>
 </div>
 
-<div className="menu-card" onClick={() => { setActiveCategory('Mistri'); setView('list'); }}>
-<span>🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें →</span>
+<div className="menu-card bg-2" onClick={() => { setActiveCategory('Mistri'); setView('list'); }}>
+<span>🛠️ 1B. आवश्यक सेवाएं (मिस्त्री आदि) देखें व जोड़ें</span>
+<span>→</span>
 </div>
 
-<div className="menu-card orange" onClick={() => alert("मुनादी व खबरें सेक्शन जल्द सक्रिय होगा!")}>
-<span>📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified) →</span>
+<div className="menu-card bg-3" onClick={() => alert("मुनादी व खबरें सेक्शन जल्द सक्रिय होगा!")}>
+<span>📢 2. मुनादी, मेला व खबरें (Sub-Admin Verified)</span>
+<span>→</span>
 </div>
 
-<div className="menu-card" onClick={() => alert("पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो सेक्शन जल्द शुरू होगा!")}>
-<span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो 📸 →</span>
+<div className="menu-card bg-4" onClick={() => alert("पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो सेक्शन जल्द शुरू होगा!")}>
+<span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो 📸</span>
+<span>→</span>
 </div>
 
-<div className="menu-card" onClick={() => alert("गाँव की गैलरी जल्द लाइव होगी!")}>
-<span>📸 4. गाँव की गैलरी (लाइव फोटो) →</span>
+<div className="menu-card bg-5" onClick={() => alert("गाँव की गैलरी जल्द लाइव होगी!")}>
+<span>📸 4. गाँव की गैलरी (लाइव फोटो)</span>
+<span>→</span>
 </div>
 
-<div className="menu-card" onClick={() => alert("लाइव वीडियो प्रोग्राम जल्द शुरू होंगे!")}>
-<span>🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera) →</span>
+<div className="menu-card bg-6" onClick={() => alert("लाइव वीडियो प्रोग्राम जल्द शुरू होंगे!")}>
+<span>🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera)</span>
+<span>→</span>
 </div>
 
-<div className="menu-card" onClick={() => alert("बच्चों की शिक्षा सेक्शन जल्द अपडेट होगा!")}>
-<span>📚 6. बच्चों की शिक्षा व स्कूल/कोचिंग →</span>
+<div className="menu-card bg-7" onClick={() => alert("बच्चों की शिक्षा सेक्शन जल्द अपडेट होगा!")}>
+<span>📚 6. बच्चों की शिक्षा व स्कूल/कोचिंग</span>
+<span>→</span>
 </div>
 
-<div className="menu-card" onClick={() => alert("पशुओं की बीमारी व रोकथाम की जानकारी जल्द जोड़ी जाएगी!")}>
-<span>🐄 7. पशु की बीमारी व रोकथाम के उपाय →</span>
+<div className="menu-card bg-8" onClick={() => alert("पशुओं की बीमारी व रोकथाम की जानकारी जल्द जोड़ी जाएगी!")}>
+<span>🐄 7. पशु की बीमारी व रोकथाम के उपाय</span>
+<span>→</span>
 </div>
 
-<div className="menu-card" onClick={() => alert("हरियाणा सरकार की योजनाएं जल्द अपडेट होंगी!")}>
-<span>🏛️ 8. हरियाणा सरकार की योजनाएं →</span>
+<div className="menu-card bg-1" onClick={() => alert("हरियाणा सरकार की योजनाएं जल्द अपडेट होंगी!")}>
+<span>🏛️ 8. हरियाणा सरकार की योजनाएं</span>
+<span>→</span>
 </div>
 
 </div>
@@ -409,14 +430,14 @@ suggestedVillages.map((v, index) => (
 
 {view === "list" && (
 <div>
-<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '12px' }}>
+<button onClick={() => setView("home")} style={{ background: '#065f46', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '14px' }}>
 ← मुख्य मेनू पर वापस जाएं
 </button>
 
 <div className="village-card">
 <div className="v-icon">{searchVillage[0]}</div>
 <div style={{ fontSize: '12px' }}>
-<div style={{ fontSize: '14px', fontWeight: 'bold', color: '#064e3b' }}>गाँव: {searchVillage}</div>
+<div style={{ fontSize: '15px', fontWeight: 'bold', color: '#064e3b' }}>गाँव: {searchVillage}</div>
 <div style={{ color: '#64748b' }}>केवल सत्यापित और ओरिजिनल लिस्टिंग</div>
 </div>
 </div>
@@ -440,7 +461,7 @@ onClick={() => setActiveCategory(cat.id)}
 </div>
 
 <div>
-<div style={{ fontSize: '12px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>
+<div style={{ fontSize: '13px', fontWeight: 'bold', color: '#475569', marginBottom: '10px' }}>
 "{searchVillage}" की सेवाएं ({displayServices.length})
 </div>
 
@@ -449,17 +470,17 @@ displayServices.map(s => (
 <div key={s.id} className="service-item">
 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 <span className="service-tag">{s.category}</span>
-<span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>✔ सत्यापित</span>
+<span style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>✔ सत्यापित</span>
 </div>
 <div className="service-name">{s.titleHi}</div>
-<div style={{ fontSize: '11px', color: '#64748b' }}>👤 संचालक: {s.personName}</div>
+<div style={{ fontSize: '12px', color: '#64748b' }}>👤 संचालक: {s.personName}</div>
 <a href={`tel:${s.phone}`} className="btn-call">📞 कॉल करें ({s.phone})</a>
 </div>
 ))
 ) : (
 <div className="empty-state">
 🚫 <b>{searchVillage}</b> गाँव में इस श्रेणी में अभी कोई दुकान दर्ज नहीं है।<br /><br />
-<button onClick={() => setView("admin")} style={{ background: '#047857', color: 'white', border: 'none', padding: '8px 14px', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>
+<button onClick={() => setView("admin")} style={{ background: '#047857', color: 'white', border: 'none', padding: '10px 16px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 'bold' }}>
 + एडमिन पैनल से इस गाँव का डेटा जोड़ें
 </button>
 </div>
