@@ -93,10 +93,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .empty-state { text-align: center; padding: 25px 15px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 14px; color: #64748b; font-size: 13px; }
 .back-btn { background: #065f46; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 14px; }
 
-.scheme-box { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; width: 100%; }
-.scheme-title { font-size: 13px; font-weight: 700; color: #064e3b; margin-bottom: 4px; }
-.scheme-btn { display: inline-block; background: #2563eb; color: white; text-decoration: none; font-size: 11px; font-weight: bold; padding: 6px 12px; border-radius: 6px; }
-
 .live-upload-box { background: #f0fdf4; border: 2px dashed #10b981; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 15px; }
 .media-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
 .media-card { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; text-align: left; position: relative; }
@@ -157,8 +153,7 @@ menu6: "🎵 5. वीडियो और लाइव प्रोग्रा�
 menu7: "📚 6. बच्चों की शिक्षा व पोर्टल",
 menu8: "🐄 7. पशु की बीमारी, रोकथाम व किसान पूछताछ",
 menu9: "🌤️ 8. लाइव मौसम और ताज़ा मंडी भाव",
-menu10: "🏛️ 9. हरियाणा सरकार की योजनाएं",
-menu11: "📜 10. गाँव का इतिहास व सभी सरपंच (Date-wise)",
+menu10: "📜 9. गाँव का इतिहास व सभी सरपंच (Date-wise)",
 backHome: "← होम पर जाएं"
 },
 en: {
@@ -177,8 +172,7 @@ menu6: "🎵 5. Videos & Live Programs",
 menu7: "📚 6. Children Education & Portals",
 menu8: "🐄 7. Animal Diseases, Prevention & Farmer Inquiry",
 menu9: "🌤️ 8. Live Weather & Mandi Rates",
-menu10: "🏛️ 9. Haryana Government Schemes",
-menu11: "📜 10. Village History & Sarpanch List",
+menu10: "📜 9. Village History & Sarpanch List",
 backHome: "← Go to Home"
 }
 };
@@ -409,7 +403,7 @@ return (
 <div className="card-title" style={{justifyContent:'center'}}>ℹ️ हमारे बारे में (About Us)</div>
 <div style={{fontSize:'14px', lineHeight:'1.8', color:'#334155', margin:'15px 0'}}>
 <p style={{fontWeight:'bold', color:'#047857', fontSize:'16px', marginBottom:'8px'}}>🌾 "मेरा गाँव - मेरा हरियाणा" ऐप</p>
-<p style={{marginBottom:'10px'}}>यह डिजिटल मंच हमारे सम्पूर्ण ग्रामीण अंचल और गाँव को समर्पित है, जिससे गाँव की हर छोटी-बड़ी खबर, दुकानें, सेवाएं, पशुपालन, और सरकारी योजनाएं हर नागरिक तक आसानी से पहुँच सकें।</p>
+<p style={{marginBottom:'10px'}}>यह डिजिटल मंच हमारे सम्पूर्ण ग्रामीण अंचल और गाँव को समर्पित है, जिससे गाँव की हर छोटी-बड़ी खबर, दुकानें, सेवाएं, पशुपालन, और सूचनाएं हर नागरिक तक आसानी से पहुँच सकें।</p>
 <div style={{background:'#ecfdf5', border:'1px solid #a7f3d0', padding:'12px', borderRadius:'10px', marginTop:'15px'}}>
 <p style={{fontSize:'13px', fontWeight:'bold', color:'#065f46'}}>Founder / निर्माता:</p>
 <p style={{fontSize:'15px', fontWeight:'700', color:'#0f172a', marginTop:'4px'}}>Kusum w/o Rajesh Yadav</p>
@@ -617,8 +611,6 @@ return (
 </div>
 )}
 
-}
-
 {/* HISTORY */}
 {view === "history" && (
 <div>
@@ -675,8 +667,7 @@ return (
 <div className="menu-card bg-7" onClick={() => setView('education')}><span>{t.menu7}</span><span>→</span></div>
 <div className="menu-card bg-8" onClick={() => setView('animals')}><span>{t.menu8}</span><span>→</span></div>
 <div className="menu-card bg-1" onClick={() => setView('weather_mandi')}><span>{t.menu9}</span><span>→</span></div>
-<div className="menu-card bg-2" onClick={() => setView('schemes')}><span>{t.menu10}</span><span>→</span></div>
-<div className="menu-card bg-3" onClick={() => setView('history')}><span>{t.menu11}</span><span>→</span></div>
+<div className="menu-card bg-3" onClick={() => setView('history')}><span>{t.menu10}</span><span>→</span></div>
 </div>
 )}
 
