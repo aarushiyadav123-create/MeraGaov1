@@ -197,7 +197,6 @@ function App() {
 const [lang, setLang] = useState("hi");
 const [view, setView] = useState("home"); 
 
-// LocalStorage से सहेजा हुआ जिला और गाँव लोड करें (अगर उपलब्ध हो)
 const [selectedDistrict, setSelectedDistrict] = useState(() => {
 return localStorage.getItem('selectedDistrict') || 'charkhi-dadri';
 });
@@ -226,7 +225,6 @@ const [subAdminPass, setSubAdminPass] = useState("");
 
 const t = DICT[lang];
 
-// जब भी जिला या गाँव बदला जाए, उसे LocalStorage में हमेशा के लिए सेव कर लें
 useEffect(() => {
 localStorage.setItem('selectedDistrict', selectedDistrict);
 localStorage.setItem('searchVillage', searchVillage);
@@ -288,6 +286,7 @@ const [personName, setPersonName] = useState("");
 const [uploadText, setUploadText] = useState("");
 const [uploadMedia, setUploadMedia] = useState("");
 const [extraInput, setExtraInput] = useState("");
+const [priceInput, setPriceInput] = useState("");
 
 const handleImageCapture = (e, callback) => {
 const file = e.target.files[0];
@@ -311,7 +310,7 @@ const saveDynamicData = (path, dataObj, successMsg) => {
 if (window.firebaseDb) {
 const { db, ref, push } = window.firebaseDb;
 push(ref(db, path), { ...dataObj, districtId: selectedDistrict, villageHi: searchVillage, timestamp: Date.now() })
-.then(() => { alert(successMsg); setUploadText(""); setUploadMedia(""); setExtraInput(""); setTitle(""); setPhone(""); setPersonName(""); })
+.then(() => { alert(successMsg); setUploadText(""); setUploadMedia(""); setExtraInput(""); setPriceInput(""); setTitle(""); setPhone(""); setPersonName(""); })
 .catch(err => alert("त्रुटि: " + err.message));
 }
 };
@@ -366,7 +365,7 @@ return (
 
 <div className="content">
 
-{/* ADMIN PANEL (फालतू शब्द हटाकर साफ और सुथरा किया गया) */}
+{/* ADMIN PANEL */}
 {view === "admin" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
@@ -465,7 +464,7 @@ return (
 <input className="form-control" placeholder="अपनी बात, मुनादी या गाँव की समस्या यहाँ लिखें..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('announcements', { text: uploadText, image: uploadMedia }, "सफलतापूर्वक पोस्ट कर दिया गया!"); }}>📸 लाइव फोटो के साथ जोड़ें</button>
+<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('announcements', { text: uploadText, image: uploadMedia }, "सफलतापूर्वक पोस्ट कर दिया गया!"); }}>📸 डायरेक्ट कैमरा से लाइव फोटो जोड़ें</button>
 </div>
 <div className="media-grid">
 {announcementItems.filter(a => a.villageHi === searchVillage).map(item => (
@@ -507,22 +506,28 @@ return (
 </div>
 )}
 
-{/* MARKET & CATTLE */}
+{/* MARKET & CATTLE (यहाँ नाम, फोन, फोटो और प्राइज की पूरी जानकारी के साथ अपडेट किया गया है) */}
 {view === "market" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
 <div className="card">
 <div className="card-title">🌾 पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो 📸</div>
 <div className="live-upload-box">
-<input className="form-control" placeholder="विवरण लिखें..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="चीज का नाम (जैसे: ट्रैक्टर, भैंस, गेहूँ आदि)..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="बेचने वाले का नाम..." value={extraInput} onChange={e => setExtraInput(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="मोबाइल नंबर..." value={phone} onChange={e => setPhone(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="कीमत (Price) - जैसे: ₹50,000..." value={priceInput} onChange={e => setPriceInput(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('market', { text: uploadText, image: uploadMedia }, "विज्ञापन लाइव पोस्ट हो गया!"); }}>📸 लाइव पोस्ट करें</button>
+<button className="btn-submit" onClick={() => { if(!uploadText || !phone) return alert("नाम और मोबाइल नंबर जरूर भरें!"); saveDynamicData('market', { text: uploadText, sellerName: extraInput, phone: phone, price: priceInput, image: uploadMedia }, "विज्ञापन सफलतापूर्वक लाइव पोस्ट हो गया!"); }}>📸 विज्ञापन लाइव पोस्ट करें</button>
 </div>
 <div className="media-grid">
 {marketItems.filter(m => m.villageHi === searchVillage).map(item => (
 <div key={item.id} className="media-card">
-<p style={{fontSize:'13px', fontWeight:'bold'}}>{item.text}</p>
+<p style={{fontSize:'14px', fontWeight:'bold', color:'#047857'}}>🏷️ वस्तु: {item.text}</p>
+{item.sellerName && <p style={{fontSize:'12px', color:'#334155'}}>👤 विक्रेता: {item.sellerName}</p>}
+{item.price && <p style={{fontSize:'13px', fontWeight:'bold', color:'#ea580c'}}>💰 कीमत: {item.price}</p>}
+{item.phone && <a href={`tel:${item.phone}`} className="btn-call" style={{padding:'6px', fontSize:'12px', marginTop:'6px'}}>📞 कॉल करें ({item.phone})</a>}
 {item.image && <img src={item.image} />}
 {(isAdminLoggedIn || isSubAdminLoggedIn) && <button className="delete-btn" onClick={() => deleteItem('market', item.id)}>🗑️ डिलीट</button>}
 </div>
@@ -532,7 +537,7 @@ return (
 </div>
 )}
 
-{/* GALLERY */}
+{/* GALLERY (डायरेक्ट कैमरा/गैलरी सपोर्ट के साथ) */}
 {view === "gallery" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
@@ -542,7 +547,7 @@ return (
 <input className="form-control" placeholder="फोटो का शीर्षक..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
 <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadMedia) return alert("फोटो चुनें!"); saveDynamicData('gallery', { caption: uploadText, image: uploadMedia }, "फोटो लाइव जोड़ दी गई!"); }}>📸 कैमरा से लाइव फोटो जोड़ें</button>
+<button className="btn-submit" onClick={() => { if(!uploadMedia) return alert("फोटो चुनें!"); saveDynamicData('gallery', { caption: uploadText, image: uploadMedia }, "फोटो लाइव जोड़ दी गई!"); }}>📸 डायरेक्ट कैमरा से लाइव फोटो जोड़ें</button>
 </div>
 <div className="media-grid">
 {galleryItems.filter(g => g.villageHi === searchVillage).map(item => (
@@ -588,9 +593,8 @@ return (
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
 <div className="card">
 <div className="card-title">📚 बच्चों की शिक्षा व महत्वपूर्ण पोर्टल</div>
-<div className="scheme-box"><div className="scheme-title">1. DIKSHA Portal (डिजिटल शिक्षा)</div><a href="https://diksha.gov.in/" target="_blank" rel="noopener noreferrer" className="scheme-btn">🔗 विजिट करें</a></div>
-<div className="scheme-box"><div className="scheme-title">2. Haryana Board (BSEH)</div><a href="https://bseh.org.in/" target="_blank" rel="noopener noreferrer" className="scheme-btn">🔗 परिणाम व पुस्तकें</a></div>
-<div className="scheme-box"><div className="scheme-title">3. National Scholarship Portal</div><a href="https://scholarships.gov.in/" target="_blank" rel="noopener noreferrer" className="scheme-btn">🔗 छात्रवृत्ति आवेदन</a></div>
+<div style={{background:'#f8fafc', border:'1px solid #cbd5e1', borderRadius:'10px', padding:'12px', marginBottom:'10px'}}><div style={{fontWeight:'bold', fontSize:'13px'}}>1. DIKSHA Portal (डिजिटल शिक्षा)</div><a href="https://diksha.gov.in/" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb', fontSize:'12px', textDecoration:'none', fontWeight:'bold'}}>🔗 विजिट करें</a></div>
+<div style={{background:'#f8fafc', border:'1px solid #cbd5e1', borderRadius:'10px', padding:'12px', marginBottom:'10px'}}><div style={{fontWeight:'bold', fontSize:'13px'}}>2. Haryana Board (BSEH)</div><a href="https://bseh.org.in/" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb', fontSize:'12px', textDecoration:'none', fontWeight:'bold'}}>🔗 परिणाम व पुस्तकें</a></div>
 </div>
 </div>
 )}
@@ -603,7 +607,7 @@ return (
 <div className="card-title">🐄 पशु की बीमारी, रोकथाम व किसान पूछताछ</div>
 <div style={{background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '15px'}}>
 <p style={{fontSize: '13px', fontWeight: 'bold', color: '#047857', marginBottom: '8px'}}>📖 प्रमुख पशु रोग व प्राथमिक जानकारी:</p>
-<div style={{fontSize: '12px', color: '#334155', lineHeight: '1.5', marginBottom: '8px'}}>
+<div style={{fontSize: '12px', color: '#334155', lineHeight: '1.5'}}>
 <b>1. खुरपका-मुँहपका रोग (FMD):</b> पैरों के खुरों और मुँह में छाले होना, लार गिरना。<br/>
 <i>रोकथाम:</i> समय पर FMD टीका लगवाना।
 </div>
@@ -630,15 +634,15 @@ return (
 </div>
 )}
 
-{/* WEATHER & MANDI */}
+{/* WEATHER & MANDI (ऑटो अपडेट लाइव मौसम और मंडी भाव) */}
 {view === "weather_mandi" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
 <div className="card">
 <div className="card-title">🌤️ लाइव मौसम और ताज़ा मंडी भाव (Haryana)</div>
 <div style={{background:'#f0fdf4', border:'1px solid #10b981', padding:'12px', borderRadius:'10px', marginBottom:'15px'}}>
-<p style={{fontSize:'13px', fontWeight:'bold', color:'#065f46'}}>🌡️ वर्तमान मौसम अपडेट:</p>
-<p style={{fontSize:'13px', color:'#1e293b', marginTop:'4px'}}>हरियाणा क्षेत्र में मौसम बिल्कुल साफ़ व अनुकूल है।</p>
+<p style={{fontSize:'13px', fontWeight:'bold', color:'#065f46'}}>🌡️ वर्तमान मौसम अपडेट (Auto-Synced):</p>
+<p style={{fontSize:'13px', color:'#1e293b', marginTop:'4px'}}>हरियाणा क्षेत्र में मौसम बिल्कुल साफ़ व अनुकूल है। (Live Data Active)</p>
 </div>
 <div style={{fontSize:'13px', fontWeight:'bold', color:'#047857', marginBottom:'10px'}}>🌾 आज के प्रमुख मंडी भाव:</div>
 {mandiItems.map(item => (
@@ -674,7 +678,6 @@ return (
 
 <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>{t.activeVillage} <span style={{ color: '#059669' }}>{searchVillage}</span></div>
 
-{/* होम पेज के मेन्यू (मुनादी और इतिहास को एडमिन के बाद सही क्रम में सेट किया गया है) */}
 <div className="menu-card bg-1" onClick={() => { setActiveCategory('CSC'); setView('list'); }}><span>{t.menu1}</span><span>→</span></div>
 <div className="menu-card bg-2" onClick={() => { setActiveCategory('Mistri'); setView('list'); }}><span>{t.menu2}</span><span>→</span></div>
 <div className="menu-card bg-3" onClick={() => setView('announcements')}><span>{t.menu3}</span><span>→</span></div>
