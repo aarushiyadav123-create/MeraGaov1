@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MeraGaov - मेरी पहचान (Final Edition)</title>
+<title>MeraGaov - मेरी पहचान</title>
 
 <!-- Firebase SDKs -->
 <script type="module">
@@ -60,7 +60,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .bg-6 { background: linear-gradient(135deg, #ca8a04, #a16207); } 
 .bg-7 { background: linear-gradient(135deg, #059669, #047857); } 
 .bg-8 { background: linear-gradient(135deg, #4f46e5, #4338ca); } 
-.bg-9 { background: linear-gradient(135deg, #e11d48, #be123c); }
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -96,7 +95,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" onclick="document.getElementById('profileImageInput').click();" />
       <div class="title-info">
         <div class="title" id="headerTitle">MeraGaov - माлкоश</div>
-        <div class="subtitle">मेरा गाँव - मेरा हरियाणा (Strict District/Village Filter)</div>
+        <div class="subtitle">मेरा गाँव - मेरा हरियाणा</div>
       </div>
     </div>
     <div class="header-right">
@@ -113,7 +112,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
   </div>
 
   <div class="ticker">
-    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य | 📢 डिजिटल हरियाणा पोर्टल सक्रिय</marquee>
+    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य</marquee>
   </div>
 
   <div class="content" id="mainContent"></div>
@@ -140,10 +139,6 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
   "rewari": {
     nameHi: "रेवाड़ी",
     villages: ["बावल", "कोसली", "धारूहेड़ा", "नारनौल रोड", "मीरपुर", "बोलनी", "पाल्हावास", "गुरावड़ा", "खोल", "नांगल चौधरी", "मंदियाखेड़ा", "नंदरामपुर बास", "खांट", "जैनाबाद", "पालहवास", "डहिना", "बुड़ौली", "नौरंगपुर", "कनीना", "महेशपुर", "गढी बोलनी", "नारहेड़ा", "आहौद", "बिलासपुर", "नैन", "खालेड़ा", "पहाड़ी", "भाड़ावास", "टहना", "बिचपुरी"]
-  },
-  "gurugram": {
-    nameHi: "गुरुग्राम",
-    villages: ["सोहना", "पटौदी", "फरुखनगर", "भांगरोल", "बिलासपुर", "खांडसा", "घाटा", "टिकरी", "बादशाहपुर", "भौंडसी", "शेखपुर", "हरचन्दपुर", "सिकंदरपुर", "कदमपुर", "ढोरका", "मानमानेपुर", "चंदू", "बुढेड़ा", "मेवका"]
   }
 };
 
@@ -161,7 +156,6 @@ class VillageApp {
       announcements: [],
       history: [],
       videos: [],
-      complaints: [],
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
@@ -240,12 +234,6 @@ class VillageApp {
           this.state.videos = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'videos' || this.state.view === 'admin') this.render();
         });
-
-        onValue(ref(db, 'complaints'), snap => {
-          const val = snap.val();
-          this.state.complaints = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          if(this.state.view === 'complaints' || this.state.view === 'admin') this.render();
-        });
         
         onValue(ref(db, 'subAdmins'), snap => {
           const val = snap.val();
@@ -323,7 +311,7 @@ class VillageApp {
         ...data, 
         districtId: this.state.selectedDistrict, 
         villageHi: this.state.searchVillage, 
-        status: path === 'complaints' ? 'approved' : 'pending', 
+        status: 'pending', 
         timestamp: Date.now() 
       })
       .then(() => { 
@@ -338,9 +326,9 @@ class VillageApp {
     if (window.firebaseDb) {
       const { db, ref, update } = window.firebaseDb;
       update(ref(db, `${path}/${id}`), { status: 'approved' }).then(() => {
-        alert("सफलतापूर्वक अप्रूव हो गया!");
+        alert("अप्रूव हो गया!");
         this.render();
-      }).catch(err => alert("त्रुटि: " + err.message));
+      });
     }
   }
 
@@ -436,15 +424,6 @@ class VillageApp {
     this.tempVideo = '';
   }
 
-  submitComplaint() {
-    const titleEl = document.getElementById('cTitle');
-    const descEl = document.getElementById('cDesc');
-    const title = titleEl ? titleEl.value : '';
-    const desc = descEl ? descEl.value : '';
-    if(!title || !desc) return alert("कृपया शिकायत का विषय और विवरण दर्ज करें!");
-    this.saveData('complaints', { title, description: desc }, "आपकी शिकायत पंचायत पोर्टल पर दर्ज हो गई है!");
-  }
-
   openCategory(cat) { 
     this.state.activeCategory = cat; 
     this.changeView('list'); 
@@ -477,18 +456,19 @@ class VillageApp {
 
       html = `
         <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
-          <div class="card-title" style="color: #064e3b;">📍 जिला व गाँव चुनें (Strict Filter)</div>
+          <div class="card-title" style="color: #064e3b;">📍 जिला व गाँव चुनें</div>
           <div class="form-group">
             <label>जिला चुनें:</label>
-            <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0]; app.render();">
+            <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.render();">
               ${districtOptions}
             </select>
           </div>
           <div class="form-group">
-            <label>गाँव चुनें:</label>
-            <select class="form-control" id="villageDropdownSelect" onchange="app.state.searchVillage = this.value; app.render();">
+            <label>गाँव चुनें या नाम लिखें:</label>
+            <select class="form-control" id="villageDropdownSelect" onchange="document.getElementById('villageInput').value = this.value; app.state.searchVillage = this.value;" style="margin-bottom:6px;">
               ${villageOptions}
             </select>
+            <input class="form-control" type="text" id="villageInput" value="${this.state.searchVillage}" placeholder="गाँव का नाम..." />
           </div>
         </div>
         <div class="menu-card bg-1" onclick="app.openCategory('all')"><span>👀 लाइव दुकानें देखें</span><span>→</span></div>
@@ -499,12 +479,11 @@ class VillageApp {
         <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 4. गैलरी</span><span>→</span></div>
         <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 5. वीडियो और रागनी</span><span>→</span></div>
         <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 6. शिक्षा पोर्टल</span><span>→</span></div>
-        <div class="menu-card bg-9" onclick="app.changeView('complaints')"><span>✍️ 7. पंचायत शिकायत पोर्टल</span><span>→</span></div>
-        <div class="menu-card bg-2" onclick="app.changeView('animals')"><span>🐄 8. पशु चिकित्सा</span><span>→</span></div>
+        <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 7. पशु चिकित्सा</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
-      let list = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage).map(s => `
+      let list = this.state.services.filter(s => s.status === 'approved' && s.villageHi === this.state.searchVillage).map(s => `
         <div class="service-item">
           <span class="service-tag">${s.category || 'दुकान'}</span>
           <div class="service-name">${s.name}</div>
@@ -523,7 +502,7 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">➕ नई दुकान या सेवा जोड़ें (${this.state.searchVillage})</div>
+          <div class="card-title">➕ नई दुकान या सेवा जोड़ें</div>
           <div class="form-group"><label>दुकान / सेवा का नाम</label><input class="form-control" id="sName" placeholder="नाम..." /></div>
           <div class="form-group"><label>मोबाइल नंबर</label><input class="form-control" id="sPhone" placeholder="नंबर..." /></div>
           <div class="form-group"><label>श्रेणी</label><select class="form-control" id="sCat"><option value="किराना">किराना</option><option value="डॉक्टर">डॉक्टर</option><option value="कपड़ा">कपड़ा</option><option value="अन्य">अन्य</option></select></div>
@@ -533,13 +512,13 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'announcements') {
-      let items = this.state.announcements.filter(a => a.status === 'approved' && a.districtId === this.state.selectedDistrict && a.villageHi === this.state.searchVillage).map(a => `
+      let items = this.state.announcements.filter(a => a.status === 'approved' && a.villageHi === this.state.searchVillage).map(a => `
         <div class="service-item"><div class="service-name">${a.title}</div>${a.imageUrl ? `<img src="${a.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ डिलीट</button>`:''}</div>
       `).join('');
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">📢 मुनादी व खबरें (${this.state.searchVillage})</div>
+          <div class="card-title">📢 मुनादी व खबरें</div>
           <div class="live-upload-box">
             <input class="form-control" id="annTitle" placeholder="मुनादी का विवरण..." style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
@@ -551,13 +530,13 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'history') {
-      let items = this.state.history.filter(h => h.status === 'approved' && h.districtId === this.state.selectedDistrict && h.villageHi === this.state.searchVillage).map(h => `
+      let items = this.state.history.filter(h => h.status === 'approved' && h.villageHi === this.state.searchVillage).map(h => `
         <div class="service-item"><div class="service-name">${h.title}</div>${h.imageUrl ? `<img src="${h.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ डिलीट</button>`:''}</div>
       `).join('');
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">📜 इतिहास व सरपंच (${this.state.searchVillage})</div>
+          <div class="card-title">📜 इतिहास व सरपंच</div>
           <div class="live-upload-box">
             <input class="form-control" id="histTitle" placeholder="इतिहास या सरपंच की जानकारी..." style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
@@ -569,13 +548,13 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'market') {
-      let items = this.state.market.filter(m => m.status === 'approved' && m.districtId === this.state.selectedDistrict && m.villageHi === this.state.searchVillage).map(m => `
+      let items = this.state.market.filter(m => m.status === 'approved' && m.villageHi === this.state.searchVillage).map(m => `
         <div class="service-item"><div class="service-name">${m.title}</div>${m.imageUrl ? `<img src="${m.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ डिलीट</button>`:''}</div>
       `).join('');
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🌾 पशु व बाजार (${this.state.searchVillage})</div>
+          <div class="card-title">🌾 पशु व बाजार</div>
           <div class="live-upload-box">
             <input class="form-control" id="mTitle" placeholder="पशु या बाजार की वस्तु का विवरण..." style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
@@ -587,13 +566,13 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'gallery') {
-      let items = this.state.gallery.filter(g => g.status === 'approved' && g.districtId === this.state.selectedDistrict && g.villageHi === this.state.searchVillage).map(g => `
+      let items = this.state.gallery.filter(g => g.status === 'approved' && g.villageHi === this.state.searchVillage).map(g => `
         <div class="service-item"><div class="service-name">${g.caption || ''}</div>${g.imageUrl ? `<img src="${g.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ डिलीट</button>`:''}</div>
       `).join('');
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">📸 गैलरी (${this.state.searchVillage})</div>
+          <div class="card-title">📸 गैलरी</div>
           <div class="live-upload-box">
             <input class="form-control" id="gCaption" placeholder="फोटो का शीर्षक..." style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
@@ -605,7 +584,7 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'videos') {
-      let vList = this.state.videos.filter(v => v.status === 'approved' && v.districtId === this.state.selectedDistrict && v.villageHi === this.state.searchVillage).map(v => `
+      let vList = this.state.videos.filter(v => v.status === 'approved' && v.villageHi === this.state.searchVillage).map(v => `
         <div class="media-card">
           <div class="service-name">${v.title}</div>
           <video controls style="width:100%; border-radius:8px; margin-top:8px; max-height:220px; background:#000;">
@@ -618,7 +597,7 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🎵 वीडियो और रागनी (${this.state.searchVillage})</div>
+          <div class="card-title">🎵 वीडियो और रागनी प्रोग्राम</div>
           <div style="background:#f0fdf4; border:1px solid #a7f3d0; padding:10px; border-radius:10px; margin-bottom:12px;">
             <a href="https://www.youtube.com" target="_blank" class="portal-link-btn" style="background:#ff0000; width:100%; text-align:center; display:block; margin-bottom:6px;">▶️ YouTube Live</a>
             <a href="https://www.hotstar.com" target="_blank" class="portal-link-btn" style="background:#1f3367; width:100%; text-align:center; display:block;">📺 Disney+ Hotstar</a>
@@ -660,31 +639,6 @@ class VillageApp {
         </div>
       `;
     }
-    else if (this.state.view === 'complaints') {
-      let cList = this.state.complaints.filter(c => c.districtId === this.state.selectedDistrict && c.villageHi === this.state.searchVillage).map(c => `
-        <div class="service-item">
-          <span class="service-tag" style="background:#fee2e2; color:#991b1b;">शिकायत</span>
-          <div class="service-name">${c.title}</div>
-          <p style="font-size:12px; color:#334155; margin-top:4px;">${c.description}</p>
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('complaints', '${c.id}')">🗑️ डिलीट</button>` : ''}
-        </div>
-      `).join('');
-
-      html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card">
-          <div class="card-title">✍️ पंचायत शिकायत पोर्टल (${this.state.searchVillage})</div>
-          <div class="live-upload-box">
-            <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">अपनी समस्या या शिकायत दर्ज करें</div>
-            <input class="form-control" id="cTitle" placeholder="शिकायत का विषय (जैसे: स्ट्रीट लाइट खराब)" style="margin-bottom:8px;" />
-            <textarea class="form-control" id="cDesc" placeholder="विस्तृत विवरण..." style="margin-bottom:8px; height:70px; resize:none;"></textarea>
-            <button class="btn-submit" onclick="app.submitComplaint()">📤 शिकायत भेजें</button>
-          </div>
-          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">📋 दर्ज शिकायतें:</div>
-          ${cList || '<div class="empty-state">कोई शिकायत दर्ज नहीं है।</div>'}
-        </div>
-      `;
-    }
     else if (this.state.view === 'animals') {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
@@ -705,7 +659,7 @@ class VillageApp {
     else if (this.state.view === 'admin') {
       if(!this.state.isAdminLoggedIn && !this.state.isSubAdminLoggedIn) return this.changeView('home');
 
-      let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && x.districtId === this.state.selectedDistrict && x.villageHi === this.state.searchVillage).map(x => `
+      let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending').map(x => `
         <div class="media-card" style="border: 2px solid #2563eb;">
           <span class="service-tag">${labelName} (${x.villageHi || ''})</span>
           <div class="service-name">${x.title || x.name || ''}</div>
@@ -735,14 +689,20 @@ class VillageApp {
 
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card"><div class="card-title">📥 एडमिन अप्रूवल पैनल (${this.state.searchVillage})</div></div>
+        <div class="card"><div class="card-title">📥 एडमिन अप्रूवल पैनल</div></div>
         ${pServ || ''} ${pAnn || ''} ${pHist || ''} ${pMkt || ''} ${pGal || ''} ${pVid || ''}
-        ${(!pServ && !pAnn && !pHist && !pMkt && !pGal && !pVid) ? '<div class="empty-state">इस गाँव के लिए कोई पेंडिंग रिक्वेस्ट नहीं है।</div>' : ''}
+        ${(!pServ && !pAnn && !pHist && !pMkt && !pGal && !pVid) ? '<div class="empty-state">कोई पेंडिंग रिक्वेस्ट नहीं है।</div>' : ''}
         ${subAdminSection}
       `;
     }
 
     content.innerHTML = html;
+    if(this.state.view === 'home') {
+      let vInput = document.getElementById('villageInput');
+      if(vInput) {
+        vInput.oninput = (e) => { this.state.searchVillage = e.target.value; };
+      }
+    }
   }
 }
 
