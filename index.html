@@ -43,13 +43,12 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .title { font-size: 18px; font-weight: 700; line-height: 1.2; color: #ffffff; }
 .subtitle { font-size: 12px; color: #a7f3d0; margin-top: 2px; }
 
-.header-right { display: flex; gap: 6px; align-items: center; position: relative; }
-/* Menu और English बटन को छोटा और एक जैसा किया गया है */
-.header-btn { background: #10b981; color: white; border: none; padding: 5px 9px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); line-height: 1.2; }
+.header-right { display: flex; gap: 8px; align-items: center; position: relative; }
+.header-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .menu-btn-style { background: #fbbf24; color: #0f172a; }
 
-.dropdown-menu { position: absolute; top: 42px; right: 0; background: white; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 180px; z-index: 1000; overflow: hidden; }
-.dropdown-item { padding: 10px 14px; font-size: 12px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.dropdown-menu { position: absolute; top: 45px; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 190px; z-index: 1000; overflow: hidden; }
+.dropdown-item { padding: 12px 16px; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .dropdown-item:hover { background: #ecfdf5; color: #047857; }
 
 .ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; border-top: 1px solid #064e3b; }
@@ -85,7 +84,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .service-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative; }
 .service-tag { background: #d1fae5; color: #064e3b; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 6px; }
 .service-name { font-size: 14px; font-weight: 700; color: #0f172a; margin: 6px 0; }
-.service-img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-top: 8px; }
+.service-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 8px; }
 .btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 13px; margin-top: 10px; }
 .empty-state { text-align: center; padding: 25px 15px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 14px; color: #64748b; font-size: 13px; }
 .back-btn { background: #065f46; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 14px; }
@@ -93,7 +92,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .live-upload-box { background: #f0fdf4; border: 2px dashed #10b981; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 15px; }
 .media-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
 .media-card { background: white; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; text-align: left; position: relative; }
-.media-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-top: 6px; }
+.media-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 6px; }
 .delete-btn { background: #dc2626; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 6px; }
 </style>
 </head>
@@ -105,20 +104,62 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 const { useState, useEffect, useMemo } = React;
 
 const MASTER_DISTRICT_VILLAGES = {
-  'hisar': { name: { hi: 'हिसार (Hisar)', en: 'Hisar' }, villages: [{ hi: 'हांसी', en: 'Hansi' }, { hi: 'बरवाला', en: 'Barwala' }] },
-  'rewari': { name: { hi: 'रेवाड़ी (Rewari)', en: 'Rewari' }, villages: [{ hi: 'बावल', en: 'Bawal' }, { hi: 'कोसली', en: 'Kosli' }] },
-  'rohtak': { name: { hi: 'रोहतक (Rohtak)', en: 'Rohtak' }, villages: [{ hi: 'बलम / बलंभा', en: 'Balham' }, { hi: 'सांपला', en: 'Sampla' }] },
-  'charkhi-dadri': { name: { hi: 'चरखी दादरी (Charkhi Dadri)', en: 'Charkhi Dadri' }, villages: [{ hi: 'मालकोश', en: 'Malkosh' }, { hi: 'बौंद कलां', en: 'Bond Kalan' }] },
-  'bhiwani': { name: { hi: 'भिवानी (Bhiwani)', en: 'Bhiwani' }, villages: [{ hi: 'तोशाम', en: 'Tosham' }] }
+  'hisar': { 
+    name: { hi: 'हिसार (Hisar)', en: 'Hisar' }, 
+    villages: [
+      { hi: 'हांसी', en: 'Hansi' }, 
+      { hi: 'बरवाला', en: 'Barwala' },
+      { hi: 'नारनौंद', en: 'Narnaund' },
+      { hi: 'आदमपुर', en: 'Adampur' },
+      { hi: 'उकलाना', en: 'Uklana' }
+    ] 
+  },
+  'rewari': { 
+    name: { hi: 'रेवाड़ी (Rewari)', en: 'Rewari' }, 
+    villages: [
+      { hi: 'बावल', en: 'Bawal' }, 
+      { hi: 'कोसली', en: 'Kosli' },
+      { hi: 'धारूहेड़ा', en: 'Dharuhera' },
+      { hi: 'मीरापुर', en: 'Mirapur' }
+    ] 
+  },
+  'rohtak': { 
+    name: { hi: 'रोहतक (Rohtak)', en: 'Rohtak' }, 
+    villages: [
+      { hi: 'बलम / बलंभा', en: 'Balham' }, 
+      { hi: 'सांपला', en: 'Sampla' },
+      { hi: 'मेहम', en: 'Meham' },
+      { hi: 'कलानौर', en: 'Kalanaur' }
+    ] 
+  },
+  'charkhi-dadri': { 
+    name: { hi: 'चरखी दादरी (Charkhi Dadri)', en: 'Charkhi Dadri' }, 
+    villages: [
+      { hi: 'मालकोश', en: 'Malkosh' }, 
+      { hi: 'बौंद कलां', en: 'Bond Kalan' },
+      { hi: 'झोझू कलां', en: 'Jhojhu Kalan' },
+      { hi: 'बाढड़ा', en: 'Badhra' },
+      { hi: 'भोडू', en: 'Bhodu' }
+    ] 
+  },
+  'bhiwani': { 
+    name: { hi: 'भिवानी (Bhiwani)', en: 'Bhiwani' }, 
+    villages: [
+      { hi: 'तोशाम', en: 'Tosham' },
+      { hi: 'लोहारू', en: 'Loharu' },
+      { hi: 'सिवानी', en: 'Siwani' },
+      { hi: 'बापड़ा', en: 'Bapra' }
+    ] 
+  }
 };
 
 const DICT = {
   hi: {
-    appTitle: "मेरा गाँव - मेरा हरियाणा (Live)",
+    appTitle: "मेरा गाँव - मेरा हरियाणा (Live Portal)",
     ticker: "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: Haryana - तापमान सामान्य व साफ़ आसमान | 📢 सभी गाँवों के लिए लाइव अपडेट जारी है!",
     selectDistVill: "📍 जिला व गाँव चुनें / बदलें",
     selectDistrict: "जिला चुनें:",
-    searchVillageLabel: "गाँव खोजें:",
+    searchVillageLabel: "गाँव खोजें या नाम टाइप करें:",
     activeVillage: "सक्रिय गाँव:",
     menu1: "🏥 1. दुकान देखें व जोड़ें (लाइव फोटो)",
     menu2: "🛠️ 1B. आवश्यक सेवाएं देखें व जोड़ें",
@@ -133,11 +174,11 @@ const DICT = {
     backHome: "← होम पर जाएं"
   },
   en: {
-    appTitle: "Mera Gaov Mera Haryana (Live)",
+    appTitle: "Mera Gaov Mera Haryana (Live Portal)",
     ticker: "🌾 Mustard: ₹5,400/Quintal | 🌾 Wheat: ₹2,425/Quintal | 🌤️ Live Weather: Haryana - Normal Temp | 📢 Live updates active for all villages!",
     selectDistVill: "📍 Select / Change District & Village",
     selectDistrict: "Select District:",
-    searchVillageLabel: "Search Village:",
+    searchVillageLabel: "Search Village / Type Name:",
     activeVillage: "Active Village:",
     menu1: "🏥 1. View Shops & Add (Live Photo)",
     menu2: "🛠️ 1B. Essential Services & Add",
@@ -280,14 +321,13 @@ function App() {
           {showMenuPopup && (
             <div className="dropdown-menu">
               <div className="dropdown-item" onClick={() => { setView('admin'); setShowMenuPopup(false); }}>⚙️ Admin Panel</div>
-              <div className="dropdown-item" onClick={() => { setView('subadmin'); setShowMenuPopup(false); }}>🛡️ Sub-Admin</div>
+              <div className="dropdown-item" onClick={() => { setView('subadmin'); setShowMenuPopup(false); }}>🛡️ Sub-Admin Panel</div>
               <div className="dropdown-item" onClick={() => { setView('about'); setShowMenuPopup(false); }}>ℹ️ About Us</div>
             </div>
           )}
         </div>
       </div>
 
-      {/* सभी गाँवों के लिए चलने वाली लाइव रनिंग लाइन (Ticker) */}
       <div className="ticker">
         <marquee scrollamount="6">{t.ticker}</marquee>
       </div>
@@ -298,19 +338,22 @@ function App() {
           <div>
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
-              <div className="card-title">⚙️ Admin Panel</div>
+              <div className="card-title">⚙️ Admin Panel (Master Control)</div>
               {!isAdminLoggedIn ? (
                 <div>
-                  <div className="form-group"><label>Password:</label><input className="form-control" type="password" value={adminPass} onChange={e => setAdminPass(e.target.value)} /></div>
+                  <div className="form-group"><label>Admin Password:</label><input className="form-control" type="password" value={adminPass} onChange={e => setAdminPass(e.target.value)} /></div>
                   <button className="btn-submit" onClick={() => { if(adminPass === "1234") { setIsAdminLoggedIn(true); } else { alert("गलत पासवर्ड!"); } }}>लॉगिन करें</button>
                 </div>
               ) : (
                 <div>
-                  <p style={{fontSize:'12px', color:'#047857', fontWeight:'bold', marginBottom:'8px'}}>✅ लॉगिन सफल</p>
+                  <p style={{fontSize:'12px', color:'#047857', fontWeight:'bold', marginBottom:'8px'}}>✅ एडमिन लॉगिन सफल</p>
                   <button className="btn-submit" style={{background:'#dc2626', marginBottom:'10px'}} onClick={() => setIsAdminLoggedIn(false)}>लॉग आउट</button>
-                  <h4 style={{fontSize:'12px', margin:'8px 0'}}>सभी दुकानें:</h4>
+                  <h4 style={{fontSize:'13px', margin:'10px 0'}}>सभी डेटा सूची (डिलीट करने के लिए):</h4>
                   {services.map(s => (
-                    <div key={s.id} className="service-item"><div className="service-name">{s.titleHi} ({s.villageHi})</div><button className="delete-btn" onClick={() => deleteItem('services', s.id)}>🗑️ डिलीट</button></div>
+                    <div key={s.id} className="service-item">
+                      <div className="service-name">{s.titleHi} ({s.villageHi})</div>
+                      <button className="delete-btn" onClick={() => deleteItem('services', s.id)}>🗑️ डिलीट करें</button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -325,14 +368,18 @@ function App() {
               <div className="card-title">🛡️ Sub-Admin Panel ({searchVillage})</div>
               {!isSubAdminLoggedIn ? (
                 <div>
-                  <div className="form-group"><label>Password:</label><input className="form-control" type="password" value={subAdminPass} onChange={e => setSubAdminPass(e.target.value)} /></div>
+                  <div className="form-group"><label>Sub-Admin Password:</label><input className="form-control" type="password" value={subAdminPass} onChange={e => setSubAdminPass(e.target.value)} /></div>
                   <button className="btn-submit" onClick={() => { if(subAdminPass === "5678") { setIsSubAdminLoggedIn(true); } else { alert("गलत पासवर्ड!"); } }}>लॉगिन करें</button>
                 </div>
               ) : (
                 <div>
+                  <p style={{fontSize:'12px', color:'#047857', fontWeight:'bold', marginBottom:'8px'}}>✅ सब-एडमिन लॉगिन सफल ({searchVillage})</p>
                   <button className="btn-submit" style={{background:'#dc2626', marginBottom:'10px'}} onClick={() => setIsSubAdminLoggedIn(false)}>लॉग आउट</button>
                   {services.filter(s => s.villageHi === searchVillage).map(s => (
-                    <div key={s.id} className="service-item"><div className="service-name">{s.titleHi}</div><button className="delete-btn" onClick={() => deleteItem('services', s.id)}>🗑️ डिलीट</button></div>
+                    <div key={s.id} className="service-item">
+                      <div className="service-name">{s.titleHi}</div>
+                      <button className="delete-btn" onClick={() => deleteItem('services', s.id)}>🗑️ डिलीट करें</button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -343,10 +390,13 @@ function App() {
         {view === "about" && (
           <div>
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
-            <div className="card" style={{textAlign:'center', padding:'15px'}}>
-              <div className="card-title" style={{justifyContent:'center'}}>ℹ️ हमारे बारे में</div>
-              <p style={{fontWeight:'bold', color:'#047857', fontSize:'14px'}}>🌾 "मेरा गाँव - मेरा हरियाणा" ऐप</p>
-              <p style={{fontSize:'12px', marginTop:'8px'}}>Founder: <b>Kusum w/o Rajesh Yadav</b></p>
+            <div className="card" style={{textAlign:'center', padding:'20px'}}>
+              <div className="card-title" style={{justifyContent:'center'}}>ℹ️ हमारे बारे में (About Us)</div>
+              <p style={{fontWeight:'bold', color:'#047857', fontSize:'15px', marginBottom:'8px'}}>🌾 "मेरा गाँव - मेरा हरियाणा" पोर्टल</p>
+              <p style={{fontSize:'13px', color:'#334155', lineHeight:'1.5'}}>यह डिजिटल प्लेटफॉर्म हरियाणा के हर गाँव को जोड़ने, व्यापार, खेती-किसानी और स्थानीय जानकारियों को लाइव साझा करने के लिए बनाया गया है।</p>
+              <div style={{marginTop:'15px', padding:'10px', background:'#f0fdf4', borderRadius:'8px', fontSize:'12px'}}>
+                Founder & Creator: <b>Kusum w/o Rajesh Yadav</b>
+              </div>
             </div>
           </div>
         )}
@@ -355,21 +405,53 @@ function App() {
           <div>
             <div className="card" style={{ background: '#ecfdf5', border: '1px solid #a7f3d0' }}>
               <div className="card-title" style={{ color: '#064e3b' }}>{t.selectDistVill}</div>
-              <div className="form-group"><label>{t.selectDistrict}</label>
-              <select className="form-control" value={selectedDistrict} onChange={e => { setSelectedDistrict(e.target.value); if(MASTER_DISTRICT_VILLAGES[e.target.value]?.villages.length > 0) { setSearchVillage(MASTER_DISTRICT_VILLAGES[e.target.value].villages[0].hi); } }}>
-                {Object.keys(MASTER_DISTRICT_VILLAGES).map(key => <option key={key} value={key}>{MASTER_DISTRICT_VILLAGES[key].name[lang]}</option>)}
-              </select></div>
-              <div className="form-group" style={{ marginBottom: 0 }}><label>{t.searchVillageLabel}</label>
-              <input className="form-control" type="text" value={searchVillage} onFocus={() => setShowDropdown(true)} onClick={() => setShowDropdown(true)} onChange={e => { setSearchVillage(e.target.value); setShowDropdown(true); }} />
-              {showDropdown && (
-                <div className="suggestions-list">
-                  {suggestedVillages.map((v, i) => <div key={i} className="suggestion-item" onClick={() => { setSearchVillage(v.hi); setShowDropdown(false); }}>📍 <b>{v.hi}</b></div>)}
-                </div>
-              )}
+              
+              <div className="form-group">
+                <label>{t.selectDistrict}</label>
+                <select className="form-control" value={selectedDistrict} onChange={e => { 
+                  setSelectedDistrict(e.target.value); 
+                  if(MASTER_DISTRICT_VILLAGES[e.target.value]?.villages.length > 0) { 
+                    setSearchVillage(MASTER_DISTRICT_VILLAGES[e.target.value].villages[0].hi); 
+                  } 
+                }}>
+                  {Object.keys(MASTER_DISTRICT_VILLAGES).map(key => (
+                    <option key={key} value={key}>{MASTER_DISTRICT_VILLAGES[key].name[lang]}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>{t.searchVillageLabel}</label>
+                <input 
+                  className="form-control" 
+                  type="text" 
+                  value={searchVillage} 
+                  onFocus={() => setShowDropdown(true)} 
+                  onClick={() => setShowDropdown(true)} 
+                  onChange={e => { setSearchVillage(e.target.value); setShowDropdown(true); }} 
+                  placeholder="गाँव का नाम यहाँ लिखें..."
+                />
+                {showDropdown && (
+                  <div className="suggestions-list">
+                    {suggestedVillages.length > 0 ? (
+                      suggestedVillages.map((v, i) => (
+                        <div key={i} className="suggestion-item" onClick={() => { setSearchVillage(v.hi); setShowDropdown(false); }}>
+                          📍 <b>{v.hi}</b> ({v.en})
+                        </div>
+                      ))
+                    ) : (
+                      <div className="suggestion-item" onClick={() => setShowDropdown(false)}>
+                        ✨ नया गाँव जोड़ें: <b>{searchVillage}</b> (क्लिक करें)
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
-            <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>{t.activeVillage} <span style={{ color: '#059669' }}>{searchVillage}</span></div>
+            <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#334155', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              {t.activeVillage} <span style={{ color: '#059669', background: '#e6f4ea', padding: '2px 8px', borderRadius: '6px' }}>{searchVillage}</span>
+            </div>
 
             <div className="menu-card bg-1" onClick={() => { setActiveCategory('all'); setView('list'); }}><span>{t.menu1}</span><span>→</span></div>
             <div className="menu-card bg-2" onClick={() => { setActiveCategory('Mistri'); setView('list'); }}><span>{t.menu2}</span><span>→</span></div>
@@ -386,29 +468,35 @@ function App() {
 
         {view === "list" && (
           <div>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px'}}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'14px'}}>
               <button className="back-btn" onClick={() => setView("home")} style={{margin:0}}>← वापस</button>
-              <button onClick={() => setView("add_service")} style={{background:'#047857', color:'white', border:'none', padding:'6px 12px', borderRadius:'6px', fontSize:'11px', fontWeight:'bold', cursor:'pointer'}}>+ दुकान/फोटो जोड़ें</button>
+              <button onClick={() => setView("add_service")} style={{background:'#047857', color:'white', border:'none', padding:'8px 14px', borderRadius:'8px', fontSize:'12px', fontWeight:'bold', cursor:'pointer', boxShadow:'0 2px 5px rgba(0,0,0,0.2)'}}>+ दुकान/फोटो जोड़ें</button>
             </div>
 
             <div className="village-card">
               <div className="v-icon">{searchVillage[0]}</div>
-              <div><b>गाँव:</b> {searchVillage}</div>
+              <div>
+                <div style={{fontSize:'12px', color:'#047857', fontWeight:'bold'}}>चयनित गाँव</div>
+                <div style={{fontSize:'15px', fontWeight:'700'}}>{searchVillage}</div>
+              </div>
             </div>
 
             {displayServices.length > 0 ? displayServices.map(s => (
               <div key={s.id} className="service-item">
                 <span className="service-tag">{s.category}</span>
                 <div className="service-name">{s.titleHi}</div>
-                <div style={{ fontSize: '11px', color: '#64748b' }}>👤 संचालक: {s.personName}</div>
+                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>👤 संचालक: <b>{s.personName}</b></div>
+                <div style={{ fontSize: '11px', color: '#047857', marginBottom: '6px' }}>📍 गाँव: {s.villageHi}</div>
                 {s.image && <img src={s.image} className="service-img" />}
                 <a href={`tel:${s.phone}`} className="btn-call">📞 कॉल करें ({s.phone})</a>
-                {(isAdminLoggedIn || isSubAdminLoggedIn) && <button className="delete-btn" onClick={() => deleteItem('services', s.id)}>🗑️ डिलीट</button>}
+                {(isAdminLoggedIn || isSubAdminLoggedIn) && (
+                  <button className="delete-btn" onClick={() => deleteItem('services', s.id)}>🗑️ डिलीट करें</button>
+                )}
               </div>
             )) : (
               <div className="empty-state">
-                इस गाँव में अभी कोई दुकान लाइव नहीं है।<br/><br/>
-                <button onClick={() => setView("add_service")} style={{background:'#047857', color:'white', border:'none', padding:'6px 12px', borderRadius:'6px', fontSize:'11px', cursor:'pointer', fontWeight:'bold'}}>+ अपनी दुकान की फोटो लाइव जोड़ें</button>
+                इस श्रेणी में अभी इस गाँव से कोई दुकान लाइव नहीं है।<br/><br/>
+                <button onClick={() => setView("add_service")} style={{background:'#047857', color:'white', border:'none', padding:'8px 14px', borderRadius:'8px', fontSize:'12px', cursor:'pointer', fontWeight:'bold'}}>+ अपनी दुकान की लाइव फोटो जोड़ें</button>
               </div>
             )}
           </div>
@@ -421,23 +509,35 @@ function App() {
               <div className="card-title">🏥 दुकान या बिजनेस लाइव जोड़ें ({searchVillage})</div>
               <form onSubmit={(e) => {
                 e.preventDefault();
-                if(!title || !phone) return alert("नाम और फोन नंबर भरें!");
-                saveDynamicData('services', { titleHi: title, phone, category, personName: personName || "संचालक", image: shopImage }, "दुकान सफलतापूर्वक लाइव जोड़ दी गई!");
+                if(!title || !phone) return alert("कृपया दुकान का नाम और फोन नंबर भरें!");
+                saveDynamicData('services', { titleHi: title, phone, category, personName: personName || "संचालक", image: shopImage }, "दुकान सफलतापूर्वक लाइव जोड़ दी गई है!");
                 setView("list");
               }}>
-                <div className="form-group"><label>दुकान या बिजनेस का नाम:</label><input className="form-control" value={title} onChange={e => setTitle(e.target.value)} required /></div>
-                <div className="form-group"><label>संचालक का नाम:</label><input className="form-control" value={personName} onChange={e => setPersonName(e.target.value)} /></div>
-                <div className="form-group"><label>मोबाइल नंबर:</label><input className="form-control" value={phone} onChange={e => setPhone(e.target.value)} required /></div>
-                <div className="form-group"><label>श्रेणी:</label>
-                <select className="form-control" value={category} onChange={e => setCategory(e.target.value)}>
-                  <option value="CSC">🏥 सीएससी / दुकान</option>
-                  <option value="Mistri">🔨 मिस्त्री / कारीगर</option>
-                  <option value="Kiryana">🛒 किराना स्टोर</option>
-                  <option value="Agriculture">🌾 कृषि सेवा</option>
-                </select></div>
-                <div className="form-group"><label>दुकान की फोटो (कैमरा या गैलरी):</label>
-                <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'11px'}} />
-                {shopImage && <img src={shopImage} style={{width:'100%', height:'130px', objectFit:'cover', borderRadius:'8px', marginTop:'6px'}} />}
+                <div className="form-group">
+                  <label>दुकान या बिजनेस का नाम:</label>
+                  <input className="form-control" value={title} onChange={e => setTitle(e.target.value)} placeholder="जैसे: वर्मा सीएससी सेंटर" required />
+                </div>
+                <div className="form-group">
+                  <label>संचालक ( मालिक ) का नाम:</label>
+                  <input className="form-control" value={personName} onChange={e => setPersonName(e.target.value)} placeholder="जैसे: रमेश कुमार" />
+                </div>
+                <div className="form-group">
+                  <label>मोबाइल नंबर:</label>
+                  <input className="form-control" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="10 अंकों का मोबाइल नंबर" required />
+                </div>
+                <div className="form-group">
+                  <label>श्रेणी चुनें:</label>
+                  <select className="form-control" value={category} onChange={e => setCategory(e.target.value)}>
+                    <option value="CSC">🏥 सीएससी / जन सेवा केंद्र</option>
+                    <option value="Mistri">🔨 मिस्त्री / इलेक्ट्रीशियन / कारीगर</option>
+                    <option value="Kiryana">🛒 किराना स्टोर / परचून</option>
+                    <option value="Agriculture">🌾 कृषि सेवा / खाद-बीज दुकान</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>दुकान की फोटो (कैमरा या गैलरी से लाइव):</label>
+                  <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'12px'}} />
+                  {shopImage && <img src={shopImage} style={{width:'100%', height:'150px', objectFit:'cover', borderRadius:'8px', marginTop:'8px'}} />}
                 </div>
                 <button type="submit" className="btn-submit">📸 दुकान लाइव पोस्ट करें</button>
               </form>
@@ -449,18 +549,22 @@ function App() {
           <div>
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
-              <div className="card-title">📢 मुनादी व खबरें</div>
+              <div className="card-title">📢 मुनादी, मेला व खबरें ({searchVillage})</div>
               <div className="live-upload-box">
-                <input className="form-control" placeholder="अपनी बात या खबर लिखें..." value={title} onChange={e => setTitle(e.target.value)} style={{marginBottom:'6px'}} />
-                <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'11px', marginBottom:'6px'}} />
-                {shopImage && <img src={shopImage} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'6px'}} />}
-                <button className="btn-submit" onClick={() => { if(!title) return alert("विवरण लिखें!"); saveDynamicData('announcements', { text: title, image: shopImage }, "पोस्ट लाइव हो गई!"); }}>📸 लाइव पोस्ट करें</button>
+                <p style={{fontSize:'12px', fontWeight:'bold', color:'#047857', marginBottom:'8px'}}>गाँव की कोई भी सूचना या खबर लाइव लिखें:</p>
+                <textarea className="form-control" rows="3" placeholder="यहाँ खबर या मुनादी लिखें..." value={title} onChange={e => setTitle(e.target.value)} style={{marginBottom:'8px'}}></textarea>
+                <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'12px', marginBottom:'8px'}} />
+                {shopImage && <img src={shopImage} style={{width:'100%', height:'140px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
+                <button className="btn-submit" onClick={() => { if(!title) return alert("विवरण लिखें!"); saveDynamicData('announcements', { text: title, image: shopImage }, "सूचना सफलतापूर्वक लाइव हो गई!"); setTitle(""); setShopImage(""); }}>📸 सूचना लाइव करें</button>
               </div>
               <div className="media-grid">
                 {announcementItems.filter(a => a.villageHi === searchVillage).map(item => (
                   <div key={item.id} className="media-card">
-                    <p style={{fontSize:'12px', fontWeight:'bold'}}>{item.text}</p>
+                    <p style={{fontSize:'13px', fontWeight:'bold', color:'#0f172a', whiteSpace:'pre-wrap'}}>{item.text}</p>
                     {item.image && <img src={item.image} />}
+                    {(isAdminLoggedIn || isSubAdminLoggedIn) && (
+                      <button className="delete-btn" onClick={() => deleteItem('announcements', item.id)}>🗑️ डिलीट करें</button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -470,22 +574,26 @@ function App() {
 
         {view === "market" && (
           <div>
-            <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
+            <button className="back-btn" onClick={() => setView("home")}.</button>
             <div className="card">
-              <div className="card-title">🌾 पशु व कृषि खरीद-बेच</div>
+              <div className="card-title">🌾 पशु व कृषि खरीद-बेच ({searchVillage})</div>
               <div className="live-upload-box">
-                <input className="form-control" placeholder="चीज का नाम (जैसे: भैंस, गेहूँ)..." value={title} onChange={e => setTitle(e.target.value)} style={{marginBottom:'6px'}} />
-                <input className="form-control" placeholder="मोबाइल नंबर..." value={phone} onChange={e => setPhone(e.target.value)} style={{marginBottom:'6px'}} />
-                <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'11px', marginBottom:'6px'}} />
-                {shopImage && <img src={shopImage} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'6px'}} />}
-                <button className="btn-submit" onClick={() => { if(!title || !phone) return alert("नाम और फोन भरें!"); saveDynamicData('market', { text: title, phone: phone, image: shopImage }, "विज्ञापन लाइव हो गया!"); }}>📸 विज्ञापन लाइव करें</button>
+                <p style={{fontSize:'12px', fontWeight:'bold', color:'#047857', marginBottom:'8px'}}>पशु या फसल बेचने के लिए फोटो के साथ डालें:</p>
+                <input className="form-control" placeholder="विवरण (जैसे: बछड़ी बिकाऊ है, गेहूँ)..." value={title} onChange={e => setTitle(e.target.value)} style={{marginBottom:'8px'}} />
+                <input className="form-control" type="tel" placeholder="संपर्क नंबर..." value={phone} onChange={e => setPhone(e.target.value)} style={{marginBottom:'8px'}} />
+                <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'12px', marginBottom:'8px'}} />
+                {shopImage && <img src={shopImage} style={{width:'100%', height:'140px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
+                <button className="btn-submit" onClick={() => { if(!title || !phone) return alert("विवरण और फोन नंबर भरें!"); saveDynamicData('market', { text: title, phone: phone, image: shopImage }, "विज्ञापन लाइव हो गया!"); setTitle(""); setPhone(""); setShopImage(""); }}>📸 विज्ञापन लाइव करें</button>
               </div>
               <div className="media-grid">
                 {marketItems.filter(m => m.villageHi === searchVillage).map(item => (
                   <div key={item.id} className="media-card">
-                    <p style={{fontSize:'12px', fontWeight:'bold'}}>{item.text}</p>
+                    <p style={{fontSize:'13px', fontWeight:'bold'}}>{item.text}</p>
                     {item.image && <img src={item.image} />}
-                    <a href={`tel:${item.phone}`} className="btn-call" style={{padding:'6px', fontSize:'11px', marginTop:'4px'}}>📞 कॉल करें ({item.phone})</a>
+                    <a href={`tel:${item.phone}`} className="btn-call" style={{padding:'8px', fontSize:'12px', marginTop:'6px'}}>📞 कॉल करें ({item.phone})</a>
+                    {(isAdminLoggedIn || isSubAdminLoggedIn) && (
+                      <button className="delete-btn" onClick={() => deleteItem('market', item.id)}>🗑️ डिलीट करें</button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -497,18 +605,22 @@ function App() {
           <div>
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
-              <div className="card-title">📸 गाँव की गैलरी</div>
+              <div className="card-title">📸 गाँव की गैलरी ({searchVillage})</div>
               <div className="live-upload-box">
-                <input className="form-control" placeholder="शीर्षक लिखें..." value={title} onChange={e => setTitle(e.target.value)} style={{marginBottom:'6px'}} />
-                <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'11px', marginBottom:'6px'}} />
-                {shopImage && <img src={shopImage} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'6px'}} />}
-                <button className="btn-submit" onClick={() => { if(!shopImage) return alert("फोटो चुनें!"); saveDynamicData('gallery', { caption: title, image: shopImage }, "फोटो लाइव हो गई!"); }}>📸 फोटो लाइव जोड़ें</button>
+                <p style={{fontSize:'12px', fontWeight:'bold', color:'#047857', marginBottom:'8px'}}>गाँव की कोई भी सुंदर तस्वीर साझा करें:</p>
+                <input className="form-control" placeholder="फोटो का शीर्षक (जैसे: चौपाल, जोहड़)..." value={title} onChange={e => setTitle(e.target.value)} style={{marginBottom:'8px'}} />
+                <input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setShopImage)} style={{fontSize:'12px', marginBottom:'8px'}} />
+                {shopImage && <img src={shopImage} style={{width:'100%', height:'140px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
+                <button className="btn-submit" onClick={() => { if(!shopImage) return alert("कृपया फोटो चुनें!"); saveDynamicData('gallery', { caption: title, image: shopImage }, "फोटो गैलरी में लाइव हो गई!"); setTitle(""); setShopImage(""); }}>📸 फोटो लाइव जोड़ें</button>
               </div>
               <div className="media-grid">
                 {galleryItems.filter(g => g.villageHi === searchVillage).map(item => (
                   <div key={item.id} className="media-card">
-                    <p style={{fontSize:'11px', fontWeight:'bold'}}>{item.caption}</p>
+                    <p style={{fontSize:'12px', fontWeight:'bold'}}>{item.caption}</p>
                     {item.image && <img src={item.image} />}
+                    {(isAdminLoggedIn || isSubAdminLoggedIn) && (
+                      <button className="delete-btn" onClick={() => deleteItem('gallery', item.id)}>🗑️ डिलीट करें</button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -520,10 +632,24 @@ function App() {
           <div>
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
-              <div className="card-title">📜 गाँव का इतिहास व सरपंच</div>
-              {historyItems.filter(h => h.villageHi === searchVillage).map(item => (
-                <div key={item.id} className="service-item"><div className="service-name">👤 {item.name}</div></div>
-              ))}
+              <div className="card-title">📜 गाँव का इतिहास व सरपंच सूची ({searchVillage})</div>
+              <div style={{background:'#f0fdf4', padding:'12px', borderRadius:'10px', marginBottom:'12px', fontSize:'13px', lineHeight:'1.5'}}>
+                <b>गाँव {searchVillage} की विशेषता:</b> यह हरियाणा का एक गौरवशाली और प्रगतिशील गाँव है जहाँ भाईचारा और संस्कृति विशेष रूप से देखने को मिलती है।
+              </div>
+              <h4 style={{fontSize:'13px', color:'#064e3b', marginBottom:'8px'}}>मौजूदा व पूर्व सरपंच:</h4>
+              {historyItems.filter(h => h.villageHi === searchVillage).length > 0 ? (
+                historyItems.filter(h => h.villageHi === searchVillage).map(item => (
+                  <div key={item.id} className="service-item">
+                    <div className="service-name">👤 सरपंच: {item.name}</div>
+                    <div style={{fontSize:'12px', color:'#64748b'}}>कार्यकाल: {item.term || 'उपलब्ध नहीं'}</div>
+                    {(isAdminLoggedIn || isSubAdminLoggedIn) && (
+                      <button className="delete-btn" onClick={() => deleteItem('history', item.id)}>🗑️ डिलीट करें</button>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="empty-state">इस गाँव की सरपंच सूची जल्द अपडेट की जाएगी।</div>
+              )}
             </div>
           </div>
         )}
@@ -533,7 +659,9 @@ function App() {
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
               <div className="card-title">🎵 वीडियो और लाइव प्रोग्राम</div>
-              <p style={{fontSize:'12px', color:'#64748b'}}>गाँव के लाइव वीडियो यहाँ उपलब्ध हैं।</p>
+              <div className="empty-state">
+                गाँव के सांस्कृतिक कार्यक्रम, रागनी और लाइव वीडियो यहाँ जल्द अपलोड किए जाएंगे।
+              </div>
             </div>
           </div>
         )}
@@ -542,8 +670,15 @@ function App() {
           <div>
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
-              <div className="card-title">📚 बच्चों की शिक्षा</div>
-              <a href="https://diksha.gov.in/" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb', fontSize:'12px', fontWeight:'bold', display:'block', padding:'8px 0'}}>🔗 DIKSHA Portal</a>
+              <div className="card-title">📚 बच्चों की शिक्षा व पोर्टल</div>
+              <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+                <a href="https://diksha.gov.in/" target="_blank" rel="noopener noreferrer" style={{background:'#eff6ff', border:'1px solid #bfdbfe', padding:'12px', borderRadius:'10px', color:'#1d4ed8', fontSize:'13px', fontWeight:'bold', textDecoration:'none', display:'block'}}>
+                  🔗 DIKSHA Portal (डिजिटल शिक्षा)
+                </a>
+                <a href="https://hryedusat.gov.in/" target="_blank" rel="noopener noreferrer" style={{background:'#f0fdf4', border:'1px solid #bbf7d0', padding:'12px', borderRadius:'10px', color:'#047857', fontSize:'13px', fontWeight:'bold', textDecoration:'none', display:'block'}}>
+                  🔗 EDUSAT Haryana (हरियाणा शिक्षा बोर्ड)
+                </a>
+              </div>
             </div>
           </div>
         )}
@@ -552,8 +687,14 @@ function App() {
           <div>
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
-              <div className="card-title">🐄 पशु चिकित्सा व पूछताछ</div>
-              <p style={{fontSize:'12px', color:'#64748b'}}>पशुओं की बीमारी व रोकथाम की जानकारी।</p>
+              <div className="card-title">🐄 पशु चिकित्सा व किसान पूछताछ</div>
+              <div style={{background:'#fef2f2', border:'1px solid #fecaca', padding:'12px', borderRadius:'10px', marginBottom:'12px', fontSize:'12px', color:'#991b1b'}}>
+                <b>पशुओं के लिए आपातकालीन हेल्पलाइन:</b> 
+                <br/>टोल-फ्री पशु चिकित्सा हेल्पलाइन नंबर: <b>1962</b> पर कॉल करें।
+              </div>
+              <p style={{fontSize:'13px', color:'#334155', lineHeight:'1.5'}}>
+                यदि पशुओं में खुरपका-मुँहपका (FMD) या गलघोटू के लक्षण दिखें, तो तुरंत नजदीकी पशु अस्पताल से संपर्क करें और टीकाकरण करवाएं।
+              </p>
             </div>
           </div>
         )}
@@ -563,13 +704,19 @@ function App() {
             <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
             <div className="card">
               <div className="card-title">🌤️ लाइव मौसम और ताज़ा मंडी भाव</div>
-              <div style={{background:'#f0fdf4', padding:'10px', borderRadius:'8px', fontSize:'12px', marginBottom:'10px'}}>
-                <b>वर्तमान मौसम:</b> हरियाणा में मौसम साफ़ है।
+              
+              <div style={{background:'#f0fdf4', border:'1px solid #bbf7d0', padding:'12px', borderRadius:'10px', fontSize:'12px', marginBottom:'14px', color:'#064e3b'}}>
+                <b>🌡️ वर्तमान मौसम (हरियाणा):</b> आसमान बिल्कुल साफ है, किसानों के लिए खेती और कटाई का अनुकूल समय है।
               </div>
+
+              <h4 style={{fontSize:'13px', color:'#064e3b', marginBottom:'8px'}}>🌾 ताज़ा सरकारी मंडी भाव (हरियाणा):</h4>
               {mandiItems.map(item => (
-                <div key={item.id} style={{background:'#ecfdf5', padding:'10px', borderRadius:'8px', marginBottom:'8px', display:'flex', justifyContent:'space-between', fontSize:'12px'}}>
-                  <div><b>{item.crop}</b><br/><small>{item.mandi}</small></div>
-                  <div style={{color:'#047857', fontWeight:'bold'}}>{item.price}</div>
+                <div key={item.id} style={{background:'#ecfdf5', border:'1px solid #a7f3d0', padding:'12px', borderRadius:'10px', marginBottom:'8px', display:'flex', justifyContent:'space-between', alignItems:'center', fontSize:'13px'}}>
+                  <div>
+                    <b>{item.crop}</b><br/>
+                    <small style={{color:'#64748b'}}>{item.mandi}</small>
+                  </div>
+                  <div style={{color:'#047857', fontWeight:'bold', fontSize:'14px'}}>{item.price}</div>
                 </div>
               ))}
             </div>
