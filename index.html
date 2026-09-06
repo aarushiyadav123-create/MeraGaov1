@@ -67,7 +67,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .bg-8 { background: linear-gradient(135deg, #4f46e5, #4338ca); } 
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-.card-wide { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); width: 100%; }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 
 .form-group { margin-bottom: 12px; position: relative; }
@@ -110,6 +109,23 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 const { useState, useEffect, useMemo } = React;
 
 const MASTER_DISTRICT_VILLAGES = {
+'hisar': {
+name: { hi: 'हिसार (Hisar)', en: 'Hisar' },
+villages: [
+{ hi: 'हांसी', en: 'Hansi' },
+{ hi: 'बरवाला', en: 'Barwala' },
+{ hi: 'नारनौंद', en: 'Narnaund' },
+{ hi: 'उकलाना', en: 'Uklana' }
+]
+},
+'rewari': {
+name: { hi: 'रेवाड़ी (Rewari)', en: 'Rewari' },
+villages: [
+{ hi: 'बावल', en: 'Bawal' },
+{ hi: 'कोसली', en: 'Kosli' },
+{ hi: 'धारूहेड़ा', en: 'Dharuhera' }
+]
+},
 'rohtak': {
 name: { hi: 'रोहतक (Rohtak)', en: 'Rohtak' },
 villages: [
@@ -147,13 +163,13 @@ activeVillage: "सक्रिय गाँव:",
 menu1: "🏥 1. दुकान देखें व जोड़ें",
 menu2: "🛠️ 1B. आवश्यक सेवाएं देखें व जोड़ें",
 menu3: "📢 2. मुनादी, मेला व खबरें (लाइव फोटो)",
-menu4: "🌾 3. पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो 📸",
-menu5: "📸 4. गाँव की गैलरी (लाइव फोटो)",
-menu6: "🎵 5. वीडियो और लाइव प्रोग्राम (Live & Camera)",
-menu7: "📚 6. बच्चों की शिक्षा व पोर्टल",
-menu8: "🐄 7. पशु की बीमारी, रोकथाम व किसान पूछताछ",
-menu9: "🌤️ 8. लाइव मौसम और ताज़ा मंडी भाव",
-menu10: "📜 9. गाँव का इतिहास व सभी सरपंच (Date-wise)",
+menu4: "📜 3. गाँव का इतिहास व सभी सरपंच (Date-wise)",
+menu5: "🌾 4. पशु, गेहूँ, चारा खरीद-बेच व लाइव फोटो 📸",
+menu6: "📸 5. गाँव की गैलरी (लाइव फोटो)",
+menu7: "🎵 6. वीडियो और लाइव प्रोग्राम (Live & Camera)",
+menu8: "📚 7. बच्चों की शिक्षा व पोर्टल",
+menu9: "🐄 8. पशु की बीमारी, रोकथाम व किसान पूछताछ",
+menu10: "🌤️ 9. लाइव मौसम और ताज़ा मंडी भाव",
 backHome: "← होम पर जाएं"
 },
 en: {
@@ -166,13 +182,13 @@ activeVillage: "Active Village:",
 menu1: "🏥 1. View Shops & Add",
 menu2: "🛠️ 1B. Essential Services & Add",
 menu3: "📢 2. Announcements & News",
-menu4: "🌾 3. Cattle, Wheat Buy-Sell & Live Photos 📸",
-menu5: "📸 4. Village Gallery (Live Photos)",
-menu6: "🎵 5. Videos & Live Programs",
-menu7: "📚 6. Children Education & Portals",
-menu8: "🐄 7. Animal Diseases, Prevention & Farmer Inquiry",
-menu9: "🌤️ 8. Live Weather & Mandi Rates",
-menu10: "📜 9. Village History & Sarpanch List",
+menu4: "📜 3. Village History & Sarpanch List",
+menu5: "🌾 4. Cattle, Wheat Buy-Sell & Live Photos 📸",
+menu6: "📸 5. Village Gallery (Live Photos)",
+menu7: "🎵 6. Videos & Live Programs",
+menu8: "📚 7. Children Education & Portals",
+menu9: "🐄 8. Animal Diseases, Prevention & Farmer Inquiry",
+menu10: "🌤️ 9. Live Weather & Mandi Rates",
 backHome: "← Go to Home"
 }
 };
@@ -180,8 +196,15 @@ backHome: "← Go to Home"
 function App() {
 const [lang, setLang] = useState("hi");
 const [view, setView] = useState("home"); 
-const [selectedDistrict, setSelectedDistrict] = useState("charkhi-dadri");
-const [searchVillage, setSearchVillage] = useState("Mera Gaov Mera Haryana");
+
+// LocalStorage से सहेजा हुआ जिला और गाँव लोड करें (अगर उपलब्ध हो)
+const [selectedDistrict, setSelectedDistrict] = useState(() => {
+return localStorage.getItem('selectedDistrict') || 'charkhi-dadri';
+});
+const [searchVillage, setSearchVillage] = useState(() => {
+return localStorage.getItem('searchVillage') || 'मालकोश';
+});
+
 const [activeCategory, setActiveCategory] = useState("all");
 const [showDropdown, setShowDropdown] = useState(false);
 const [showMenuPopup, setShowMenuPopup] = useState(false);
@@ -202,6 +225,12 @@ const [adminPass, setAdminPass] = useState("");
 const [subAdminPass, setSubAdminPass] = useState("");
 
 const t = DICT[lang];
+
+// जब भी जिला या गाँव बदला जाए, उसे LocalStorage में हमेशा के लिए सेव कर लें
+useEffect(() => {
+localStorage.setItem('selectedDistrict', selectedDistrict);
+localStorage.setItem('searchVillage', searchVillage);
+}, [selectedDistrict, searchVillage]);
 
 useEffect(() => {
 if (window.firebaseDb) {
@@ -296,7 +325,7 @@ remove(ref(db, `${path}/${id}`)).then(() => alert("सफलतापूर्�
 }
 };
 
-const currentDistrictVillages = MASTER_DISTRICT_VILLAGES[selectedDistrict].villages;
+const currentDistrictVillages = MASTER_DISTRICT_VILLAGES[selectedDistrict] ? MASTER_DISTRICT_VILLAGES[selectedDistrict].villages : [];
 
 const suggestedVillages = useMemo(() => {
 const query = searchVillage.trim().toLowerCase();
@@ -337,24 +366,24 @@ return (
 
 <div className="content">
 
-{/* ADMIN PANEL */}
+{/* ADMIN PANEL (फालतू शब्द हटाकर साफ और सुथरा किया गया) */}
 {view === "admin" && (
 <div>
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
 <div className="card">
-<div className="card-title">⚙️ Admin Panel (Full Control & Verification)</div>
+<div className="card-title">⚙️ Admin Panel</div>
 {!isAdminLoggedIn ? (
 <div>
-<div className="form-group"><label>Admin Password:</label>
+<div className="form-group"><label>Password:</label>
 <input className="form-control" type="password" value={adminPass} onChange={e => setAdminPass(e.target.value)} placeholder="पासवर्ड दर्ज करें..." /></div>
 <button className="btn-submit" onClick={() => { if(adminPass === "1234") { setIsAdminLoggedIn(true); } else { alert("गलत पासवर्ड!"); } }}>लॉगिन करें</button>
 </div>
 ) : (
 <div>
-<p style={{fontSize:'13px', color:'#047857', fontWeight:'bold', marginBottom:'10px'}}>✅ एडमिन लॉगिन सफल। आप सभी सेक्शन की पोस्ट वेरिफ़ाई/डिलीट कर सकते हैं:</p>
-<button className="btn-submit" style={{background:'#dc2626', marginBottom:'15px'}} onClick={() => setIsAdminLoggedIn(false)}>लॉग आउट करें</button>
+<p style={{fontSize:'13px', color:'#047857', fontWeight:'bold', marginBottom:'10px'}}>✅ लॉगिन सफल।</p>
+<button className="btn-submit" style={{background:'#dc2626', marginBottom:'15px'}} onClick={() => setIsAdminLoggedIn(false)}>लॉग आउट</button>
 <hr style={{margin:'10px 0'}}/>
-<h4 style={{fontSize:'13px', margin:'10px 0'}}>सभी दुकानें:</h4>
+<h4 style={{fontSize:'13px', margin:'10px 0'}}>दुकानें:</h4>
 {services.map(s => (
 <div key={s.id} className="service-item"><div className="service-name">{s.titleHi} ({s.villageHi})</div><button className="delete-btn" onClick={() => deleteItem('services', s.id)}>🗑️ डिलीट</button></div>
 ))}
@@ -376,14 +405,14 @@ return (
 <div className="card-title">🛡️ Sub-Admin Panel ({searchVillage})</div>
 {!isSubAdminLoggedIn ? (
 <div>
-<div className="form-group"><label>Sub-Admin Password:</label>
+<div className="form-group"><label>Password:</label>
 <input className="form-control" type="password" value={subAdminPass} onChange={e => setSubAdminPass(e.target.value)} placeholder="पासवर्ड दर्ज करें..." /></div>
 <button className="btn-submit" onClick={() => { if(subAdminPass === "5678") { setIsSubAdminLoggedIn(true); } else { alert("गलत पासवर्ड!"); } }}>लॉगिन करें</button>
 </div>
 ) : (
 <div>
-<p style={{fontSize:'13px', color:'#047857', fontWeight:'bold', marginBottom:'10px'}}>✅ सब-एडमिन लॉगिन सफल। आप अपने गाँव की पोस्ट वेरीफाई/मैनेज कर सकते हैं:</p>
-<button className="btn-submit" style={{background:'#dc2626', marginBottom:'15px'}} onClick={() => setIsSubAdminLoggedIn(false)}>लॉग आउट करें</button>
+<p style={{fontSize:'13px', color:'#047857', fontWeight:'bold', marginBottom:'10px'}}>✅ लॉगिन सफल।</p>
+<button className="btn-submit" style={{background:'#dc2626', marginBottom:'15px'}} onClick={() => setIsSubAdminLoggedIn(false)}>लॉग आउट</button>
 <hr style={{margin:'10px 0'}}/>
 <h4 style={{fontSize:'13px', margin:'10px 0'}}>गाँव की सेवाएं:</h4>
 {services.filter(s => s.villageHi === searchVillage).map(s => (
@@ -403,11 +432,10 @@ return (
 <div className="card-title" style={{justifyContent:'center'}}>ℹ️ हमारे बारे में (About Us)</div>
 <div style={{fontSize:'14px', lineHeight:'1.8', color:'#334155', margin:'15px 0'}}>
 <p style={{fontWeight:'bold', color:'#047857', fontSize:'16px', marginBottom:'8px'}}>🌾 "मेरा गाँव - मेरा हरियाणा" ऐप</p>
-<p style={{marginBottom:'10px'}}>यह डिजिटल मंच हमारे सम्पूर्ण ग्रामीण अंचल और गाँव को समर्पित है, जिससे गाँव की हर छोटी-बड़ी खबर, दुकानें, सेवाएं, पशुपालन, और सूचनाएं हर नागरिक तक आसानी से पहुँच सकें।</p>
+<p style={{marginBottom:'10px'}}>यह डिजिटल मंच हमारे सम्पूर्ण ग्रामीण अंचल और गाँव को समर्पित है...</p>
 <div style={{background:'#ecfdf5', border:'1px solid #a7f3d0', padding:'12px', borderRadius:'10px', marginTop:'15px'}}>
 <p style={{fontSize:'13px', fontWeight:'bold', color:'#065f46'}}>Founder / निर्माता:</p>
 <p style={{fontSize:'15px', fontWeight:'700', color:'#0f172a', marginTop:'4px'}}>Kusum w/o Rajesh Yadav</p>
-<p style={{fontSize:'12px', color:'#64748b', marginTop:'4px'}}>गाँव के विकास और डिजिटल सशक्तिकरण हेतु समर्पित</p>
 </div>
 </div>
 </div>
@@ -421,11 +449,7 @@ return (
 <div className="card">
 <div className="card-title">📄 गोपनीयता नीति (Privacy Policy)</div>
 <div style={{fontSize:'13px', lineHeight:'1.6', color:'#334155'}}>
-<p style={{marginBottom:'10px'}}><b>1. परिचय:</b> "मेरा गाँव - मेरा हरियाणा" ऐप आपके गाँव की जानकारी, स्थानीय सेवाओं, और सूचनाओं को आपस में साझा करने का एक डिजिटल माध्यम है। आपकी गोपनीयता हमारे लिए अत्यंत महत्वपूर्ण है।</p>
-<p style={{marginBottom:'10px'}}><b>2. जानकारी का संग्रह:</b> हम केवल वही जानकारी एकत्र करते हैं जो उपयोगकर्ता स्वयं अपनी इच्छा से (जैसे दुकान का नाम, मोबाइल नंबर, पशु सवाल या लाइव फोटो) दर्ज करते हैं।</p>
-<p style={{marginBottom:'10px'}}><b>3. डेटा सुरक्षा:</b> आपके द्वारा दर्ज की गई सभी सूचनाएं सुरक्षित डेटाबेस (Firebase) पर संग्रहित की जाती हैं ताकि गाँव के अन्य लोग इसका लाभ उठा सकें। हम आपकी व्यक्तिगत जानकारी किसी तीसरे पक्ष को नहीं बेचते।</p>
-<p style={{marginBottom:'10px'}}><b>4. उपयोग:</b> इस ऐप का उद्देश्य केवल सामाजिक सहभागिता, ग्रामीण विकास, कृषि सहायता और स्थानीय व्यापार को बढ़ावा देना है। किसी भी सहायता या सुधार के लिए आप एडमिन पैनल के माध्यम से संपर्क कर सकते हैं।</p>
-<p style={{marginBottom:'10px'}}><b>5. डिस्क्लेमर (Disclaimer):</b> "मेरा गाँव - मेरा हरियाणा" ऐप एक स्वतंत्र सूचना मंच है और यह किसी भी सरकारी संस्था से संबंधित नहीं है या उसका प्रतिनिधित्व नहीं करता है। सरकारी योजनाओं की आधिकारिक जानकारी के लिए कृपया संबंधित आधिकारिक वेबसाइटों (जैसे <a href="https://www.india.gov.in" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb'}}>https://www.india.gov.in</a>) का उपयोग करें।</p>
+<p style={{marginBottom:'10px'}}><b>1. परिचय:</b> "मेरा गाँव - मेरा हरियाणा" ऐप...</p>
 </div>
 </div>
 </div>
@@ -449,6 +473,33 @@ return (
 <p style={{fontSize:'13px', fontWeight:'bold'}}>{item.text}</p>
 {item.image && <img src={item.image} />}
 {(isAdminLoggedIn || isSubAdminLoggedIn) && <button className="delete-btn" onClick={() => deleteItem('announcements', item.id)}>🗑️ डिलीट</button>}
+</div>
+))}
+</div>
+</div>
+</div>
+)}
+
+{/* HISTORY */}
+{view === "history" && (
+<div>
+<button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
+<div className="card">
+<div className="card-title">📜 गाँव का इतिहास व सभी सरपंच (Date-wise)</div>
+<div className="live-upload-box">
+<input className="form-control" placeholder="सरपंच का नाम / इतिहास शीर्षक..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
+<input className="form-control" placeholder="कार्यकाल (जैसे: 2015 से 2020)..." value={extraInput} onChange={e => setExtraInput(e.target.value)} style={{marginBottom:'8px'}} />
+<input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
+{uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
+<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('history', { name: uploadText, tenure: extraInput, image: uploadMedia }, "इतिहास/सरपंच की जानकारी लाइव जोड़ दी गई!"); }}>📸 लाइव जोड़ें</button>
+</div>
+<div className="media-grid">
+{historyItems.filter(h => h.villageHi === searchVillage).map(item => (
+<div key={item.id} className="media-card">
+<p style={{fontSize:'13px', fontWeight:'bold'}}>👤 {item.name}</p>
+<p style={{fontSize:'12px', color:'#047857'}}>📅 कार्यकाल: {item.tenure}</p>
+{item.image && <img src={item.image} />}
+{(isAdminLoggedIn || isSubAdminLoggedIn) && <button className="delete-btn" onClick={() => deleteItem('history', item.id)}>🗑️ डिलीट</button>}
 </div>
 ))}
 </div>
@@ -550,19 +601,13 @@ return (
 <button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
 <div className="card">
 <div className="card-title">🐄 पशु की बीमारी, रोकथाम व किसान पूछताछ</div>
-
 <div style={{background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '15px'}}>
 <p style={{fontSize: '13px', fontWeight: 'bold', color: '#047857', marginBottom: '8px'}}>📖 प्रमुख पशु रोग व प्राथमिक जानकारी:</p>
 <div style={{fontSize: '12px', color: '#334155', lineHeight: '1.5', marginBottom: '8px'}}>
 <b>1. खुरपका-मुँहपका रोग (FMD):</b> पैरों के खुरों और मुँह में छाले होना, लार गिरना。<br/>
-<i>रोकथाम:</i> समय पर FMD टीका लगवाना, गौशाला/बाड़े में साफ-सफाई रखना और फिनाइल से सफाई करना।
-</div>
-<div style={{fontSize: '12px', color: '#334155', lineHeight: '1.5'}}>
-<b>2. थनैला रोग (Mastitis):</b> थनों में सूजन, दूध में खून या छिलके आना。<br/>
-<i>रोकथाम:</i> दुहने के बाद थनों को पोटेशियम परमैंगनेट के पानी से धोना, पशु को तुरंत सूखा व साफ स्थान पर बैठाना।
+<i>रोकथाम:</i> समय पर FMD टीका लगवाना।
 </div>
 </div>
-
 <div className="live-upload-box" style={{borderColor: '#2563eb', background: '#eff6ff'}}>
 <p style={{fontSize:'13px', fontWeight:'bold', color:'#1e40af', marginBottom:'8px'}}>👨‍🌾 किसान पूछताछ / नया सवाल पूछें:</p>
 <input className="form-control" placeholder="किसान का नाम व मोबाइल नंबर लिखें..." value={extraInput} onChange={e => setExtraInput(e.target.value)} style={{marginBottom:'8px'}} />
@@ -571,7 +616,6 @@ return (
 {uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
 <button className="btn-submit" style={{background:'#2563eb'}} onClick={() => { if(!uploadText || !extraInput) return alert("कृपया किसान का नाम/नंबर और सवाल लिखें!"); saveDynamicData('animals', { farmerInfo: extraInput, text: uploadText, image: uploadMedia }, "किसान पूछताछ सफलतापूर्वक लाइव जोड़ दी गई!"); }}>🙋‍♂️ किसान सवाल/फोटो लाइव भेजें</button>
 </div>
-
 <div className="media-grid">
 {animalItems.filter(a => a.villageHi === searchVillage).map(item => (
 <div key={item.id} className="media-card">
@@ -594,9 +638,8 @@ return (
 <div className="card-title">🌤️ लाइव मौसम और ताज़ा मंडी भाव (Haryana)</div>
 <div style={{background:'#f0fdf4', border:'1px solid #10b981', padding:'12px', borderRadius:'10px', marginBottom:'15px'}}>
 <p style={{fontSize:'13px', fontWeight:'bold', color:'#065f46'}}>🌡️ वर्तमान मौसम अपडेट:</p>
-<p style={{fontSize:'13px', color:'#1e293b', marginTop:'4px'}}>हरियाणा क्षेत्र में मौसम बिल्कुल साफ़ व अनुकूल है। तापमान सामान्य बना हुआ है, जो खेती-किसानी के लिए उत्तम है।</p>
+<p style={{fontSize:'13px', color:'#1e293b', marginTop:'4px'}}>हरियाणा क्षेत्र में मौसम बिल्कुल साफ़ व अनुकूल है।</p>
 </div>
-
 <div style={{fontSize:'13px', fontWeight:'bold', color:'#047857', marginBottom:'10px'}}>🌾 आज के प्रमुख मंडी भाव:</div>
 {mandiItems.map(item => (
 <div key={item.id} className="mandi-card">
@@ -611,39 +654,12 @@ return (
 </div>
 )}
 
-{/* HISTORY */}
-{view === "history" && (
-<div>
-<button className="back-btn" onClick={() => setView("home")}>← होम पर जाएं</button>
-<div className="card">
-<div className="card-title">📜 गाँव का इतिहास व सभी सरपंच (Date-wise)</div>
-<div className="live-upload-box">
-<input className="form-control" placeholder="सरपंच का नाम / इतिहास शीर्षक..." value={uploadText} onChange={e => setUploadText(e.target.value)} style={{marginBottom:'8px'}} />
-<input className="form-control" placeholder="कार्यकाल (जैसे: 2015 से 2020)..." value={extraInput} onChange={e => setExtraInput(e.target.value)} style={{marginBottom:'8px'}} />
-<input type="file" accept="image/*" capture="environment" onChange={e => handleImageCapture(e, setUploadMedia)} style={{fontSize:'12px', marginBottom:'8px'}} />
-{uploadMedia && <img src={uploadMedia} style={{width:'100%', height:'120px', objectFit:'cover', borderRadius:'8px', marginBottom:'8px'}} />}
-<button className="btn-submit" onClick={() => { if(!uploadText) return alert("विवरण लिखें!"); saveDynamicData('history', { name: uploadText, tenure: extraInput, image: uploadMedia }, "इतिहास/सरपंच की जानकारी लाइव जोड़ दी गई!"); }}>📸 लाइव जोड़ें (Admin Verified)</button>
-</div>
-<div className="media-grid">
-{historyItems.filter(h => h.villageHi === searchVillage).map(item => (
-<div key={item.id} className="media-card">
-<p style={{fontSize:'13px', fontWeight:'bold'}}>👤 {item.name}</p>
-<p style={{fontSize:'12px', color:'#047857'}}>📅 कार्यकाल: {item.tenure}</p>
-{item.image && <img src={item.image} />}
-{(isAdminLoggedIn || isSubAdminLoggedIn) && <button className="delete-btn" onClick={() => deleteItem('history', item.id)}>🗑️ डिलीट</button>}
-</div>
-))}
-</div>
-</div>
-</div>
-)}
-
 {view === "home" && (
 <div>
 <div className="card" style={{ background: '#ecfdf5', border: '1px solid #a7f3d0' }}>
 <div className="card-title" style={{ color: '#064e3b' }}>{t.selectDistVill}</div>
 <div className="form-group"><label>{t.selectDistrict}</label>
-<select className="form-control" value={selectedDistrict} onChange={e => { setSelectedDistrict(e.target.value); setSearchVillage(MASTER_DISTRICT_VILLAGES[e.target.value].villages[0].hi); }}>
+<select className="form-control" value={selectedDistrict} onChange={e => { setSelectedDistrict(e.target.value); if(MASTER_DISTRICT_VILLAGES[e.target.value] && MASTER_DISTRICT_VILLAGES[e.target.value].villages.length > 0) { setSearchVillage(MASTER_DISTRICT_VILLAGES[e.target.value].villages[0].hi); } }}>
 {Object.keys(MASTER_DISTRICT_VILLAGES).map(key => <option key={key} value={key}>{MASTER_DISTRICT_VILLAGES[key].name[lang]}</option>)}
 </select></div>
 <div className="form-group" style={{ marginBottom: 0 }}><label>{t.searchVillageLabel}</label>
@@ -658,16 +674,17 @@ return (
 
 <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>{t.activeVillage} <span style={{ color: '#059669' }}>{searchVillage}</span></div>
 
+{/* होम पेज के मेन्यू (मुनादी और इतिहास को एडमिन के बाद सही क्रम में सेट किया गया है) */}
 <div className="menu-card bg-1" onClick={() => { setActiveCategory('CSC'); setView('list'); }}><span>{t.menu1}</span><span>→</span></div>
 <div className="menu-card bg-2" onClick={() => { setActiveCategory('Mistri'); setView('list'); }}><span>{t.menu2}</span><span>→</span></div>
 <div className="menu-card bg-3" onClick={() => setView('announcements')}><span>{t.menu3}</span><span>→</span></div>
-<div className="menu-card bg-4" onClick={() => setView('market')}><span>{t.menu4}</span><span>→</span></div>
-<div className="menu-card bg-5" onClick={() => setView('gallery')}><span>{t.menu5}</span><span>→</span></div>
-<div className="menu-card bg-6" onClick={() => setView('videos')}><span>{t.menu6}</span><span>→</span></div>
-<div className="menu-card bg-7" onClick={() => setView('education')}><span>{t.menu7}</span><span>→</span></div>
-<div className="menu-card bg-8" onClick={() => setView('animals')}><span>{t.menu8}</span><span>→</span></div>
-<div className="menu-card bg-1" onClick={() => setView('weather_mandi')}><span>{t.menu9}</span><span>→</span></div>
-<div className="menu-card bg-3" onClick={() => setView('history')}><span>{t.menu10}</span><span>→</span></div>
+<div className="menu-card bg-4" onClick={() => setView('history')}><span>{t.menu4}</span><span>→</span></div>
+<div className="menu-card bg-5" onClick={() => setView('market')}><span>{t.menu5}</span><span>→</span></div>
+<div className="menu-card bg-6" onClick={() => setView('gallery')}><span>{t.menu6}</span><span>→</span></div>
+<div className="menu-card bg-7" onClick={() => setView('videos')}><span>{t.menu7}</span><span>→</span></div>
+<div className="menu-card bg-8" onClick={() => setView('education')}><span>{t.menu8}</span><span>→</span></div>
+<div className="menu-card bg-1" onClick={() => setView('animals')}><span>{t.menu9}</span><span>→</span></div>
+<div className="menu-card bg-2" onClick={() => setView('weather_mandi')}><span>{t.menu10}</span><span>→</span></div>
 </div>
 )}
 
