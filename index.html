@@ -957,9 +957,19 @@ class VillageApp {
 
   submitVideo() {
     const title = document.getElementById('vTitle').value;
-    if(!title || !this.tempVideo) return alert("शीर्षक और वीडियो फाइल दोनों चुनें!");
-    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
+    if(!title) {
+      alert("कृपया वीडियो का शीर्षक (Title) दर्ज करें!");
+      return;
+    }
+    if(!this.tempVideo) {
+      alert("कृपया वीडियो फाइल या कैमरा से वीडियो चुनें!");
+      return;
+    }
+    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो सफलतापर्वक एडमिन अप्रूवल के लिए भेज दिया गया है!");
     this.tempVideo = '';
+    document.getElementById('vTitle').value = '';
+    let preview = document.getElementById('vFilePreviewText');
+    if(preview) preview.innerText = '';
   }
 }
 
