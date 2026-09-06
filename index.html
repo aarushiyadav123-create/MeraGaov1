@@ -44,7 +44,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .header-btn { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .menu-btn-style { background: #fbbf24; color: #0f172a; }
 
-.dropdown-menu { position: absolute; top: 45px; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 210px; z-index: 1000; overflow: hidden; display: none; }
+.dropdown-menu { position: absolute; top: 45px; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 220px; z-index: 1000; overflow: hidden; display: none; }
 .dropdown-item { padding: 12px 16px; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .dropdown-item:hover { background: #ecfdf5; color: #047857; }
 
@@ -87,6 +87,8 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .portal-link-btn { display: inline-block; background: #2563eb; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; margin: 4px 4px 4px 0; }
 .media-options { display: flex; gap: 8px; margin-bottom: 8px; justify-content: center; }
 .opt-btn { flex: 1; background: #047857; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+.keyword-tag { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; margin: 3px; cursor: pointer; border: 1px solid #bae6fd; }
+.disease-box { background: #fffbeb; border: 1px solid #fde68a; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -98,7 +100,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="app.changeUserAvatar(this)" />
       <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" title="फोटो बदलने के लिए क्लिक करें" onclick="document.getElementById('profileImageInput').click();" />
       <div class="title-info">
-        <div class="title" id="headerTitle">MeraGaov - मालकोश</div>
+        <div class="title" id="headerTitle">MeraGaov - माлкоश</div>
         <div class="subtitle">मेरा गाँव - मेरा हरियाणा</div>
       </div>
     </div>
@@ -107,7 +109,8 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <button class="header-btn" id="langToggleBtn">🌐 हिंदी</button>
 
       <div class="dropdown-menu" id="dropdownMenu">
-        <div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Admin / अप्रूवल पैनल</div>
+        <div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Main Admin पैनल</div>
+        <div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 Sub-Admin पैनल</div>
         <div class="dropdown-item" onclick="app.changeView('policy')">📜 Privacy Policy (नियम व शर्तें)</div>
         <div class="dropdown-item" onclick="app.changeView('about')">ℹ️ About Us</div>
       </div>
@@ -268,20 +271,25 @@ class VillageApp {
   }
 
   requestAdminAccess() {
-    let pwd = prompt("कृपया एडमिन या सब-एडमिन पासवर्ड दर्ज करें:");
+    let pwd = prompt("कृपया मेन एडमिन पासवर्ड दर्ज करें:");
     if(pwd === '1234') {
       this.state.isAdminLoggedIn = true;
       this.state.isSubAdminLoggedIn = false;
       this.changeView('admin');
     } else {
-      let matchedSub = this.state.subAdmins.find(s => s.pwd === pwd);
-      if(matchedSub) {
-        this.state.isAdminLoggedIn = false;
-        this.state.isSubAdminLoggedIn = true;
-        this.changeView('admin');
-      } else {
-        alert("गलत पासवर्ड! एक्सेस नहीं मिला।");
-      }
+      alert("गलत पासवर्ड! एडमिन एक्सेस नहीं मिला।");
+    }
+  }
+
+  requestSubAdminAccess() {
+    let pwd = prompt("कृपया सब-एडमिन पासवर्ड दर्ज करें:");
+    let matchedSub = this.state.subAdmins.find(s => s.pwd === pwd);
+    if(matchedSub || pwd === '1234') {
+      this.state.isAdminLoggedIn = (pwd === '1234');
+      this.state.isSubAdminLoggedIn = true;
+      this.changeView('admin');
+    } else {
+      alert("गलत सब-एडमिन पासवर्ड! एक्सेस नहीं मिला।");
     }
   }
 
@@ -323,6 +331,8 @@ class VillageApp {
           this.changeView('home'); 
         })
         .catch(err => alert("त्रुटि: " + err.message));
+    } else {
+      alert("डेटाबेस कनेक्टेड नहीं है!");
     }
   }
 
@@ -390,7 +400,7 @@ class VillageApp {
         <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 4. गाँव की गैलरी</span><span>→</span></div>
         <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 5. वीडियो और रागनी प्रोग्राम</span><span>→</span></div>
         <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 6. बच्चों की शिक्षा व पोर्टल</span><span>→</span></div>
-        <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 7. पशु की बीमारी व पूछताछ</span><span>→</span></div>
+        <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 7. पशु चिकित्सा, बीमारी व उपचार</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -655,8 +665,23 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">📚 बच्चों की शिक्षा व पोर्टल</div>
-          <div class="empty-state">सरकारी स्कूल, स्कॉलरशिप और ऑनलाइन शिक्षा पोर्टल्स की जानकारी।</div>
+          <div class="card-title">📚 बच्चों की शिक्षा व पोर्टल (Keywords & Portals)</div>
+          <p style="font-size:13px; color:#334155; margin-bottom:12px;">विद्यार्थियों के लिए महत्वपूर्ण सरकारी पोर्टल और सीधे लिंक्स नीचे दिए गए हैं:</p>
+          
+          <div style="margin-bottom:14px;">
+            <a href="https://harshiksha.gov.in" target="_blank" class="portal-link-btn">🎒 हरियाणा शिक्षा पोर्टल</a>
+            <a href="https://scholarships.gov.in" target="_blank" class="portal-link-btn" style="background:#0d9488;">🎓 नेशनल स्कॉलरशिप पोर्टल</a>
+            <a href="https://diksha.gov.in" target="_blank" class="portal-link-btn" style="background:#ca8a04;">📖 दीक्षा एप (DIKSHA)</a>
+          </div>
+
+          <div style="font-size:12px; font-weight:bold; color:#064e3b; margin-bottom:6px;">प्रमुख कीवर्ड्स (Quick Search Keywords):</div>
+          <div>
+            <span class="keyword-tag">Saksham Haryana</span>
+            <span class="keyword-tag">BSEH Board</span>
+            <span class="keyword-tag">Free Tablet Scheme</span>
+            <span class="keyword-tag">National Talent Search</span>
+            <span class="keyword-tag">E-Pathshala</span>
+          </div>
         </div>
       `;
     }
@@ -664,8 +689,25 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🐄 पशु चिकित्सा एवं पूछताछ</div>
-          <div class="empty-state">पशुओं के टीकाकरण और डॉक्टर हेल्पलाइन नंबर उपलब्ध हैं।</div>
+          <div class="card-title">🐄 पशु चिकित्सा, बीमारी व उपचार</div>
+          <p style="font-size:13px; color:#334155; margin-bottom:10px;">पशुओं की प्रमुख बीमारियाँ और उनके शुरुआती घरेलू/प्राथमिक उपचार:</p>
+          
+          <div class="disease-box">
+            <b>1. गलघोटू (Haemorrhagic Septicaemia):</b><br>
+            <span style="font-size:12px; color:#475569;">लक्षण: तेज बुखार, गले में सूजन, साँस लेने में तकलीफ।<br>उपचार: तुरंत पशु चिकित्सक से टीकाकरण व सल्फा दवा लें।</span>
+          </div>
+
+          <div class="disease-box">
+            <b>2. थनैला रोग (Mastitis):</b><br>
+            <span style="font-size:12px; color:#475569;">लक्षण: थन कड़ा होना, दूध में खून या छीथरे आना।<br>उपचार: थन की सफाई, एंटीबायोटिक थन के रास्ते देना, डॉक्टर से सलाह।</span>
+          </div>
+
+          <div class="disease-box">
+            <b>3. लंपी स्किन डिजीज (Lumpy Skin):</b><br>
+            <span style="font-size:12px; color:#475569;">लक्षण: शरीर पर गांठें, बुखार, दूध कम होना।<br>उपचार: गोट पॉक्स वैक्सीन, नीम के पानी से नहलाना, पौष्टिक चारा।</span>
+          </div>
+
+          <a href="tel:1962" class="btn-call" style="margin-top:14px; background:#d97706;">📞 पशु हेल्पलाइन कॉल करें (1962)</a>
         </div>
       `;
     }
@@ -675,7 +717,7 @@ class VillageApp {
         <div class="card">
           <div class="card-title">📜 Privacy Policy (नियम व शर्तें)</div>
           <p style="font-size:13px; line-height:1.6; color:#334155;">
-            मेरा गाँव ऐप का उद्देश्य ग्रामीण इलाकों की जानकारी, व्यवसाय और संस्कृति को डिजिटल मंच प्रदान करना है। यहाँ अपलोड की जाने वाली सभी सामग्री एडमिन द्वारा जाँचे जाने के बाद ही लाइव की जाती है। किसी भी प्रकार की आपत्तिजनक सामग्री अपलोड करने पर पाबंदी है।
+            मेरा गाँव ऐप का उद्देश्य ग्रामीण इलाकों की जानकारी, व्यवसाय और संस्कृति को डिजिटल मंच प्रदान करना है। यहाँ अपलोड की जाने वाली सभी सामग्री एडमिन या सब-एडमिन द्वारा जाँचे जाने के बाद ही लाइव की जाती है। किसी भी प्रकार की आपत्तिजनक सामग्री अपलोड करने पर पाबंदी है।
           </p>
         </div>
       `;
