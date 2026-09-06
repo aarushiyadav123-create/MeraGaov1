@@ -35,7 +35,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 
 .header { background: linear-gradient(135deg, #065f46, #047857); color: white; padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #059669; position: relative; }
 .title-box { display: flex; align-items: center; gap: 10px; }
-.user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #fbbf24; background: #064e3b; }
+.user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #fbbf24; background: #064e3b; cursor: pointer; }
 .title-info { display: flex; flex-direction: column; }
 .title { font-size: 16px; font-weight: 700; line-height: 1.2; color: #ffffff; }
 .subtitle { font-size: 11px; color: #a7f3d0; margin-top: 2px; }
@@ -84,6 +84,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .live-upload-box { background: #f0fdf4; border: 2px dashed #10b981; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 15px; }
 .delete-btn { background: #dc2626; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 6px; }
 .approve-btn { background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+.portal-link-btn { display: inline-block; background: #2563eb; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; margin: 4px 4px 4px 0; }
 </style>
 </head>
 <body>
@@ -92,7 +93,9 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
   <!-- Header -->
   <div class="header">
     <div class="title-box">
-      <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" />
+      <!-- यूजर फोटो बदलने के लिए फाइल इनपुट ट्रिगर -->
+      <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="app.changeUserAvatar(this)" />
+      <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" title="फोटो बदलने के लिए क्लिक करें" onclick="document.getElementById('profileImageInput').click();" />
       <div class="title-info">
         <div class="title" id="headerTitle">MeraGaov - मालकोश</div>
         <div class="subtitle">मेरा गाँव - मेरा हरियाणा</div>
@@ -109,9 +112,9 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
     </div>
   </div>
 
-  <!-- Ticker -->
+  <!-- Ticker (फालतू शब्द हटा दिए गए हैं) -->
   <div class="ticker">
-    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 📢 एडमिन अप्रूव्ड लाइव अपडेट जारी हैं!</marquee>
+    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य</marquee>
   </div>
 
   <!-- Main Content Area -->
@@ -141,11 +144,8 @@ class VillageApp {
       announcements: [],
       history: [],
       videos: [],
-      customTicker: '📢 नया अप्रूव्ड लाइव अपडेट जारी है!',
-      mandi: [
-        {id: '1', crop: 'सरसों (Mustard)', price: '₹5,400 / क्विंटल', mandi: 'चरखी दादरी / रोहतक मंडी'},
-        {id: '2', crop: 'गेहूँ (Wheat)', price: '₹2,425 / क्विंटल', mandi: 'हरियाणा सरकारी एमएसपी'}
-      ]
+      customTicker: '📢 लाइव अपडेट जारी है!',
+      userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
     };
 
     this.initListeners();
@@ -179,14 +179,13 @@ class VillageApp {
         onValue(ref(db, 'services'), snap => {
           const val = snap.val();
           this.state.services = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          this.updateTickerAndAvatar();
+          this.updateTicker();
           if(this.state.view === 'list' || this.state.view === 'admin') this.render();
         });
 
         onValue(ref(db, 'announcements'), snap => {
           const val = snap.val();
           this.state.announcements = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          this.updateTickerAndAvatar();
           if(this.state.view === 'admin') this.render();
         });
 
@@ -218,33 +217,43 @@ class VillageApp {
           const val = snap.val();
           if(val) {
             this.state.customTicker = val;
-            this.updateTickerAndAvatar();
+            this.updateTicker();
           }
         });
       }
     }, 1000);
   }
 
-  updateTickerAndAvatar() {
+  updateTicker() {
     let tickerElem = document.getElementById('dynamicTickerText');
-    let avatarElem = document.getElementById('headerUserAvatar');
-
     let textParts = [];
     textParts.push(`🌾 सरसों: ₹5,400/क्विंटल`);
     textParts.push(`🌾 गेहूँ: ₹2,425/क्विंटल`);
+    textParts.push(`🌤️ लाइव मौसम: सामान्य`);
 
     let approvedServices = this.state.services.filter(s => s.status === 'approved' && s.villageHi === this.state.searchVillage);
     if(approvedServices.length > 0) {
       let latestShop = approvedServices[0];
       textParts.push(`🔥 लाइव दुकान: ${latestShop.titleHi} (${latestShop.villageHi})`);
-      if(latestShop.userPhoto && avatarElem) {
-        avatarElem.src = latestShop.userPhoto;
-      }
     }
 
     if(tickerElem) {
       textParts.push(this.state.customTicker);
       tickerElem.innerText = textParts.join(' | ');
+    }
+  }
+
+  changeUserAvatar(input) {
+    const file = input.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.state.userAvatarUrl = reader.result;
+        localStorage.setItem('userCustomAvatar', reader.result);
+        document.getElementById('headerUserAvatar').src = reader.result;
+        alert("प्रोफाइल फोटो सफलताપूर्वक बदल दी गई है!");
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -265,14 +274,13 @@ class VillageApp {
     }
   }
 
-  // एडमिन सीधे लाइव अपलोड कर सके (बिना पेंडिंग के)
   saveAdminDirectData(path, data, msg) {
     if (window.firebaseDb) {
       const { db, ref, push } = window.firebaseDb;
       push(ref(db, path), { ...data, districtId: this.state.selectedDistrict, villageHi: this.state.searchVillage, status: 'approved', timestamp: Date.now() })
         .then(() => { 
           alert(msg); 
-          this.updateTickerAndAvatar();
+          this.updateTicker();
           this.render(); 
         })
         .catch(err => alert("त्रुटि: " + err.message));
@@ -283,8 +291,8 @@ class VillageApp {
     if (window.firebaseDb) {
       const { db, ref, update } = window.firebaseDb;
       update(ref(db, `${path}/${id}`), { status: 'approved' }).then(() => {
-        alert("सफलतापूर्वक अप्रूव कर दिया गया है! अब यह लाइव हो गया है।");
-        this.updateTickerAndAvatar();
+        alert("सफलतापूर्वक अप्रूव कर दिया गया है!");
+        this.updateTicker();
         this.render();
       });
     }
@@ -296,7 +304,7 @@ class VillageApp {
         const { db, ref, remove } = window.firebaseDb;
         remove(ref(db, `${path}/${id}`)).then(() => { 
           alert("डिलीट हो गया!"); 
-          this.updateTickerAndAvatar();
+          this.updateTicker();
           this.render(); 
         });
       }
@@ -305,6 +313,8 @@ class VillageApp {
 
   render() {
     document.getElementById('headerTitle').innerText = `MeraGaov - ${this.state.searchVillage}`;
+    document.getElementById('headerUserAvatar').src = this.state.userAvatarUrl;
+
     const content = document.getElementById('mainContent');
     localStorage.setItem('selectedDistrict', this.state.selectedDistrict);
     localStorage.setItem('searchVillage', this.state.searchVillage);
@@ -342,7 +352,6 @@ class VillageApp {
         <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 6. वीडियो और रागनी प्रोग्राम</span><span>→</span></div>
         <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 7. बच्चों की शिक्षा व पोर्टल</span><span>→</span></div>
         <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 8. पशु की बीमारी व पूछताछ</span><span>→</span></div>
-        <div class="menu-card bg-2" onclick="app.changeView('weather_mandi')"><span>🌤️ 9. लाइव मौसम और मंडी भाव</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -383,11 +392,10 @@ class VillageApp {
         <button class="back-btn" onclick="app.changeView('home')">← वापस होम</button>
         <div class="card">
           <div class="card-title">🏥 दुकान या बिजनेस की जानकारी भेजें</div>
-          <p style="font-size:11px; color:#64748b; margin-bottom:10px;">नोट: यह डेटा एडमिन द्वारा अप्रूव होने के बाद ही लाइव होगा।</p>
           <div class="form-group"><label>दुकान का नाम:</label><input class="form-control" id="shopTitle" /></div>
           <div class="form-group"><label>संचालक का नाम:</label><input class="form-control" id="personName" /></div>
           <div class="form-group"><label>मोबाइल नंबर:</label><input class="form-control" type="tel" id="shopPhone" /></div>
-          <div class="form-group"><label>यूजर/संचालक की फोटो (प्रोफाइल):</label><input type="file" accept="image/*" id="userPhotoFile" onchange="app.handleUserPhoto(this)" /></div>
+          <div class="form-group"><label>यूजर फोटो (प्रोफाइल):</label><input type="file" accept="image/*" id="userPhotoFile" onchange="app.handleUserPhoto(this)" /></div>
           <div class="form-group"><label>श्रेणी:</label>
             <select class="form-control" id="shopCat">
               <option value="CSC">🏥 सीएससी / दुकान</option>
@@ -512,8 +520,15 @@ class VillageApp {
         <div class="card">
           <div class="card-title">🎵 वीडियो और रागनी प्रोग्राम</div>
           
+          <!-- लाइव पोर्टल लिंक्स जोड़े गए हैं -->
+          <div style="background:#f0fdf4; border:1px solid #a7f3d0; padding:10px; border-radius:10px; margin-bottom:14px;">
+            <div style="font-weight:bold; font-size:12px; color:#064e3b; margin-bottom:6px;">🔗 लाइव मनोरंजन व वीडियो पोर्टल्स:</div>
+            <a href="https://www.youtube.com" target="_blank" class="portal-link-btn">▶️ YouTube Live</a>
+            <a href="https://www.hotstar.com" target="_blank" class="portal-link-btn" style="background:#0d9488;">📺 Disney+ Hotstar</a>
+          </div>
+
           <div class="live-upload-box">
-            <div style="font-weight:bold; font-size:13px; margin-bottom:8px; color:#047857;">+ नया वीडियो या रागनी अपलोड करें (अप्रूवल के लिए)</div>
+            <div style="font-weight:bold; font-size:13px; margin-bottom:8px; color:#047857;">+ नया वीडियो या रागनी अपलोड करें</div>
             <input class="form-control" id="vTitle" placeholder="शीर्षक (जैसे: हरियाणवी रागनी / भजन)" style="margin-bottom:8px;" />
             <input type="file" accept="video/*" id="vFile" onchange="app.handleVideo(this)" style="margin-bottom:8px; width:100%; font-size:12px;" />
             <button class="btn-submit" onclick="app.submitVideo()">📤 एडमिन अप्रूवल के लिए भेजें</button>
@@ -539,25 +554,6 @@ class VillageApp {
         <div class="card">
           <div class="card-title">🐄 पशु चिकित्सा एवं पूछताछ</div>
           <div class="empty-state">पशुओं के टीकाकरण और डॉक्टर हेल्पलाइन नंबर उपलब्ध हैं।</div>
-        </div>
-      `;
-    }
-    else if (this.state.view === 'weather_mandi') {
-      let mandiRows = this.state.mandi.map(m => `
-        <div style="background:#f0fdf4; padding:10px; border-radius:8px; margin-bottom:8px; font-size:13px;">
-          <b>${m.crop}</b><br/>भाव: <span style="color:#047857; font-weight:bold;">${m.price}</span><br/><span style="font-size:11px; color:#64748b;">${m.mandi}</span>
-        </div>
-      `).join('');
-
-      html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card">
-          <div class="card-title">🌤️ लाइव मौसम और मंडी भाव</div>
-          <div style="font-size:13px; margin-bottom:12px; background:#e0f2fe; padding:10px; border-radius:8px;">
-            <b>हरियाणा मौसम:</b> तापमान सामान्य, किसानों के लिए अनुकूल स्थिति।
-          </div>
-          <div style="font-weight:bold; font-size:13px; margin-bottom:8px;">🌾 ताज़ा मंडी भाव:</div>
-          ${mandiRows}
         </div>
       `;
     }
@@ -647,7 +643,6 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         
-        <!-- एडमिन डायरेक्ट वीडियो अपलोड बॉक्स -->
         <div class="card" style="border: 2px solid #059669; background: #f0fdf4;">
           <div class="card-title" style="color: #047857;">🎥 एडमिन डायरेक्ट वीडियो अपलोड (तुरंत लाइव)</div>
           <div class="form-group"><input class="form-control" id="adminVideoTitle" placeholder="वीडियो/रागनी शीर्षक..." /></div>
@@ -665,7 +660,7 @@ class VillageApp {
         </div>
 
         <div class="card">
-          <div class="card-title">📥 पेंडिंग रिक्वेस्ट (यूजर द्वारा भेजी गई)</div>
+          <div class="card-title">📥 पेंडिंग रिक्वेस्ट</div>
           ${pendingHtml || '<div class="empty-state">कोई नई पेंडिंग रिक्वेस्ट नहीं है।</div>'}
         </div>
       `;
@@ -748,7 +743,7 @@ class VillageApp {
     const person = document.getElementById('personName').value;
     const cat = document.getElementById('shopCat').value;
     if(!title || !phone) return alert("नाम और फोन नंबर भरें!");
-    this.saveData('services', { titleHi: title, phone, category: cat, personName: person || 'संचालक', image: this.tempImage, userPhoto: this.tempUserPhoto }, "दुकान की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
+    this.saveData('services', { titleHi: title, phone, category: cat, personName: person || 'संचालक', image: this.tempImage, userPhoto: this.tempUserPhoto }, "दुकान की रिक्वेस्ट भेज दी गई है!");
     this.tempImage = '';
     this.tempUserPhoto = '';
   }
@@ -756,7 +751,7 @@ class VillageApp {
   submitAnnouncement() {
     const text = document.getElementById('annText').value;
     if(!text) return alert("विवरण लिखें!");
-    this.saveData('announcements', { text, image: this.tempImage }, "मुनादी की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
+    this.saveData('announcements', { text, image: this.tempImage }, "मुनादी की रिक्वेस्ट भेज दी गई है!");
     this.tempImage = '';
   }
 
@@ -779,14 +774,14 @@ class VillageApp {
   submitGallery() {
     const caption = document.getElementById('gCaption').value;
     if(!this.tempImage) return alert("कृपया फोटो चुनें!");
-    this.saveData('gallery', { caption, image: this.tempImage }, "फोटो अप्रूवल के लिए भेज दी गई है!");
+    this.saveData('gallery', { caption, image: this.tempImage }, "फोटो की रिक्वेस्ट भेज दी गई है!");
     this.tempImage = '';
   }
 
   submitVideo() {
     const title = document.getElementById('vTitle').value;
     if(!title || !this.tempVideo) return alert("शीर्षक और वीडियो फाइल दोनों चुनें!");
-    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो/रागनी की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
+    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो की रिक्वेस्ट भेज दी गई है!");
     this.tempVideo = '';
   }
 
@@ -802,9 +797,9 @@ class VillageApp {
     if(window.firebaseDb) {
       const { db, ref, set } = window.firebaseDb;
       set(ref(db, 'settings/ticker'), val).then(() => {
-        alert("ऊपर की पट्टी का संदेश अपडेट हो गया है!");
+        alert("पट्टी अपडेट हो गई है!");
         this.state.customTicker = val;
-        this.updateTickerAndAvatar();
+        this.updateTicker();
         this.changeView('home');
       });
     }
