@@ -33,13 +33,15 @@
 body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .container { max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
 
-.header { background: linear-gradient(135deg, #065f46, #047857); color: white; padding: 16px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #059669; position: relative; }
-.title-box { display: flex; flex-direction: column; }
-.title { font-size: 18px; font-weight: 700; line-height: 1.2; color: #ffffff; }
-.subtitle { font-size: 12px; color: #a7f3d0; margin-top: 2px; }
+.header { background: linear-gradient(135deg, #065f46, #047857); color: white; padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #059669; position: relative; }
+.title-box { display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #fbbf24; background: #064e3b; }
+.title-info { display: flex; flex-direction: column; }
+.title { font-size: 16px; font-weight: 700; line-height: 1.2; color: #ffffff; }
+.subtitle { font-size: 11px; color: #a7f3d0; margin-top: 2px; }
 
-.header-right { display: flex; gap: 8px; align-items: center; position: relative; }
-.header-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.header-right { display: flex; gap: 6px; align-items: center; position: relative; }
+.header-btn { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .menu-btn-style { background: #fbbf24; color: #0f172a; }
 
 .dropdown-menu { position: absolute; top: 45px; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 190px; z-index: 1000; overflow: hidden; display: none; }
@@ -72,7 +74,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .village-card { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 14px; padding: 14px; display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
 .v-icon { background: #047857; color: white; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; flex-shrink: 0; }
 
-.service-item { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative; }
+.service-item, .media-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative; }
 .service-tag { background: #d1fae5; color: #064e3b; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 6px; }
 .service-name { font-size: 14px; font-weight: 700; color: #0f172a; margin: 6px 0; }
 .service-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 8px; }
@@ -90,8 +92,11 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
   <!-- Header -->
   <div class="header">
     <div class="title-box">
-      <div class="title" id="headerTitle">MeraGaov - मालकोश</div>
-      <div class="subtitle" id="appSubtitle">मेरा गाँव - मेरा हरियाणा (Live Portal)</div>
+      <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" />
+      <div class="title-info">
+        <div class="title" id="headerTitle">MeraGaov - मालकोश</div>
+        <div class="subtitle">मेरा गाँव - मेरा हरियाणा</div>
+      </div>
     </div>
     <div class="header-right">
       <button class="header-btn menu-btn-style" id="menuToggleBtn">☰ Menu</button>
@@ -104,15 +109,13 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
     </div>
   </div>
 
-  <!-- Ticker (ऊपर चलने वाली पट्टी) -->
+  <!-- Ticker -->
   <div class="ticker">
-    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: Haryana | 📢 एडमिन अप्रूव्ड लाइव अपडेट जारी हैं!</marquee>
+    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 📢 एडमिन अप्रूव्ड लाइव अपडेट जारी हैं!</marquee>
   </div>
 
   <!-- Main Content Area -->
-  <div class="content" id="mainContent">
-    <!-- Dynamic JS rendering happens here -->
-  </div>
+  <div class="content" id="mainContent"></div>
 </div>
 
 <script>
@@ -137,6 +140,7 @@ class VillageApp {
       market: [],
       announcements: [],
       history: [],
+      videos: [],
       customTicker: '📢 नया अप्रूव्ड लाइव अपडेट जारी है!',
       mandi: [
         {id: '1', crop: 'सरसों (Mustard)', price: '₹5,400 / क्विंटल', mandi: 'चरखी दादरी / रोहतक मंडी'},
@@ -175,14 +179,14 @@ class VillageApp {
         onValue(ref(db, 'services'), snap => {
           const val = snap.val();
           this.state.services = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          this.updateTickerText();
+          this.updateTickerAndAvatar();
           if(this.state.view === 'list' || this.state.view === 'admin') this.render();
         });
 
         onValue(ref(db, 'announcements'), snap => {
           const val = snap.val();
           this.state.announcements = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          this.updateTickerText();
+          this.updateTickerAndAvatar();
           if(this.state.view === 'admin') this.render();
         });
 
@@ -195,47 +199,53 @@ class VillageApp {
         onValue(ref(db, 'gallery'), snap => {
           const val = snap.val();
           this.state.gallery = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'admin') this.render();
         });
 
         onValue(ref(db, 'history'), snap => {
           const val = snap.val();
           this.state.history = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'admin') this.render();
+        });
+
+        onValue(ref(db, 'videos'), snap => {
+          const val = snap.val();
+          this.state.videos = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'admin' || this.state.view === 'videos') this.render();
         });
 
         onValue(ref(db, 'settings/ticker'), snap => {
           const val = snap.val();
           if(val) {
             this.state.customTicker = val;
-            this.updateTickerText();
+            this.updateTickerAndAvatar();
           }
         });
       }
     }, 1000);
   }
 
-  updateTickerText() {
+  updateTickerAndAvatar() {
     let tickerElem = document.getElementById('dynamicTickerText');
-    if(!tickerElem) return;
+    let avatarElem = document.getElementById('headerUserAvatar');
 
     let textParts = [];
     textParts.push(`🌾 सरसों: ₹5,400/क्विंटल`);
     textParts.push(`🌾 गेहूँ: ₹2,425/क्विंटल`);
 
-    let approvedServices = this.state.services.filter(s => s.status === 'approved');
+    let approvedServices = this.state.services.filter(s => s.status === 'approved' && s.villageHi === this.state.searchVillage);
     if(approvedServices.length > 0) {
       let latestShop = approvedServices[0];
-      textParts.push(`🔥 ताज़ा लाइव दुकान: ${latestShop.titleHi} (${latestShop.villageHi}) - संपर्क: ${latestShop.phone}`);
+      textParts.push(`🔥 लाइव दुकान: ${latestShop.titleHi} (${latestShop.villageHi})`);
+      if(latestShop.userPhoto && avatarElem) {
+        avatarElem.src = latestShop.userPhoto;
+      }
     }
 
-    let approvedAnn = this.state.announcements.filter(a => a.status === 'approved');
-    if(approvedAnn.length > 0) {
-      let latestAnn = approvedAnn[0];
-      textParts.push(`📢 नई खबर: ${latestAnn.text}`);
+    if(tickerElem) {
+      textParts.push(this.state.customTicker);
+      tickerElem.innerText = textParts.join(' | ');
     }
-
-    textParts.push(this.state.customTicker);
-
-    tickerElem.innerText = textParts.join(' | ');
   }
 
   changeView(viewName) {
@@ -255,12 +265,26 @@ class VillageApp {
     }
   }
 
+  // एडमिन सीधे लाइव अपलोड कर सके (बिना पेंडिंग के)
+  saveAdminDirectData(path, data, msg) {
+    if (window.firebaseDb) {
+      const { db, ref, push } = window.firebaseDb;
+      push(ref(db, path), { ...data, districtId: this.state.selectedDistrict, villageHi: this.state.searchVillage, status: 'approved', timestamp: Date.now() })
+        .then(() => { 
+          alert(msg); 
+          this.updateTickerAndAvatar();
+          this.render(); 
+        })
+        .catch(err => alert("त्रुटि: " + err.message));
+    }
+  }
+
   approveItem(path, id) {
     if (window.firebaseDb) {
       const { db, ref, update } = window.firebaseDb;
       update(ref(db, `${path}/${id}`), { status: 'approved' }).then(() => {
         alert("सफलतापूर्वक अप्रूव कर दिया गया है! अब यह लाइव हो गया है।");
-        this.updateTickerText();
+        this.updateTickerAndAvatar();
         this.render();
       });
     }
@@ -272,7 +296,7 @@ class VillageApp {
         const { db, ref, remove } = window.firebaseDb;
         remove(ref(db, `${path}/${id}`)).then(() => { 
           alert("डिलीट हो गया!"); 
-          this.updateTickerText();
+          this.updateTickerAndAvatar();
           this.render(); 
         });
       }
@@ -315,7 +339,7 @@ class VillageApp {
         <div class="menu-card bg-4" onclick="app.changeView('history')"><span>📜 3. गाँव का इतिहास व सरपंच</span><span>→</span></div>
         <div class="menu-card bg-5" onclick="app.changeView('market')"><span>🌾 4. पशु, गेहूँ, चारा खरीद-बेच</span><span>→</span></div>
         <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 5. गाँव की गैलरी</span><span>→</span></div>
-        <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 6. वीडियो और लाइव प्रोग्राम</span><span>→</span></div>
+        <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 6. वीडियो और रागनी प्रोग्राम</span><span>→</span></div>
         <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 7. बच्चों की शिक्षा व पोर्टल</span><span>→</span></div>
         <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 8. पशु की बीमारी व पूछताछ</span><span>→</span></div>
         <div class="menu-card bg-2" onclick="app.changeView('weather_mandi')"><span>🌤️ 9. लाइव मौसम और मंडी भाव</span><span>→</span></div>
@@ -328,13 +352,16 @@ class VillageApp {
       if(filtered.length > 0) {
         filtered.forEach(s => {
           itemsHtml += `
-            <div class="service-item">
-              <span class="service-tag">${s.category}</span>
-              <div class="service-name">${s.titleHi}</div>
-              <div style="font-size:12px; color:#64748b; margin-bottom:4px;">👤 संचालक: <b>${s.personName}</b></div>
-              ${s.image ? `<img src="${s.image}" class="service-img" />` : ''}
-              <a href="tel:${s.phone}" class="btn-call">📞 कॉल करें (${s.phone})</a>
-              <button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट करें</button>
+            <div class="service-item" style="display:flex; gap:12px; align-items:flex-start;">
+              ${s.userPhoto ? `<img src="${s.userPhoto}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:1px solid #047857;" />` : ''}
+              <div style="flex:1;">
+                <span class="service-tag">${s.category}</span>
+                <div class="service-name">${s.titleHi}</div>
+                <div style="font-size:12px; color:#64748b; margin-bottom:4px;">👤 संचालक: <b>${s.personName}</b></div>
+                ${s.image ? `<img src="${s.image}" class="service-img" />` : ''}
+                <a href="tel:${s.phone}" class="btn-call">📞 कॉल करें (${s.phone})</a>
+                <button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट करें</button>
+              </div>
             </div>
           `;
         });
@@ -356,10 +383,11 @@ class VillageApp {
         <button class="back-btn" onclick="app.changeView('home')">← वापस होम</button>
         <div class="card">
           <div class="card-title">🏥 दुकान या बिजनेस की जानकारी भेजें</div>
-          <p style="font-size:11px; color:#64748b; margin-bottom:10px;">नोट: यह डेटा एडमिन द्वारा अप्रूव होने के बाद ही आपके गाँव की लाइव लिस्ट और पट्टी में दिखाई देगा।</p>
+          <p style="font-size:11px; color:#64748b; margin-bottom:10px;">नोट: यह डेटा एडमिन द्वारा अप्रूव होने के बाद ही लाइव होगा।</p>
           <div class="form-group"><label>दुकान का नाम:</label><input class="form-control" id="shopTitle" /></div>
           <div class="form-group"><label>संचालक का नाम:</label><input class="form-control" id="personName" /></div>
           <div class="form-group"><label>मोबाइल नंबर:</label><input class="form-control" type="tel" id="shopPhone" /></div>
+          <div class="form-group"><label>यूजर/संचालक की फोटो (प्रोफाइल):</label><input type="file" accept="image/*" id="userPhotoFile" onchange="app.handleUserPhoto(this)" /></div>
           <div class="form-group"><label>श्रेणी:</label>
             <select class="form-control" id="shopCat">
               <option value="CSC">🏥 सीएससी / दुकान</option>
@@ -368,7 +396,7 @@ class VillageApp {
               <option value="Agriculture">🌾 कृषि सेवा</option>
             </select>
           </div>
-          <div class="form-group"><label>फोटो:</label><input type="file" accept="image/*" id="shopImgFile" onchange="app.handleImage(this)" /></div>
+          <div class="form-group"><label>दुकान की फोटो:</label><input type="file" accept="image/*" id="shopImgFile" onchange="app.handleImage(this)" /></div>
           <button class="btn-submit" onclick="app.submitShop()">📤 एडमिन को अप्रूवल के लिए भेजें</button>
         </div>
       `;
@@ -377,7 +405,7 @@ class VillageApp {
       let annList = this.state.announcements.filter(a => a.status === 'approved' && a.villageHi === this.state.searchVillage).map(a => `
         <div class="media-card">
           <p style="font-size:13px; font-weight:bold;">${a.text}</p>
-          ${a.image ? `<img src="${a.image}" />` : ''}
+          ${a.image ? `<img src="${a.image}" style="width:100%; border-radius:8px; margin-top:8px;" />` : ''}
           <button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ डिलीट</button>
         </div>
       `).join('');
@@ -399,7 +427,7 @@ class VillageApp {
       let histList = this.state.history.filter(h => h.status === 'approved' && h.villageHi === this.state.searchVillage).map(h => `
         <div class="media-card">
           <p style="font-size:13px;"><b>सरपंच/इतिहास:</b> ${h.text}</p>
-          ${h.image ? `<img src="${h.image}" />` : ''}
+          ${h.image ? `<img src="${h.image}" style="width:100%; border-radius:8px; margin-top:8px;" />` : ''}
           <button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ डिलीट</button>
         </div>
       `).join('');
@@ -449,7 +477,7 @@ class VillageApp {
       let gList = this.state.gallery.filter(g => g.status === 'approved' && g.villageHi === this.state.searchVillage).map(g => `
         <div class="media-card">
           <p style="font-size:12px; font-weight:bold;">${g.caption || 'गाँव की तस्वीर'}</p>
-          <img src="${g.image}" />
+          <img src="${g.image}" style="width:100%; border-radius:8px; margin-top:8px;" />
           <button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ डिलीट</button>
         </div>
       `).join('');
@@ -463,16 +491,36 @@ class VillageApp {
             <input type="file" accept="image/*" id="gImgFile" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <button class="btn-submit" onclick="app.submitGallery()">📤 फोटो अप्रूवल के लिए भेजें</button>
           </div>
-          <div class="media-grid">${gList || '<div class="empty-state">गैलरी खाली है।</div>'}</div>
+          ${gList || '<div class="empty-state">गैलरी खाली है।</div>'}
         </div>
       `;
     }
     else if (this.state.view === 'videos') {
+      let vList = this.state.videos.filter(v => v.status === 'approved' && v.villageHi === this.state.searchVillage).map(v => `
+        <div class="media-card">
+          <div class="service-name">${v.title}</div>
+          <video controls style="width:100%; border-radius:8px; margin-top:8px; max-height:220px; background:#000;">
+            <source src="${v.videoUrl}" type="video/mp4">
+            आपका ब्राउज़र वीडियो सपोर्ट नहीं करता।
+          </video>
+          <button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ डिलीट</button>
+        </div>
+      `).join('');
+
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
           <div class="card-title">🎵 वीडियो और रागनी प्रोग्राम</div>
-          <div class="empty-state">यहाँ हरियाणवी रागनी, भजन और सांस्कृतिक प्रोग्राम के वीडियो देख सकते हैं।</div>
+          
+          <div class="live-upload-box">
+            <div style="font-weight:bold; font-size:13px; margin-bottom:8px; color:#047857;">+ नया वीडियो या रागनी अपलोड करें (अप्रूवल के लिए)</div>
+            <input class="form-control" id="vTitle" placeholder="शीर्षक (जैसे: हरियाणवी रागनी / भजन)" style="margin-bottom:8px;" />
+            <input type="file" accept="video/*" id="vFile" onchange="app.handleVideo(this)" style="margin-bottom:8px; width:100%; font-size:12px;" />
+            <button class="btn-submit" onclick="app.submitVideo()">📤 एडमिन अप्रूवल के लिए भेजें</button>
+          </div>
+
+          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">🎬 ${this.state.searchVillage} के लाइव वीडियो:</div>
+          ${vList || '<div class="empty-state">इस गाँव में अभी कोई लाइव वीडियो उपलब्ध नहीं है।</div>'}
         </div>
       `;
     }
@@ -517,18 +565,47 @@ class VillageApp {
       let pendingServices = this.state.services.filter(s => s.status === 'pending');
       let pendingAnn = this.state.announcements.filter(a => a.status === 'pending');
       let pendingMarket = this.state.market.filter(m => m.status === 'pending');
+      let pendingGallery = this.state.gallery.filter(g => g.status === 'pending');
+      let pendingVideos = this.state.videos.filter(v => v.status === 'pending');
+      let pendingHistory = this.state.history.filter(h => h.status === 'pending');
 
       let pendingHtml = '';
 
       pendingServices.forEach(s => {
         pendingHtml += `
           <div class="service-item" style="border: 2px solid #2563eb;">
-            <span class="service-tag">दुकान रिक्वेस्ट: ${s.category}</span>
+            <span class="service-tag">दुकान रिक्वेस्ट</span>
             <div class="service-name">${s.titleHi} (${s.villageHi})</div>
             <div style="font-size:12px;">संचालक: <b>${s.personName}</b> | फोन: ${s.phone}</div>
             ${s.image ? `<img src="${s.image}" class="service-img" />` : ''}
             <button class="approve-btn" onclick="app.approveItem('services', '${s.id}')">✅ Approve & Live</button>
-            <button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">❌ Reject / Delete</button>
+            <button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">❌ Reject</button>
+          </div>
+        `;
+      });
+
+      pendingVideos.forEach(v => {
+        pendingHtml += `
+          <div class="media-card" style="border: 2px solid #2563eb;">
+            <span class="service-tag">वीडियो / रागनी रिक्वेस्ट (${v.villageHi})</span>
+            <div class="service-name">${v.title}</div>
+            <video controls style="width:100%; border-radius:8px; margin-top:6px; max-height:180px; background:#000;">
+              <source src="${v.videoUrl}" type="video/mp4">
+            </video>
+            <button class="approve-btn" onclick="app.approveItem('videos', '${v.id}')">✅ Approve & Live</button>
+            <button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">❌ Reject</button>
+          </div>
+        `;
+      });
+
+      pendingGallery.forEach(g => {
+        pendingHtml += `
+          <div class="media-card" style="border: 2px solid #2563eb;">
+            <span class="service-tag">फोटो गैलरी रिक्वेस्ट (${g.villageHi})</span>
+            <p style="font-size:12px; font-weight:bold; margin-top:4px;">${g.caption || ''}</p>
+            <img src="${g.image}" style="width:100%; border-radius:8px; margin-top:6px;" />
+            <button class="approve-btn" onclick="app.approveItem('gallery', '${g.id}')">✅ Approve & Live</button>
+            <button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">❌ Reject</button>
           </div>
         `;
       });
@@ -536,8 +613,9 @@ class VillageApp {
       pendingAnn.forEach(a => {
         pendingHtml += `
           <div class="media-card" style="border: 2px solid #2563eb;">
-            <p style="font-size:13px; font-weight:bold;">मुनादी रिक्वेस्ट: ${a.text}</p>
-            ${a.image ? `<img src="${a.image}" />` : ''}
+            <span class="service-tag">मुनादी रिक्वेस्ट (${a.villageHi})</span>
+            <p style="font-size:13px; font-weight:bold; margin-top:4px;">${a.text}</p>
+            ${a.image ? `<img src="${a.image}" style="width:100%; border-radius:8px; margin-top:6px;" />` : ''}
             <button class="approve-btn" onclick="app.approveItem('announcements', '${a.id}')">✅ Approve & Live</button>
             <button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">❌ Reject</button>
           </div>
@@ -547,19 +625,38 @@ class VillageApp {
       pendingMarket.forEach(m => {
         pendingHtml += `
           <div class="service-item" style="border: 2px solid #2563eb;">
-            <span class="service-tag">बाजार रिक्वेस्ट</span>
+            <span class="service-tag">बाजार रिक्वेस्ट (${m.villageHi})</span>
             <div class="service-name">${m.title} - ${m.price}</div>
-            <div style="font-size:12px;">फोन: ${m.phone}</div>
             <button class="approve-btn" onclick="app.approveItem('market', '${m.id}')">✅ Approve & Live</button>
             <button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">❌ Reject</button>
           </div>
         `;
       });
 
+      pendingHistory.forEach(h => {
+        pendingHtml += `
+          <div class="media-card" style="border: 2px solid #2563eb;">
+            <span class="service-tag">इतिहास रिक्वेस्ट (${h.villageHi})</span>
+            <p style="font-size:12px; margin-top:4px;">${h.text}</p>
+            <button class="approve-btn" onclick="app.approveItem('history', '${h.id}')">✅ Approve & Live</button>
+            <button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">❌ Reject</button>
+          </div>
+        `;
+      });
+
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        
+        <!-- एडमिन डायरेक्ट वीडियो अपलोड बॉक्स -->
+        <div class="card" style="border: 2px solid #059669; background: #f0fdf4;">
+          <div class="card-title" style="color: #047857;">🎥 एडमिन डायरेक्ट वीडियो अपलोड (तुरंत लाइव)</div>
+          <div class="form-group"><input class="form-control" id="adminVideoTitle" placeholder="वीडियो/रागनी शीर्षक..." /></div>
+          <div class="form-group"><input type="file" accept="video/*" id="adminVideoFile" onchange="app.handleAdminVideo(this)" /></div>
+          <button class="btn-submit" onclick="app.submitAdminDirectVideo()">🚀 सीधे लाइव करें</button>
+        </div>
+
         <div class="card">
-          <div class="card-title">⚙️ Admin / अप्रूवल पैनल</div>
+          <div class="card-title">⚙️ Ticker सेटिंग</div>
           <div class="form-group">
             <label>ऊपर पट्टी (Ticker) का स्पेशल संदेश:</label>
             <input class="form-control" id="customTickerInput" value="${this.state.customTicker}" />
@@ -568,7 +665,7 @@ class VillageApp {
         </div>
 
         <div class="card">
-          <div class="card-title">📥 पेंडिंग रिक्वेस्ट (जिन्हें आपको अप्रूव करना है)</div>
+          <div class="card-title">📥 पेंडिंग रिक्वेस्ट (यूजर द्वारा भेजी गई)</div>
           ${pendingHtml || '<div class="empty-state">कोई नई पेंडिंग रिक्वेस्ट नहीं है।</div>'}
         </div>
       `;
@@ -615,14 +712,45 @@ class VillageApp {
     }
   }
 
+  tempUserPhoto = '';
+  handleUserPhoto(input) {
+    const file = input.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onloadend = () => { this.tempUserPhoto = reader.result; };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  tempVideo = '';
+  handleVideo(input) {
+    const file = input.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onloadend = () => { this.tempVideo = reader.result; };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  tempAdminVideo = '';
+  handleAdminVideo(input) {
+    const file = input.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onloadend = () => { this.tempAdminVideo = reader.result; };
+      reader.readAsDataURL(file);
+    }
+  }
+
   submitShop() {
     const title = document.getElementById('shopTitle').value;
     const phone = document.getElementById('shopPhone').value;
     const person = document.getElementById('personName').value;
     const cat = document.getElementById('shopCat').value;
     if(!title || !phone) return alert("नाम और फोन नंबर भरें!");
-    this.saveData('services', { titleHi: title, phone, category: cat, personName: person || 'संचालक', image: this.tempImage }, "दुकान की रिक्वेस्ट एडमिन के पास भेज दी गई है! एडमिन के अप्रूव करते ही यह लाइव हो जाएगी।");
+    this.saveData('services', { titleHi: title, phone, category: cat, personName: person || 'संचालक', image: this.tempImage, userPhoto: this.tempUserPhoto }, "दुकान की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
     this.tempImage = '';
+    this.tempUserPhoto = '';
   }
 
   submitAnnouncement() {
@@ -655,6 +783,20 @@ class VillageApp {
     this.tempImage = '';
   }
 
+  submitVideo() {
+    const title = document.getElementById('vTitle').value;
+    if(!title || !this.tempVideo) return alert("शीर्षक और वीडियो फाइल दोनों चुनें!");
+    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो/रागनी की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
+    this.tempVideo = '';
+  }
+
+  submitAdminDirectVideo() {
+    const title = document.getElementById('adminVideoTitle').value;
+    if(!title || !this.tempAdminVideo) return alert("शीर्षक और वीडियो फाइल दोनों चुनें!");
+    this.saveAdminDirectData('videos', { title, videoUrl: this.tempAdminVideo }, "वीडियो सीधे लाइव कर दिया गया है!");
+    this.tempAdminVideo = '';
+  }
+
   saveTickerSetting() {
     const val = document.getElementById('customTickerInput').value;
     if(window.firebaseDb) {
@@ -662,7 +804,7 @@ class VillageApp {
       set(ref(db, 'settings/ticker'), val).then(() => {
         alert("ऊपर की पट्टी का संदेश अपडेट हो गया है!");
         this.state.customTicker = val;
-        this.updateTickerText();
+        this.updateTickerAndAvatar();
         this.changeView('home');
       });
     }
