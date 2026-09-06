@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MeraGaov - मेरी पहचान</title>
 
+<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -84,11 +85,14 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .delete-btn { background: #dc2626; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 6px; }
 .approve-btn { background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 6px; }
 .portal-link-btn { display: inline-block; background: #2563eb; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; margin: 4px 4px 4px 0; }
+.media-options { display: flex; gap: 8px; margin-bottom: 8px; justify-content: center; }
+.opt-btn { flex: 1; background: #047857; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- Header -->
   <div class="header">
     <div class="title-box">
       <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="app.changeUserAvatar(this)" />
@@ -110,10 +114,12 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
     </div>
   </div>
 
+  <!-- Ticker -->
   <div class="ticker">
     <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य</marquee>
   </div>
 
+  <!-- Main Content Area -->
   <div class="content" id="mainContent"></div>
 </div>
 
@@ -143,7 +149,8 @@ class VillageApp {
       subAdmins: [],
       customTicker: '📢 लाइव अपडेट जारी है!',
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-      isAdminLoggedIn: false
+      isAdminLoggedIn: false,
+      isSubAdminLoggedIn: false
     };
 
     this.initListeners();
@@ -213,7 +220,7 @@ class VillageApp {
 
         onValue(ref(db, 'subAdmins'), snap => {
           const val = snap.val();
-          this.state.subAdmins = val ? Object.values(val) : [];
+          this.state.subAdmins = val ? Object.keys(val).map(k => ({id: k, pwd: val[k]})) : [];
         });
 
         onValue(ref(db, 'settings/ticker'), snap => {
@@ -254,20 +261,27 @@ class VillageApp {
         this.state.userAvatarUrl = reader.result;
         localStorage.setItem('userCustomAvatar', reader.result);
         document.getElementById('headerUserAvatar').src = reader.result;
-        alert("प्रोफाइल फोटो सफलताપूर्वक बदल दी गई है!");
+        alert("प्रोफाइल फोटो सफलतापूर्वक बदल दी गई है!");
       };
       reader.readAsDataURL(file);
     }
   }
 
   requestAdminAccess() {
-    let pwd = prompt("कृपया एडमिन पासवर्ड दर्ज करें:");
-    // डिफ़ॉल्ट मास्टर पासवर्ड '1234' है या सब-एडमिन लिस्ट में से मैच हो सकता है
-    if(pwd === '1234' || this.state.subAdmins.includes(pwd)) {
+    let pwd = prompt("कृपया एडमिन या सब-एडमिन पासवर्ड दर्ज करें:");
+    if(pwd === '1234') {
       this.state.isAdminLoggedIn = true;
+      this.state.isSubAdminLoggedIn = false;
       this.changeView('admin');
     } else {
-      alert("गलत पासवर्ड! एडमिन पैनल एक्सेस नहीं मिला।");
+      let matchedSub = this.state.subAdmins.find(s => s.pwd === pwd);
+      if(matchedSub) {
+        this.state.isAdminLoggedIn = false;
+        this.state.isSubAdminLoggedIn = true;
+        this.changeView('admin');
+      } else {
+        alert("गलत पासवर्ड! एक्सेस नहीं मिला।");
+      }
     }
   }
 
@@ -283,6 +297,18 @@ class VillageApp {
     }
   }
 
+  deleteSubAdmin(id) {
+    if(confirm("क्या आप इस सब-एडमिन को हटाना चाहते हैं?")) {
+      if (window.firebaseDb) {
+        const { db, ref, remove } = window.firebaseDb;
+        remove(ref(db, `subAdmins/${id}`)).then(() => {
+          alert("सब-एडमिन हटा दिया गया है!");
+          this.render();
+        });
+      }
+    }
+  }
+
   changeView(viewName) {
     this.state.view = viewName;
     this.render();
@@ -295,19 +321,6 @@ class VillageApp {
         .then(() => { 
           alert(msg); 
           this.changeView('home'); 
-        })
-        .catch(err => alert("त्रुटि: " + err.message));
-    }
-  }
-
-  saveAdminDirectData(path, data, msg) {
-    if (window.firebaseDb) {
-      const { db, ref, push } = window.firebaseDb;
-      push(ref(db, path), { ...data, districtId: this.state.selectedDistrict, villageHi: this.state.searchVillage, status: 'approved', timestamp: Date.now() })
-        .then(() => { 
-          alert(msg); 
-          this.updateTicker();
-          this.render(); 
         })
         .catch(err => alert("त्रुटि: " + err.message));
     }
@@ -395,7 +408,7 @@ class VillageApp {
                 <div style="font-size:12px; color:#64748b; margin-bottom:4px;">👤 संचालक: <b>${s.personName}</b></div>
                 ${s.image ? `<img src="${s.image}" class="service-img" />` : ''}
                 <a href="tel:${s.phone}" class="btn-call">📞 कॉल करें (${s.phone})</a>
-                ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट करें</button>` : ''}
+                ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट करें</button>` : ''}
               </div>
             </div>
           `;
@@ -421,7 +434,18 @@ class VillageApp {
           <div class="form-group"><label>दुकान का नाम:</label><input class="form-control" id="shopTitle" /></div>
           <div class="form-group"><label>संचालक का नाम:</label><input class="form-control" id="personName" /></div>
           <div class="form-group"><label>मोबाइल नंबर:</label><input class="form-control" type="tel" id="shopPhone" /></div>
-          <div class="form-group"><label>यूजर फोटो (प्रोफाइल):</label><input type="file" accept="image/*" id="userPhotoFile" onchange="app.handleUserPhoto(this)" /></div>
+          
+          <div class="form-group">
+            <label>यूजर फोटो (प्रोफाइल):</label>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('userPhotoCamera').click()">📸 कैमरा से खींचें</button>
+              <button class="opt-btn" onclick="document.getElementById('userPhotoFile').click()">📁 फाइल चुनें</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="userPhotoCamera" style="display:none;" onchange="app.handleUserPhoto(this)" />
+            <input type="file" accept="image/*" id="userPhotoFile" style="display:none;" onchange="app.handleUserPhoto(this)" />
+            <div id="userPhotoPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+          </div>
+
           <div class="form-group"><label>श्रेणी:</label>
             <select class="form-control" id="shopCat">
               <option value="CSC">🏥 सीएससी / दुकान</option>
@@ -430,8 +454,19 @@ class VillageApp {
               <option value="Agriculture">🌾 कृषि सेवा</option>
             </select>
           </div>
-          <div class="form-group"><label>दुकान की फोटो:</label><input type="file" accept="image/*" id="shopImgFile" onchange="app.handleImage(this)" /></div>
-          <button class="btn-submit" onclick="app.submitShop()">📤 एडमिन को अप्रूवल के लिए भेजें</button>
+
+          <div class="form-group">
+            <label>दुकान की फोटो:</label>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('shopCamera').click()">📸 कैमरा से खींचें</button>
+              <button class="opt-btn" onclick="document.getElementById('shopFile').click()">📁 फाइल चुनें</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="shopCamera" style="display:none;" onchange="app.handleImage(this)" />
+            <input type="file" accept="image/*" id="shopFile" style="display:none;" onchange="app.handleImage(this)" />
+            <div id="shopImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+          </div>
+
+          <button class="btn-submit" onclick="app.submitShop()">📤 एडमिन अप्रूवल के लिए भेजें</button>
         </div>
       `;
     }
@@ -440,7 +475,7 @@ class VillageApp {
         <div class="media-card">
           <p style="font-size:13px; font-weight:bold;">${a.text}</p>
           ${a.image ? `<img src="${a.image}" style="width:100%; border-radius:8px; margin-top:8px;" />` : ''}
-          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ डिलीट</button>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -450,7 +485,18 @@ class VillageApp {
           <div class="card-title">📢 मुनादी व खबरें</div>
           <div class="live-upload-box">
             <textarea class="form-control" id="annText" placeholder="खबर यहाँ लिखें..."></textarea>
-            <input type="file" accept="image/*" id="annImgFile" onchange="app.handleImage(this)" style="margin-top:8px;" />
+            
+            <div style="margin-top:10px;">
+              <label style="font-size:12px; font-weight:bold; color:#047857; display:block; margin-bottom:5px;">फोटो जोड़ें:</label>
+              <div class="media-options">
+                <button class="opt-btn" onclick="document.getElementById('annCamera').click()">📸 कैमरा</button>
+                <button class="opt-btn" onclick="document.getElementById('annFile').click()">📁 फाइल</button>
+              </div>
+              <input type="file" accept="image/*" capture="environment" id="annCamera" style="display:none;" onchange="app.handleImage(this)" />
+              <input type="file" accept="image/*" id="annFile" style="display:none;" onchange="app.handleImage(this)" />
+              <div id="annImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+            </div>
+
             <button class="btn-submit" onclick="app.submitAnnouncement()">📤 अप्रूवल के लिए भेजें</button>
           </div>
           ${annList || '<div class="empty-state">कोई अप्रूव्ड खबर नहीं है।</div>'}
@@ -462,7 +508,7 @@ class VillageApp {
         <div class="media-card">
           <p style="font-size:13px;"><b>सरपंच/इतिहास:</b> ${h.text}</p>
           ${h.image ? `<img src="${h.image}" style="width:100%; border-radius:8px; margin-top:8px;" />` : ''}
-          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ डिलीट</button>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -472,8 +518,19 @@ class VillageApp {
           <div class="card-title">📜 गाँव का इतिहास व सरपंच</div>
           <div class="live-upload-box">
             <textarea class="form-control" id="histText" placeholder="गाँव का इतिहास या वर्तमान सरपंच के बारे में लिखें..."></textarea>
-            <input type="file" accept="image/*" id="histImgFile" onchange="app.handleImage(this)" style="margin-top:8px;" />
-            <button class="btn-submit" onclick="app.submitHistory()">📤 भेजें</button>
+            
+            <div style="margin-top:10px;">
+              <label style="font-size:12px; font-weight:bold; color:#047857; display:block; margin-bottom:5px;">फोटो जोड़ें:</label>
+              <div class="media-options">
+                <button class="opt-btn" onclick="document.getElementById('histCamera').click()">📸 कैमरा</button>
+                <button class="opt-btn" onclick="document.getElementById('histFile').click()">📁 फाइल</button>
+              </div>
+              <input type="file" accept="image/*" capture="environment" id="histCamera" style="display:none;" onchange="app.handleImage(this)" />
+              <input type="file" accept="image/*" id="histFile" style="display:none;" onchange="app.handleImage(this)" />
+              <div id="histImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+            </div>
+
+            <button class="btn-submit" onclick="app.submitHistory()">📤 अप्रूवल के लिए भेजें</button>
           </div>
           ${histList || '<div class="empty-state">इतिहास की जानकारी जोड़ी नहीं गई है।</div>'}
         </div>
@@ -488,7 +545,7 @@ class VillageApp {
           <div style="font-size:12px; color:#64748b;">संपर्क: ${m.phone}</div>
           ${m.image ? `<img src="${m.image}" class="service-img" />` : ''}
           <a href="tel:${m.phone}" class="btn-call">📞 कॉल करें</a>
-          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ डिलीट</button>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -500,8 +557,18 @@ class VillageApp {
             <input class="form-control" id="mTitle" placeholder="चीज़ का नाम (जैसे: दुधारू भैंस / तूड़ी)" style="margin-bottom:8px;" />
             <input class="form-control" id="mPrice" placeholder="कीमत (जैसे: ₹80,000)" style="margin-bottom:8px;" />
             <input class="form-control" id="mPhone" placeholder="मोबाइल नंबर" style="margin-bottom:8px;" />
-            <input type="file" accept="image/*" id="mImgFile" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <button class="btn-submit" onclick="app.submitMarket()">📤 बाजार में भेजने के लिए</button>
+            
+            <div style="margin-bottom:8px;">
+              <div class="media-options">
+                <button class="opt-btn" onclick="document.getElementById('mCamera').click()">📸 कैमरा</button>
+                <button class="opt-btn" onclick="document.getElementById('mFile').click()">📁 फाइल</button>
+              </div>
+              <input type="file" accept="image/*" capture="environment" id="mCamera" style="display:none;" onchange="app.handleImage(this)" />
+              <input type="file" accept="image/*" id="mFile" style="display:none;" onchange="app.handleImage(this)" />
+              <div id="mImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+            </div>
+
+            <button class="btn-submit" onclick="app.submitMarket()">📤 अप्रूवल के लिए भेजें</button>
           </div>
           ${mList || '<div class="empty-state">अभी बाजार में कुछ उपलब्ध नहीं है।</div>'}
         </div>
@@ -512,7 +579,7 @@ class VillageApp {
         <div class="media-card">
           <p style="font-size:12px; font-weight:bold;">${g.caption || 'गाँव की तस्वीर'}</p>
           <img src="${g.image}" style="width:100%; border-radius:8px; margin-top:8px;" />
-          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ डिलीट</button>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -522,8 +589,18 @@ class VillageApp {
           <div class="card-title">📸 गाँव की गैलरी</div>
           <div class="live-upload-box">
             <input class="form-control" id="gCaption" placeholder="फोटो का शीर्षक..." style="margin-bottom:8px;" />
-            <input type="file" accept="image/*" id="gImgFile" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <button class="btn-submit" onclick="app.submitGallery()">📤 फोटो अप्रूवल के लिए भेजें</button>
+            
+            <div style="margin-bottom:8px;">
+              <div class="media-options">
+                <button class="opt-btn" onclick="document.getElementById('gCamera').click()">📸 लाइव कैमरा</button>
+                <button class="opt-btn" onclick="document.getElementById('gFile').click()">📁 फाइल चुनें</button>
+              </div>
+              <input type="file" accept="image/*" capture="environment" id="gCamera" style="display:none;" onchange="app.handleImage(this)" />
+              <input type="file" accept="image/*" id="gFile" style="display:none;" onchange="app.handleImage(this)" />
+              <div id="gImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+            </div>
+
+            <button class="btn-submit" onclick="app.submitGallery()">📤 अप्रूवल के लिए भेजें</button>
           </div>
           ${gList || '<div class="empty-state">गैलरी खाली है।</div>'}
         </div>
@@ -537,7 +614,7 @@ class VillageApp {
             <source src="${v.videoUrl}" type="video/mp4">
             आपका ब्राउज़र वीडियो सपोर्ट नहीं करता।
           </video>
-          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ डिलीट</button>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -555,7 +632,17 @@ class VillageApp {
           <div class="live-upload-box">
             <div style="font-weight:bold; font-size:13px; margin-bottom:8px; color:#047857;">+ नया वीडियो या रागनी अपलोड करें</div>
             <input class="form-control" id="vTitle" placeholder="शीर्षक (जैसे: हरियाणवी रागनी / भजन)" style="margin-bottom:8px;" />
-            <input type="file" accept="video/*" id="vFile" onchange="app.handleVideo(this)" style="margin-bottom:8px; width:100%; font-size:12px;" />
+            
+            <div style="margin-bottom:8px;">
+              <div class="media-options">
+                <button class="opt-btn" onclick="document.getElementById('vCamRecord').click()">🎥 लाइव वीडियो बनाएं</button>
+                <button class="opt-btn" onclick="document.getElementById('vFileSelect').click()">📁 फाइल चुनें</button>
+              </div>
+              <input type="file" accept="video/*" capture="environment" id="vCamRecord" style="display:none;" onchange="app.handleVideo(this)" />
+              <input type="file" accept="video/*" id="vFileSelect" style="display:none;" onchange="app.handleVideo(this)" />
+              <div id="vFilePreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+            </div>
+
             <button class="btn-submit" onclick="app.submitVideo()">📤 एडमिन अप्रूवल के लिए भेजें</button>
           </div>
 
@@ -594,7 +681,7 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'admin') {
-      if(!this.state.isAdminLoggedIn) {
+      if(!this.state.isAdminLoggedIn && !this.state.isSubAdminLoggedIn) {
         return this.changeView('home');
       }
 
@@ -680,33 +767,33 @@ class VillageApp {
         `;
       });
 
+      let subAdminListHtml = '';
+      if(this.state.isAdminLoggedIn) {
+        let subItems = this.state.subAdmins.map(sub => `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:8px; border-radius:6px; margin-bottom:6px; font-size:12px;">
+            <span>🔑 पासवर्ड: <b>${sub.pwd}</b></span>
+            <button class="delete-btn" style="margin-top:0;" onclick="app.deleteSubAdmin('${sub.id}')">हटाएं</button>
+          </div>
+        `).join('');
+
+        subAdminListHtml = `
+          <div class="card" style="border: 2px solid #2563eb; background: #eff6ff;">
+            <div class="card-title" style="color: #1d4ed8;">👥 नया सब-एडमिन (Sub-Admin) जोड़ें</div>
+            <div class="form-group"><input class="form-control" id="newSubAdminPwd" placeholder="नया सब-एडमिन पासवर्ड दर्ज करें..." /></div>
+            <button class="btn-submit" style="background:#2563eb;" onclick="app.addSubAdmin()">➕ सब-एडमिन जोड़ें</button>
+            <div style="margin-top:10px; font-size:12px; font-weight:bold; color:#1e3a8a;">मौजूदा सब-एडमिन सूची:</div>
+            ${subItems || '<div style="font-size:11px; color:#64748b; margin-top:4px;">कोई सब-एडमिन नहीं है।</div>'}
+          </div>
+        `;
+      }
+
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         
-        <div class="card" style="border: 2px solid #2563eb; background: #eff6ff;">
-          <div class="card-title" style="color: #1d4ed8;">👥 नया सब-एडमिन (Sub-Admin) जोड़ें</div>
-          <div class="form-group"><input class="form-control" id="newSubAdminPwd" placeholder="नया सब-एडमिन पासवर्ड दर्ज करें..." /></div>
-          <button class="btn-submit" style="background:#2563eb;" onclick="app.addSubAdmin()">➕ सब-एडमिन जोड़ें</button>
-        </div>
-
-        <div class="card" style="border: 2px solid #059669; background: #f0fdf4;">
-          <div class="card-title" style="color: #047857;">🎥 एडमिन डायरेक्ट वीडियो अपलोड (तुरंत लाइव)</div>
-          <div class="form-group"><input class="form-control" id="adminVideoTitle" placeholder="वीडियो/रागनी शीर्षक..." /></div>
-          <div class="form-group"><input type="file" accept="video/*" id="adminVideoFile" onchange="app.handleAdminVideo(this)" /></div>
-          <button class="btn-submit" onclick="app.submitAdminDirectVideo()">🚀 सीधे लाइव करें</button>
-        </div>
+        ${subAdminListHtml}
 
         <div class="card">
-          <div class="card-title">⚙️ Ticker सेटिंग</div>
-          <div class="form-group">
-            <label>ऊपर पट्टी (Ticker) का स्पेशल संदेश:</label>
-            <input class="form-control" id="customTickerInput" value="${this.state.customTicker}" />
-          </div>
-          <button class="btn-submit" onclick="app.saveTickerSetting()">पट्टी पर अपडेट करें</button>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📥 पेंडिंग रिक्वेस्ट (Approval Queue)</div>
+          <div class="card-title">📥 पेंडिंग रिक्वेस्ट (Approval Queue - ${this.state.isAdminLoggedIn ? 'Main Admin' : 'Sub-Admin'})</div>
           ${pendingHtml || '<div class="empty-state">कोई नई पेंडिंग रिक्वेस्ट नहीं है।</div>'}
         </div>
       `;
@@ -748,7 +835,11 @@ class VillageApp {
     const file = input.files[0];
     if(file) {
       const reader = new FileReader();
-      reader.onloadend = () => { this.tempImage = reader.result; };
+      reader.onloadend = () => { 
+        this.tempImage = reader.result; 
+        let previewElem = document.getElementById('shopImgPreviewText') || document.getElementById('annImgPreviewText') || document.getElementById('histImgPreviewText') || document.getElementById('mImgPreviewText') || document.getElementById('gImgPreviewText');
+        if(previewElem) previewElem.innerText = "✅ फोटो चुन ली गई है";
+      };
       reader.readAsDataURL(file);
     }
   }
@@ -758,7 +849,11 @@ class VillageApp {
     const file = input.files[0];
     if(file) {
       const reader = new FileReader();
-      reader.onloadend = () => { this.tempUserPhoto = reader.result; };
+      reader.onloadend = () => { 
+        this.tempUserPhoto = reader.result; 
+        let previewElem = document.getElementById('userPhotoPreviewText');
+        if(previewElem) previewElem.innerText = "✅ यूजर फोटो चुन ली गई है";
+      };
       reader.readAsDataURL(file);
     }
   }
@@ -768,17 +863,11 @@ class VillageApp {
     const file = input.files[0];
     if(file) {
       const reader = new FileReader();
-      reader.onloadend = () => { this.tempVideo = reader.result; };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  tempAdminVideo = '';
-  handleAdminVideo(input) {
-    const file = input.files[0];
-    if(file) {
-      const reader = new FileReader();
-      reader.onloadend = () => { this.tempAdminVideo = reader.result; };
+      reader.onloadend = () => { 
+        this.tempVideo = reader.result; 
+        let previewElem = document.getElementById('vFilePreviewText');
+        if(previewElem) previewElem.innerText = "✅ वीडियो चुन लिया गया है";
+      };
       reader.readAsDataURL(file);
     }
   }
@@ -789,7 +878,7 @@ class VillageApp {
     const person = document.getElementById('personName').value;
     const cat = document.getElementById('shopCat').value;
     if(!title || !phone) return alert("नाम और फोन नंबर भरें!");
-    this.saveData('services', { titleHi: title, phone, category: cat, personName: person || 'संचालक', image: this.tempImage, userPhoto: this.tempUserPhoto }, "दुकान की रिक्वेस्ट भेज दी गई है!");
+    this.saveData('services', { titleHi: title, phone, category: cat, personName: person || 'संचालक', image: this.tempImage, userPhoto: this.tempUserPhoto }, "दुकान की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
     this.tempImage = '';
     this.tempUserPhoto = '';
   }
@@ -797,14 +886,14 @@ class VillageApp {
   submitAnnouncement() {
     const text = document.getElementById('annText').value;
     if(!text) return alert("विवरण लिखें!");
-    this.saveData('announcements', { text, image: this.tempImage }, "मुनादी की रिक्वेस्ट भेज दी गई है!");
+    this.saveData('announcements', { text, image: this.tempImage }, "मुनादी की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
     this.tempImage = '';
   }
 
   submitHistory() {
     const text = document.getElementById('histText').value;
     if(!text) return alert("विवरण लिखें!");
-    this.saveData('history', { text, image: this.tempImage }, "इतिहास की रिक्वेस्ट भेज दी गई है!");
+    this.saveData('history', { text, image: this.tempImage }, "इतिहास की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
     this.tempImage = '';
   }
 
@@ -813,42 +902,22 @@ class VillageApp {
     const price = document.getElementById('mPrice').value;
     const phone = document.getElementById('mPhone').value;
     if(!title || !phone) return alert("शीर्षक और फोन नंबर भरें!");
-    this.saveData('market', { title, price, phone, image: this.tempImage }, "बाजार पोस्ट की रिक्वेस्ट भेज दी गई है!");
+    this.saveData('market', { title, price, phone, image: this.tempImage }, "बाजार पोस्ट की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
     this.tempImage = '';
   }
 
   submitGallery() {
     const caption = document.getElementById('gCaption').value;
     if(!this.tempImage) return alert("कृपया फोटो चुनें!");
-    this.saveData('gallery', { caption, image: this.tempImage }, "फोटो की रिक्वेस्ट भेज दी गई है!");
+    this.saveData('gallery', { caption, image: this.tempImage }, "फोटो की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
     this.tempImage = '';
   }
 
   submitVideo() {
     const title = document.getElementById('vTitle').value;
     if(!title || !this.tempVideo) return alert("शीर्षक और वीडियो फाइल दोनों चुनें!");
-    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो की रिक्वेस्ट भेज दी गई है!");
+    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो की रिक्वेस्ट एडमिन के पास भेज दी गई है!");
     this.tempVideo = '';
-  }
-
-  submitAdminDirectVideo() {
-    const title = document.getElementById('adminVideoTitle').value;
-    if(!title || !this.tempAdminVideo) return alert("शीर्षक और वीडियो फाइल दोनों चुनें!");
-    this.saveAdminDirectData('videos', { title, videoUrl: this.tempAdminVideo }, "वीडियो सीधे लाइव कर दिया गया है!");
-    this.tempAdminVideo = '';
-  }
-
-  saveTickerSetting() {
-    const val = document.getElementById('customTickerInput').value;
-    if(window.firebaseDb) {
-      const { db, ref, set } = window.firebaseDb;
-      set(ref(db, 'settings/ticker'), val).then(() => {
-        alert("पट्टी अपडेट हो गई है!");
-        this.state.customTicker = val;
-        this.updateTicker();
-        this.changeView('home');
-      });
-    }
   }
 }
 
