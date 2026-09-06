@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MeraGaov - मेरी पहचान</title>
 
-<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -44,7 +43,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .header-btn { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .menu-btn-style { background: #fbbf24; color: #0f172a; }
 
-.dropdown-menu { position: absolute; top: 45px; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 190px; z-index: 1000; overflow: hidden; display: none; }
+.dropdown-menu { position: absolute; top: 45px; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); border: 1px solid #cbd5e1; width: 210px; z-index: 1000; overflow: hidden; display: none; }
 .dropdown-item { padding: 12px 16px; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .dropdown-item:hover { background: #ecfdf5; color: #047857; }
 
@@ -90,10 +89,8 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 <body>
 
 <div class="container">
-  <!-- Header -->
   <div class="header">
     <div class="title-box">
-      <!-- यूजर फोटो बदलने के लिए फाइल इनपुट ट्रिगर -->
       <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="app.changeUserAvatar(this)" />
       <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" title="फोटो बदलने के लिए क्लिक करें" onclick="document.getElementById('profileImageInput').click();" />
       <div class="title-info">
@@ -106,18 +103,17 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <button class="header-btn" id="langToggleBtn">🌐 हिंदी</button>
 
       <div class="dropdown-menu" id="dropdownMenu">
-        <div class="dropdown-item" onclick="app.changeView('admin')">⚙️ Admin / अप्रूवल पैनल</div>
+        <div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Admin / अप्रूवल पैनल</div>
+        <div class="dropdown-item" onclick="app.changeView('policy')">📜 Privacy Policy (नियम व शर्तें)</div>
         <div class="dropdown-item" onclick="app.changeView('about')">ℹ️ About Us</div>
       </div>
     </div>
   </div>
 
-  <!-- Ticker (फालतू शब्द हटा दिए गए हैं) -->
   <div class="ticker">
     <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य</marquee>
   </div>
 
-  <!-- Main Content Area -->
   <div class="content" id="mainContent"></div>
 </div>
 
@@ -144,8 +140,10 @@ class VillageApp {
       announcements: [],
       history: [],
       videos: [],
+      subAdmins: [],
       customTicker: '📢 लाइव अपडेट जारी है!',
-      userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+      userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+      isAdminLoggedIn: false
     };
 
     this.initListeners();
@@ -213,6 +211,11 @@ class VillageApp {
           if(this.state.view === 'admin' || this.state.view === 'videos') this.render();
         });
 
+        onValue(ref(db, 'subAdmins'), snap => {
+          const val = snap.val();
+          this.state.subAdmins = val ? Object.values(val) : [];
+        });
+
         onValue(ref(db, 'settings/ticker'), snap => {
           const val = snap.val();
           if(val) {
@@ -254,6 +257,29 @@ class VillageApp {
         alert("प्रोफाइल फोटो सफलताપूर्वक बदल दी गई है!");
       };
       reader.readAsDataURL(file);
+    }
+  }
+
+  requestAdminAccess() {
+    let pwd = prompt("कृपया एडमिन पासवर्ड दर्ज करें:");
+    // डिफ़ॉल्ट मास्टर पासवर्ड '1234' है या सब-एडमिन लिस्ट में से मैच हो सकता है
+    if(pwd === '1234' || this.state.subAdmins.includes(pwd)) {
+      this.state.isAdminLoggedIn = true;
+      this.changeView('admin');
+    } else {
+      alert("गलत पासवर्ड! एडमिन पैनल एक्सेस नहीं मिला।");
+    }
+  }
+
+  addSubAdmin() {
+    let newSubPwd = document.getElementById('newSubAdminPwd').value;
+    if(!newSubPwd) return alert("कृपया पासवर्ड दर्ज करें!");
+    if (window.firebaseDb) {
+      const { db, ref, push } = window.firebaseDb;
+      push(ref(db, 'subAdmins'), newSubPwd).then(() => {
+        alert("नया सब-एडमिन सफलतापूर्वक जोड़ दिया गया है!");
+        document.getElementById('newSubAdminPwd').value = '';
+      });
     }
   }
 
@@ -345,13 +371,13 @@ class VillageApp {
         </div>
         <div class="menu-card bg-1" onclick="app.openCategory('all')"><span>👀 लाइव दुकानें देखें (गाँव अनुसार)</span><span>→</span></div>
         <div class="menu-card bg-2" onclick="app.changeView('add_service')"><span>➕ दुकान जोड़ने की रिक्वेस्ट भेजें</span><span>→</span></div>
-        <div class="menu-card bg-3" onclick="app.changeView('announcements')"><span>📢 2. मुनादी, मेला व खबरें</span><span>→</span></div>
-        <div class="menu-card bg-4" onclick="app.changeView('history')"><span>📜 3. गाँव का इतिहास व सरपंच</span><span>→</span></div>
-        <div class="menu-card bg-5" onclick="app.changeView('market')"><span>🌾 4. पशु, गेहूँ, चारा खरीद-बेच</span><span>→</span></div>
-        <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 5. गाँव की गैलरी</span><span>→</span></div>
-        <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 6. वीडियो और रागनी प्रोग्राम</span><span>→</span></div>
-        <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 7. बच्चों की शिक्षा व पोर्टल</span><span>→</span></div>
-        <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 8. पशु की बीमारी व पूछताछ</span><span>→</span></div>
+        <div class="menu-card bg-3" onclick="app.changeView('announcements')"><span>📢 1. मुनादी, मेला व खबरें</span><span>→</span></div>
+        <div class="menu-card bg-4" onclick="app.changeView('history')"><span>📜 2. गाँव का इतिहास व सरपंच</span><span>→</span></div>
+        <div class="menu-card bg-5" onclick="app.changeView('market')"><span>🌾 3. पशु, गेहूँ, चारा खरीद-बेच</span><span>→</span></div>
+        <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 4. गाँव की गैलरी</span><span>→</span></div>
+        <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 5. वीडियो और रागनी प्रोग्राम</span><span>→</span></div>
+        <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 6. बच्चों की शिक्षा व पोर्टल</span><span>→</span></div>
+        <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 7. पशु की बीमारी व पूछताछ</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -369,7 +395,7 @@ class VillageApp {
                 <div style="font-size:12px; color:#64748b; margin-bottom:4px;">👤 संचालक: <b>${s.personName}</b></div>
                 ${s.image ? `<img src="${s.image}" class="service-img" />` : ''}
                 <a href="tel:${s.phone}" class="btn-call">📞 कॉल करें (${s.phone})</a>
-                <button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट करें</button>
+                ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट करें</button>` : ''}
               </div>
             </div>
           `;
@@ -414,7 +440,7 @@ class VillageApp {
         <div class="media-card">
           <p style="font-size:13px; font-weight:bold;">${a.text}</p>
           ${a.image ? `<img src="${a.image}" style="width:100%; border-radius:8px; margin-top:8px;" />` : ''}
-          <button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ डिलीट</button>
+          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -436,7 +462,7 @@ class VillageApp {
         <div class="media-card">
           <p style="font-size:13px;"><b>सरपंच/इतिहास:</b> ${h.text}</p>
           ${h.image ? `<img src="${h.image}" style="width:100%; border-radius:8px; margin-top:8px;" />` : ''}
-          <button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ डिलीट</button>
+          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -462,7 +488,7 @@ class VillageApp {
           <div style="font-size:12px; color:#64748b;">संपर्क: ${m.phone}</div>
           ${m.image ? `<img src="${m.image}" class="service-img" />` : ''}
           <a href="tel:${m.phone}" class="btn-call">📞 कॉल करें</a>
-          <button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ डिलीट</button>
+          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -486,7 +512,7 @@ class VillageApp {
         <div class="media-card">
           <p style="font-size:12px; font-weight:bold;">${g.caption || 'गाँव की तस्वीर'}</p>
           <img src="${g.image}" style="width:100%; border-radius:8px; margin-top:8px;" />
-          <button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ डिलीट</button>
+          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -511,7 +537,7 @@ class VillageApp {
             <source src="${v.videoUrl}" type="video/mp4">
             आपका ब्राउज़र वीडियो सपोर्ट नहीं करता।
           </video>
-          <button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ डिलीट</button>
+          ${this.state.isAdminLoggedIn ? `<button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -520,7 +546,6 @@ class VillageApp {
         <div class="card">
           <div class="card-title">🎵 वीडियो और रागनी प्रोग्राम</div>
           
-          <!-- लाइव पोर्टल लिंक्स जोड़े गए हैं -->
           <div style="background:#f0fdf4; border:1px solid #a7f3d0; padding:10px; border-radius:10px; margin-bottom:14px;">
             <div style="font-weight:bold; font-size:12px; color:#064e3b; margin-bottom:6px;">🔗 लाइव मनोरंजन व वीडियो पोर्टल्स:</div>
             <a href="https://www.youtube.com" target="_blank" class="portal-link-btn">▶️ YouTube Live</a>
@@ -557,7 +582,22 @@ class VillageApp {
         </div>
       `;
     }
+    else if (this.state.view === 'policy') {
+      html = `
+        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <div class="card">
+          <div class="card-title">📜 Privacy Policy (नियम व शर्तें)</div>
+          <p style="font-size:13px; line-height:1.6; color:#334155;">
+            मेरा गाँव ऐप का उद्देश्य ग्रामीण इलाकों की जानकारी, व्यवसाय और संस्कृति को डिजिटल मंच प्रदान करना है। यहाँ अपलोड की जाने वाली सभी सामग्री एडमिन द्वारा जाँचे जाने के बाद ही लाइव की जाती है। किसी भी प्रकार की आपत्तिजनक सामग्री अपलोड करने पर पाबंदी है।
+          </p>
+        </div>
+      `;
+    }
     else if (this.state.view === 'admin') {
+      if(!this.state.isAdminLoggedIn) {
+        return this.changeView('home');
+      }
+
       let pendingServices = this.state.services.filter(s => s.status === 'pending');
       let pendingAnn = this.state.announcements.filter(a => a.status === 'pending');
       let pendingMarket = this.state.market.filter(m => m.status === 'pending');
@@ -643,6 +683,12 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         
+        <div class="card" style="border: 2px solid #2563eb; background: #eff6ff;">
+          <div class="card-title" style="color: #1d4ed8;">👥 नया सब-एडमिन (Sub-Admin) जोड़ें</div>
+          <div class="form-group"><input class="form-control" id="newSubAdminPwd" placeholder="नया सब-एडमिन पासवर्ड दर्ज करें..." /></div>
+          <button class="btn-submit" style="background:#2563eb;" onclick="app.addSubAdmin()">➕ सब-एडमिन जोड़ें</button>
+        </div>
+
         <div class="card" style="border: 2px solid #059669; background: #f0fdf4;">
           <div class="card-title" style="color: #047857;">🎥 एडमिन डायरेक्ट वीडियो अपलोड (तुरंत लाइव)</div>
           <div class="form-group"><input class="form-control" id="adminVideoTitle" placeholder="वीडियो/रागनी शीर्षक..." /></div>
@@ -660,7 +706,7 @@ class VillageApp {
         </div>
 
         <div class="card">
-          <div class="card-title">📥 पेंडिंग रिक्वेस्ट</div>
+          <div class="card-title">📥 पेंडिंग रिक्वेस्ट (Approval Queue)</div>
           ${pendingHtml || '<div class="empty-state">कोई नई पेंडिंग रिक्वेस्ट नहीं है।</div>'}
         </div>
       `;
