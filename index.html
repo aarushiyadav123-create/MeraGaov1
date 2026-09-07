@@ -94,7 +94,8 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="app.changeUserAvatar(this)" />
       <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" onclick="document.getElementById('profileImageInput').click();" />
       <div class="title-info">
-        <div class="title" id="headerTitle">MeraGaov - मेरी पहचान</div>
+        <!-- यहाँ id="headerTitleText" जोड़ा गया है ताकि डायनेमिक गाँव का नाम दिख सके -->
+        <div class="title" id="headerTitleText">MeraGaov - कलानौर</div>
       </div>
     </div>
     <div class="header-right">
@@ -122,6 +123,7 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
   "charkhi-dadri": {
     nameHi: "चरखी दादरी", nameEn: "Charkhi Dadri",
     villages: [
+      { hi: "कलानौर", en: "Kalanaur" },
       { hi: "मालकोश", en: "Malkosh" },
       { hi: "बाउंड", en: "Baund" },
       { hi: "झूझू कलाँ", en: "Jhujhu Kalan" },
@@ -158,14 +160,13 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
 
 class VillageApp {
   constructor() {
-    // LocalStorage से कस्टम जोड़े गए गाँवों को लोड करना ताकि पेज रीफ्रेश होने पर भी बने रहें
     this.loadCustomVillagesFromStorage();
 
     this.state = {
       lang: 'hi',
       view: 'home',
       selectedDistrict: localStorage.getItem('selectedDistrict') || 'charkhi-dadri',
-      searchVillage: localStorage.getItem('searchVillage') || 'मालकोश',
+      searchVillage: localStorage.getItem('searchVillage') || 'कलानौर',
       services: [],
       gallery: [],
       market: [],
@@ -221,17 +222,14 @@ class VillageApp {
       return;
     }
 
-    // नया गाँव ऑब्जेक्ट जोड़ें
     const newVillageObj = { hi: villageName, en: villageName };
     HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.push(newVillageObj);
 
-    // LocalStorage में सेव करें
     let savedVillages = JSON.parse(localStorage.getItem('customDistrictVillages')) || {};
     if (!savedVillages[currentDist]) savedVillages[currentDist] = [];
     savedVillages[currentDist].push(newVillageObj);
     localStorage.setItem('customDistrictVillages', JSON.stringify(savedVillages));
 
-    // ऑटोमैटिकली नए गाँव को सिलेक्ट कर लें
     this.state.searchVillage = villageName;
     alert(this.state.lang === 'hi' ? `गाँव '${villageName}' सफलतापूर्वक जोड़ दिया गया है!` : `Village '${villageName}' added successfully!`);
     this.render();
@@ -557,7 +555,8 @@ class VillageApp {
     let currentVillageObj = currentDistrictObj.villages.find(v => v.hi === this.state.searchVillage || v.en === this.state.searchVillage);
     let displayVillageName = currentVillageObj ? (isEn ? currentVillageObj.en : currentVillageObj.hi) : this.state.searchVillage;
 
-    const titleEl = document.getElementById('headerTitle');
+    // हेडर में चुने गए गाँव का नाम अपने आप सेट हो जाएगा
+    const titleEl = document.getElementById('headerTitleText');
     if(titleEl) titleEl.innerText = `MeraGaov - ${displayVillageName}`;
     
     const avatarEl = document.getElementById('headerUserAvatar');
@@ -613,7 +612,7 @@ class VillageApp {
             </select>
           </div>
 
-          <!-- नया गाँव जोड़ने का फीचर (Add Village Feature) -->
+          <!-- नया गाँव जोड़ने का फीचर -->
           <div style="margin-top: 10px; border-top: 1px dashed #059669; padding-top: 10px;">
             <label style="color:#047857; font-weight:700;">➕ ${isEn ? 'Add New Village in Same District' : 'इसी जिले में नया गाँव/वार्ड जोड़ें:'}</label>
             <div style="display: flex; gap: 6px; margin-top: 5px;">
