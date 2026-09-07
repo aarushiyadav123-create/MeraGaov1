@@ -94,7 +94,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="app.changeUserAvatar(this)" />
       <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" onclick="document.getElementById('profileImageInput').click();" />
       <div class="title-info">
-        <!-- यहाँ id="headerTitleText" जोड़ा गया है ताकि डायनेमिक गाँव का नाम दिख सके -->
         <div class="title" id="headerTitleText">MeraGaov - कलानौर</div>
       </div>
     </div>
@@ -136,6 +135,54 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
       { hi: "कोहला", en: "Kohla" },
       { hi: "भागवी", en: "Bhagvi" },
       { hi: "मटौर", en: "Mataur" }
+    ]
+  },
+  "rohtak": {
+    nameHi: "रोहतक", nameEn: "Rohtak",
+    villages: [
+      { hi: "महम", en: "Meham" },
+      { hi: "कलानौर", en: "Kalanaur (Rohtak)" },
+      { hi: "स्माइला", en: "Smaila" },
+      { hi: "निंदाना", en: "Nindana" },
+      { hi: "भिवानी खेड़ा रोड", en: "Bhiwani Khera Road" },
+      { hi: "बेरी रोड", en: "Beri Road" },
+      { hi: "सांपला", en: "Sampla" },
+      { hi: "इन्दिरा", en: "Indira" },
+      { hi: "सुंदरपुर", en: "Sundarpur" }
+    ]
+  },
+  "hansi": {
+    nameHi: "हाँसी", nameEn: "Hansi",
+    villages: [
+      { hi: "हाँसी शहर", en: "Hansi City" },
+      { hi: "सिसई", en: "Sisai" },
+      { hi: "उmbha", en: "Umra" },
+      { hi: "ग्योंद", en: "Gyond" },
+      { hi: "किरथान", en: "Kirthan" },
+      { hi: "ढंधूर", en: "Dhandhoor" },
+      { hi: "मसूदपुर", en: "Masudpur" }
+    ]
+  },
+  "rewari": {
+    nameHi: "रेवाड़ी", nameEn: "Rewari",
+    villages: [
+      { hi: "बावल", en: "Bawal" },
+      { hi: "कोसली", en: "Kosli" },
+      { hi: "डहीना", en: "Dahina" },
+      { hi: "खानपुर", en: "Khanpur" },
+      { hi: "नैन", en: "Nain" },
+      { hi: "जतुसाना", en: "Jatusana" }
+    ]
+  },
+  "panipat": {
+    nameHi: "पानीपत", nameEn: "Panipat",
+    villages: [
+      { hi: "समलकखा", en: "Samalkha" },
+      { hi: "ईसराना", en: "Israna" },
+      { hi: "बापौली", en: "Bapoli" },
+      { hi: "नंदलगढ़", en: "Nandalgarh" },
+      { hi: "उझा", en: "Ujha" },
+      { hi: "सींक", en: "Seenk" }
     ]
   },
   "bhiwani": {
@@ -555,7 +602,6 @@ class VillageApp {
     let currentVillageObj = currentDistrictObj.villages.find(v => v.hi === this.state.searchVillage || v.en === this.state.searchVillage);
     let displayVillageName = currentVillageObj ? (isEn ? currentVillageObj.en : currentVillageObj.hi) : this.state.searchVillage;
 
-    // हेडर में चुने गए गाँव का नाम अपने आप सेट हो जाएगा
     const titleEl = document.getElementById('headerTitleText');
     if(titleEl) titleEl.innerText = `MeraGaov - ${displayVillageName}`;
     
@@ -612,7 +658,6 @@ class VillageApp {
             </select>
           </div>
 
-          <!-- नया गाँव जोड़ने का फीचर -->
           <div style="margin-top: 10px; border-top: 1px dashed #059669; padding-top: 10px;">
             <label style="color:#047857; font-weight:700;">➕ ${isEn ? 'Add New Village in Same District' : 'इसी जिले में नया गाँव/वार्ड जोड़ें:'}</label>
             <div style="display: flex; gap: 6px; margin-top: 5px;">
@@ -971,4 +1016,3 @@ const app = new VillageApp();
 </script>
 </body>
 </html>
-
