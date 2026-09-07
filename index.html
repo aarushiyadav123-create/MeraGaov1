@@ -470,12 +470,21 @@ class VillageApp {
   }
 
   submitComplaint() {
+    const nameEl = document.getElementById('cName');
+    const phoneEl = document.getElementById('cPhone');
     const titleEl = document.getElementById('cTitle');
     const descEl = document.getElementById('cDesc');
+    
+    const name = nameEl ? nameEl.value : '';
+    const phone = phoneEl ? phoneEl.value : '';
     const title = titleEl ? titleEl.value : '';
     const desc = descEl ? descEl.value : '';
-    if(!title || !desc) return alert(this.state.lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all info!");
-    this.saveData('complaints', { title, description: desc }, "आपकी शिकायत पंचायत पोर्टल पर दर्ज हो गई है!", "Complaint registered on panchayat portal!");
+
+    if(!name || !phone || !title || !desc) {
+      return alert(this.state.lang === 'hi' ? "कृपया नाम, फोन, विषय और विवरण सभी भरें!" : "Please fill name, phone, subject and details!");
+    }
+    
+    this.saveData('complaints', { name, phone, title, description: desc }, "आपकी शिकायत पंचायत पोर्टल पर दर्ज हो गई है!", "Complaint registered on panchayat portal!");
   }
 
   render() {
@@ -771,6 +780,7 @@ class VillageApp {
         <div class="service-item">
           <span class="service-tag" style="background:#fee2e2; color:#991b1b;">${isEn ? 'Complaint' : 'शिकायत'}</span>
           <div class="service-name">${c.title}</div>
+          <p style="font-size:12px; color:#334155; margin-top:2px;"><b>${isEn ? 'Name:' : 'नाम:'}</b> ${c.name || 'अज्ञात'} | <b>${isEn ? 'Phone:' : 'फोन:'}</b> ${c.phone || 'उपलब्ध नहीं'}</p>
           <p style="font-size:12px; color:#334155; margin-top:4px;">${c.description}</p>
           ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('complaints', '${c.id}')">🗑️ Delete</button>` : ''}
         </div>
@@ -782,6 +792,8 @@ class VillageApp {
           <div class="card-title">✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? 'Register your complaint' : 'अपनी समस्या या शिकायत दर्ज करें'}</div>
+            <input class="form-control" id="cName" placeholder="${isEn ? 'Your Name...' : 'शिकायतकर्ता का नाम...'}" style="margin-bottom:8px;" />
+            <input class="form-control" id="cPhone" placeholder="${isEn ? 'Mobile Number...' : 'मोबाइल नंबर...'}" style="margin-bottom:8px;" />
             <input class="form-control" id="cTitle" placeholder="${isEn ? 'Subject...' : 'शिकायत का विषय...'}" style="margin-bottom:8px;" />
             <textarea class="form-control" id="cDesc" placeholder="${isEn ? 'Details...' : 'विस्तृत विवरण...'}" style="margin-bottom:8px; height:70px; resize:none;"></textarea>
             <button class="btn-submit" onclick="app.submitComplaint()">📤 ${isEn ? 'Submit Complaint' : 'शिकायत भेजें'}</button>
