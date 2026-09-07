@@ -168,7 +168,7 @@ class VillageApp {
       market: [],
       announcements: [],
       history: [],
-      videos: [],
+      jokes: [],
       complaints: [],
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
@@ -177,7 +177,6 @@ class VillageApp {
     };
 
     this.tempImage = '';
-    this.tempVideo = '';
 
     this.initListeners();
     this.initFirebaseData();
@@ -238,10 +237,10 @@ class VillageApp {
           this.state.history = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'history' || this.state.view === 'admin') this.render();
         });
-        onValue(ref(db, 'videos'), snap => {
+        onValue(ref(db, 'jokes'), snap => {
           const val = snap.val();
-          this.state.videos = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          if(this.state.view === 'videos' || this.state.view === 'admin') this.render();
+          this.state.jokes = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'jokes' || this.state.view === 'admin') this.render();
         });
         onValue(ref(db, 'complaints'), snap => {
           const val = snap.val();
@@ -391,19 +390,6 @@ class VillageApp {
     }
   }
 
-  handleVideo(input) {
-    const file = input.files[0];
-    if(file) {
-      const reader = new FileReader();
-      reader.onloadend = () => { 
-        this.tempVideo = reader.result; 
-        let preview = document.getElementById('vFilePreviewText');
-        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ वीडियो अपलोड हो गया है" : "✅ Video uploaded";
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
   submitShop() {
     const nameEl = document.getElementById('sName');
     const phoneEl = document.getElementById('sPhone');
@@ -460,13 +446,16 @@ class VillageApp {
     this.tempImage = '';
   }
 
-  submitVideo() {
-    const titleEl = document.getElementById('vTitle');
-    const title = titleEl ? titleEl.value : '';
-    if(!title) return alert(this.state.lang === 'hi' ? "कृपया वीडियो का शीर्षक दर्ज करें!" : "Enter video title!");
-    if(!this.tempVideo) return alert(this.state.lang === 'hi' ? "कृपया वीडियो चुनें!" : "Select video!");
-    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो एडमिन अप्रूवल के लिए भेज दिया गया है!", "Video sent for approval!");
-    this.tempVideo = '';
+  submitJoke() {
+    const authorEl = document.getElementById('jAuthor');
+    const textEl = document.getElementById('jText');
+    const author = authorEl ? authorEl.value.trim() : '';
+    const text = textEl ? textEl.value.trim() : '';
+
+    if(!text) {
+      return alert(this.state.lang === 'hi' ? "कृपया चुटकुला जरूर लिखें!" : "Please write a joke!");
+    }
+    this.saveData('jokes', { author: author || 'गाँव का निवासी', text }, "चुटकुला एडमिन अप्रूवल के लिए भेज दिया गया है!", "Joke sent for admin approval!");
   }
 
   submitComplaint() {
@@ -556,7 +545,7 @@ class VillageApp {
         <div class="menu-card bg-4" onclick="app.changeView('history')"><span>📜 ${isEn ? 'History & Sarpanch' : 'इतिहास व सरपंच'}</span><span>→</span></div>
         <div class="menu-card bg-5" onclick="app.changeView('market')"><span>🌾 ${isEn ? 'Market & Animals' : 'पशु व बाजार'}</span><span>→</span></div>
         <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 ${isEn ? 'Gallery' : 'गैलरी'}</span><span>→</span></div>
-        <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 ${isEn ? 'Videos & Ragni' : 'वीडियो और रागनी'}</span><span>→</span></div>
+        <div class="menu-card bg-7" onclick="app.changeView('jokes')"><span>😂 ${isEn ? 'Jokes & Fun' : 'चुटकुले और हंसी-मज़ाक'}</span><span>→</span></div>
         <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 ${isEn ? 'Education Portal' : 'शिक्षा पोर्टल'}</span><span>→</span></div>
         <div class="menu-card bg-9" onclick="app.changeView('complaints')"><span>✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'}</span><span>→</span></div>
         <div class="menu-card bg-2" onclick="app.changeView('animals')"><span>🐄 ${isEn ? 'Animal Treatment' : 'पशु चिकित्सा व उपचार'}</span><span>→</span></div>
@@ -582,7 +571,6 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         
-        <!-- 1. दुकान जोड़ने का फॉर्म -->
         <div class="card">
           <div class="card-title">🛒 ${isEn ? 'Add Shop / Kirana' : 'दुकान या किराना जोड़ें'} (${displayVillageName})</div>
           <div class="form-group"><label>${isEn ? 'Shop Name' : 'दुकान का नाम'}</label><input class="form-control" id="sName" placeholder="${isEn ? 'Name...' : 'नाम...'}" /></div>
@@ -602,7 +590,6 @@ class VillageApp {
           <button class="btn-submit" onclick="app.submitShop()">📤 ${isEn ? 'Send Shop for Approval' : 'दुकान एडमिन अप्रूवल के लिए भेजें'}</button>
         </div>
 
-        <!-- 2. मिस्त्री, इलेक्ट्रीशियन, पंडित जी, वाहन आदि जोड़ने का फॉर्म -->
         <div class="card" style="border: 2px dashed #059669; background: #f0fdf4;">
           <div class="card-title" style="color:#047857;">🛠️ ${isEn ? 'Add Professional / Service Provider' : 'मिस्त्री, इलेक्ट्रीशियन, पंडित जी, गाड़ी व बाइक जोड़ें'}</div>
           <div class="form-group"><label>${isEn ? 'Your Name' : 'आपका नाम'}</label><input class="form-control" id="srvName" placeholder="${isEn ? 'Name...' : 'नाम...'}" /></div>
@@ -727,39 +714,33 @@ class VillageApp {
         </div>
       `;
     }
-    else if (this.state.view === 'videos') {
-      let vList = this.state.videos.filter(v => v.status === 'approved' && v.districtId === this.state.selectedDistrict && v.villageHi === this.state.searchVillage).map(v => `
-        <div class="media-card">
-          <div class="service-name">${v.title}</div>
-          <video controls style="width:100%; border-radius:8px; margin-top:8px; max-height:220px; background:#000;">
-            <source src="${v.videoUrl}" type="video/mp4">
-          </video>
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ Delete</button>` : ''}
+    else if (this.state.view === 'jokes') {
+      let jList = this.state.jokes.filter(j => j.status === 'approved' && j.districtId === this.state.selectedDistrict && j.villageHi === this.state.searchVillage).map(j => `
+        <div class="service-item" style="background: #fff9e6; border-left: 4px solid #ff9800;">
+          <div class="service-name">😂 ${j.text}</div>
+          <p style="font-size: 11px; color: #047857; margin-top: 4px;"><b>लेखक/भेजने वाला:</b> ${j.author || 'अज्ञात'}</p>
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('jokes', '${j.id}')">🗑️ Delete</button>` : ''}
         </div>
       `).join('');
 
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">🎵 ${isEn ? 'Videos & Ragni' : 'वीडियो और रागनी'} (${displayVillageName})</div>
+          <div class="card-title">😂 ${isEn ? 'Jokes & Fun' : 'चुटकुले और हंसी-मज़ाक'} (${displayVillageName})</div>
+          
           <div style="background:#f0fdf4; border:1px solid #a7f3d0; padding:10px; border-radius:10px; margin-bottom:12px;">
-            <a href="https://www.youtube.com" target="_blank" class="portal-link-btn" style="background:#ff0000; width:100%; text-align:center; display:block; margin-bottom:6px;">▶️ YouTube Live</a>
-            <a href="https://www.hotstar.com" target="_blank" class="portal-link-btn" style="background:#1f3367; width:100%; text-align:center; display:block;">📺 Disney+ Hotstar</a>
+            <a href="https://www.youtube.com" target="_blank" class="portal-link-btn" style="background:#ff0000; width:100%; text-align:center; display:block; margin-bottom:6px;">▶️ YouTube पर वीडियो देखें</a>
           </div>
+
           <div class="live-upload-box">
-            <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? '+ Upload Video' : '+ नया वीडियो या रागनी अपलोड करें'}</div>
-            <input class="form-control" id="vTitle" placeholder="${isEn ? 'Title...' : 'शीर्षक (जैसे: हरियाणवी रागनी / भजन)'}" style="margin-bottom:8px;" />
-            <div class="media-options">
-              <button class="opt-btn" onclick="document.getElementById('vCamRecord').click()">🎥 ${isEn ? 'Record Live Video' : 'लाइव वीडियो रिकॉर्ड करें'}</button>
-              <button class="opt-btn" onclick="document.getElementById('vFileSelect').click()">📁 ${isEn ? 'Choose Gallery' : 'गैलरी से वीडियो चुनें'}</button>
-            </div>
-            <input type="file" accept="video/*" capture="environment" id="vCamRecord" style="display:none;" onchange="app.handleVideo(this)" />
-            <input type="file" accept="video/*" id="vFileSelect" style="display:none;" onchange="app.handleVideo(this)" />
-            <div id="vFilePreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin:6px 0;"></div>
-            <button class="btn-submit" onclick="app.submitVideo()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
+            <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? '+ Add New Joke' : '+ अपना नया मज़ेदार चुटकुला जोड़ें'}</div>
+            <input class="form-control" id="jAuthor" placeholder="${isEn ? 'Your Name...' : 'आपका नाम (वैकल्पिक)...'}" style="margin-bottom:8px;" />
+            <textarea class="form-control" id="jText" placeholder="${isEn ? 'Write your joke here...' : 'यहाँ अपना चुटकुला लिखें...'}" style="margin-bottom:8px; height:70px; resize:none;"></textarea>
+            <button class="btn-submit" onclick="app.submitJoke()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
-          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">🎬 ${displayVillageName} ${isEn ? 'Live Videos:' : 'के लाइव वीडियो:'}</div>
-          ${vList || `<div class="empty-state">${isEn ? 'No videos available.' : 'इस गाँव में अभी कोई लाइव वीडियो उपलब्ध नहीं है।'}</div>`}
+
+          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">📖 ${displayVillageName} ${isEn ? 'Live Jokes:' : 'के लाइव चुटकुले:'}</div>
+          ${jList || `<div class="empty-state">${isEn ? 'No jokes available.' : 'इस गाँव में अभी कोई चुटकुला उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
     }
@@ -854,9 +835,9 @@ class VillageApp {
       let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && x.districtId === this.state.selectedDistrict && x.villageHi === this.state.searchVillage).map(x => `
         <div class="media-card" style="border: 2px solid #2563eb;">
           <span class="service-tag">${labelName}</span>
-          <div class="service-name">${x.title || x.name || x.caption || ''} (${x.category || ''}) - फोन: ${x.phone || ''}</div>
+          <div class="service-name">${x.title || x.name || x.caption || x.text || ''}</div>
+          <p style="font-size:12px; color:#047857;">${x.author ? 'लेखक: ' + x.author : ''}</p>
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
-          ${x.videoUrl ? `<video controls style="width:100%; max-height:140px; background:#000;"><source src="${x.videoUrl}"></video>` : ''}
           <button class="approve-btn" onclick="app.approveItem('${path}', '${x.id}')">✅ Approve</button>
           <button class="delete-btn" onclick="app.deleteItem('${path}', '${x.id}')">❌ Reject</button>
         </div>
@@ -867,7 +848,7 @@ class VillageApp {
       let pHist = renderPend(this.state.history, 'history', 'History');
       let pMkt = renderPend(this.state.market, 'market', 'Market');
       let pGal = renderPend(this.state.gallery, 'gallery', 'Gallery');
-      let pVid = renderPend(this.state.videos, 'videos', 'Video');
+      let pJoke = renderPend(this.state.jokes, 'jokes', 'Joke');
 
       let subAdminSection = this.state.isAdminLoggedIn ? `
         <div class="card" style="margin-top:15px; border:2px dashed #047857;">
@@ -882,8 +863,8 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card"><div class="card-title">📥 Admin Approval Panel (${displayVillageName})</div></div>
-        ${pServ || ''} ${pAnn || ''} ${pHist || ''} ${pMkt || ''} ${pGal || ''} ${pVid || ''}
-        ${(!pServ && !pAnn && !pHist && !pMkt && !pGal && !pVid) ? '<div class="empty-state">No pending requests.</div>' : ''}
+        ${pServ || ''} ${pAnn || ''} ${pHist || ''} ${pMkt || ''} ${pGal || ''} ${pJoke || ''}
+        ${(!pServ && !pAnn && !pHist && !pMkt && !pGal && !pJoke) ? '<div class="empty-state">No pending requests.</div>' : ''}
         ${subAdminSection}
       `;
     }
