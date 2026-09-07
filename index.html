@@ -81,8 +81,9 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .approve-btn { background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 6px; }
 .portal-link-btn { display: inline-block; background: #2563eb; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; margin: 4px; }
 .media-options { display: flex; gap: 8px; margin-bottom: 8px; justify-content: center; }
-.opt-btn { flex: 1; background: #047857; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
-.disease-box { background: #fffbeb; border: 1px solid #fde68a; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 13px; }
+.opt-btn { flex: 1; background: #047857; color: white; border: none; padding: 9px 6px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; }
+.disease-box { background: #fffbeb; border: 1px solid #fde68a; padding: 12px; border-radius: 10px; margin-top: 10px; font-size: 13px; }
+.disease-box h4 { color: #b45309; margin-bottom: 4px; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -149,7 +150,8 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
     villages: [
       { hi: "हाँसी", en: "Hansi" },
       { hi: "बरवाला", en: "Barwala" },
-      { hi: "नारनौंद", en: "Narnaund" }
+      { hi: "नारनौंद", en: "Narnaund" },
+      { hi: "आदमपुर", en: "Adampur" }
     ]
   }
 };
@@ -262,7 +264,7 @@ class VillageApp {
     let baseText = "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य";
     
     if(approvedShops.length > 0) {
-      let shopTickerItems = approvedShops.map(s => `🛒 नई सेवा/दुकान: ${s.name} (${s.category || 'Shop'}) - फोन: ${s.phone}`).join(' | ');
+      let shopTickerItems = approvedShops.map(s => `🛒 नई दुकान/सेवा: ${s.name} (${s.category || 'Service'}) - फोन: ${s.phone}`).join(' | ');
       tickerEl.innerHTML = `${shopTickerItems} | ${baseText}`;
     } else {
       tickerEl.innerHTML = baseText;
@@ -378,11 +380,12 @@ class VillageApp {
       reader.onloadend = () => { 
         this.tempImage = reader.result; 
         let preview = document.getElementById('shopImgPreviewText') || 
+                      document.getElementById('servImgPreviewText') || 
                       document.getElementById('annImgPreviewText') || 
                       document.getElementById('histImgPreviewText') || 
                       document.getElementById('mImgPreviewText') || 
                       document.getElementById('gImgPreviewText');
-        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ फोटो चुन ली गई है" : "✅ Photo selected";
+        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ फोटो अपलोड हो गई है" : "✅ Photo uploaded";
       };
       reader.readAsDataURL(file);
     }
@@ -395,7 +398,7 @@ class VillageApp {
       reader.onloadend = () => { 
         this.tempVideo = reader.result; 
         let preview = document.getElementById('vFilePreviewText');
-        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ वीडियो चुन लिया गया है" : "✅ Video selected";
+        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ वीडियो अपलोड हो गया है" : "✅ Video uploaded";
       };
       reader.readAsDataURL(file);
     }
@@ -409,7 +412,19 @@ class VillageApp {
     const phone = phoneEl ? phoneEl.value : '';
     const cat = catEl ? catEl.value : 'किराना';
     if(!name || !phone) return alert(this.state.lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all details!");
-    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान/सेवा एडमिन अप्रूवल के लिए भेज दी गई है!", "Shop/Service submitted for admin approval!");
+    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन अप्रूवल के लिए भेज दी गई है!", "Shop submitted for admin approval!");
+    this.tempImage = '';
+  }
+
+  submitService() {
+    const nameEl = document.getElementById('srvName');
+    const phoneEl = document.getElementById('srvPhone');
+    const catEl = document.getElementById('srvCat');
+    const name = nameEl ? nameEl.value : '';
+    const phone = phoneEl ? phoneEl.value : '';
+    const cat = catEl ? catEl.value : 'मिस्त्री';
+    if(!name || !phone) return alert(this.state.lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all details!");
+    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "सेवा प्रदाता एडमिन अप्रूवल के लिए भेज दिया गया है!", "Service submitted for admin approval!");
     this.tempImage = '';
   }
 
@@ -479,6 +494,18 @@ class VillageApp {
     const menuText = document.getElementById('menuText');
     if(menuText) menuText.innerText = isEn ? 'Menu' : 'मेनू';
 
+    const mAdminText = document.getElementById('mAdminText');
+    if(mAdminText) mAdminText.innerText = isEn ? 'Main Admin Panel' : 'Main Admin पैनल';
+
+    const mSubText = document.getElementById('mSubText');
+    if(mSubText) mSubText.innerText = isEn ? 'Sub-Admin Panel' : 'Sub-Admin पैनल';
+
+    const mPolicyText = document.getElementById('mPolicyText');
+    if(mPolicyText) mPolicyText.innerText = isEn ? 'Privacy Policy' : 'Privacy Policy';
+
+    const mAboutText = document.getElementById('mAboutText');
+    if(mAboutText) mAboutText.innerText = isEn ? 'About Us' : 'About Us';
+
     const content = document.getElementById('mainContent');
     if(!content) return;
 
@@ -515,7 +542,7 @@ class VillageApp {
           </div>
         </div>
         <div class="menu-card bg-1" onclick="app.changeView('list')"><span>👀 ${isEn ? 'View Live Shops & Services' : 'लाइव दुकानें व सेवाएं देखें'}</span><span>→</span></div>
-        <div class="menu-card bg-2" onclick="app.changeView('add_service')"><span>➕ ${isEn ? 'Add Shop / Mistri / Pandit / Bike' : 'दुकान या सेवा (मिस्त्री, पंडित, गाड़ी) जोड़ें'}</span><span>→</span></div>
+        <div class="menu-card bg-2" onclick="app.changeView('add_service')"><span>➕ ${isEn ? 'Add Shop / Service Provider' : 'दुकान या मिस्त्री/सेवा जोड़ें'}</span><span>→</span></div>
         <div class="menu-card bg-3" onclick="app.changeView('announcements')"><span>📢 ${isEn ? 'Announcements & News' : 'मुनादी व खबरें'}</span><span>→</span></div>
         <div class="menu-card bg-4" onclick="app.changeView('history')"><span>📜 ${isEn ? 'History & Sarpanch' : 'इतिहास व सरपंच'}</span><span>→</span></div>
         <div class="menu-card bg-5" onclick="app.changeView('market')"><span>🌾 ${isEn ? 'Market & Animals' : 'पशु व बाजार'}</span><span>→</span></div>
@@ -523,7 +550,7 @@ class VillageApp {
         <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 ${isEn ? 'Videos & Ragni' : 'वीडियो और रागनी'}</span><span>→</span></div>
         <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 ${isEn ? 'Education Portal' : 'शिक्षा पोर्टल'}</span><span>→</span></div>
         <div class="menu-card bg-9" onclick="app.changeView('complaints')"><span>✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'}</span><span>→</span></div>
-        <div class="menu-card bg-2" onclick="app.changeView('animals')"><span>🐄 ${isEn ? 'Animal Treatment' : 'पशु चिकित्सा'}</span><span>→</span></div>
+        <div class="menu-card bg-2" onclick="app.changeView('animals')"><span>🐄 ${isEn ? 'Animal Treatment' : 'पशु चिकित्सा व उपचार'}</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -539,36 +566,63 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card"><div class="card-title">👀 ${isEn ? 'Live Shops & Services' : 'लाइव दुकानें व सेवाएं'} (${displayVillageName})</div></div>
-        ${list || `<div class="empty-state">${isEn ? 'No services available in this village.' : 'इस गाँव में अभी कोई दुकान या सेवा उपलब्ध नहीं है।'}</div>`}
+        ${list || `<div class="empty-state">${isEn ? 'No listings available in this village.' : 'इस गाँव में अभी कोई दुकान या सेवा उपलब्ध नहीं है।'}</div>`}
       `;
     }
     else if (this.state.view === 'add_service') {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
+        
+        <!-- 1. दुकान जोड़ने का फॉर्म -->
         <div class="card">
-          <div class="card-title">➕ ${isEn ? 'Add Shop or Service Provider' : 'दुकान या सेवा (मिस्त्री, पंडित, गाड़ी) जोड़ें'} (${displayVillageName})</div>
-          <div class="form-group"><label>${isEn ? 'Name / Shop Name' : 'नाम / दुकान का नाम'}</label><input class="form-control" id="sName" placeholder="${isEn ? 'Name...' : 'नाम...'}" /></div>
+          <div class="card-title">🛒 ${isEn ? 'Add Shop / Kirana' : 'दुकान या किराना जोड़ें'} (${displayVillageName})</div>
+          <div class="form-group"><label>${isEn ? 'Shop Name' : 'दुकान का नाम'}</label><input class="form-control" id="sName" placeholder="${isEn ? 'Name...' : 'नाम...'}" /></div>
           <div class="form-group"><label>${isEn ? 'Mobile Number' : 'मोबाइल नंबर'}</label><input class="form-control" id="sPhone" placeholder="${isEn ? 'Number...' : 'नंबर...'}" /></div>
+          <div class="form-group"><label>${isEn ? 'Category' : 'श्रेणी'}</label><select class="form-control" id="sCat"><option value="किराना">${isEn ? 'Grocery Store' : 'किराना स्टोर'}</option><option value="कपड़ा दुकान">${isEn ? 'Cloth Shop' : 'कपड़ा दुकान'}</option><option value="जन सेवा केंद्र">${isEn ? 'Common Service Center' : 'जन सेवा केंद्र / CSC'}</option><option value="अन्य दुकान">${isEn ? 'Other Shop' : 'अन्य दुकान'}</option></select></div>
           
-          <!-- नई कैटेगरी यहाँ जोड़ दी गई हैं -->
           <div class="form-group">
-            <label>${isEn ? 'Select Category' : 'श्रेणी चुनें (Category)'}</label>
-            <select class="form-control" id="sCat">
-              <option value="किराना">${isEn ? 'Grocery Store' : 'किराना दुकान (Grocery)'}</option>
-              <option value="मिस्त्री">${isEn ? 'Mistri (Mechanic/Mason)' : 'मिस्त्री (Mistri)'}</option>
-              <option value="इलेक्ट्रीशियन">${isEn ? 'Electrician' : 'इलेक्ट्रीशियन (Electrician)'}</option>
-              <option value="प्लंबर">${isEn ? 'Plumber' : 'प्लंबर (Plumber)'}</option>
-              <option value="पंडित जी">${isEn ? 'Pandit Ji' : 'पंडित जी (Pandit Ji)'}</option>
-              <option value="गाड़ी किराए के लिए">${isEn ? 'Car / Taxi Rental' : 'गाड़ी किराए के लिए (Car/Taxi)'}</option>
-              <option value="बाइक">${isEn ? 'Bike (Sale/Rent)' : 'बाइक (Bike Sale/Rent)'}</option>
-              <option value="डॉक्टर">${isEn ? 'Doctor / Medical' : 'डॉक्टर / मेडिकल'}</option>
-              <option value="कपड़ा">${isEn ? 'Cloth Store' : 'कपड़ा दुकान'}</option>
-              <option value="अन्य">${isEn ? 'Other' : 'अन्य सेवा'}</option>
+            <label>${isEn ? 'Shop Photo' : 'दुकान की फोटो'}</label>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('sCamInput').click()">📸 ${isEn ? 'Live Camera' : 'लाइव फोटो लें'}</button>
+              <button class="opt-btn" onclick="document.getElementById('sFileInput').click()">📁 ${isEn ? 'Choose Gallery' : 'गैलरी से चुनें'}</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="sCamInput" style="display:none;" onchange="app.handleImage(this)" />
+            <input type="file" accept="image/*" id="sFileInput" style="display:none;" onchange="app.handleImage(this)" />
+            <div id="shopImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+          </div>
+          <button class="btn-submit" onclick="app.submitShop()">📤 ${isEn ? 'Send Shop for Approval' : 'दुकान एडमिन अप्रूवल के लिए भेजें'}</button>
+        </div>
+
+        <!-- 2. मिस्त्री, इलेक्ट्रीशियन, पंडित जी, वाहन आदि जोड़ने का फॉर्म -->
+        <div class="card" style="border: 2px dashed #059669; background: #f0fdf4;">
+          <div class="card-title" style="color:#047857;">🛠️ ${isEn ? 'Add Professional / Service Provider' : 'मिस्त्री, इलेक्ट्रीशियन, पंडित जी, गाड़ी व बाइक जोड़ें'}</div>
+          <div class="form-group"><label>${isEn ? 'Your Name' : 'आपका नाम'}</label><input class="form-control" id="srvName" placeholder="${isEn ? 'Name...' : 'नाम...'}" /></div>
+          <div class="form-group"><label>${isEn ? 'Mobile Number' : 'मोबाइल नंबर'}</label><input class="form-control" id="srvPhone" placeholder="${isEn ? 'Number...' : 'नंबर...'}" /></div>
+          
+          <div class="form-group">
+            <label>${isEn ? 'Select Service Category' : 'सेवा की श्रेणी चुनें'}</label>
+            <select class="form-control" id="srvCat">
+              <option value="मिस्त्री">🛠️ मिस्त्री (Mistri)</option>
+              <option value="इलेक्ट्रीशियन">⚡ इलेक्ट्रीशियन (Electrician)</option>
+              <option value="प्लंबर">🔧 प्लंबर (Plumber)</option>
+              <option value="पंडित जी">🛕 पंडित जी (Pandit Ji)</option>
+              <option value="गाड़ी किराए के लिए">🚗 गाड़ी किराए के लिए (Cab / Car Rental)</option>
+              <option value="बाइक">🏍️ बाइक / ट्रैक्टर किराया (Bike / Tractor)</option>
+              <option value="अन्य सेवा">🤝 अन्य सेवा (Other Service)</option>
             </select>
           </div>
 
-          <div class="form-group"><label>${isEn ? 'Select Photo' : 'फोटो चुनें'}</label><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" /><div id="shopImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div></div>
-          <button class="btn-submit" onclick="app.submitShop()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
+          <div class="form-group">
+            <label>${isEn ? 'Service / Vehicle Photo' : 'फोटो (यदि हो)'}</label>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('srvCamInput').click()">📸 ${isEn ? 'Live Camera' : 'लाइव फोटो लें'}</button>
+              <button class="opt-btn" onclick="document.getElementById('srvFileInput').click()">📁 ${isEn ? 'Choose Gallery' : 'गैलरी से चुनें'}</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="srvCamInput" style="display:none;" onchange="app.handleImage(this)" />
+            <input type="file" accept="image/*" id="srvFileInput" style="display:none;" onchange="app.handleImage(this)" />
+            <div id="servImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+          </div>
+          <button class="btn-submit" onclick="app.submitService()">📤 ${isEn ? 'Send Service for Approval' : 'सेवा एडमिन अप्रूवल के लिए भेजें'}</button>
         </div>
       `;
     }
@@ -582,8 +636,13 @@ class VillageApp {
           <div class="card-title">📢 ${isEn ? 'Announcements' : 'मुनादी व खबरें'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="annTitle" placeholder="${isEn ? 'Details...' : 'मुनादी का विवरण...'}" style="margin-bottom:8px;" />
-            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <div id="annImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('annCam').click()">📸 ${isEn ? 'Live Photo' : 'लाइव फोटो'}</button>
+              <button class="opt-btn" onclick="document.getElementById('annFile').click()">📁 ${isEn ? 'Gallery' : 'गैलरी'}</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="annCam" style="display:none;" onchange="app.handleImage(this)" />
+            <input type="file" accept="image/*" id="annFile" style="display:none;" onchange="app.handleImage(this)" />
+            <div id="annImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin:6px 0;"></div>
             <button class="btn-submit" onclick="app.submitAnnouncement()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No announcements.' : 'कोई मुनादी उपलब्ध नहीं है।'}</div>`}
@@ -600,8 +659,13 @@ class VillageApp {
           <div class="card-title">📜 ${isEn ? 'History & Sarpanch' : 'इतिहास व सरपंच'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="histTitle" placeholder="${isEn ? 'History details...' : 'इतिहास या सरपंच की जानकारी...'}" style="margin-bottom:8px;" />
-            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <div id="histImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('histCam').click()">📸 ${isEn ? 'Live Photo' : 'लाइव फोटो'}</button>
+              <button class="opt-btn" onclick="document.getElementById('histFile').click()">📁 ${isEn ? 'Gallery' : 'गैलरी'}</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="histCam" style="display:none;" onchange="app.handleImage(this)" />
+            <input type="file" accept="image/*" id="histFile" style="display:none;" onchange="app.handleImage(this)" />
+            <div id="histImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin:6px 0;"></div>
             <button class="btn-submit" onclick="app.submitHistory()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No info available.' : 'कोई जानकारी उपलब्ध नहीं है।'}</div>`}
@@ -618,8 +682,13 @@ class VillageApp {
           <div class="card-title">🌾 ${isEn ? 'Market & Animals' : 'पशु व बाजार'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="mTitle" placeholder="${isEn ? 'Market details...' : 'पशु या बाजार की वस्तु का विवरण...'}" style="margin-bottom:8px;" />
-            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <div id="mImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('mCam').click()">📸 ${isEn ? 'Live Photo' : 'लाइव फोटो'}</button>
+              <button class="opt-btn" onclick="document.getElementById('mFile').click()">📁 ${isEn ? 'Gallery' : 'गैलरी'}</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="mCam" style="display:none;" onchange="app.handleImage(this)" />
+            <input type="file" accept="image/*" id="mFile" style="display:none;" onchange="app.handleImage(this)" />
+            <div id="mImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin:6px 0;"></div>
             <button class="btn-submit" onclick="app.submitMarket()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No posts.' : 'कोई पोस्ट उपलब्ध नहीं है।'}</div>`}
@@ -636,8 +705,13 @@ class VillageApp {
           <div class="card-title">📸 ${isEn ? 'Gallery' : 'गैलरी'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="gCaption" placeholder="${isEn ? 'Photo caption...' : 'फोटो का शीर्षक...'}" style="margin-bottom:8px;" />
-            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <div id="gImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
+            <div class="media-options">
+              <button class="opt-btn" onclick="document.getElementById('gCam').click()">📸 ${isEn ? 'Live Photo' : 'लाइव फोटो लें'}</button>
+              <button class="opt-btn" onclick="document.getElementById('gFile').click()">📁 ${isEn ? 'Gallery' : 'गैलरी से चुनें'}</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="gCam" style="display:none;" onchange="app.handleImage(this)" />
+            <input type="file" accept="image/*" id="gFile" style="display:none;" onchange="app.handleImage(this)" />
+            <div id="gImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin:6px 0;"></div>
             <button class="btn-submit" onclick="app.submitGallery()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No photos.' : 'कोई फोटो उपलब्ध नहीं है।'}</div>`}
@@ -667,12 +741,12 @@ class VillageApp {
             <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? '+ Upload Video' : '+ नया वीडियो या रागनी अपलोड करें'}</div>
             <input class="form-control" id="vTitle" placeholder="${isEn ? 'Title...' : 'शीर्षक (जैसे: हरियाणवी रागनी / भजन)'}" style="margin-bottom:8px;" />
             <div class="media-options">
-              <button class="opt-btn" onclick="document.getElementById('vCamRecord').click()">${isEn ? '🎥 Record Video' : '🎥 लाइव वीडियो बनाएं'}</button>
-              <button class="opt-btn" onclick="document.getElementById('vFileSelect').click()">${isEn ? '📁 Choose File' : '📁 फाइल चुनें'}</button>
+              <button class="opt-btn" onclick="document.getElementById('vCamRecord').click()">🎥 ${isEn ? 'Record Live Video' : 'लाइव वीडियो रिकॉर्ड करें'}</button>
+              <button class="opt-btn" onclick="document.getElementById('vFileSelect').click()">📁 ${isEn ? 'Choose Gallery' : 'गैलरी से वीडियो चुनें'}</button>
             </div>
             <input type="file" accept="video/*" capture="environment" id="vCamRecord" style="display:none;" onchange="app.handleVideo(this)" />
             <input type="file" accept="video/*" id="vFileSelect" style="display:none;" onchange="app.handleVideo(this)" />
-            <div id="vFilePreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
+            <div id="vFilePreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin:6px 0;"></div>
             <button class="btn-submit" onclick="app.submitVideo()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">🎬 ${displayVillageName} ${isEn ? 'Live Videos:' : 'के लाइव वीडियो:'}</div>
@@ -685,8 +759,10 @@ class VillageApp {
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
           <div class="card-title">📚 ${isEn ? 'Education Portal' : 'बच्चों की शिक्षा व पोर्टल'}</div>
+          <p style="font-size:13px; color:#334155; margin-bottom:12px;">${isEn ? 'Important portals for students:' : 'विद्यार्थियों के लिए महत्वपूर्ण सरकारी पोर्टल और सीधे लिंक्स:'}</p>
           <a href="https://harshiksha.gov.in" target="_blank" class="portal-link-btn">🔴 ${isEn ? 'Haryana Education Portal' : 'हरियाणा शिक्षा पोर्टल'}</a>
           <a href="https://scholarships.gov.in" target="_blank" class="portal-link-btn" style="background:#405488;">🎓 ${isEn ? 'National Scholarship' : 'नेशनल स्कॉलरशिप'}</a>
+          <a href="https://diksha.gov.in" target="_blank" class="portal-link-btn" style="background:#ca8a04;">📚 ${isEn ? 'DIKSHA App' : 'दीक्षा ऐप (DIKSHA)'}</a>
         </div>
       `;
     }
@@ -705,6 +781,7 @@ class VillageApp {
         <div class="card">
           <div class="card-title">✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'} (${displayVillageName})</div>
           <div class="live-upload-box">
+            <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? 'Register your complaint' : 'अपनी समस्या या शिकायत दर्ज करें'}</div>
             <input class="form-control" id="cTitle" placeholder="${isEn ? 'Subject...' : 'शिकायत का विषय...'}" style="margin-bottom:8px;" />
             <textarea class="form-control" id="cDesc" placeholder="${isEn ? 'Details...' : 'विस्तृत विवरण...'}" style="margin-bottom:8px; height:70px; resize:none;"></textarea>
             <button class="btn-submit" onclick="app.submitComplaint()">📤 ${isEn ? 'Submit Complaint' : 'शिकायत भेजें'}</button>
@@ -719,15 +796,45 @@ class VillageApp {
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
           <div class="card-title">🐄 ${isEn ? 'Animal Treatment' : 'पशु चिकित्सा व उपचार'}</div>
-          <div class="disease-box"><b>1. Haemorrhagic Septicaemia:</b><br><b>Symptoms:</b> High fever, neck swelling.<br><b>Treatment:</b> Immediate vaccination by vet.</div>
+          <p style="font-size:13px; color:#334155; margin-bottom:10px;">${isEn ? 'First aid & treatment for animals:' : 'पशुओं की प्रमुख बीमारियाँ, लक्षण और उनके शुरुआती उपचार:'}</p>
+          
+          <div class="disease-box">
+            <h4>1. गलघोटू (Haemorrhagic Septicaemia - HS)</h4>
+            <b>लक्षण:</b> तेज बुखार, सांस लेने में तकलीफ, गले पर सूजन और घर-घर की आवाज।<br>
+            <b>उपचार:</b> तुरंत पशु चिकित्सक से संपर्क करें। बारिश से पहले टीकाकरण अनिवार्य है।
+          </div>
+
+          <div class="disease-box">
+            <h4>2. थनैला रोग (Mastitis)</h4>
+            <b>लक्षण:</b> थनों में सूजन, दर्द, दूध में खून या छ्छूंदर आना, दूध कम होना।<br>
+            <b>उपचार:</b> थन की अच्छी तरह सफाई, एंटीबायोटिक इंजेक्शन और डॉक्टर की सलाह से मरहम लगाएं।
+          </div>
+
+          <div class="disease-box">
+            <h4>3. खुरपका-मुँहपका (FMD)</h4>
+            <b>लक्षण: छाले, मुँह से लार गिरना, खुर में घाव और लंगड़ापन।</b><br>
+            <b>उपचार:</b> मुँह को फिटकरी के पानी से धोएं, खुरों पर पोटैशियम परमैंगनेट (Lal Dawa) का घोल लगाएं।
+          </div>
+
+          <div class="disease-box">
+            <h4>4. आफरा (Bloat / Gas)</h4>
+            <b>लक्षण: पेट फूलना (विशेषकर बाईं तरफ), बेचैनी और सांस फूलना।</b><br>
+            <b>उपचार:</b> तारपीन का तेल (Turpentine oil) और हींग-मीठा सोडा दें, तुरंत डॉक्टर को दिखाएं।
+          </div>
+
+          <div class="disease-box">
+            <h4>5. किलनी और परजीवी (Ticks & Worms)</h4>
+            <b>लक्षण: खून की कमी, कमज़ोरी और शरीर पर जूँ/किलनी होना।</b><br>
+            <b>उपचार:</b> डॉक्टर के बताए अनुसार आईवरमेक्टिन (Ivermectin) इंजेक्शन या स्प्रे का प्रयोग करें।
+          </div>
         </div>
       `;
     }
     else if (this.state.view === 'policy') {
-      html = `<button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button><div class="card"><div class="card-title">📜 Privacy Policy</div></div>`;
+      html = `<button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button><div class="card"><div class="card-title">📜 Privacy Policy</div><p style="font-size:13px; color:#334155;">${isEn ? 'Data security is our priority.' : 'आपकी डेटा सुरक्षा हमारी प्राथमिकता है।'}</p></div>`;
     }
     else if (this.state.view === 'about') {
-      html = `<button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button><div class="card"><div class="card-title">ℹ️ About Us</div></div>`;
+      html = `<button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px; color:#334155;">${isEn ? 'Empowering villages digitally.' : 'गाँव को डिजिटल रूप से सशक्त बनाना।'}</p></div>`;
     }
     else if (this.state.view === 'admin') {
       if(!this.state.isAdminLoggedIn && !this.state.isSubAdminLoggedIn) return this.changeView('home');
@@ -735,7 +842,7 @@ class VillageApp {
       let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && x.districtId === this.state.selectedDistrict && x.villageHi === this.state.searchVillage).map(x => `
         <div class="media-card" style="border: 2px solid #2563eb;">
           <span class="service-tag">${labelName}</span>
-          <div class="service-name">${x.title || x.name || x.caption || ''}</div>
+          <div class="service-name">${x.title || x.name || x.caption || ''} (${x.category || ''}) - फोन: ${x.phone || ''}</div>
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
           ${x.videoUrl ? `<video controls style="width:100%; max-height:140px; background:#000;"><source src="${x.videoUrl}"></video>` : ''}
           <button class="approve-btn" onclick="app.approveItem('${path}', '${x.id}')">✅ Approve</button>
