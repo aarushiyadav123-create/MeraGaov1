@@ -119,40 +119,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 
 <script>
 const HARYANA_DISTRICTS_AND_VILLAGES = {
-  "rohtak": {
-    nameHi: "रोहतक", nameEn: "Rohtak",
-    villages: [
-      { hi: "रोहतक शहर", en: "Rohtak City" },
-      { hi: "कलानौर", en: "Kalanaur" },
-      { hi: "महम", en: "Meham" },
-      { hi: "संसारपुर", en: "Sansarpur" },
-      { hi: "बहलोलपूर", en: "Bahlolpur" },
-      { hi: "निंदलाना", en: "Nindana" },
-      { hi: "इमली खेड़ा", en: "Imli Khera" }
-    ]
-  },
-  "hisar": {
-    nameHi: "हिसार", nameEn: "Hisar",
-    villages: [
-      { hi: "हिसार शहर", en: "Hisar City" },
-      { hi: "हाँसी", en: "Hansi" },
-      { hi: "आदमपुर", en: "Adampur" },
-      { hi: "बरवाला", en: "Barwala" },
-      { hi: "नारनौंद", en: "Narnaund" },
-      { hi: "उकलाना", en: "Uklana" }
-    ]
-  },
-  "rewari": {
-    nameHi: "रेवाड़ी", nameEn: "Rewari",
-    villages: [
-      { hi: "रेवाड़ी शहर", en: "Rewari City" },
-      { hi: "बावल", en: "Bawal" },
-      { hi: "कोसली", en: "Kosli" },
-      { hi: "धारूहेड़ा", en: "Dharuhera" },
-      { hi: "पाल्हावास", en: "Palhawas" },
-      { hi: "नंदरामपुर बास", en: "Nandrampur Bas" }
-    ]
-  },
   "charkhi-dadri": {
     nameHi: "चरखी दादरी", nameEn: "Charkhi Dadri",
     villages: [
@@ -178,16 +144,28 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
       { hi: "बाढड़ा", en: "Badhra" },
       { hi: "सिवानी", en: "Siwani" }
     ]
+  },
+  "hisar": {
+    nameHi: "हिसार", nameEn: "Hisar",
+    villages: [
+      { hi: "हाँसी", en: "Hansi" },
+      { hi: "बरवाला", en: "Barwala" },
+      { hi: "नारनौंद", en: "Narnaund" },
+      { hi: "आदमपुर", en: "Adampur" }
+    ]
   }
 };
 
 class VillageApp {
   constructor() {
+    // LocalStorage से कस्टम जोड़े गए गाँवों को लोड करना ताकि पेज रीफ्रेश होने पर भी बने रहें
+    this.loadCustomVillagesFromStorage();
+
     this.state = {
       lang: 'hi',
       view: 'home',
-      selectedDistrict: localStorage.getItem('selectedDistrict') || 'rohtak',
-      searchVillage: localStorage.getItem('searchVillage') || 'रोहतक शहर',
+      selectedDistrict: localStorage.getItem('selectedDistrict') || 'charkhi-dadri',
+      searchVillage: localStorage.getItem('searchVillage') || 'मालकोश',
       services: [],
       gallery: [],
       market: [],
@@ -205,6 +183,57 @@ class VillageApp {
 
     this.initListeners();
     this.initFirebaseData();
+    this.render();
+  }
+
+  loadCustomVillagesFromStorage() {
+    try {
+      let savedVillages = JSON.parse(localStorage.getItem('customDistrictVillages'));
+      if (savedVillages) {
+        for (let dKey in savedVillages) {
+          if (HARYANA_DISTRICTS_AND_VILLAGES[dKey]) {
+            savedVillages[dKey].forEach(newV => {
+              let exists = HARYANA_DISTRICTS_AND_VILLAGES[dKey].villages.some(v => v.hi === newV.hi);
+              if (!exists) {
+                HARYANA_DISTRICTS_AND_VILLAGES[dKey].villages.push(newV);
+              }
+            });
+          }
+        }
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  addNewVillageToDistrict() {
+    const inputEl = document.getElementById('newVillageNameInput');
+    const villageName = inputEl ? inputEl.value.trim() : '';
+
+    if (!villageName) {
+      alert(this.state.lang === 'hi' ? "कृपया नए गाँव का नाम दर्ज करें!" : "Please enter new village name!");
+      return;
+    }
+
+    const currentDist = this.state.selectedDistrict;
+    const exists = HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.some(v => v.hi === villageName);
+    
+    if (exists) {
+      alert(this.state.lang === 'hi' ? "यह गाँव सूची में पहले से मौजूद है!" : "Village already exists in the list!");
+      return;
+    }
+
+    // नया गाँव ऑब्जेक्ट जोड़ें
+    const newVillageObj = { hi: villageName, en: villageName };
+    HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.push(newVillageObj);
+
+    // LocalStorage में सेव करें
+    let savedVillages = JSON.parse(localStorage.getItem('customDistrictVillages')) || {};
+    if (!savedVillages[currentDist]) savedVillages[currentDist] = [];
+    savedVillages[currentDist].push(newVillageObj);
+    localStorage.setItem('customDistrictVillages', JSON.stringify(savedVillages));
+
+    // ऑटोमैटिकली नए गाँव को सिलेक्ट कर लें
+    this.state.searchVillage = villageName;
+    alert(this.state.lang === 'hi' ? `गाँव '${villageName}' सफलतापूर्वक जोड़ दिया गया है!` : `Village '${villageName}' added successfully!`);
     this.render();
   }
 
@@ -523,7 +552,7 @@ class VillageApp {
 
   render() {
     const isEn = this.state.lang === 'en';
-    const currentDistrictObj = HARYANA_DISTRICTS_AND_VILLAGES[this.state.selectedDistrict] || HARYANA_DISTRICTS_AND_VILLAGES['rohtak'];
+    const currentDistrictObj = HARYANA_DISTRICTS_AND_VILLAGES[this.state.selectedDistrict] || HARYANA_DISTRICTS_AND_VILLAGES['charkhi-dadri'];
     
     let currentVillageObj = currentDistrictObj.villages.find(v => v.hi === this.state.searchVillage || v.en === this.state.searchVillage);
     let displayVillageName = currentVillageObj ? (isEn ? currentVillageObj.en : currentVillageObj.hi) : this.state.searchVillage;
@@ -583,7 +612,17 @@ class VillageApp {
               ${villageOptions}
             </select>
           </div>
+
+          <!-- नया गाँव जोड़ने का फीचर (Add Village Feature) -->
+          <div style="margin-top: 10px; border-top: 1px dashed #059669; padding-top: 10px;">
+            <label style="color:#047857; font-weight:700;">➕ ${isEn ? 'Add New Village in Same District' : 'इसी जिले में नया गाँव/वार्ड जोड़ें:'}</label>
+            <div style="display: flex; gap: 6px; margin-top: 5px;">
+              <input class="form-control" id="newVillageNameInput" placeholder="${isEn ? 'New village name...' : 'गाँव का नाम लिखें...'}" style="margin-bottom:0;" />
+              <button style="background: #047857; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;" onclick="app.addNewVillageToDistrict()">${isEn ? 'Add' : 'जोड़ें'}</button>
+            </div>
+          </div>
         </div>
+
         <div class="menu-card bg-1" onclick="app.changeView('list')"><span>👀 ${isEn ? 'View Live Shops & Services' : 'लाइव दुकानें व सेवाएं देखें'}</span><span>→</span></div>
         <div class="menu-card bg-2" onclick="app.changeView('add_service')"><span>➕ ${isEn ? 'Add Shop / Service Provider' : 'दुकान या मिस्त्री/सेवा जोड़ें'}</span><span>→</span></div>
         <div class="menu-card bg-3" onclick="app.changeView('announcements')"><span>📢 ${isEn ? 'Announcements & News' : 'मुनादी व खबरें'}</span><span>→</span></div>
@@ -609,7 +648,7 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card"><div class="card-title">👀 ${isEn ? 'Live Shops & Services' : 'लाइव दुकानें व सेवाएं'} (${displayVillageName})</div></div>
-        ${list || `<div class="empty-state">${isEn ? 'No listings available in this village.' : 'इस क्षेत्र में अभी कोई दुकान या सेवा उपलब्ध नहीं है।'}</div>`}
+        ${list || `<div class="empty-state">${isEn ? 'No listings available in this village.' : 'इस गाँव में अभी कोई दुकान या सेवा उपलब्ध नहीं है।'}</div>`}
       `;
     }
     else if (this.state.view === 'add_service') {
@@ -795,7 +834,7 @@ class VillageApp {
           </div>
 
           <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">📖 ${displayVillageName} ${isEn ? 'Live Jokes:' : 'के लाइव चुटकुले:'}</div>
-          ${jList || `<div class="empty-state">${isEn ? 'No jokes available.' : 'इस क्षेत्र में अभी कोई चुटकुला उपलब्ध नहीं है।'}</div>`}
+          ${jList || `<div class="empty-state">${isEn ? 'No jokes available.' : 'इस गाँव में अभी कोई चुटकुला उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
     }
