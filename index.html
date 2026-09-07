@@ -120,27 +120,109 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 const HARYANA_DISTRICTS_AND_VILLAGES = {
   "charkhi-dadri": {
     nameHi: "चरखी दादरी", nameEn: "Charkhi Dadri",
-    villages: ["मालकोश", "बाउंड", "झूझू कलाँ", "पैडवा", "बल्हा", "मान्धी", "मंसूरवास", "अचैरा", "बडराई", "कोहला", "भागवी", "मटौर", "रामलवास", "रोहड़", "गोपलगढ़", "साहड़", "अमरावत", "मीन", "पीडल", "दादरी हेट", "बोदड़", "फागना", "वास", "चिड़िया", "समसपुर", "रानीला", "डोहका", "मोरवाला", "पातुवास", "जेवली"]
+    villages: [
+      { hi: "मालकोश", en: "Malkosh" },
+      { hi: "बाउंड", en: "Baund" },
+      { hi: "झूझू कलाँ", en: "Jhujhu Kalan" },
+      { hi: "पैडवा", en: "Paidwa" },
+      { hi: "बल्हा", en: "Balha" },
+      { hi: "मान्धी", en: "Mandhi" },
+      { hi: "मंसूरवास", nameEn: "Mansoorwas", en: "Mansoorwas" },
+      { hi: "अचैरा", en: "Achaira" },
+      { hi: "बडराई", en: "Badrai" },
+      { hi: "कोहला", en: "Kohla" },
+      { hi: "भागवी", en: "Bhagvi" },
+      { hi: "मटौर", en: "Mataur" },
+      { hi: "रामलवास", en: "Ramalwas" },
+      { hi: "रोहड़", en: "Rohad" },
+      { hi: "गोपलगढ़", en: "Gopalgarh" },
+      { hi: "साहड़", en: "Sahad" },
+      { hi: "अमरावत", en: "Amrawat" },
+      { hi: "मीन", en: "Meen" },
+      { hi: "पीडल", en: "Peedal" },
+      { hi: "दादरी हेट", en: "Dadri Hete" },
+      { hi: "बोदड़", en: "Bodad" },
+      { hi: "फागना", en: "Fagna" },
+      { hi: "वास", en: "Vaas" },
+      { hi: "चिड़िया", en: "Chiriya" },
+      { hi: "समसपुर", en: "Samsipur" },
+      { hi: "रानीला", en: "Ranila" },
+      { hi: "डोहका", en: "Dohka" },
+      { hi: "मोरवाला", nameEn: "Morwala", en: "Morwala" },
+      { hi: "पातुवास", en: "Patuwas" },
+      { hi: "जेवली", en: "Jewli" }
+    ]
   },
   "bhiwani": {
     nameHi: "भिवानी", nameEn: "Bhiwani",
-    villages: ["तोशाम", "बवानी खेड़ा", "बाढड़ा", "सिवानी", "ढोला", "बरवास", "किरावड़", "खरक", "डोहका", "अलखपुरा", "दीनोध", "बड़ागाँव", "जीन्द", "बिमला", "सुई", "नौरंगाबाद", "पालुवास", "देवराला", "बेटा", "मिराण", "धारेड़", "बज्जू", "बहल", "सुरपुरा", "देवसर", "रतेरा", "रंभा", "गुराना", "सिसवाला", "ईशरवाल"]
+    villages: [
+      { hi: "तोशाम", en: "Tosham" },
+      { hi: "बवानी खेड़ा", en: "Bawani Khera" },
+      { hi: "बाढड़ा", en: "Badhra" },
+      { hi: "सिवानी", en: "Siwani" },
+      { hi: "ढोला", en: "Dhola" },
+      { hi: "बरवास", en: "Barwas" },
+      { hi: "किरावड़", en: "Kirawad" },
+      { hi: "खरक", en: "Kharak" },
+      { hi: "डोहका", en: "Dohka" },
+      { hi: "अलखपुरा", en: "Alakhpura" },
+      { hi: "दीनोध", en: "Dinodh" },
+      { hi: "बड़ागाँव", en: "Bada Gaon" },
+      { hi: "जीन्द", en: "Jind" },
+      { hi: "बिमला", en: "Bimla" },
+      { hi: "सुई", en: "Sui" },
+      { hi: "नौरंगाबाद", en: "Naurangabad" },
+      { hi: "पालुवास", en: "Paluwas" },
+      { hi: "देवराला", en: "Deorala" },
+      { hi: "बेटा", en: "Beta" },
+      { hi: "मिराण", en: "Miran" }
+    ]
   },
   "hisar": {
     nameHi: "हिसार", nameEn: "Hisar",
-    villages: ["हाँसी", "बरवाला", "नारनौंद", "आदमपुर", "उकलाना", "मजरा", "डाबड़ा", "सिसाय", "ग्यासुपर", "ढाणी पलारा", "ढंढूर", "खंडा खेड़ी", "रावलवास", "किरढ़ान", "बालसमंद", "बरवाला खास", "समालखा", "खेड़ी चौपटा", "फूलचन्द", "शाहपुर", "बड़ोपल", "सिसई", "पुट्ठी", "मसूदपुर", "कुंभा", "कोथ कलाँ", "रेढ़ू", "किशनगढ़", "धनसुरी", "मोद"]
+    villages: [
+      { hi: "हाँसी", en: "Hansi" },
+      { hi: "बरवाला", en: "Barwala" },
+      { hi: "नारनौंद", en: "Narnaund" },
+      { hi: "आदमपुर", en: "Adampur" },
+      { hi: "उकलाना", en: "Uklana" },
+      { hi: "मजरा", en: "Majra" },
+      { hi: "डाबड़ा", en: "Dabra" },
+      { hi: "सिसाय", en: "Sisai" }
+    ]
   },
   "rohtak": {
     nameHi: "रोहतक", nameEn: "Rohtak",
-    villages: ["मेहम", "संपला", "कलानौर", "बोहड़", "निंदलाना", "भैंसरवाल", "मदीना", "फारम", "मौलान", "सुन्दरपुर", "आगर", "घड़वा", "तिगरा", "बगाड़ी", "खरक जाटान", "कुकड़ौला", "चुलियाना", "निंदाना", "बहबलपुर", "महम चौबीसी", "बहादुरपुर", "मदीना गान", "समैला", "खेड़ी साध", "अमदगढ़", "गरनावठी", "सांखोल", "मौली", "बालंद"]
+    villages: [
+      { hi: "मेहम", en: "Meham" },
+      { hi: "संपला", en: "Sampla" },
+      { hi: "कलानौर", en: "Kalanaur" },
+      { hi: "बोहड़", en: "Bohar" },
+      { hi: "निंदलाना", en: "Nindana" },
+      { hi: "भैंसरवाल", en: "Bhainsarwal" },
+      { hi: "मदीना", en: "Madina" }
+    ]
   },
   "rewari": {
     nameHi: "रेवाड़ी", nameEn: "Rewari",
-    villages: ["बावल", "कोसली", "धारूहेड़ा", "नारनौल रोड", "मीरपुर", "बोलनी", "पाल्हावास", "गुरावड़ा", "खोल", "नांगल चौधरी", "मंदियाखेड़ा", "नंदरामपुर बास", "खांट", "जैनाबाद", "पालहवास", "डहिना", "बुड़ौली", "नौरंगपुर", "कनीना", "महेशपुर", "गढी बोलनी", "नारहेड़ा", "आहौद", "बिलासपुर", "नैन", "खालेड़ा", "पहाड़ी", "भाड़ावास", "टहना", "बिचपुरी"]
+    villages: [
+      { hi: "बावल", en: "Bawal" },
+      { hi: "कोसली", en: "Kosli" },
+      { hi: "धारूहेड़ा", en: "Dharuhera" },
+      { hi: "मीरपुर", en: "Mirpur" },
+      { hi: "बोलनी", en: "Bolni" },
+      { hi: "पाल्हावास", en: "Palhawas" }
+    ]
   },
   "gurugram": {
     nameHi: "गुरुग्राम", nameEn: "Gurugram",
-    villages: ["सोहना", "पटौदी", "फरुखनगर", "भांगरोल", "बिलासपुर", "खांडसा", "घाटा", "टिकरी", "बादशाहपुर", "भौंडसी", "शेखपुर", "हरचन्दपुर", "सिकंदरपुर", "कदमपुर", "ढोरका", "मानमानेपुर", "चंदू", "बुढेड़ा", "मेवका"]
+    villages: [
+      { hi: "सोहना", en: "Sohna" },
+      { hi: "पटौदी", en: "Pataudi" },
+      { hi: "फरुखनगर", en: "Farrukhnagar" },
+      { hi: "भांगरोल", en: "Bhangrol" },
+      { hi: "बिलासपुर", en: "Bilaspur" }
+    ]
   }
 };
 
@@ -248,9 +330,7 @@ class VillageApp {
     const tickerEl = document.getElementById('dynamicTickerText');
     if(!tickerEl) return;
 
-    // सिर्फ वही दुकानें लें जो इसी गाँव की हैं और एडमिन द्वारा 'approved' हो चुकी हैं
     let approvedShops = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage);
-    
     let baseText = "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य";
     
     if(approvedShops.length > 0) {
@@ -401,7 +481,7 @@ class VillageApp {
     const phone = phoneEl ? phoneEl.value : '';
     const cat = catEl ? catEl.value : 'किराना';
     if(!name || !phone) return alert(this.state.lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all details!");
-    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन अप्रूवल के लिए भेज दी गई है! अप्रूव होने के बाद यह लाइव पट्टी पर दिखेगी।", "Shop submitted for admin approval!");
+    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन अप्रूवल के लिए भेज दी गई है!", "Shop submitted for admin approval!");
     this.tempImage = '';
   }
 
@@ -409,7 +489,7 @@ class VillageApp {
     const titleEl = document.getElementById('annTitle');
     const title = titleEl ? titleEl.value : '';
     if(!title) return alert(this.state.lang === 'hi' ? "विवरण भरें!" : "Fill description!");
-    this.saveData('announcements', { title, imageUrl: this.tempImage || '' }, "मुनादी भेज दी गई है!", "Announcement sent!");
+    this.saveData('announcements', { title, imageUrl: this.tempImage || '' }, "मुनादी अप्रूवल के लिए भेज दी गई है!", "Announcement sent for approval!");
     this.tempImage = '';
   }
 
@@ -417,7 +497,7 @@ class VillageApp {
     const titleEl = document.getElementById('histTitle');
     const title = titleEl ? titleEl.value : '';
     if(!title) return alert(this.state.lang === 'hi' ? "विवरण भरें!" : "Fill description!");
-    this.saveData('history', { title, imageUrl: this.tempImage || '' }, "इतिहास भेज दिया गया है!", "History sent!");
+    this.saveData('history', { title, imageUrl: this.tempImage || '' }, "इतिहास अप्रूवल के लिए भेज दिया गया है!", "History sent for approval!");
     this.tempImage = '';
   }
 
@@ -425,7 +505,7 @@ class VillageApp {
     const titleEl = document.getElementById('mTitle');
     const title = titleEl ? titleEl.value : '';
     if(!title) return alert(this.state.lang === 'hi' ? "विवरण भरें!" : "Fill description!");
-    this.saveData('market', { title, imageUrl: this.tempImage || '' }, "बाजार पोस्ट भेज दी गई है!", "Market post sent!");
+    this.saveData('market', { title, imageUrl: this.tempImage || '' }, "बाजार पोस्ट अप्रूवल के लिए भेज दी गई है!", "Market post sent for approval!");
     this.tempImage = '';
   }
 
@@ -433,7 +513,7 @@ class VillageApp {
     const captionEl = document.getElementById('gCaption');
     const caption = captionEl ? captionEl.value : '';
     if(!this.tempImage) return alert(this.state.lang === 'hi' ? "फोटो चुनें!" : "Select photo!");
-    this.saveData('gallery', { caption, imageUrl: this.tempImage }, "फोटो गैलरी में भेज दी गई है!", "Photo sent to gallery!");
+    this.saveData('gallery', { caption, imageUrl: this.tempImage }, "फोटो एडमिन अप्रूवल के लिए भेज दी गई है!", "Photo sent for approval!");
     this.tempImage = '';
   }
 
@@ -459,8 +539,12 @@ class VillageApp {
     const isEn = this.state.lang === 'en';
     const currentDistrictObj = HARYANA_DISTRICTS_AND_VILLAGES[this.state.selectedDistrict] || HARYANA_DISTRICTS_AND_VILLAGES['charkhi-dadri'];
     
+    // ढूंढें वर्तमान गाँव का सही नाम भाषा के अनुसार
+    let currentVillageObj = currentDistrictObj.villages.find(v => v.hi === this.state.searchVillage || v.en === this.state.searchVillage);
+    let displayVillageName = currentVillageObj ? (isEn ? currentVillageObj.en : currentVillageObj.hi) : this.state.searchVillage;
+
     const titleEl = document.getElementById('headerTitle');
-    if(titleEl) titleEl.innerText = `MeraGaov - ${isEn ? this.state.searchVillage : this.state.searchVillage}`;
+    if(titleEl) titleEl.innerText = `MeraGaov - ${displayVillageName}`;
     
     const avatarEl = document.getElementById('headerUserAvatar');
     if(avatarEl) avatarEl.src = this.state.userAvatarUrl;
@@ -495,8 +579,8 @@ class VillageApp {
         <option value="${dKey}" ${this.state.selectedDistrict === dKey ? 'selected' : ''}>${isEn ? HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameEn : HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameHi}</option>
       `).join('');
 
-      let villageOptions = currentDistrictObj.villages.map(vName => `
-        <option value="${vName}" ${this.state.searchVillage === vName ? 'selected' : ''}>${vName}</option>
+      let villageOptions = currentDistrictObj.villages.map(v => `
+        <option value="${v.hi}" ${(this.state.searchVillage === v.hi || this.state.searchVillage === v.en) ? 'selected' : ''}>${isEn ? v.en : v.hi}</option>
       `).join('');
 
       html = `
@@ -504,7 +588,7 @@ class VillageApp {
           <div class="card-title" style="color: #064e3b;">📍 ${isEn ? 'Select District & Village' : 'जिला व गाँव चुनें'}</div>
           <div class="form-group">
             <label>${isEn ? 'Select District:' : 'जिला चुनें:'}</label>
-            <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0]; app.render();">
+            <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0].hi; app.render();">
               ${districtOptions}
             </select>
           </div>
@@ -539,7 +623,7 @@ class VillageApp {
       `).join('');
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
-        <div class="card"><div class="card-title">👀 ${isEn ? 'Live Shops' : 'लाइव दुकानें'} (${this.state.searchVillage})</div></div>
+        <div class="card"><div class="card-title">👀 ${isEn ? 'Live Shops' : 'लाइव दुकानें'} (${displayVillageName})</div></div>
         ${list || `<div class="empty-state">${isEn ? 'No shops available in this village.' : 'इस गाँव में अभी कोई दुकान उपलब्ध नहीं है।'}</div>`}
       `;
     }
@@ -547,7 +631,7 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">➕ ${isEn ? 'Add Shop or Service' : 'नई दुकान या सेवा जोड़ें'} (${this.state.searchVillage})</div>
+          <div class="card-title">➕ ${isEn ? 'Add Shop or Service' : 'नई दुकान या सेवा जोड़ें'} (${displayVillageName})</div>
           <div class="form-group"><label>${isEn ? 'Shop / Service Name' : 'दुकान / सेवा का नाम'}</label><input class="form-control" id="sName" placeholder="${isEn ? 'Name...' : 'नाम...'}" /></div>
           <div class="form-group"><label>${isEn ? 'Mobile Number' : 'मोबाइल नंबर'}</label><input class="form-control" id="sPhone" placeholder="${isEn ? 'Number...' : 'नंबर...'}" /></div>
           <div class="form-group"><label>${isEn ? 'Category' : 'श्रेणी'}</label><select class="form-control" id="sCat"><option value="किराना">${isEn ? 'Grocery' : 'किराना'}</option><option value="डॉक्टर">${isEn ? 'Doctor' : 'डॉक्टर'}</option><option value="कपड़ा">${isEn ? 'Cloth' : 'कपड़ा'}</option><option value="अन्य">${isEn ? 'Other' : 'अन्य'}</option></select></div>
@@ -563,12 +647,12 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">📢 ${isEn ? 'Announcements' : 'मुनादी व खबरें'} (${this.state.searchVillage})</div>
+          <div class="card-title">📢 ${isEn ? 'Announcements' : 'मुनादी व खबरें'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="annTitle" placeholder="${isEn ? 'Details...' : 'मुनादी का विवरण...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="annImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitAnnouncement()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
+            <button class="btn-submit" onclick="app.submitAnnouncement()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No announcements.' : 'कोई मुनादी उपलब्ध नहीं है।'}</div>`}
         </div>
@@ -581,12 +665,12 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">📜 ${isEn ? 'History & Sarpanch' : 'इतिहास व सरपंच'} (${this.state.searchVillage})</div>
+          <div class="card-title">📜 ${isEn ? 'History & Sarpanch' : 'इतिहास व सरपंच'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="histTitle" placeholder="${isEn ? 'History details...' : 'इतिहास या सरपंच की जानकारी...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="histImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitHistory()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
+            <button class="btn-submit" onclick="app.submitHistory()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No info available.' : 'कोई जानकारी उपलब्ध नहीं है।'}</div>`}
         </div>
@@ -599,12 +683,12 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">🌾 ${isEn ? 'Market & Animals' : 'पशु व बाजार'} (${this.state.searchVillage})</div>
+          <div class="card-title">🌾 ${isEn ? 'Market & Animals' : 'पशु व बाजार'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="mTitle" placeholder="${isEn ? 'Market details...' : 'पशु या बाजार की वस्तु का विवरण...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="mImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitMarket()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
+            <button class="btn-submit" onclick="app.submitMarket()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No posts.' : 'कोई पोस्ट उपलब्ध नहीं है।'}</div>`}
         </div>
@@ -617,12 +701,12 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">📸 ${isEn ? 'Gallery' : 'गैलरी'} (${this.state.searchVillage})</div>
+          <div class="card-title">📸 ${isEn ? 'Gallery' : 'गैलरी'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="gCaption" placeholder="${isEn ? 'Photo caption...' : 'फोटो का शीर्षक...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="gImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitGallery()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
+            <button class="btn-submit" onclick="app.submitGallery()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
           ${items || `<div class="empty-state">${isEn ? 'No photos.' : 'कोई फोटो उपलब्ध नहीं है।'}</div>`}
         </div>
@@ -642,7 +726,7 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">🎵 ${isEn ? 'Videos & Ragni' : 'वीडियो और रागनी'} (${this.state.searchVillage})</div>
+          <div class="card-title">🎵 ${isEn ? 'Videos & Ragni' : 'वीडियो और रागनी'} (${displayVillageName})</div>
           <div style="background:#f0fdf4; border:1px solid #a7f3d0; padding:10px; border-radius:10px; margin-bottom:12px;">
             <a href="https://www.youtube.com" target="_blank" class="portal-link-btn" style="background:#ff0000; width:100%; text-align:center; display:block; margin-bottom:6px;">▶️ YouTube Live</a>
             <a href="https://www.hotstar.com" target="_blank" class="portal-link-btn" style="background:#1f3367; width:100%; text-align:center; display:block;">📺 Disney+ Hotstar</a>
@@ -659,7 +743,7 @@ class VillageApp {
             <div id="vFilePreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
             <button class="btn-submit" onclick="app.submitVideo()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
-          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">🎬 ${this.state.searchVillage} ${isEn ? 'Live Videos:' : 'के लाइव वीडियो:'}</div>
+          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">🎬 ${displayVillageName} ${isEn ? 'Live Videos:' : 'के लाइव वीडियो:'}</div>
           ${vList || `<div class="empty-state">${isEn ? 'No videos available.' : 'इस गाँव में अभी कोई लाइव वीडियो उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
@@ -689,7 +773,7 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'} (${this.state.searchVillage})</div>
+          <div class="card-title">✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'} (${displayVillageName})</div>
           <div class="live-upload-box">
             <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? 'Register your complaint' : 'अपनी समस्या या शिकायत दर्ज करें'}</div>
             <input class="form-control" id="cTitle" placeholder="${isEn ? 'Subject...' : 'शिकायत का विषय...'}" style="margin-bottom:8px;" />
@@ -724,7 +808,7 @@ class VillageApp {
       let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && x.districtId === this.state.selectedDistrict && x.villageHi === this.state.searchVillage).map(x => `
         <div class="media-card" style="border: 2px solid #2563eb;">
           <span class="service-tag">${labelName}</span>
-          <div class="service-name">${x.title || x.name || ''}</div>
+          <div class="service-name">${x.title || x.name || x.caption || ''}</div>
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
           ${x.videoUrl ? `<video controls style="width:100%; max-height:140px; background:#000;"><source src="${x.videoUrl}"></video>` : ''}
           <button class="approve-btn" onclick="app.approveItem('${path}', '${x.id}')">✅ Approve</button>
@@ -751,7 +835,7 @@ class VillageApp {
 
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
-        <div class="card"><div class="card-title">📥 Admin Approval Panel (${this.state.searchVillage})</div></div>
+        <div class="card"><div class="card-title">📥 Admin Approval Panel (${displayVillageName})</div></div>
         ${pServ || ''} ${pAnn || ''} ${pHist || ''} ${pMkt || ''} ${pGal || ''} ${pVid || ''}
         ${(!pServ && !pAnn && !pHist && !pMkt && !pGal && !pVid) ? '<div class="empty-state">No pending requests.</div>' : ''}
         ${subAdminSection}
