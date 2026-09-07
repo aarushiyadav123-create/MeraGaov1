@@ -38,7 +38,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid #fbbf24; background: #064e3b; cursor: pointer; }
 .title-info { display: flex; flex-direction: column; }
 .title { font-size: 16px; font-weight: 700; line-height: 1.2; color: #ffffff; }
-.subtitle { font-size: 11px; color: #a7f3d0; margin-top: 2px; }
 
 .header-right { display: flex; gap: 6px; align-items: center; position: relative; }
 .header-btn { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
@@ -60,6 +59,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .bg-6 { background: linear-gradient(135deg, #ca8a04, #a16207); } 
 .bg-7 { background: linear-gradient(135deg, #059669, #047857); } 
 .bg-8 { background: linear-gradient(135deg, #4f46e5, #4338ca); } 
+.bg-9 { background: linear-gradient(135deg, #e11d48, #be123c); }
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -82,7 +82,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .portal-link-btn { display: inline-block; background: #2563eb; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: bold; margin: 4px; }
 .media-options { display: flex; gap: 8px; margin-bottom: 8px; justify-content: center; }
 .opt-btn { flex: 1; background: #047857; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
-.keyword-tag { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; margin: 3px; border: 1px solid #bae6fd; }
 .disease-box { background: #fffbeb; border: 1px solid #fde68a; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 13px; }
 </style>
 </head>
@@ -94,19 +93,18 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="app.changeUserAvatar(this)" />
       <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" alt="User" onclick="document.getElementById('profileImageInput').click();" />
       <div class="title-info">
-        <div class="title" id="headerTitle">MeraGaov - माлкоश</div>
-        <div class="subtitle">मेरा गाँव - मेरा हरियाणा</div>
+        <div class="title" id="headerTitle">MeraGaov - मेरी पहचान</div>
       </div>
     </div>
     <div class="header-right">
-      <button class="header-btn menu-btn-style" id="menuToggleBtn">☰ Menu</button>
-      <button class="header-btn" id="langToggleBtn">🌐 हिंदी</button>
+      <button class="header-btn menu-btn-style" id="menuToggleBtn">☰ <span id="menuText">Menu</span></button>
+      <button class="header-btn" id="langToggleBtn">🌐 English</button>
 
       <div class="dropdown-menu" id="dropdownMenu">
-        <div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Main Admin पैनल</div>
-        <div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 Sub-Admin पैनल</div>
-        <div class="dropdown-item" onclick="app.changeView('policy')">📜 Privacy Policy</div>
-        <div class="dropdown-item" onclick="app.changeView('about')">ℹ️ About Us</div>
+        <div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ <span id="mAdminText">Main Admin पैनल</span></div>
+        <div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 <span id="mSubText">Sub-Admin पैनल</span></div>
+        <div class="dropdown-item" onclick="app.changeView('policy')">📜 <span id="mPolicyText">Privacy Policy</span></div>
+        <div class="dropdown-item" onclick="app.changeView('about')">ℹ️ <span id="mAboutText">About Us</span></div>
       </div>
     </div>
   </div>
@@ -121,24 +119,28 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 <script>
 const HARYANA_DISTRICTS_AND_VILLAGES = {
   "charkhi-dadri": {
-    nameHi: "चरखी दादरी",
+    nameHi: "चरखी दादरी", nameEn: "Charkhi Dadri",
     villages: ["मालकोश", "बाउंड", "झूझू कलाँ", "पैडवा", "बल्हा", "मान्धी", "मंसूरवास", "अचैरा", "बडराई", "कोहला", "भागवी", "मटौर", "रामलवास", "रोहड़", "गोपलगढ़", "साहड़", "अमरावत", "मीन", "पीडल", "दादरी हेट", "बोदड़", "फागना", "वास", "चिड़िया", "समसपुर", "रानीला", "डोहका", "मोरवाला", "पातुवास", "जेवली"]
   },
   "bhiwani": {
-    nameHi: "भिवानी",
+    nameHi: "भिवानी", nameEn: "Bhiwani",
     villages: ["तोशाम", "बवानी खेड़ा", "बाढड़ा", "सिवानी", "ढोला", "बरवास", "किरावड़", "खरक", "डोहका", "अलखपुरा", "दीनोध", "बड़ागाँव", "जीन्द", "बिमला", "सुई", "नौरंगाबाद", "पालुवास", "देवराला", "बेटा", "मिराण", "धारेड़", "बज्जू", "बहल", "सुरपुरा", "देवसर", "रतेरा", "रंभा", "गुराना", "सिसवाला", "ईशरवाल"]
   },
   "hisar": {
-    nameHi: "हिसार",
+    nameHi: "हिसार", nameEn: "Hisar",
     villages: ["हाँसी", "बरवाला", "नारनौंद", "आदमपुर", "उकलाना", "मजरा", "डाबड़ा", "सिसाय", "ग्यासुपर", "ढाणी पलारा", "ढंढूर", "खंडा खेड़ी", "रावलवास", "किरढ़ान", "बालसमंद", "बरवाला खास", "समालखा", "खेड़ी चौपटा", "फूलचन्द", "शाहपुर", "बड़ोपल", "सिसई", "पुट्ठी", "मसूदपुर", "कुंभा", "कोथ कलाँ", "रेढ़ू", "किशनगढ़", "धनसुरी", "मोद"]
   },
   "rohtak": {
-    nameHi: "रोहतक",
+    nameHi: "रोहतक", nameEn: "Rohtak",
     villages: ["मेहम", "संपला", "कलानौर", "बोहड़", "निंदलाना", "भैंसरवाल", "मदीना", "फारम", "मौलान", "सुन्दरपुर", "आगर", "घड़वा", "तिगरा", "बगाड़ी", "खरक जाटान", "कुकड़ौला", "चुलियाना", "निंदाना", "बहबलपुर", "महम चौबीसी", "बहादुरपुर", "मदीना गान", "समैला", "खेड़ी साध", "अमदगढ़", "गरनावठी", "सांखोल", "मौली", "बालंद"]
   },
   "rewari": {
-    nameHi: "रेवाड़ी",
+    nameHi: "रेवाड़ी", nameEn: "Rewari",
     villages: ["बावल", "कोसली", "धारूहेड़ा", "नारनौल रोड", "मीरपुर", "बोलनी", "पाल्हावास", "गुरावड़ा", "खोल", "नांगल चौधरी", "मंदियाखेड़ा", "नंदरामपुर बास", "खांट", "जैनाबाद", "पालहवास", "डहिना", "बुड़ौली", "नौरंगपुर", "कनीना", "महेशपुर", "गढी बोलनी", "नारहेड़ा", "आहौद", "बिलासपुर", "नैन", "खालेड़ा", "पहाड़ी", "भाड़ावास", "टहना", "बिचपुरी"]
+  },
+  "gurugram": {
+    nameHi: "गुरुग्राम", nameEn: "Gurugram",
+    villages: ["सोहना", "पटौदी", "फरुखनगर", "भांगरोल", "बिलासपुर", "खांडसा", "घाटा", "टिकरी", "बादशाहपुर", "भौंडसी", "शेखपुर", "हरचन्दपुर", "सिकंदरपुर", "कदमपुर", "ढोरका", "मानमानेपुर", "चंदू", "बुढेड़ा", "मेवका"]
   }
 };
 
@@ -149,13 +151,13 @@ class VillageApp {
       view: 'home',
       selectedDistrict: localStorage.getItem('selectedDistrict') || 'charkhi-dadri',
       searchVillage: localStorage.getItem('searchVillage') || 'मालकोश',
-      activeCategory: 'all',
       services: [],
       gallery: [],
       market: [],
       announcements: [],
       history: [],
       videos: [],
+      complaints: [],
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
@@ -188,7 +190,7 @@ class VillageApp {
     if(langBtn) {
       langBtn.onclick = () => {
         this.state.lang = this.state.lang === 'hi' ? 'en' : 'hi';
-        langBtn.innerText = this.state.lang === 'hi' ? '🌐 हिंदी' : '🌐 English';
+        langBtn.innerText = this.state.lang === 'hi' ? '🌐 English' : '🌐 हिंदी';
         this.render();
       };
     }
@@ -198,49 +200,65 @@ class VillageApp {
     setTimeout(() => {
       if (window.firebaseDb) {
         const { db, ref, onValue } = window.firebaseDb;
-        
         onValue(ref(db, 'services'), snap => {
           const val = snap.val();
           this.state.services = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          this.updateTicker();
           if(this.state.view === 'list' || this.state.view === 'admin') this.render();
         });
-        
         onValue(ref(db, 'announcements'), snap => {
           const val = snap.val();
           this.state.announcements = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'announcements' || this.state.view === 'admin') this.render();
         });
-        
         onValue(ref(db, 'market'), snap => {
           const val = snap.val();
           this.state.market = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'market' || this.state.view === 'admin') this.render();
         });
-        
         onValue(ref(db, 'gallery'), snap => {
           const val = snap.val();
           this.state.gallery = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'gallery' || this.state.view === 'admin') this.render();
         });
-        
         onValue(ref(db, 'history'), snap => {
           const val = snap.val();
           this.state.history = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'history' || this.state.view === 'admin') this.render();
         });
-        
         onValue(ref(db, 'videos'), snap => {
           const val = snap.val();
           this.state.videos = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'videos' || this.state.view === 'admin') this.render();
         });
-        
+        onValue(ref(db, 'complaints'), snap => {
+          const val = snap.val();
+          this.state.complaints = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'complaints' || this.state.view === 'admin') this.render();
+        });
         onValue(ref(db, 'subAdmins'), snap => {
           const val = snap.val();
           this.state.subAdmins = val ? Object.keys(val).map(k => ({id: k, pwd: val[k]})) : [];
         });
       }
     }, 1000);
+  }
+
+  updateTicker() {
+    const tickerEl = document.getElementById('dynamicTickerText');
+    if(!tickerEl) return;
+
+    // सिर्फ वही दुकानें लें जो इसी गाँव की हैं और एडमिन द्वारा 'approved' हो चुकी हैं
+    let approvedShops = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage);
+    
+    let baseText = "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य";
+    
+    if(approvedShops.length > 0) {
+      let shopTickerItems = approvedShops.map(s => `🛒 नई दुकान: ${s.name} (${s.category || 'Shop'}) - फोन: ${s.phone}`).join(' | ');
+      tickerEl.innerHTML = `${shopTickerItems} | ${baseText}`;
+    } else {
+      tickerEl.innerHTML = baseText;
+    }
   }
 
   changeUserAvatar(input) {
@@ -252,46 +270,46 @@ class VillageApp {
         localStorage.setItem('userCustomAvatar', reader.result);
         const avatarEl = document.getElementById('headerUserAvatar');
         if(avatarEl) avatarEl.src = reader.result;
-        alert("प्रोफाइल फोटो बदल दी गई है!");
+        alert(this.state.lang === 'hi' ? "प्रोफाइल फोटो बदल दी गई है!" : "Profile photo updated!");
       };
       reader.readAsDataURL(file);
     }
   }
 
   requestAdminAccess() {
-    let pwd = prompt("एडमिन पासवर्ड दर्ज करें:");
+    let pwd = prompt(this.state.lang === 'hi' ? "एडमिन पासवर्ड दर्ज करें:" : "Enter Admin Password:");
     if(pwd === '1234') {
       this.state.isAdminLoggedIn = true;
       this.state.isSubAdminLoggedIn = false;
       this.changeView('admin');
-    } else { alert("गलत पासवर्ड!"); }
+    } else { alert(this.state.lang === 'hi' ? "गलत पासवर्ड!" : "Wrong Password!"); }
   }
 
   requestSubAdminAccess() {
-    let pwd = prompt("सब-एडमिन पासवर्ड दर्ज करें:");
+    let pwd = prompt(this.state.lang === 'hi' ? "सब-एडमिन पासवर्ड दर्ज करें:" : "Enter Sub-Admin Password:");
     let matchedSub = this.state.subAdmins.find(s => s.pwd === pwd);
     if(matchedSub || pwd === '1234') {
       this.state.isAdminLoggedIn = (pwd === '1234');
       this.state.isSubAdminLoggedIn = true;
       this.changeView('admin');
-    } else { alert("गलत पासवर्ड!"); }
+    } else { alert(this.state.lang === 'hi' ? "गलत पासवर्ड!" : "Wrong Password!"); }
   }
 
   addSubAdmin() {
     let inputEl = document.getElementById('newSubAdminPwd');
     let newSubPwd = inputEl ? inputEl.value : '';
-    if(!newSubPwd) return alert("पासवर्ड दर्ज करें!");
+    if(!newSubPwd) return alert(this.state.lang === 'hi' ? "पासवर्ड दर्ज करें!" : "Enter password!");
     if (window.firebaseDb) {
       const { db, ref, push } = window.firebaseDb;
       push(ref(db, 'subAdmins'), newSubPwd).then(() => {
-        alert("सब-एडमिन जोड़ दिया गया है!");
+        alert(this.state.lang === 'hi' ? "सब-एडमिन जोड़ दिया गया है!" : "Sub-admin added!");
         if(inputEl) inputEl.value = '';
       });
     }
   }
 
   deleteSubAdmin(id) {
-    if(confirm("हटाना चाहते हैं?")) {
+    if(confirm(this.state.lang === 'hi' ? "हटाना चाहते हैं?" : "Want to delete?")) {
       if (window.firebaseDb) {
         const { db, ref, remove } = window.firebaseDb;
         remove(ref(db, `subAdmins/${id}`)).then(() => this.render());
@@ -304,39 +322,43 @@ class VillageApp {
     this.render();
   }
 
-  saveData(path, data, msg) {
+  saveData(path, data, msgHi, msgEn) {
     if (window.firebaseDb) {
       const { db, ref, push } = window.firebaseDb;
       push(ref(db, path), { 
         ...data, 
         districtId: this.state.selectedDistrict, 
         villageHi: this.state.searchVillage, 
-        status: 'pending', 
+        status: path === 'complaints' ? 'approved' : 'pending', 
         timestamp: Date.now() 
       })
       .then(() => { 
-        alert(msg); 
+        alert(this.state.lang === 'hi' ? msgHi : msgEn); 
         this.changeView('home'); 
       })
-      .catch(err => alert("त्रुटि: " + err.message));
-    } else { alert("डेटाबेस कनेक्टेड नहीं है!"); }
+      .catch(err => alert("Error: " + err.message));
+    } else { alert("Database not connected!"); }
   }
 
   approveItem(path, id) {
     if (window.firebaseDb) {
       const { db, ref, update } = window.firebaseDb;
       update(ref(db, `${path}/${id}`), { status: 'approved' }).then(() => {
-        alert("अप्रूव हो गया!");
+        alert(this.state.lang === 'hi' ? "सफलतापूर्वक अप्रूव हो गया!" : "Approved successfully!");
+        this.updateTicker();
         this.render();
       });
     }
   }
 
   deleteItem(path, id) {
-    if(confirm("डिलीट करना चाहते हैं?")) {
+    if(confirm(this.state.lang === 'hi' ? "डिलीट करना चाहते हैं?" : "Want to delete?")) {
       if (window.firebaseDb) {
         const { db, ref, remove } = window.firebaseDb;
-        remove(ref(db, `${path}/${id}`)).then(() => this.render());
+        remove(ref(db, `${path}/${id}`)).then(() => {
+          this.updateTicker();
+          this.render();
+        });
       }
     }
   }
@@ -352,7 +374,7 @@ class VillageApp {
                       document.getElementById('histImgPreviewText') || 
                       document.getElementById('mImgPreviewText') || 
                       document.getElementById('gImgPreviewText');
-        if(preview) preview.innerText = "✅ फोटो चुन ली गई है";
+        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ फोटो चुन ली गई है" : "✅ Photo selected";
       };
       reader.readAsDataURL(file);
     }
@@ -365,7 +387,7 @@ class VillageApp {
       reader.onloadend = () => { 
         this.tempVideo = reader.result; 
         let preview = document.getElementById('vFilePreviewText');
-        if(preview) preview.innerText = "✅ वीडियो चुन लिया गया है";
+        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ वीडियो चुन लिया गया है" : "✅ Video selected";
       };
       reader.readAsDataURL(file);
     }
@@ -378,63 +400,85 @@ class VillageApp {
     const name = nameEl ? nameEl.value : '';
     const phone = phoneEl ? phoneEl.value : '';
     const cat = catEl ? catEl.value : 'किराना';
-    if(!name || !phone) return alert("कृपया सभी जानकारी भरें!");
-    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन अप्रूवल के लिए भेज दी गई है!");
+    if(!name || !phone) return alert(this.state.lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all details!");
+    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन अप्रूवल के लिए भेज दी गई है! अप्रूव होने के बाद यह लाइव पट्टी पर दिखेगी।", "Shop submitted for admin approval!");
     this.tempImage = '';
   }
 
   submitAnnouncement() {
     const titleEl = document.getElementById('annTitle');
     const title = titleEl ? titleEl.value : '';
-    if(!title) return alert("विवरण भरें!");
-    this.saveData('announcements', { title, imageUrl: this.tempImage || '' }, "मुनादी भेज दी गई है!");
+    if(!title) return alert(this.state.lang === 'hi' ? "विवरण भरें!" : "Fill description!");
+    this.saveData('announcements', { title, imageUrl: this.tempImage || '' }, "मुनादी भेज दी गई है!", "Announcement sent!");
     this.tempImage = '';
   }
 
   submitHistory() {
     const titleEl = document.getElementById('histTitle');
     const title = titleEl ? titleEl.value : '';
-    if(!title) return alert("विवरण भरें!");
-    this.saveData('history', { title, imageUrl: this.tempImage || '' }, "इतिहास भेज दिया गया है!");
+    if(!title) return alert(this.state.lang === 'hi' ? "विवरण भरें!" : "Fill description!");
+    this.saveData('history', { title, imageUrl: this.tempImage || '' }, "इतिहास भेज दिया गया है!", "History sent!");
     this.tempImage = '';
   }
 
   submitMarket() {
     const titleEl = document.getElementById('mTitle');
     const title = titleEl ? titleEl.value : '';
-    if(!title) return alert("विवरण भरें!");
-    this.saveData('market', { title, imageUrl: this.tempImage || '' }, "बाजार पोस्ट भेज दी गई है!");
+    if(!title) return alert(this.state.lang === 'hi' ? "विवरण भरें!" : "Fill description!");
+    this.saveData('market', { title, imageUrl: this.tempImage || '' }, "बाजार पोस्ट भेज दी गई है!", "Market post sent!");
     this.tempImage = '';
   }
 
   submitGallery() {
     const captionEl = document.getElementById('gCaption');
     const caption = captionEl ? captionEl.value : '';
-    if(!this.tempImage) return alert("फोटो चुनें!");
-    this.saveData('gallery', { caption, imageUrl: this.tempImage }, "फोटो गैलरी में भेज दी गई है!");
+    if(!this.tempImage) return alert(this.state.lang === 'hi' ? "फोटो चुनें!" : "Select photo!");
+    this.saveData('gallery', { caption, imageUrl: this.tempImage }, "फोटो गैलरी में भेज दी गई है!", "Photo sent to gallery!");
     this.tempImage = '';
   }
 
   submitVideo() {
     const titleEl = document.getElementById('vTitle');
     const title = titleEl ? titleEl.value : '';
-    if(!title) return alert("कृपया वीडियो का शीर्षक दर्ज करें!");
-    if(!this.tempVideo) return alert("कृपया वीडियो चुनें!");
-    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो एडमिन अप्रूवल के लिए भेज दिया गया है!");
+    if(!title) return alert(this.state.lang === 'hi' ? "कृपया वीडियो का शीर्षक दर्ज करें!" : "Enter video title!");
+    if(!this.tempVideo) return alert(this.state.lang === 'hi' ? "कृपया वीडियो चुनें!" : "Select video!");
+    this.saveData('videos', { title, videoUrl: this.tempVideo }, "वीडियो एडमिन अप्रूवल के लिए भेज दिया गया है!", "Video sent for approval!");
     this.tempVideo = '';
   }
 
-  openCategory(cat) { 
-    this.state.activeCategory = cat; 
-    this.changeView('list'); 
+  submitComplaint() {
+    const titleEl = document.getElementById('cTitle');
+    const descEl = document.getElementById('cDesc');
+    const title = titleEl ? titleEl.value : '';
+    const desc = descEl ? descEl.value : '';
+    if(!title || !desc) return alert(this.state.lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all info!");
+    this.saveData('complaints', { title, description: desc }, "आपकी शिकायत पंचायत पोर्टल पर दर्ज हो गई है!", "Complaint registered on panchayat portal!");
   }
 
   render() {
+    const isEn = this.state.lang === 'en';
+    const currentDistrictObj = HARYANA_DISTRICTS_AND_VILLAGES[this.state.selectedDistrict] || HARYANA_DISTRICTS_AND_VILLAGES['charkhi-dadri'];
+    
     const titleEl = document.getElementById('headerTitle');
-    if(titleEl) titleEl.innerText = `MeraGaov - ${this.state.searchVillage}`;
+    if(titleEl) titleEl.innerText = `MeraGaov - ${isEn ? this.state.searchVillage : this.state.searchVillage}`;
     
     const avatarEl = document.getElementById('headerUserAvatar');
     if(avatarEl) avatarEl.src = this.state.userAvatarUrl;
+
+    const menuText = document.getElementById('menuText');
+    if(menuText) menuText.innerText = isEn ? 'Menu' : 'मेनू';
+
+    const mAdminText = document.getElementById('mAdminText');
+    if(mAdminText) mAdminText.innerText = isEn ? 'Main Admin Panel' : 'Main Admin पैनल';
+
+    const mSubText = document.getElementById('mSubText');
+    if(mSubText) mSubText.innerText = isEn ? 'Sub-Admin Panel' : 'Sub-Admin पैनल';
+
+    const mPolicyText = document.getElementById('mPolicyText');
+    if(mPolicyText) mPolicyText.innerText = isEn ? 'Privacy Policy' : 'Privacy Policy';
+
+    const mAboutText = document.getElementById('mAboutText');
+    if(mAboutText) mAboutText.innerText = isEn ? 'About Us' : 'About Us';
 
     const content = document.getElementById('mainContent');
     if(!content) return;
@@ -442,12 +486,13 @@ class VillageApp {
     localStorage.setItem('selectedDistrict', this.state.selectedDistrict);
     localStorage.setItem('searchVillage', this.state.searchVillage);
 
+    this.updateTicker();
+
     let html = '';
 
     if (this.state.view === 'home') {
-      let currentDistrictObj = HARYANA_DISTRICTS_AND_VILLAGES[this.state.selectedDistrict] || HARYANA_DISTRICTS_AND_VILLAGES['charkhi-dadri'];
       let districtOptions = Object.keys(HARYANA_DISTRICTS_AND_VILLAGES).map(dKey => `
-        <option value="${dKey}" ${this.state.selectedDistrict === dKey ? 'selected' : ''}>${HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameHi}</option>
+        <option value="${dKey}" ${this.state.selectedDistrict === dKey ? 'selected' : ''}>${isEn ? HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameEn : HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameHi}</option>
       `).join('');
 
       let villageOptions = currentDistrictObj.villages.map(vName => `
@@ -456,212 +501,229 @@ class VillageApp {
 
       html = `
         <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
-          <div class="card-title" style="color: #064e3b;">📍 जिला व गाँव चुनें</div>
+          <div class="card-title" style="color: #064e3b;">📍 ${isEn ? 'Select District & Village' : 'जिला व गाँव चुनें'}</div>
           <div class="form-group">
-            <label>जिला चुनें:</label>
-            <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.render();">
+            <label>${isEn ? 'Select District:' : 'जिला चुनें:'}</label>
+            <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0]; app.render();">
               ${districtOptions}
             </select>
           </div>
           <div class="form-group">
-            <label>गाँव चुनें या नाम लिखें:</label>
-            <select class="form-control" id="villageDropdownSelect" onchange="document.getElementById('villageInput').value = this.value; app.state.searchVillage = this.value;" style="margin-bottom:6px;">
+            <label>${isEn ? 'Select Village:' : 'गाँव चुनें:'}</label>
+            <select class="form-control" id="villageDropdownSelect" onchange="app.state.searchVillage = this.value; app.render();">
               ${villageOptions}
             </select>
-            <input class="form-control" type="text" id="villageInput" value="${this.state.searchVillage}" placeholder="गाँव का नाम..." />
           </div>
         </div>
-        <div class="menu-card bg-1" onclick="app.openCategory('all')"><span>👀 लाइव दुकानें देखें</span><span>→</span></div>
-        <div class="menu-card bg-2" onclick="app.changeView('add_service')"><span>➕ दुकान जोड़ें</span><span>→</span></div>
-        <div class="menu-card bg-3" onclick="app.changeView('announcements')"><span>📢 1. मुनादी व खबरें</span><span>→</span></div>
-        <div class="menu-card bg-4" onclick="app.changeView('history')"><span>📜 2. इतिहास व सरपंच</span><span>→</span></div>
-        <div class="menu-card bg-5" onclick="app.changeView('market')"><span>🌾 3. पशु व बाजार</span><span>→</span></div>
-        <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 4. गैलरी</span><span>→</span></div>
-        <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 5. वीडियो और रागनी</span><span>→</span></div>
-        <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 6. शिक्षा पोर्टल</span><span>→</span></div>
-        <div class="menu-card bg-1" onclick="app.changeView('animals')"><span>🐄 7. पशु चिकित्सा</span><span>→</span></div>
+        <div class="menu-card bg-1" onclick="app.changeView('list')"><span>👀 ${isEn ? 'View Live Shops' : 'लाइव दुकानें देखें'}</span><span>→</span></div>
+        <div class="menu-card bg-2" onclick="app.changeView('add_service')"><span>➕ ${isEn ? 'Add Shop / Service' : 'दुकान जोड़ें'}</span><span>→</span></div>
+        <div class="menu-card bg-3" onclick="app.changeView('announcements')"><span>📢 ${isEn ? 'Announcements & News' : 'मुनादी व खबरें'}</span><span>→</span></div>
+        <div class="menu-card bg-4" onclick="app.changeView('history')"><span>📜 ${isEn ? 'History & Sarpanch' : 'इतिहास व सरपंच'}</span><span>→</span></div>
+        <div class="menu-card bg-5" onclick="app.changeView('market')"><span>🌾 ${isEn ? 'Market & Animals' : 'पशु व बाजार'}</span><span>→</span></div>
+        <div class="menu-card bg-6" onclick="app.changeView('gallery')"><span>📸 ${isEn ? 'Gallery' : 'गैलरी'}</span><span>→</span></div>
+        <div class="menu-card bg-7" onclick="app.changeView('videos')"><span>🎵 ${isEn ? 'Videos & Ragni' : 'वीडियो और रागनी'}</span><span>→</span></div>
+        <div class="menu-card bg-8" onclick="app.changeView('education')"><span>📚 ${isEn ? 'Education Portal' : 'शिक्षा पोर्टल'}</span><span>→</span></div>
+        <div class="menu-card bg-9" onclick="app.changeView('complaints')"><span>✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'}</span><span>→</span></div>
+        <div class="menu-card bg-2" onclick="app.changeView('animals')"><span>🐄 ${isEn ? 'Animal Treatment' : 'पशु चिकित्सा'}</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
-      let list = this.state.services.filter(s => s.status === 'approved' && s.villageHi === this.state.searchVillage).map(s => `
+      let list = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage).map(s => `
         <div class="service-item">
-          <span class="service-tag">${s.category || 'दुकान'}</span>
+          <span class="service-tag">${s.category || 'Shop'}</span>
           <div class="service-name">${s.name}</div>
           ${s.imageUrl ? `<img src="${s.imageUrl}" class="service-img" />` : ''}
-          <a href="tel:${s.phone}" class="btn-call">📞 कॉल करें: ${s.phone}</a>
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट</button>` : ''}
+          <a href="tel:${s.phone}" class="btn-call">📞 ${isEn ? 'Call:' : 'कॉल करें:'} ${s.phone}</a>
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ ${isEn ? 'Delete' : 'डिलीट'}</button>` : ''}
         </div>
       `).join('');
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card"><div class="card-title">👀 लाइव दुकानें (${this.state.searchVillage})</div></div>
-        ${list || '<div class="empty-state">इस गाँव में अभी कोई दुकान उपलब्ध नहीं है।</div>'}
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
+        <div class="card"><div class="card-title">👀 ${isEn ? 'Live Shops' : 'लाइव दुकानें'} (${this.state.searchVillage})</div></div>
+        ${list || `<div class="empty-state">${isEn ? 'No shops available in this village.' : 'इस गाँव में अभी कोई दुकान उपलब्ध नहीं है।'}</div>`}
       `;
     }
     else if (this.state.view === 'add_service') {
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">➕ नई दुकान या सेवा जोड़ें</div>
-          <div class="form-group"><label>दुकान / सेवा का नाम</label><input class="form-control" id="sName" placeholder="नाम..." /></div>
-          <div class="form-group"><label>मोबाइल नंबर</label><input class="form-control" id="sPhone" placeholder="नंबर..." /></div>
-          <div class="form-group"><label>श्रेणी</label><select class="form-control" id="sCat"><option value="किराना">किराना</option><option value="डॉक्टर">डॉक्टर</option><option value="कपड़ा">कपड़ा</option><option value="अन्य">अन्य</option></select></div>
-          <div class="form-group"><label>फोटो चुनें</label><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" /><div id="shopImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div></div>
-          <button class="btn-submit" onclick="app.submitShop()">📤 एडमिन अप्रूवल के लिए भेजें</button>
+          <div class="card-title">➕ ${isEn ? 'Add Shop or Service' : 'नई दुकान या सेवा जोड़ें'} (${this.state.searchVillage})</div>
+          <div class="form-group"><label>${isEn ? 'Shop / Service Name' : 'दुकान / सेवा का नाम'}</label><input class="form-control" id="sName" placeholder="${isEn ? 'Name...' : 'नाम...'}" /></div>
+          <div class="form-group"><label>${isEn ? 'Mobile Number' : 'मोबाइल नंबर'}</label><input class="form-control" id="sPhone" placeholder="${isEn ? 'Number...' : 'नंबर...'}" /></div>
+          <div class="form-group"><label>${isEn ? 'Category' : 'श्रेणी'}</label><select class="form-control" id="sCat"><option value="किराना">${isEn ? 'Grocery' : 'किराना'}</option><option value="डॉक्टर">${isEn ? 'Doctor' : 'डॉक्टर'}</option><option value="कपड़ा">${isEn ? 'Cloth' : 'कपड़ा'}</option><option value="अन्य">${isEn ? 'Other' : 'अन्य'}</option></select></div>
+          <div class="form-group"><label>${isEn ? 'Select Photo' : 'फोटो चुनें'}</label><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" /><div id="shopImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div></div>
+          <button class="btn-submit" onclick="app.submitShop()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
         </div>
       `;
     }
     else if (this.state.view === 'announcements') {
-      let items = this.state.announcements.filter(a => a.status === 'approved' && a.villageHi === this.state.searchVillage).map(a => `
-        <div class="service-item"><div class="service-name">${a.title}</div>${a.imageUrl ? `<img src="${a.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ डिलीट</button>`:''}</div>
+      let items = this.state.announcements.filter(a => a.status === 'approved' && a.districtId === this.state.selectedDistrict && a.villageHi === this.state.searchVillage).map(a => `
+        <div class="service-item"><div class="service-name">${a.title}</div>${a.imageUrl ? `<img src="${a.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ Delete</button>`:''}</div>
       `).join('');
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">📢 मुनादी व खबरें</div>
+          <div class="card-title">📢 ${isEn ? 'Announcements' : 'मुनादी व खबरें'} (${this.state.searchVillage})</div>
           <div class="live-upload-box">
-            <input class="form-control" id="annTitle" placeholder="मुनादी का विवरण..." style="margin-bottom:8px;" />
+            <input class="form-control" id="annTitle" placeholder="${isEn ? 'Details...' : 'मुनादी का विवरण...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="annImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitAnnouncement()">📤 भेजें</button>
+            <button class="btn-submit" onclick="app.submitAnnouncement()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
           </div>
-          ${items || '<div class="empty-state">कोई मुनादी उपलब्ध नहीं है।</div>'}
+          ${items || `<div class="empty-state">${isEn ? 'No announcements.' : 'कोई मुनादी उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
     }
     else if (this.state.view === 'history') {
-      let items = this.state.history.filter(h => h.status === 'approved' && h.villageHi === this.state.searchVillage).map(h => `
-        <div class="service-item"><div class="service-name">${h.title}</div>${h.imageUrl ? `<img src="${h.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ डिलीट</button>`:''}</div>
+      let items = this.state.history.filter(h => h.status === 'approved' && h.districtId === this.state.selectedDistrict && h.villageHi === this.state.searchVillage).map(h => `
+        <div class="service-item"><div class="service-name">${h.title}</div>${h.imageUrl ? `<img src="${h.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('history', '${h.id}')">🗑️ Delete</button>`:''}</div>
       `).join('');
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">📜 इतिहास व सरपंच</div>
+          <div class="card-title">📜 ${isEn ? 'History & Sarpanch' : 'इतिहास व सरपंच'} (${this.state.searchVillage})</div>
           <div class="live-upload-box">
-            <input class="form-control" id="histTitle" placeholder="इतिहास या सरपंच की जानकारी..." style="margin-bottom:8px;" />
+            <input class="form-control" id="histTitle" placeholder="${isEn ? 'History details...' : 'इतिहास या सरपंच की जानकारी...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="histImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitHistory()">📤 भेजें</button>
+            <button class="btn-submit" onclick="app.submitHistory()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
           </div>
-          ${items || '<div class="empty-state">कोई जानकारी उपलब्ध नहीं है।</div>'}
+          ${items || `<div class="empty-state">${isEn ? 'No info available.' : 'कोई जानकारी उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
     }
     else if (this.state.view === 'market') {
-      let items = this.state.market.filter(m => m.status === 'approved' && m.villageHi === this.state.searchVillage).map(m => `
-        <div class="service-item"><div class="service-name">${m.title}</div>${m.imageUrl ? `<img src="${m.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ डिलीट</button>`:''}</div>
+      let items = this.state.market.filter(m => m.status === 'approved' && m.districtId === this.state.selectedDistrict && m.villageHi === this.state.searchVillage).map(m => `
+        <div class="service-item"><div class="service-name">${m.title}</div>${m.imageUrl ? `<img src="${m.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ Delete</button>`:''}</div>
       `).join('');
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">🌾 पशु व बाजार</div>
+          <div class="card-title">🌾 ${isEn ? 'Market & Animals' : 'पशु व बाजार'} (${this.state.searchVillage})</div>
           <div class="live-upload-box">
-            <input class="form-control" id="mTitle" placeholder="पशु या बाजार की वस्तु का विवरण..." style="margin-bottom:8px;" />
+            <input class="form-control" id="mTitle" placeholder="${isEn ? 'Market details...' : 'पशु या बाजार की वस्तु का विवरण...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="mImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitMarket()">📤 भेजें</button>
+            <button class="btn-submit" onclick="app.submitMarket()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
           </div>
-          ${items || '<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>'}
+          ${items || `<div class="empty-state">${isEn ? 'No posts.' : 'कोई पोस्ट उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
     }
     else if (this.state.view === 'gallery') {
-      let items = this.state.gallery.filter(g => g.status === 'approved' && g.villageHi === this.state.searchVillage).map(g => `
-        <div class="service-item"><div class="service-name">${g.caption || ''}</div>${g.imageUrl ? `<img src="${g.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ डिलीट</button>`:''}</div>
+      let items = this.state.gallery.filter(g => g.status === 'approved' && g.districtId === this.state.selectedDistrict && g.villageHi === this.state.searchVillage).map(g => `
+        <div class="service-item"><div class="service-name">${g.caption || ''}</div>${g.imageUrl ? `<img src="${g.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('gallery', '${g.id}')">🗑️ Delete</button>`:''}</div>
       `).join('');
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">📸 गैलरी</div>
+          <div class="card-title">📸 ${isEn ? 'Gallery' : 'गैलरी'} (${this.state.searchVillage})</div>
           <div class="live-upload-box">
-            <input class="form-control" id="gCaption" placeholder="फोटो का शीर्षक..." style="margin-bottom:8px;" />
+            <input class="form-control" id="gCaption" placeholder="${isEn ? 'Photo caption...' : 'फोटो का शीर्षक...'}" style="margin-bottom:8px;" />
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <div id="gImgPreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-bottom:8px;"></div>
-            <button class="btn-submit" onclick="app.submitGallery()">📤 भेजें</button>
+            <button class="btn-submit" onclick="app.submitGallery()">📤 ${isEn ? 'Send' : 'भेजें'}</button>
           </div>
-          ${items || '<div class="empty-state">कोई फोटो उपलब्ध नहीं है।</div>'}
+          ${items || `<div class="empty-state">${isEn ? 'No photos.' : 'कोई फोटो उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
     }
     else if (this.state.view === 'videos') {
-      let vList = this.state.videos.filter(v => v.status === 'approved' && v.villageHi === this.state.searchVillage).map(v => `
+      let vList = this.state.videos.filter(v => v.status === 'approved' && v.districtId === this.state.selectedDistrict && v.villageHi === this.state.searchVillage).map(v => `
         <div class="media-card">
           <div class="service-name">${v.title}</div>
           <video controls style="width:100%; border-radius:8px; margin-top:8px; max-height:220px; background:#000;">
             <source src="${v.videoUrl}" type="video/mp4">
           </video>
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ डिलीट</button>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('videos', '${v.id}')">🗑️ Delete</button>` : ''}
         </div>
       `).join('');
 
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">🎵 वीडियो और रागनी प्रोग्राम</div>
+          <div class="card-title">🎵 ${isEn ? 'Videos & Ragni' : 'वीडियो और रागनी'} (${this.state.searchVillage})</div>
           <div style="background:#f0fdf4; border:1px solid #a7f3d0; padding:10px; border-radius:10px; margin-bottom:12px;">
             <a href="https://www.youtube.com" target="_blank" class="portal-link-btn" style="background:#ff0000; width:100%; text-align:center; display:block; margin-bottom:6px;">▶️ YouTube Live</a>
             <a href="https://www.hotstar.com" target="_blank" class="portal-link-btn" style="background:#1f3367; width:100%; text-align:center; display:block;">📺 Disney+ Hotstar</a>
           </div>
           <div class="live-upload-box">
-            <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">+ नया वीडियो या रागनी अपलोड करें</div>
-            <input class="form-control" id="vTitle" placeholder="शीर्षक (जैसे: हरियाणवी रागनी / भजन)" style="margin-bottom:8px;" />
+            <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? '+ Upload Video' : '+ नया वीडियो या रागनी अपलोड करें'}</div>
+            <input class="form-control" id="vTitle" placeholder="${isEn ? 'Title...' : 'शीर्षक (जैसे: हरियाणवी रागनी / भजन)'}" style="margin-bottom:8px;" />
             <div class="media-options">
-              <button class="opt-btn" onclick="document.getElementById('vCamRecord').click()">🎥 लाइव वीडियो बनाएं</button>
-              <button class="opt-btn" onclick="document.getElementById('vFileSelect').click()">📁 फाइल चुनें</button>
+              <button class="opt-btn" onclick="document.getElementById('vCamRecord').click()">${isEn ? '🎥 Record Video' : '🎥 लाइव वीडियो बनाएं'}</button>
+              <button class="opt-btn" onclick="document.getElementById('vFileSelect').click()">${isEn ? '📁 Choose File' : '📁 फाइल चुनें'}</button>
             </div>
             <input type="file" accept="video/*" capture="environment" id="vCamRecord" style="display:none;" onchange="app.handleVideo(this)" />
             <input type="file" accept="video/*" id="vFileSelect" style="display:none;" onchange="app.handleVideo(this)" />
             <div id="vFilePreviewText" style="font-size:11px; color:#047857; font-weight:bold; margin-top:4px;"></div>
-            <button class="btn-submit" onclick="app.submitVideo()">📤 एडमिन अप्रूवल के लिए भेजें</button>
+            <button class="btn-submit" onclick="app.submitVideo()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
-          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">🎬 ${this.state.searchVillage} के लाइव वीडियो:</div>
-          ${vList || '<div class="empty-state">इस गाँव में अभी कोई लाइव वीडियो उपलब्ध नहीं है।</div>'}
+          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">🎬 ${this.state.searchVillage} ${isEn ? 'Live Videos:' : 'के लाइव वीडियो:'}</div>
+          ${vList || `<div class="empty-state">${isEn ? 'No videos available.' : 'इस गाँव में अभी कोई लाइव वीडियो उपलब्ध नहीं है।'}</div>`}
         </div>
       `;
     }
     else if (this.state.view === 'education') {
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">📚 बच्चों की शिक्षा व पोर्टल</div>
-          <p style="font-size:13px; color:#334155; margin-bottom:12px;">विद्यार्थियों के लिए महत्वपूर्ण सरकारी पोर्टल और सीधे लिंक्स:</p>
-          <a href="https://harshiksha.gov.in" target="_blank" class="portal-link-btn">🔴 हरियाणा शिक्षा पोर्टल</a>
-          <a href="https://scholarships.gov.in" target="_blank" class="portal-link-btn" style="background:#405488;">🎓 नेशनल स्कॉलरशिप</a>
-          <a href="https://diksha.gov.in" target="_blank" class="portal-link-btn" style="background:#ca8a04;">📚 दीक्षा ऐप (DIKSHA)</a>
-          <div style="font-size:12px; font-weight:bold; color:#046e3b; margin-top:14px; margin-bottom:6px;">प्रमुख कीवर्ड्स (Quick Search Keywords):</div>
-          <div>
-            <span class="keyword-tag">Saksham Haryana</span>
-            <span class="keyword-tag">BSEH Board</span>
-            <span class="keyword-tag">Free Tablet Scheme</span>
-            <span class="keyword-tag">National Talent Search</span>
-            <span class="keyword-tag">E-Pathshala</span>
+          <div class="card-title">📚 ${isEn ? 'Education Portal' : 'बच्चों की शिक्षा व पोर्टल'}</div>
+          <p style="font-size:13px; color:#334155; margin-bottom:12px;">${isEn ? 'Important portals for students:' : 'विद्यार्थियों के लिए महत्वपूर्ण सरकारी पोर्टल और सीधे लिंक्स:'}</p>
+          <a href="https://harshiksha.gov.in" target="_blank" class="portal-link-btn">🔴 ${isEn ? 'Haryana Education Portal' : 'हरियाणा शिक्षा पोर्टल'}</a>
+          <a href="https://scholarships.gov.in" target="_blank" class="portal-link-btn" style="background:#405488;">🎓 ${isEn ? 'National Scholarship' : 'नेशनल स्कॉलरशिप'}</a>
+          <a href="https://diksha.gov.in" target="_blank" class="portal-link-btn" style="background:#ca8a04;">📚 ${isEn ? 'DIKSHA App' : 'दीक्षा ऐप (DIKSHA)'}</a>
+        </div>
+      `;
+    }
+    else if (this.state.view === 'complaints') {
+      let cList = this.state.complaints.filter(c => c.districtId === this.state.selectedDistrict && c.villageHi === this.state.searchVillage).map(c => `
+        <div class="service-item">
+          <span class="service-tag" style="background:#fee2e2; color:#991b1b;">${isEn ? 'Complaint' : 'शिकायत'}</span>
+          <div class="service-name">${c.title}</div>
+          <p style="font-size:12px; color:#334155; margin-top:4px;">${c.description}</p>
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('complaints', '${c.id}')">🗑️ Delete</button>` : ''}
+        </div>
+      `).join('');
+
+      html = `
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
+        <div class="card">
+          <div class="card-title">✍️ ${isEn ? 'Panchayat Complaints' : 'पंचायत शिकायत पोर्टल'} (${this.state.searchVillage})</div>
+          <div class="live-upload-box">
+            <div style="font-weight:bold; font-size:13px; color:#047857; margin-bottom:8px;">${isEn ? 'Register your complaint' : 'अपनी समस्या या शिकायत दर्ज करें'}</div>
+            <input class="form-control" id="cTitle" placeholder="${isEn ? 'Subject...' : 'शिकायत का विषय...'}" style="margin-bottom:8px;" />
+            <textarea class="form-control" id="cDesc" placeholder="${isEn ? 'Details...' : 'विस्तृत विवरण...'}" style="margin-bottom:8px; height:70px; resize:none;"></textarea>
+            <button class="btn-submit" onclick="app.submitComplaint()">📤 ${isEn ? 'Submit Complaint' : 'शिकायत भेजें'}</button>
           </div>
+          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">📋 ${isEn ? 'Registered Complaints:' : 'दर्ज शिकायतें:'}</div>
+          ${cList || `<div class="empty-state">${isEn ? 'No complaints registered.' : 'कोई शिकायत दर्ज नहीं है।'}</div>`}
         </div>
       `;
     }
     else if (this.state.view === 'animals') {
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
         <div class="card">
-          <div class="card-title">🐄 पशु चिकित्सा व उपचार</div>
-          <p style="font-size:13px; color:#334155; margin-bottom:10px;">पशुओं की प्रमुख बीमारियों और उनके शुरुआती उपचार/प्राथमिक उपचार:</p>
-          <div class="disease-box"><b>1. गलघोटू (Haemorrhagic Septicaemia):</b><br><b>लक्षण:</b> तेज बुखार, गले में सूजन, साँस लेने में तकलीफ。<br><b>उपचार:</b> तुरंत पशु चिकित्सक से टीकाकरण करवाएं।</div>
-          <div class="disease-box"><b>2. थनैला रोग (Mastitis):</b><br><b>लक्षण:</b> थन में सूजन, दूध में खून या छींटे आना。<br><b>उपचार:</b> थन की सफाई, एंटीबायोटिक कीचड़ से बचाव।</div>
+          <div class="card-title">🐄 ${isEn ? 'Animal Treatment' : 'पशु चिकित्सा व उपचार'}</div>
+          <p style="font-size:13px; color:#334155; margin-bottom:10px;">${isEn ? 'First aid & treatment for animals:' : 'पशुओं की प्रमुख बीमारियों और उनके शुरुआती उपचार:'}</p>
+          <div class="disease-box"><b>1. Haemorrhagic Septicaemia:</b><br><b>Symptoms:</b> High fever, neck swelling.<br><b>Treatment:</b> Immediate vaccination by vet.</div>
+          <div class="disease-box"><b>2. Mastitis:</b><br><b>Symptoms:</b> Udder swelling, blood in milk.<br><b>Treatment:</b> Cleanliness and antibiotics.</div>
         </div>
       `;
     }
     else if (this.state.view === 'policy') {
-      html = `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📜 Privacy Policy</div><p style="font-size:13px; color:#334155;">यह डिजिटल मंच गाँव के विकास और सूचनाओं के आदान-प्रदान के लिए बनाया गया है। आपकी डेटा सुरक्षा हमारी प्राथमिकता है।</p></div>`;
+      html = `<button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button><div class="card"><div class="card-title">📜 Privacy Policy</div><p style="font-size:13px; color:#334155;">${isEn ? 'Data security is our priority.' : 'आपकी डेटा सुरक्षा हमारी प्राथमिकता है।'}</p></div>`;
     }
     else if (this.state.view === 'about') {
-      html = `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px; color:#334155;">मेरा गाँव - मेरी पहचान पहल का उद्देश्य हर गाँव को डिजिटल रूप से सशक्त बनाना है।</p></div>`;
+      html = `<button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px; color:#334155;">${isEn ? 'Empowering villages digitally.' : 'गाँव को डिजिटल रूप से सशक्त बनाना।'}</p></div>`;
     }
     else if (this.state.view === 'admin') {
       if(!this.state.isAdminLoggedIn && !this.state.isSubAdminLoggedIn) return this.changeView('home');
 
-      let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending').map(x => `
+      let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && x.districtId === this.state.selectedDistrict && x.villageHi === this.state.searchVillage).map(x => `
         <div class="media-card" style="border: 2px solid #2563eb;">
-          <span class="service-tag">${labelName} (${x.villageHi || ''})</span>
+          <span class="service-tag">${labelName}</span>
           <div class="service-name">${x.title || x.name || ''}</div>
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
           ${x.videoUrl ? `<video controls style="width:100%; max-height:140px; background:#000;"><source src="${x.videoUrl}"></video>` : ''}
@@ -670,39 +732,33 @@ class VillageApp {
         </div>
       `).join('');
 
-      let pServ = renderPend(this.state.services, 'services', 'दुकान');
-      let pAnn = renderPend(this.state.announcements, 'announcements', 'मुनादी');
-      let pHist = renderPend(this.state.history, 'history', 'इतिहास');
-      let pMkt = renderPend(this.state.market, 'market', 'बाजार');
-      let pGal = renderPend(this.state.gallery, 'gallery', 'गैलरी');
-      let pVid = renderPend(this.state.videos, 'videos', 'वीडियो');
+      let pServ = renderPend(this.state.services, 'services', 'Shop');
+      let pAnn = renderPend(this.state.announcements, 'announcements', 'Announcement');
+      let pHist = renderPend(this.state.history, 'history', 'History');
+      let pMkt = renderPend(this.state.market, 'market', 'Market');
+      let pGal = renderPend(this.state.gallery, 'gallery', 'Gallery');
+      let pVid = renderPend(this.state.videos, 'videos', 'Video');
 
       let subAdminSection = this.state.isAdminLoggedIn ? `
         <div class="card" style="margin-top:15px; border:2px dashed #047857;">
-          <div class="card-title">🔑 सब-एडमिन जोड़ें</div>
-          <div class="form-group"><input class="form-control" id="newSubAdminPwd" placeholder="नया पासवर्ड..." /></div>
-          <button class="btn-submit" onclick="app.addSubAdmin()">सब-एडमिन बनाएं</button>
-          <div style="margin-top:10px; font-size:12px; font-weight:bold;">मौजूदा सब-एडमिन लिस्ट:</div>
-          ${this.state.subAdmins.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:6px; border-radius:6px; margin-top:4px;"><span>🔑 ${s.pwd}</span><button class="delete-btn" onclick="app.deleteSubAdmin('${s.id}')">हटाएं</button></div>`).join('')}
+          <div class="card-title">🔑 Add Sub-Admin</div>
+          <div class="form-group"><input class="form-control" id="newSubAdminPwd" placeholder="Password..." /></div>
+          <button class="btn-submit" onclick="app.addSubAdmin()">Create Sub-Admin</button>
+          <div style="margin-top:10px; font-size:12px; font-weight:bold;">Sub-Admin List:</div>
+          ${this.state.subAdmins.map(s => `<div style="display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:6px; border-radius:6px; margin-top:4px;"><span>🔑 ${s.pwd}</span><button class="delete-btn" onclick="app.deleteSubAdmin('${s.id}')">Remove</button></div>`).join('')}
         </div>
       ` : '';
 
       html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card"><div class="card-title">📥 एडमिन अप्रूवल पैनल</div></div>
+        <button class="back-btn" onclick="app.changeView('home')">← ${isEn ? 'Home' : 'होम'}</button>
+        <div class="card"><div class="card-title">📥 Admin Approval Panel (${this.state.searchVillage})</div></div>
         ${pServ || ''} ${pAnn || ''} ${pHist || ''} ${pMkt || ''} ${pGal || ''} ${pVid || ''}
-        ${(!pServ && !pAnn && !pHist && !pMkt && !pGal && !pVid) ? '<div class="empty-state">कोई पेंडिंग रिक्वेस्ट नहीं है।</div>' : ''}
+        ${(!pServ && !pAnn && !pHist && !pMkt && !pGal && !pVid) ? '<div class="empty-state">No pending requests.</div>' : ''}
         ${subAdminSection}
       `;
     }
 
     content.innerHTML = html;
-    if(this.state.view === 'home') {
-      let vInput = document.getElementById('villageInput');
-      if(vInput) {
-        vInput.oninput = (e) => { this.state.searchVillage = e.target.value; };
-      }
-    }
   }
 }
 
