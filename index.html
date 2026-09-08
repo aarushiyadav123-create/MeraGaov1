@@ -56,6 +56,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .bg-3 { background: linear-gradient(135deg, #db2777, #be185d); } 
 .bg-4 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } 
 .bg-5 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } 
+.bg-6 { background: linear-gradient(135deg, #0891b2, #155e75); } /* इतिहास / गैलरी के लिए नया रंग */
 
 .notification-badge { background: #dc2626; color: white; font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: bold; display: none; }
 
@@ -71,6 +72,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .service-tag { background: #d1fae5; color: #064e3b; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 4px; }
 .service-name { font-size: 14px; font-weight: 700; color: #0f172a; margin: 6px 0; }
 .service-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 8px; }
+.service-video { width: 100%; max-height: 200px; border-radius: 8px; margin-top: 8px; }
 .btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 13px; margin-top: 10px; }
 .empty-state { text-align: center; padding: 25px 15px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 14px; color: #64748b; font-size: 13px; }
 .back-btn { background: #065f46; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 14px; }
@@ -199,6 +201,7 @@ class VillageApp {
       announcements: [],
       greetings: [],
       chaupalMessages: [],
+      historyGallery: [], // इतिहास और गैलरी डेटा के लिए
       allowedChatUsers: {}, 
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
@@ -208,7 +211,9 @@ class VillageApp {
     };
 
     this.tempImage = '';
-    this.unreadMessageCount = 0; // बिना पढ़े गए नए संदेशों की गिनती
+    this.tempMedia = ''; // लाइव/फाइल फोटो या वीडियो के लिए
+    this.tempMediaType = 'image'; // 'image' या 'video'
+    this.unreadMessageCount = 0;
 
     this.initListeners();
     this.initFirebaseData();
@@ -312,15 +317,17 @@ class VillageApp {
           this.state.greetings = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'greetings' || this.state.view === 'admin') this.render();
         });
+        onValue(ref(db, 'historyGallery'), snap => { // इतिहास और गैलरी डेटा सिंक
+          const val = snap.val();
+          this.state.historyGallery = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'historyGallery' || this.state.view === 'admin') this.render();
+        });
         onValue(ref(db, 'chaupalMessages'), snap => {
           const val = snap.val();
           const newMsgs = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          
-          // अगर यूज़र चैट स्क्रीन पर नहीं है और नया मैसेज आया है, तो अनरेड काउंटर बढ़ाएँ
           if (this.state.view !== 'chaupal' && newMsgs.length > this.state.chaupalMessages.length && this.state.chaupalMessages.length > 0) {
             this.unreadMessageCount += (newMsgs.length - this.state.chaupalMessages.length);
           }
-
           this.state.chaupalMessages = newMsgs;
           if(this.state.view === 'chaupal' || this.state.view === 'home') this.render();
         });
@@ -387,7 +394,7 @@ class VillageApp {
   changeView(viewName) {
     this.state.view = viewName;
     if(viewName === 'chaupal') {
-      this.unreadMessageCount = 0; // चैट खोलते ही काउंटर रीसेट हो जाएगा
+      this.unreadMessageCount = 0;
     }
     this.render();
   }
@@ -445,6 +452,20 @@ class VillageApp {
     }
   }
 
+  // इतिहास और गैलरी के लिए लाइव/फाइल फोटो या वीडियो हैंडल करने हेतु
+  handleHistoryGalleryMedia(input) {
+    const file = input.files[0];
+    if(file) {
+      this.tempMediaType = file.type.startsWith('video') ? 'video' : 'image';
+      const reader = new FileReader();
+      reader.onloadend = () => { 
+        this.tempMedia = reader.result; 
+        alert(`✅ ${this.tempMediaType === 'video' ? 'वीडियो' : 'फोटो'} चुन ली गई है!`);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   submitShop() {
     const name = document.getElementById('sName')?.value.trim();
     const phone = document.getElementById('sPhone')?.value.trim();
@@ -476,9 +497,27 @@ class VillageApp {
     const name = document.getElementById('mName')?.value.trim();
     const phone = document.getElementById('mPhone')?.value.trim();
     const title = document.getElementById('mTitle')?.value.trim();
+    const itemType = document.getElementById('mItemType')?.value;
     if(!name || !phone || !title) return alert("कृपया नाम, मोबाइल नंबर और विवरण भरें!");
-    this.saveData('market', { name, phone, title, imageUrl: this.tempImage || '' }, "पोस्ट एडमिन अप्रूवल के लिए भेज दी गई है!");
+    this.saveData('market', { name, phone, title, itemType, imageUrl: this.tempImage || '' }, "पशु/वाहन पोस्ट एडमिन अप्रूवल के लिए भेज दी गई है!");
     this.tempImage = '';
+  }
+
+  // इतिहास या गैलरी पोस्ट सबमिट करने का फंक्शन (Admin Approved लॉजिक के साथ)
+  submitHistoryGallery() {
+    const name = document.getElementById('hgName')?.value.trim();
+    const title = document.getElementById('hgTitle')?.value.trim();
+    const category = document.getElementById('hgCategory')?.value;
+    if(!name || !title || !this.tempMedia) return alert("कृपया नाम, विवरण और फोटो/वीडियो ज़रूर चुनें!");
+    
+    this.saveData('historyGallery', { 
+      name, 
+      title, 
+      category, 
+      mediaUrl: this.tempMedia, 
+      mediaType: this.tempMediaType 
+    }, "इतिहास/गैलरी पोस्ट एडमिन अप्रूवल के लिए भेज दी गई है! एडमिन के अप्रूव करने के बाद ही यह लाइव दिखाई देगी।");
+    this.tempMedia = '';
   }
 
   verifyUserForChat() {
@@ -495,7 +534,7 @@ class VillageApp {
       alert("सत्यापन सफल! अब आप Admin Chat Room देख और रिप्लाई कर सकते हैं।");
       this.render();
     } else {
-      alert("❌ गलत मोबाइल नंबर या पासवर्ड! यह नंबर या तो एडमिन द्वारा जोड़ा नहीं गया है या पासवर्ड गलत है।");
+      alert("❌ गलत मोबाइल नंबर या पासवर्ड!");
     }
   }
 
@@ -583,7 +622,6 @@ class VillageApp {
         <option value="${v.hi}" ${(this.state.searchVillage === v.hi || this.state.searchVillage === v.en) ? 'selected' : ''}>${v.hi}</option>
       `).join('');
 
-      // चैट बटन पर लाल रंग का अनरेड बैज दिखाने के लिए लॉजिक
       let badgeHtml = this.unreadMessageCount > 0 ? `<span class="notification-badge">${this.unreadMessageCount} नया</span>` : '';
 
       html = `
@@ -613,8 +651,11 @@ class VillageApp {
         <div class="menu-card bg-1" onclick="app.changeView('list')"><span>🛒 1. दुकान और सेवा बाजार</span><span>→</span></div>
         <div class="menu-card bg-2" onclick="app.changeView('announcements')"><span>📢 2. मुनादी व जरूरी खबरें</span><span>→</span></div>
         <div class="menu-card bg-3" onclick="app.changeView('greetings')"><span>🎉 3. त्यौहार व बधाई संदेश (बैनर)</span><span>→</span></div>
-        <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🐃 4. पशु हाट और सेकेंड-हैंड बाजार</span><span>→</span></div>
-        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><div style="display:flex; align-items:center; gap:8px;"><span>💬 5. Admin Chat Room</span> ${badgeHtml}</div><span>→</span></div>
+        <!-- चौथे बटन से 'सेकंड-हैंड' हटाकर बाइक, ट्रैक्टर, भैंस, गाय की खरीद-बिक्री अपडेट किया गया है -->
+        <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🚜 4. बाइक, ट्रैक्टर, भैंस, गाय खरीद-बिक्री बाज़ार</span><span>→</span></div>
+        <!-- इतिहास या गैलरी का नया बटन (लाइव/फाइल फोटो-वीडियो और एडमिन अप्रूवल के साथ) -->
+        <div class="menu-card bg-6" onclick="app.changeView('historyGallery')"><span>🏛️ 5. गाँव का इतिहास और गैलरी (फोटो/वीडियो)</span><span>→</span></div>
+        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><div style="display:flex; align-items:center; gap:8px;"><span>💬 6. Admin Chat Room</span> ${badgeHtml}</div><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -708,25 +749,73 @@ class VillageApp {
     }
     else if (this.state.view === 'market') {
       let items = this.state.market.filter(m => m.status === 'approved' && m.districtId === this.state.selectedDistrict && m.villageHi === this.state.searchVillage).map(m => `
-        <div class="service-item" style="border-left: 4px solid #f59e0b;">
+        <div class="service-item" style="border-left: 4px solid #2563eb;">
+          <span class="service-tag">${m.itemType || 'खरीद-बिक्री'}</span>
           <div class="service-name">${m.title}</div>
-          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>विक्रेता:</b> ${m.name} | <b>फोन:</b> ${m.phone}</p>
+          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>विक्रेता/खरीदार:</b> ${m.name} | <b>फोन:</b> ${m.phone}</p>
           ${m.imageUrl ? `<img src="${m.imageUrl}" class="service-img"/>` : ''}
+          <a href="tel:${m.phone}" class="btn-call">📞 संपर्क करें: ${m.phone}</a>
           ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ Delete</button>`:''}
         </div>
       `).join('');
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🐃 पशु हाट और सेकेंड-हैंड बाजार (${displayVillageName})</div>
+          <div class="card-title">🚜 बाइक, ट्रैक्टर, भैंस, गाय खरीद-बिक्री बाज़ार (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="mName" placeholder="आपका नाम (अनिवार्य)..." style="margin-bottom:8px;" />
             <input class="form-control" id="mPhone" placeholder="मोबाइल नंबर (अनिवार्य)..." style="margin-bottom:8px;" />
-            <textarea class="form-control" id="mTitle" placeholder="पशु या वस्तु का विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
+            <div class="form-group">
+              <label>📂 श्रेणी चुनें:</label>
+              <select class="form-control" id="mItemType" style="margin-bottom:8px;">
+                <option value="भैंस / गाय (Animal)">भैंस / गाय (Buy/Sell)</option>
+                <option value="ट्रैक्टर (Tractor)">ट्रैक्टर (Tractor)</option>
+                <option value="बाइक (Bike)">बाइक (Bike)</option>
+                <option value="अन्य वाहन/पशु">अन्य वाहन या पशु</option>
+              </select>
+            </div>
+            <textarea class="form-control" id="mTitle" placeholder="विवरण लिखें (जैसे कीमत, नस्ल, मॉडल, स्थिति)..." style="margin-bottom:8px; height:60px;"></textarea>
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें (अप्रूवल के लिए)</button>
           </div>
-          ${items || `<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}
+          ${items || `<div class="empty-state">इस श्रेणी में अभी कोई पोस्ट उपलब्ध नहीं है।</div>`}
+        </div>
+      `;
+    }
+    else if (this.state.view === 'historyGallery') {
+      // केवल एडमिन अप्रूव्ड आइटम ही प्रदर्शित होंगे
+      let items = this.state.historyGallery.filter(hg => hg.status === 'approved' && hg.districtId === this.state.selectedDistrict && hg.villageHi === this.state.searchVillage).map(hg => `
+        <div class="service-item" style="border-left: 4px solid #0891b2;">
+          <span class="service-tag">${hg.category}</span>
+          <div class="service-name">${hg.title}</div>
+          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>प्रस्तुतकर्ता:</b> ${hg.name}</p>
+          ${hg.mediaType === 'video' ? `<video src="${hg.mediaUrl}" controls class="service-video"></video>` : `<img src="${hg.mediaUrl}" class="service-img"/>`}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('historyGallery', '${hg.id}')">🗑️ Delete</button>`:''}
+        </div>
+      `).join('');
+      
+      html = `
+        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <div class="card">
+          <div class="card-title">🏛️ गाँव का इतिहास और गैलरी (${displayVillageName})</div>
+          <div class="live-upload-box">
+            <p style="font-size: 11px; color: #047857; margin-bottom: 8px; font-weight: bold;">⚠️ यहाँ अपलोड की गई फोटो/वीडियो एडमिन द्वारा स्वीकृत (Admin Approved) होने के बाद ही लाइव दिखाई देगी।</p>
+            <input class="form-control" id="hgName" placeholder="आपका नाम (अनिवार्य)..." style="margin-bottom:8px;" />
+            <div class="form-group">
+              <label>📂 सेक्शन चुनें:</label>
+              <select class="form-control" id="hgCategory" style="margin-bottom:8px;">
+                <option value="गाँव का इतिहास (History)">गाँव का इतिहास (History)</option>
+                <option value="गाँव की गैलरी (Photo/Video Gallery)">गाँव की गैलरी (Photo/Video)</option>
+              </select>
+            </div>
+            <textarea class="form-control" id="hgTitle" placeholder="इतिहास या फोटो/वीडियो का विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
+            <div class="form-group">
+              <label>🔴 लाइव कैमरा या फ़ाइल से फोटो/वीडियो चुनें:</label>
+              <input type="file" accept="image/*,video/*" capture="environment" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px;" />
+            </div>
+            <button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें (Admin Approval के लिए)</button>
+          </div>
+          ${items || `<div class="empty-state">इस गाँव के लिए अभी कोई स्वीकृत इतिहास या गैलरी मीडिया उपलब्ध नहीं है।</div>`}
         </div>
       `;
     }
@@ -831,8 +920,9 @@ class VillageApp {
         <div class="media-card" style="border: 2px solid #2563eb;">
           <span class="service-tag">${labelName}</span>
           <div class="service-name">${x.title || x.message || x.name || ''}</div>
-          ${x.name ? `<p style="font-size:11px; color:#555;">द्वारा: ${x.name} | फोन: ${x.phone} | श्रेणी: ${x.category || 'N/A'}</p>` : ''}
+          ${x.name ? `<p style="font-size:11px; color:#555;">द्वारा: ${x.name} | फोन: ${x.phone || 'N/A'}</p>` : ''}
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
+          ${x.mediaUrl ? (x.mediaType === 'video' ? `<video src="${x.mediaUrl}" controls class="service-video"></video>` : `<img src="${x.mediaUrl}" class="service-img"/>`) : ''}
           <button class="approve-btn" onclick="app.approveItem('${path}', '${x.id}')">✅ Approve</button>
           <button class="delete-btn" onclick="app.deleteItem('${path}', '${x.id}')">❌ Reject</button>
         </div>
@@ -842,12 +932,13 @@ class VillageApp {
       let pAnn = renderPend(this.state.announcements, 'announcements', 'Announcement');
       let pGreet = renderPend(this.state.greetings, 'greetings', 'Greeting/Banner');
       let pMkt = renderPend(this.state.market, 'market', 'Market');
+      let pHg = renderPend(this.state.historyGallery, 'historyGallery', 'History & Gallery'); // इतिहास/गैलरी अप्रूवल
 
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card"><div class="card-title">📥 Admin Approval Panel (${displayVillageName})</div></div>
-        ${pServ || ''} ${pAnn || ''} ${pGreet || ''} ${pMkt || ''}
-        ${(!pServ && !pAnn && !pGreet && !pMkt) ? '<div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>' : ''}
+        ${pServ || ''} ${pAnn || ''} ${pGreet || ''} ${pMkt || ''} ${pHg || ''}
+        ${(!pServ && !pAnn && !pGreet && !pMkt && !pHg) ? '<div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>' : ''}
       `;
     }
 
