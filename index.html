@@ -50,13 +50,13 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; border-top: 1px solid #064e3b; }
 .content { padding: 18px; background: #f8fafc; min-height: 480px; }
 
-/* होमपेज के लिए 5 मुख्य धांसू बटन (Gradient Styles) */
+/* होमपेज के 5 मुख्य बटन (दुकान अब 1 नंबर पर) */
 .menu-card { border-radius: 14px; padding: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
-.bg-1 { background: linear-gradient(135deg, #db2777, #be185d); } /* त्यौहार व बधाई संदेश */
-.bg-2 { background: linear-gradient(135deg, #ea580c, #c2410c); } /* मुनादी व जरूरी खबरें */
-.bg-3 { background: linear-gradient(135deg, #0d9488, #0f766e); } /* दुकान और सेवा बाजार */
-.bg-4 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } /* पशु हाट और सेकेंड-हैंड बाजार */
-.bg-5 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } /* गाँव की चौपाल / आपसी चर्चा */
+.bg-1 { background: linear-gradient(135deg, #0d9488, #0f766e); } /* 1. दुकान और सेवा बाजार */
+.bg-2 { background: linear-gradient(135deg, #ea580c, #c2410c); } /* 2. मुनादी व जरूरी खबरें */
+.bg-3 { background: linear-gradient(135deg, #db2777, #be185d); } /* 3. त्यौहार व बधाई संदेश / बैनर */
+.bg-4 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } /* 4. पशु हाट और सेकेंड-हैंड बाजार */
+.bg-5 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } /* 5. गाँव की चौपाल / आपसी चर्चा */
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -76,8 +76,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .live-upload-box { background: #f0fdf4; border: 2px dashed #10b981; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 15px; }
 .delete-btn { background: #dc2626; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 6px; }
 .approve-btn { background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 6px; }
-.media-options { display: flex; gap: 8px; margin-bottom: 8px; justify-content: center; }
-.opt-btn { flex: 1; background: #047857; color: white; border: none; padding: 9px 6px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; }
 </style>
 </head>
 <body>
@@ -138,11 +136,7 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
       { hi: "कलानौर", en: "Kalanaur (Rohtak)" },
       { hi: "स्माइला", en: "Smaila" },
       { hi: "निंदाना", en: "Nindana" },
-      { hi: "भिवानी खेड़ा रोड", en: "Bhiwani Khera Road" },
-      { hi: "बेरी रोड", en: "Beri Road" },
-      { hi: "सांपला", en: "Sampla" },
-      { hi: "इन्दिरा", en: "Indira" },
-      { hi: "सुंदरपुर", en: "Sundarpur" }
+      { hi: "सांपला", en: "Sampla" }
     ]
   },
   "hansi": {
@@ -150,51 +144,14 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
     villages: [
       { hi: "हाँसी शहर", en: "Hansi City" },
       { hi: "सिसई", en: "Sisai" },
-      { hi: "उमरा", en: "Umra" },
-      { hi: "ग्योंद", en: "Gyond" },
-      { hi: "किरथान", en: "Kirthan" },
-      { hi: "ढंधूर", en: "Dhandhoor" },
-      { hi: "मसूदपुर", en: "Masudpur" }
+      { hi: "उमरा", en: "Umra" }
     ]
   },
   "rewari": {
     nameHi: "रेवाड़ी", nameEn: "Rewari",
     villages: [
       { hi: "बावल", en: "Bawal" },
-      { hi: "कोसली", en: "Kosli" },
-      { hi: "डहीना", en: "Dahina" },
-      { hi: "खानपुर", en: "Khanpur" },
-      { hi: "नैन", en: "Nain" },
-      { hi: "जतुसाना", en: "Jatusana" }
-    ]
-  },
-  "panipat": {
-    nameHi: "पानीपत", nameEn: "Panipat",
-    villages: [
-      { hi: "समलकखा", en: "Samalkha" },
-      { hi: "ईसराना", en: "Israna" },
-      { hi: "बापौली", en: "Bapoli" },
-      { hi: "नंदलगढ़", en: "Nandalgarh" },
-      { hi: "उझा", en: "Ujha" },
-      { hi: "सींक", en: "Seenk" }
-    ]
-  },
-  "bhiwani": {
-    nameHi: "भिवानी", nameEn: "Bhiwani",
-    villages: [
-      { hi: "तोशाम", en: "Tosham" },
-      { hi: "बवानी खेड़ा", en: "Bawani Khera" },
-      { hi: "बाढड़ा", en: "Badhra" },
-      { hi: "सिवानी", en: "Siwani" }
-    ]
-  },
-  "hisar": {
-    nameHi: "हिसार", nameEn: "Hisar",
-    villages: [
-      { hi: "हाँसी", en: "Hansi" },
-      { hi: "बरवाला", en: "Barwala" },
-      { hi: "नारनौंद", en: "Narnaund" },
-      { hi: "आदमपुर", en: "Adampur" }
+      { hi: "कोसली", en: "Kosli" }
     ]
   }
 };
@@ -212,9 +169,8 @@ class VillageApp {
       gallery: [],
       market: [],
       announcements: [],
-      history: [],
-      jokes: [],
-      complaints: [],
+      greetings: [],
+      chaupalMessages: [],
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
@@ -251,7 +207,7 @@ class VillageApp {
     const villageName = inputEl ? inputEl.value.trim() : '';
 
     if (!villageName) {
-      alert(this.state.lang === 'hi' ? "कृपया नए गाँव का नाम दर्ज करें!" : "Please enter new village name!");
+      alert("कृपया नए गाँव का नाम दर्ज करें!");
       return;
     }
 
@@ -259,7 +215,7 @@ class VillageApp {
     const exists = HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.some(v => v.hi === villageName);
     
     if (exists) {
-      alert(this.state.lang === 'hi' ? "यह गाँव सूची में पहले से मौजूद है!" : "Village already exists in the list!");
+      alert("यह गाँव सूची में पहले से मौजूद है!");
       return;
     }
 
@@ -272,7 +228,7 @@ class VillageApp {
     localStorage.setItem('customDistrictVillages', JSON.stringify(savedVillages));
 
     this.state.searchVillage = villageName;
-    alert(this.state.lang === 'hi' ? `गाँव '${villageName}' सफलतापूर्वक जोड़ दिया गया है!` : `Village '${villageName}' added successfully!`);
+    alert(`गाँव '${villageName}' सफलतापूर्वक जोड़ दिया गया है!`);
     this.render();
   }
 
@@ -320,6 +276,16 @@ class VillageApp {
           this.state.market = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'market' || this.state.view === 'admin') this.render();
         });
+        onValue(ref(db, 'greetings'), snap => {
+          const val = snap.val();
+          this.state.greetings = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'greetings' || this.state.view === 'admin') this.render();
+        });
+        onValue(ref(db, 'chaupalMessages'), snap => {
+          const val = snap.val();
+          this.state.chaupalMessages = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          if(this.state.view === 'chaupal') this.render();
+        });
         onValue(ref(db, 'subAdmins'), snap => {
           const val = snap.val();
           this.state.subAdmins = val ? Object.keys(val).map(k => ({id: k, pwd: val[k]})) : [];
@@ -331,12 +297,10 @@ class VillageApp {
   updateTicker() {
     const tickerEl = document.getElementById('dynamicTickerText');
     if(!tickerEl) return;
-
     let approvedShops = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage);
     let baseText = "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य";
-    
     if(approvedShops.length > 0) {
-      let shopTickerItems = approvedShops.map(s => `🛒 नई दुकान/सेवा: ${s.name} (${s.category || 'Service'}) - फोन: ${s.phone}`).join(' | ');
+      let shopTickerItems = approvedShops.map(s => `🛒 नई दुकान: ${s.name} (${s.category || 'Service'}) - ${s.phone}`).join(' | ');
       tickerEl.innerHTML = `${shopTickerItems} | ${baseText}`;
     } else {
       tickerEl.innerHTML = baseText;
@@ -352,51 +316,29 @@ class VillageApp {
         localStorage.setItem('userCustomAvatar', reader.result);
         const avatarEl = document.getElementById('headerUserAvatar');
         if(avatarEl) avatarEl.src = reader.result;
-        alert(this.state.lang === 'hi' ? "प्रोफाइल फोटो बदल दी गई है!" : "Profile photo updated!");
+        alert("प्रोफाइल फोटो बदल दी गई है!");
       };
       reader.readAsDataURL(file);
     }
   }
 
   requestAdminAccess() {
-    let pwd = prompt(this.state.lang === 'hi' ? "एडमिन पासवर्ड दर्ज करें:" : "Enter Admin Password:");
+    let pwd = prompt("एडमिन पासवर्ड दर्ज करें:");
     if(pwd === '1234') {
       this.state.isAdminLoggedIn = true;
       this.state.isSubAdminLoggedIn = false;
       this.changeView('admin');
-    } else { alert(this.state.lang === 'hi' ? "गलत पासवर्ड!" : "Wrong Password!"); }
+    } else { alert("गलत पासवर्ड!"); }
   }
 
   requestSubAdminAccess() {
-    let pwd = prompt(this.state.lang === 'hi' ? "सब-एडमिन पासवर्ड दर्ज करें:" : "Enter Sub-Admin Password:");
+    let pwd = prompt("सब-एडमिन पासवर्ड दर्ज करें:");
     let matchedSub = this.state.subAdmins.find(s => s.pwd === pwd);
     if(matchedSub || pwd === '1234') {
       this.state.isAdminLoggedIn = (pwd === '1234');
       this.state.isSubAdminLoggedIn = true;
       this.changeView('admin');
-    } else { alert(this.state.lang === 'hi' ? "गलत पासवर्ड!" : "Wrong Password!"); }
-  }
-
-  addSubAdmin() {
-    let inputEl = document.getElementById('newSubAdminPwd');
-    let newSubPwd = inputEl ? inputEl.value : '';
-    if(!newSubPwd) return alert(this.state.lang === 'hi' ? "पासवर्ड दर्ज करें!" : "Enter password!");
-    if (window.firebaseDb) {
-      const { db, ref, push } = window.firebaseDb;
-      push(ref(db, 'subAdmins'), newSubPwd).then(() => {
-        alert(this.state.lang === 'hi' ? "सब-एडमिन जोड़ दिया गया है!" : "Sub-admin added!");
-        if(inputEl) inputEl.value = '';
-      });
-    }
-  }
-
-  deleteSubAdmin(id) {
-    if(confirm(this.state.lang === 'hi' ? "हटाना चाहते हैं?" : "Want to delete?")) {
-      if (window.firebaseDb) {
-        const { db, ref, remove } = window.firebaseDb;
-        remove(ref(db, `subAdmins/${id}`)).then(() => this.render());
-      }
-    }
+    } else { alert("गलत पासवर्ड!"); }
   }
 
   changeView(viewName) {
@@ -404,7 +346,7 @@ class VillageApp {
     this.render();
   }
 
-  saveData(path, data, msgHi, msgEn) {
+  saveData(path, data, msg) {
     if (window.firebaseDb) {
       const { db, ref, push } = window.firebaseDb;
       push(ref(db, path), { 
@@ -415,18 +357,18 @@ class VillageApp {
         timestamp: Date.now() 
       })
       .then(() => { 
-        alert(this.state.lang === 'hi' ? msgHi : msgEn); 
+        alert(msg); 
         this.changeView('home'); 
       })
       .catch(err => alert("Error: " + err.message));
-    } else { alert("Database not connected!"); }
+    }
   }
 
   approveItem(path, id) {
     if (window.firebaseDb) {
       const { db, ref, update } = window.firebaseDb;
       update(ref(db, `${path}/${id}`), { status: 'approved' }).then(() => {
-        alert(this.state.lang === 'hi' ? "सफलतापूर्वक अप्रूव हो गया!" : "Approved successfully!");
+        alert("सफलतापूर्वक अप्रूव हो गया!");
         this.updateTicker();
         this.render();
       });
@@ -434,7 +376,7 @@ class VillageApp {
   }
 
   deleteItem(path, id) {
-    if(confirm(this.state.lang === 'hi' ? "डिलीट करना चाहते हैं?" : "Want to delete?")) {
+    if(confirm("डिलीट करना चाहते हैं?")) {
       if (window.firebaseDb) {
         const { db, ref, remove } = window.firebaseDb;
         remove(ref(db, `${path}/${id}`)).then(() => {
@@ -451,63 +393,83 @@ class VillageApp {
       const reader = new FileReader();
       reader.onloadend = () => { 
         this.tempImage = reader.result; 
-        let preview = document.getElementById('shopImgPreviewText') || 
-                      document.getElementById('servImgPreviewText') || 
-                      document.getElementById('annImgPreviewText') || 
-                      document.getElementById('mImgPreviewText');
-        if(preview) preview.innerText = this.state.lang === 'hi' ? "✅ फोटो अपलोड हो गई है" : "✅ Photo uploaded";
+        alert("✅ फोटो चुनी गई है!");
       };
       reader.readAsDataURL(file);
     }
   }
 
   submitShop() {
-    const nameEl = document.getElementById('sName');
-    const phoneEl = document.getElementById('sPhone');
-    const catEl = document.getElementById('sCat');
-    const name = nameEl ? nameEl.value : '';
-    const phone = phoneEl ? phoneEl.value : '';
-    const cat = catEl ? catEl.value : 'किराना';
-    if(!name || !phone) return alert(this.state.lang === 'hi' ? "कृपया सभी जानकारी भरें!" : "Please fill all details!");
-    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन अप्रूवल के लिए भेज दी गई है!", "Shop submitted for admin approval!");
+    const name = document.getElementById('sName')?.value.trim();
+    const phone = document.getElementById('sPhone')?.value.trim();
+    const cat = document.getElementById('sCat')?.value;
+    if(!name || !phone) return alert("कृपया दुकान का नाम और मोबाइल नंबर भरें!");
+    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन अप्रूवल के लिए भेज दी गई है!");
     this.tempImage = '';
   }
 
   submitAnnouncement() {
-    const titleEl = document.getElementById('annTitle');
-    const title = titleEl ? titleEl.value : '';
-    if(!title) return alert(this.state.lang === 'hi' ? "विवरण भरें!" : "Fill description!");
-    this.saveData('announcements', { title, imageUrl: this.tempImage || '' }, "मुनादी अप्रूवल के लिए भेज दी गई है!", "Announcement sent for approval!");
+    const name = document.getElementById('annName')?.value.trim();
+    const phone = document.getElementById('annPhone')?.value.trim();
+    const title = document.getElementById('annTitle')?.value.trim();
+    if(!name || !phone || !title) return alert("कृपया नाम, मोबाइल नंबर और मुनादी का विवरण भरें!");
+    this.saveData('announcements', { name, phone, title, imageUrl: this.tempImage || '' }, "मुनादी अप्रूवल के लिए भेज दी गई है!");
+    this.tempImage = '';
+  }
+
+  submitGreeting() {
+    const name = document.getElementById('gName')?.value.trim();
+    const phone = document.getElementById('gPhone')?.value.trim();
+    const message = document.getElementById('gMsg')?.value.trim();
+    if(!name || !phone || !message) return alert("कृपया नाम, मोबाइल नंबर और संदेश/बैनर विवरण भरें!");
+    this.saveData('greetings', { name, phone, message, imageUrl: this.tempImage || '' }, "बैनर/बधाई संदेश एडमिन अप्रूवल के लिए भेज दिया गया है!");
     this.tempImage = '';
   }
 
   submitMarket() {
-    const nameEl = document.getElementById('mName');
-    const phoneEl = document.getElementById('mPhone');
-    const titleEl = document.getElementById('mTitle');
-
-    const name = nameEl ? nameEl.value.trim() : '';
-    const phone = phoneEl ? phoneEl.value.trim() : '';
-    const title = titleEl ? titleEl.value.trim() : '';
-
-    if (!name || !phone) {
-      alert(this.state.lang === 'hi' ? "⚠️ कृपया 'नाम' और 'मोबाइल नंबर' दोनों दर्ज करें!" : "⚠️ Please enter both Name and Mobile Number!");
-      return;
-    }
-
-    if (!title) {
-      alert(this.state.lang === 'hi' ? "⚠️ कृपया विवरण लिखें!" : "⚠️ Please enter item description!");
-      return;
-    }
-
-    this.saveData('market', { name, phone, title, imageUrl: this.tempImage || '' }, "पशु/बाजार पोस्ट एडमिन अप्रूवल के लिए भेज दी गई है!", "Market post sent for approval!");
+    const name = document.getElementById('mName')?.value.trim();
+    const phone = document.getElementById('mPhone')?.value.trim();
+    const title = document.getElementById('mTitle')?.value.trim();
+    if(!name || !phone || !title) return alert("कृपया नाम, मोबाइल नंबर और विवरण भरें!");
+    this.saveData('market', { name, phone, title, imageUrl: this.tempImage || '' }, "पोस्ट एडमिन अप्रूवल के लिए भेज दी गई है!");
     this.tempImage = '';
+  }
+
+  submitChaupalMsg() {
+    const senderName = document.getElementById('cName')?.value.trim();
+    const senderPhone = document.getElementById('cPhone')?.value.trim();
+    const msgText = document.getElementById('cText')?.value.trim();
+    const isAdminNoAdded = document.getElementById('cAdminNoCheck')?.checked;
+
+    if(!senderName || !msgText) return alert("कृपया अपना नाम और संदेश लिखें!");
+
+    let fullMsg = msgText;
+    if(isAdminNoAdded && senderPhone) {
+      fullMsg += ` (Admin Contact: ${senderPhone})`;
+    }
+
+    if (window.firebaseDb) {
+      const { db, ref, push } = window.firebaseDb;
+      push(ref(db, 'chaupalMessages'), {
+        name: senderName,
+        phone: senderPhone || '',
+        message: fullMsg,
+        districtId: this.state.selectedDistrict,
+        villageHi: this.state.searchVillage,
+        timestamp: Date.now()
+      }).then(() => {
+        document.getElementById('cName').value = '';
+        document.getElementById('cPhone').value = '';
+        document.getElementById('cText').value = '';
+        if(document.getElementById('cAdminNoCheck')) document.getElementById('cAdminNoCheck').checked = false;
+        this.render();
+      });
+    }
   }
 
   render() {
     const isEn = this.state.lang === 'en';
     const currentDistrictObj = HARYANA_DISTRICTS_AND_VILLAGES[this.state.selectedDistrict] || HARYANA_DISTRICTS_AND_VILLAGES['charkhi-dadri'];
-    
     let currentVillageObj = currentDistrictObj.villages.find(v => v.hi === this.state.searchVillage || v.en === this.state.searchVillage);
     let displayVillageName = currentVillageObj ? (isEn ? currentVillageObj.en : currentVillageObj.hi) : this.state.searchVillage;
 
@@ -516,9 +478,6 @@ class VillageApp {
     
     const avatarEl = document.getElementById('headerUserAvatar');
     if(avatarEl) avatarEl.src = this.state.userAvatarUrl;
-
-    const menuText = document.getElementById('menuText');
-    if(menuText) menuText.innerText = isEn ? 'Menu' : 'मेनू';
 
     const content = document.getElementById('mainContent');
     if(!content) return;
@@ -532,44 +491,43 @@ class VillageApp {
 
     if (this.state.view === 'home') {
       let districtOptions = Object.keys(HARYANA_DISTRICTS_AND_VILLAGES).map(dKey => `
-        <option value="${dKey}" ${this.state.selectedDistrict === dKey ? 'selected' : ''}>${isEn ? HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameEn : HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameHi}</option>
+        <option value="${dKey}" ${this.state.selectedDistrict === dKey ? 'selected' : ''}>${HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameHi}</option>
       `).join('');
 
       let villageOptions = currentDistrictObj.villages.map(v => `
-        <option value="${v.hi}" ${(this.state.searchVillage === v.hi || this.state.searchVillage === v.en) ? 'selected' : ''}>${isEn ? v.en : v.hi}</option>
+        <option value="${v.hi}" ${(this.state.searchVillage === v.hi || this.state.searchVillage === v.en) ? 'selected' : ''}>${v.hi}</option>
       `).join('');
 
       html = `
         <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
-          <div class="card-title" style="color: #064e3b;">📍 ${isEn ? 'Select District & Village' : 'जिला व गाँव चुनें'}</div>
+          <div class="card-title" style="color: #064e3b;">📍 जिला व गाँव चुनें</div>
           <div class="form-group">
-            <label>${isEn ? 'Select District:' : 'जिला चुनें:'}</label>
+            <label>जिला चुनें:</label>
             <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0].hi; app.render();">
               ${districtOptions}
             </select>
           </div>
           <div class="form-group">
-            <label>${isEn ? 'Select Village:' : 'गाँव चुनें:'}</label>
+            <label>गाँव चुनें:</label>
             <select class="form-control" id="villageDropdownSelect" onchange="app.state.searchVillage = this.value; app.render();">
               ${villageOptions}
             </select>
           </div>
-
           <div style="margin-top: 10px; border-top: 1px dashed #059669; padding-top: 10px;">
-            <label style="color:#047857; font-weight:700;">➕ ${isEn ? 'Add New Village in Same District' : 'इसी जिले में नया गाँव/वार्ड जोड़ें:'}</label>
+            <label style="color:#047857; font-weight:700;">➕ इसी जिले में नया गाँव/वार्ड जोड़ें:</label>
             <div style="display: flex; gap: 6px; margin-top: 5px;">
-              <input class="form-control" id="newVillageNameInput" placeholder="${isEn ? 'New village name...' : 'गाँव का नाम लिखें...'}" style="margin-bottom:0;" />
-              <button style="background: #047857; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;" onclick="app.addNewVillageToDistrict()">${isEn ? 'Add' : 'जोड़ें'}</button>
+              <input class="form-control" id="newVillageNameInput" placeholder="गाँव का नाम लिखें..." style="margin-bottom:0;" />
+              <button style="background: #047857; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addNewVillageToDistrict()">जोड़ें</button>
             </div>
           </div>
         </div>
 
-        <!-- होमपेज के केवल 5 सबसे ज़रूरी और काम के विकल्प -->
-        <div class="menu-card bg-1" onclick="app.changeView('greetings')"><span>🎉 त्यौहार व बधाई संदेश</span><span>→</span></div>
-        <div class="menu-card bg-2" onclick="app.changeView('announcements')"><span>📢 मुनादी व जरूरी खबरें</span><span>→</span></div>
-        <div class="menu-card bg-3" onclick="app.changeView('list')"><span>🛒 दुकान और सेवा बाजार</span><span>→</span></div>
-        <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🐃 पशु हाट और सेकेंड-हैंड बाजार</span><span>→</span></div>
-        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><span>💬 गाँव की चौपाल / आपसी चर्चा</span><span>→</span></div>
+        <!-- 5 मुख्य बटन (दुकान 1 नंबर पर, बधाई/बैनर 3 नंबर पर) -->
+        <div class="menu-card bg-1" onclick="app.changeView('list')"><span>🛒 1. दुकान और सेवा बाजार</span><span>→</span></div>
+        <div class="menu-card bg-2" onclick="app.changeView('announcements')"><span>📢 2. मुनादी व जरूरी खबरें</span><span>→</span></div>
+        <div class="menu-card bg-3" onclick="app.changeView('greetings')"><span>🎉 3. त्यौहार व बधाई संदेश (बैनर)</span><span>→</span></div>
+        <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🐃 4. पशु हाट और सेकेंड-हैंड बाजार</span><span>→</span></div>
+        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><span>💬 5. गाँव की चौपाल / आपसी चर्चा</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -586,10 +544,11 @@ class VillageApp {
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
           <div class="card-title">🛒 दुकान और सेवा बाजार (${displayVillageName})</div>
-          <div class="live-upload-box" style="margin-bottom:14px;">
+          <div class="live-upload-box">
             <input class="form-control" id="sName" placeholder="दुकान/सेवा का नाम..." style="margin-bottom:8px;" />
             <input class="form-control" id="sPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
             <select class="form-control" id="sCat" style="margin-bottom:8px;"><option value="किराना">किराना स्टोर</option><option value="मिस्त्री">मिस्त्री / सेवा</option><option value="अन्य">अन्य</option></select>
+            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <button class="btn-submit" onclick="app.submitShop()">📤 दुकान जोड़ें (अप्रूवल के लिए)</button>
           </div>
         </div>
@@ -598,17 +557,49 @@ class VillageApp {
     }
     else if (this.state.view === 'announcements') {
       let items = this.state.announcements.filter(a => a.status === 'approved' && a.districtId === this.state.selectedDistrict && a.villageHi === this.state.searchVillage).map(a => `
-        <div class="service-item"><div class="service-name">${a.title}</div>${a.imageUrl ? `<img src="${a.imageUrl}" class="service-img"/>` : ''}${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ Delete</button>`:''}</div>
+        <div class="service-item">
+          <div class="service-name">${a.title}</div>
+          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>जारीकर्ता:</b> ${a.name} | <b>फोन:</b> ${a.phone}</p>
+          ${a.imageUrl ? `<img src="${a.imageUrl}" class="service-img"/>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ Delete</button>`:''}
+        </div>
       `).join('');
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
           <div class="card-title">📢 मुनादी व जरूरी खबरें (${displayVillageName})</div>
           <div class="live-upload-box">
-            <input class="form-control" id="annTitle" placeholder="मुनादी का विवरण..." style="margin-bottom:8px;" />
-            <button class="btn-submit" onclick="app.submitAnnouncement()">📤 मुनादी भेजें</button>
+            <input class="form-control" id="annName" placeholder="आपका नाम (अनिवार्य)..." style="margin-bottom:8px;" />
+            <input class="form-control" id="annPhone" placeholder="मोबाइल नंबर (अनिवार्य)..." style="margin-bottom:8px;" />
+            <textarea class="form-control" id="annTitle" placeholder="मुनादी का विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
+            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
+            <button class="btn-submit" onclick="app.submitAnnouncement()">📤 मुनादी भेजें (अप्रूवल के लिए)</button>
           </div>
           ${items || `<div class="empty-state">कोई मुनादी उपलब्ध नहीं है।</div>`}
+        </div>
+      `;
+    }
+    else if (this.state.view === 'greetings') {
+      let items = this.state.greetings.filter(g => g.status === 'approved' && g.districtId === this.state.selectedDistrict && g.villageHi === this.state.searchVillage).map(g => `
+        <div class="service-item" style="border-left: 4px solid #db2777;">
+          <div class="service-name">${g.message}</div>
+          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>बधाईकर्ता:</b> ${g.name} | <b>फोन:</b> ${g.phone}</p>
+          ${g.imageUrl ? `<img src="${g.imageUrl}" class="service-img"/>` : ''}
+          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('greetings', '${g.id}')">🗑️ Delete</button>`:''}
+        </div>
+      `).join('');
+      html = `
+        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
+        <div class="card">
+          <div class="card-title">🎉 त्यौहार व बधाई संदेश (बैनर)</div>
+          <div class="live-upload-box">
+            <input class="form-control" id="gName" placeholder="आपका नाम (अनिवार्य)..." style="margin-bottom:8px;" />
+            <input class="form-control" id="gPhone" placeholder="मोबाइल नंबर (अनिवार्य)..." style="margin-bottom:8px;" />
+            <textarea class="form-control" id="gMsg" placeholder="बधाई संदेश या बैनर विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
+            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
+            <button class="btn-submit" onclick="app.submitGreeting()">📤 बैनर/संदेश भेजें (अप्रूवल के लिए)</button>
+          </div>
+          ${items || `<div class="empty-state">कोई बधाई संदेश/बैनर उपलब्ध नहीं है।</div>`}
         </div>
       `;
     }
@@ -616,7 +607,7 @@ class VillageApp {
       let items = this.state.market.filter(m => m.status === 'approved' && m.districtId === this.state.selectedDistrict && m.villageHi === this.state.searchVillage).map(m => `
         <div class="service-item" style="border-left: 4px solid #f59e0b;">
           <div class="service-name">${m.title}</div>
-          <p style="font-size: 12px; color: #047857; margin-bottom: 6px;"><b>विक्रेता:</b> ${m.name} | <b>फोन:</b> ${m.phone}</p>
+          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>विक्रेता:</b> ${m.name} | <b>फोन:</b> ${m.phone}</p>
           ${m.imageUrl ? `<img src="${m.imageUrl}" class="service-img"/>` : ''}
           ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ Delete</button>`:''}
         </div>
@@ -629,27 +620,41 @@ class VillageApp {
             <input class="form-control" id="mName" placeholder="आपका नाम (अनिवार्य)..." style="margin-bottom:8px;" />
             <input class="form-control" id="mPhone" placeholder="मोबाइल नंबर (अनिवार्य)..." style="margin-bottom:8px;" />
             <textarea class="form-control" id="mTitle" placeholder="पशु या वस्तु का विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
-            <button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button>
+            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
+            <button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें (अप्रूवल के लिए)</button>
           </div>
           ${items || `<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}
         </div>
       `;
     }
-    else if (this.state.view === 'greetings') {
-      html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card">
-          <div class="card-title">🎉 त्यौहार व बधाई संदेश</div>
-          <p style="font-size:13px; color:#334155;">यहाँ जन्मदिन, सालगिरह और त्योहारों के बैनर लगवाएं। विज्ञापन और बैनर लगवाने के लिए संपर्क करें।</p>
-        </div>
-      `;
-    }
     else if (this.state.view === 'chaupal') {
+      let chaupalList = this.state.chaupalMessages
+        .filter(c => c.districtId === this.state.selectedDistrict && c.villageHi === this.state.searchVillage)
+        .map(c => `
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 8px;">
+            <div style="font-size: 12px; font-weight: bold; color: #047857;">${c.name}</div>
+            <div style="font-size: 13px; color: #0f172a; margin-top: 3px;">${c.message}</div>
+          </div>
+        `).join('');
+
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">💬 गाँव की चौपाल / आपसी चर्चा</div>
-          <p style="font-size:13px; color:#334155;">गाँव के लोगों के लिए आपसी चर्चा और ग्रुप चैट का मंच।</p>
+          <div class="card-title">💬 गाँव की चौपाल / आपसी चर्चा (ग्रुप चैट)</div>
+          <div class="live-upload-box">
+            <input class="form-control" id="cName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
+            <input class="form-control" id="cPhone" placeholder="आपका मोबाइल नंबर..." style="margin-bottom:8px;" />
+            <textarea class="form-control" id="cText" placeholder="अपनी चर्चा या संदेश यहाँ लिखें..." style="margin-bottom:8px; height:60px;"></textarea>
+            
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 12px; font-weight: bold; color: #064e3b;">
+              <input type="checkbox" id="cAdminNoCheck" /> <span>एडमिन के रूप में अपना नंबर जोड़ें</span>
+            </div>
+
+            <button class="btn-submit" onclick="app.submitChaupalMsg()">💬 संदेश भेजें</button>
+          </div>
+          <div style="margin-top: 10px;">
+            ${chaupalList || `<div class="empty-state">अभी कोई चर्चा नहीं हुई है। पहली चर्चा आप शुरू करें!</div>`}
+          </div>
         </div>
       `;
     }
@@ -658,7 +663,7 @@ class VillageApp {
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
           <div class="card-title">📜 Privacy Policy</div>
-          <p style="font-size:13px; color:#334155;">आपकी डेटा सुरक्षा हमारी प्राथमिकता है। MeraGaov पोर्टल पर आपकी जानकारी सुरक्षित रहती है।</p>
+          <p style="font-size:13px; color:#334155;">आपकी डेटा सुरक्षा हमारी प्राथमिकता है। MeraGaov पोर्टल पर आपकी जानकारी पूरी तरह सुरक्षित रहती है।</p>
         </div>
       `;
     }
@@ -680,8 +685,8 @@ class VillageApp {
       let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && x.districtId === this.state.selectedDistrict && x.villageHi === this.state.searchVillage).map(x => `
         <div class="media-card" style="border: 2px solid #2563eb;">
           <span class="service-tag">${labelName}</span>
-          <div class="service-name">${x.title || x.name || ''}</div>
-          ${x.name ? `<p style="font-size:11px; color:#555;">फोन: ${x.phone}</p>` : ''}
+          <div class="service-name">${x.title || x.message || x.name || ''}</div>
+          ${x.name ? `<p style="font-size:11px; color:#555;">द्वारा: ${x.name} | फोन: ${x.phone}</p>` : ''}
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
           <button class="approve-btn" onclick="app.approveItem('${path}', '${x.id}')">✅ Approve</button>
           <button class="delete-btn" onclick="app.deleteItem('${path}', '${x.id}')">❌ Reject</button>
@@ -690,13 +695,14 @@ class VillageApp {
 
       let pServ = renderPend(this.state.services, 'services', 'Shop');
       let pAnn = renderPend(this.state.announcements, 'announcements', 'Announcement');
+      let pGreet = renderPend(this.state.greetings, 'greetings', 'Greeting/Banner');
       let pMkt = renderPend(this.state.market, 'market', 'Market');
 
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card"><div class="card-title">📥 Admin Approval Panel (${displayVillageName})</div></div>
-        ${pServ || ''} ${pAnn || ''} ${pMkt || ''}
-        ${(!pServ && !pAnn && !pMkt) ? '<div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>' : ''}
+        ${pServ || ''} ${pAnn || ''} ${pGreet || ''} ${pMkt || ''}
+        ${(!pServ && !pAnn && !pGreet && !pMkt) ? '<div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>' : ''}
       `;
     }
 
