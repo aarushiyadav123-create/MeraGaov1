@@ -857,11 +857,25 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'jokes') {
-      let jList = this.state.jokes.filter(j => j.status === 'approved' && j.districtId === this.state.selectedDistrict && j.villageHi === this.state.searchVillage).map(j => `
-        <div class="service-item" style="background: #fff9e6; border-left: 4px solid #ff9800;">
+      // फ़िल्टर किए गए डेटा (डेटाबेस से जो अप्रूव्ड हैं)
+      let dbJokes = this.state.jokes.filter(j => j.status === 'approved' && j.districtId === this.state.selectedDistrict && j.villageHi === this.state.searchVillage);
+      
+      // डिफ़ॉल्ट (Default) और मजेदार चुटकुले व शेरो-शायरी जो हमेशा लाइव दिखेंगे
+      let defaultJokes = [
+        { text: "पति (पत्नी से): अगर मैं खो जाऊँ तो तुम क्या करोगी?\nपत्नी: मैं भगवान से दुआ करूँगी कि तुम्हें कोई अच्छी सी चीज मिल जाए!", author: "लोकप्रिय चुटकुला" },
+        { text: "तितली उड़ी, बस पे चढ़ी, सीट ना मिली तो रोने लगी...\nड्राइवर ने कहा आ मेरे पास बैठ, तितली बोली ना बाबा ना, मुझे अभी शादी नहीं करनी!", author: "हरियाणवी मज़ाक" },
+        { text: "फसल खड़ी खेत में, भाव चढ़े रेत में, जाट बोला ताऊ से — अबकी बार मौज है खेत में!", author: "देसी शेरो-शायरी" },
+        { text: "मास्टर जी (छात्र से): बताओ 'कल किसने 'की' थी' का अंग्रेजी अनुवाद क्या होगा?\nछात्र: Yesterday who did 'ki' thi!", author: "क्लासरूम स्पेशल" }
+      ];
+
+      // यदि डेटाबेस में कोई चुटकुला नहीं है, तो डिफ़ॉल्ट वाले दिखाएंगे
+      let combinedJokes = dbJokes.length > 0 ? dbJokes : defaultJokes;
+
+      let jList = combinedJokes.map((j, idx) => `
+        <div class="service-item" style="background: #fff9e6; border-left: 4px solid #ff9800; white-space: pre-line;">
           <div class="service-name">😂 ${j.text}</div>
-          <p style="font-size: 11px; color: #047857; margin-top: 4px;"><b>लेखक/भेजने वाला:</b> ${j.author || 'अज्ञात'}</p>
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('jokes', '${j.id}')">🗑️ Delete</button>` : ''}
+          <p style="font-size: 11px; color: #047857; margin-top: 4px;"><b>लेखक/भेजने वाला:</b> ${j.author || 'गाँव का निवासी'}</p>
+          ${(j.id && (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)) ? `<button class="delete-btn" onclick="app.deleteItem('jokes', '${j.id}')">🗑️ Delete</button>` : ''}
         </div>
       `).join('');
 
@@ -877,8 +891,8 @@ class VillageApp {
             <button class="btn-submit" onclick="app.submitJoke()">📤 ${isEn ? 'Send for Approval' : 'एडमिन अप्रूवल के लिए भेजें'}</button>
           </div>
 
-          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">📖 ${displayVillageName} ${isEn ? 'Live Jokes:' : 'के लाइव चुटकुले:'}</div>
-          ${jList || `<div class="empty-state">${isEn ? 'No jokes available.' : 'इस गाँव में अभी कोई चुटकुला उपलब्ध नहीं है।'}</div>`}
+          <div style="font-weight:bold; font-size:13px; margin: 14px 0 8px 0;">📖 ${displayVillageName} ${isEn ? 'Live Jokes:' : 'के लाइव चुटकुले और शेरो-शायरी:'}</div>
+          ${jList}
         </div>
       `;
     }
