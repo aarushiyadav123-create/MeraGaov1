@@ -50,12 +50,14 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; border-top: 1px solid #064e3b; }
 .content { padding: 18px; background: #f8fafc; min-height: 480px; }
 
-.menu-card { border-radius: 14px; padding: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+.menu-card { border-radius: 14px; padding: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.12); position: relative; }
 .bg-1 { background: linear-gradient(135deg, #0d9488, #0f766e); } 
 .bg-2 { background: linear-gradient(135deg, #ea580c, #c2410c); } 
 .bg-3 { background: linear-gradient(135deg, #db2777, #be185d); } 
 .bg-4 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } 
 .bg-5 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } 
+
+.notification-badge { background: #dc2626; color: white; font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: bold; display: none; }
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -197,7 +199,7 @@ class VillageApp {
       announcements: [],
       greetings: [],
       chaupalMessages: [],
-      allowedChatUsers: {}, // { phone: password }
+      allowedChatUsers: {}, 
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
@@ -206,6 +208,7 @@ class VillageApp {
     };
 
     this.tempImage = '';
+    this.unreadMessageCount = 0; // बिना पढ़े गए नए संदेशों की गिनती
 
     this.initListeners();
     this.initFirebaseData();
@@ -311,8 +314,15 @@ class VillageApp {
         });
         onValue(ref(db, 'chaupalMessages'), snap => {
           const val = snap.val();
-          this.state.chaupalMessages = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
-          if(this.state.view === 'chaupal') this.render();
+          const newMsgs = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
+          
+          // अगर यूज़र चैट स्क्रीन पर नहीं है और नया मैसेज आया है, तो अनरेड काउंटर बढ़ाएँ
+          if (this.state.view !== 'chaupal' && newMsgs.length > this.state.chaupalMessages.length && this.state.chaupalMessages.length > 0) {
+            this.unreadMessageCount += (newMsgs.length - this.state.chaupalMessages.length);
+          }
+
+          this.state.chaupalMessages = newMsgs;
+          if(this.state.view === 'chaupal' || this.state.view === 'home') this.render();
         });
         onValue(ref(db, 'allowedChatUsers'), snap => {
           const val = snap.val();
@@ -376,6 +386,9 @@ class VillageApp {
 
   changeView(viewName) {
     this.state.view = viewName;
+    if(viewName === 'chaupal') {
+      this.unreadMessageCount = 0; // चैट खोलते ही काउंटर रीसेट हो जाएगा
+    }
     this.render();
   }
 
@@ -506,7 +519,6 @@ class VillageApp {
       }).then(() => {
         document.getElementById('cName').value = '';
         document.getElementById('cText').value = '';
-        alert("संदेश भेज दिया गया है!");
         this.render();
       });
     }
@@ -571,6 +583,9 @@ class VillageApp {
         <option value="${v.hi}" ${(this.state.searchVillage === v.hi || this.state.searchVillage === v.en) ? 'selected' : ''}>${v.hi}</option>
       `).join('');
 
+      // चैट बटन पर लाल रंग का अनरेड बैज दिखाने के लिए लॉजिक
+      let badgeHtml = this.unreadMessageCount > 0 ? `<span class="notification-badge">${this.unreadMessageCount} नया</span>` : '';
+
       html = `
         <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
           <div class="card-title" style="color: #064e3b;">📍 जिला व गाँव चुनें</div>
@@ -599,7 +614,7 @@ class VillageApp {
         <div class="menu-card bg-2" onclick="app.changeView('announcements')"><span>📢 2. मुनादी व जरूरी खबरें</span><span>→</span></div>
         <div class="menu-card bg-3" onclick="app.changeView('greetings')"><span>🎉 3. त्यौहार व बधाई संदेश (बैनर)</span><span>→</span></div>
         <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🐃 4. पशु हाट और सेकेंड-हैंड बाजार</span><span>→</span></div>
-        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><span>💬 5. Admin Chat Room</span><span>→</span></div>
+        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><div style="display:flex; align-items:center; gap:8px;"><span>💬 5. Admin Chat Room</span> ${badgeHtml}</div><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
