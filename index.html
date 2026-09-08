@@ -152,6 +152,33 @@ const HARYANA_DISTRICTS_AND_VILLAGES = {
       { hi: "बावल", en: "Bawal" },
       { hi: "कोसली", en: "Kosli" }
     ]
+  },
+  "bhiwani": {
+    nameHi: "भिवानी", nameEn: "Bhiwani",
+    villages: [
+      { hi: "भिवानी शहर", en: "Bhiwani City" },
+      { hi: "लोहारू", en: "Loharu" },
+      { hi: "सिवानी", en: "Siwani" },
+      { hi: "बाढड़ा", en: "Badhra" }
+    ]
+  },
+  "hisar": {
+    nameHi: "हिसार", nameEn: "Hisar",
+    villages: [
+      { hi: "हिसार शहर", en: "Hisar City" },
+      { hi: "बरवाला", en: "Barwala" },
+      { hi: "नारनौंद", en: "Narnaund" },
+      { hi: "हांसी रोड", en: "Hansiwala" }
+    ]
+  },
+  "panipat": {
+    nameHi: "पानीपत", nameEn: "Panipat",
+    villages: [
+      { hi: "पानीपत शहर", en: "Panipat City" },
+      { hi: "समालखा", en: "Samalkha" },
+      { hi: "सनौली", en: "Sanauli" },
+      { hi: "इन्द्रगढ़", en: "Indragarh" }
+    ]
   }
 };
 
@@ -170,12 +197,12 @@ class VillageApp {
       announcements: [],
       greetings: [],
       chaupalMessages: [],
-      allowedChatNumbers: [], // WhatsApp ग्रुप की तरह जिन नंबरों को अनुमति होगी
+      allowedChatNumbers: [], 
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
       isSubAdminLoggedIn: false,
-      currentUserPhone: localStorage.getItem('currentUserPhone') || '' // यूजर का अपना नंबर
+      currentUserPhone: localStorage.getItem('currentUserPhone') || ''
     };
 
     this.tempImage = '';
@@ -441,7 +468,6 @@ class VillageApp {
     this.tempImage = '';
   }
 
-  // व्हाट्सएप ग्रुप चैट लॉजिक: केवल वही देख और रिप्लाई कर सके जिसे एडमिन ने जोड़ा हो
   verifyUserForChat() {
     const phoneInput = document.getElementById('verifyPhoneInput')?.value.trim();
     if(!phoneInput) return alert("कृपया अपना मोबाइल नंबर दर्ज करें!");
@@ -450,10 +476,10 @@ class VillageApp {
     if(isAllowed) {
       this.state.currentUserPhone = phoneInput;
       localStorage.setItem('currentUserPhone', phoneInput);
-      alert("सत्यापन सफल! अब आप ग्रुप संदेश देख और भेज सकते हैं।");
+      alert("सत्यापन सफल! अब आप Admin Chat Room देख और भेज सकते हैं।");
       this.render();
     } else {
-      alert("❌ आपका यह नंबर इस ग्रुप में जोड़ा नहीं गया है! केवल एडमिन द्वारा जोड़े गए सदस्य ही यह चैट देख और रिप्लाई कर सकते हैं।");
+      alert("❌ आपका यह नंबर इस चैट में जोड़ा नहीं गया है! केवल एडमिन द्वारा जोड़े गए सदस्य ही यह चैट देख और रिप्लाई कर सकते हैं।");
     }
   }
 
@@ -491,7 +517,7 @@ class VillageApp {
       const { db, ref, push } = window.firebaseDb;
       push(ref(db, 'allowedChatNumbers'), newMemberPhone).then(() => {
         document.getElementById('newMemberPhone').value = '';
-        alert("नंबर सफलतापूर्वक ग्रुप में जोड़ दिया गया है!");
+        alert("नंबर सफलतापूर्वक चैट रूम में जोड़ दिया गया है!");
       });
     }
   }
@@ -555,7 +581,7 @@ class VillageApp {
         <div class="menu-card bg-2" onclick="app.changeView('announcements')"><span>📢 2. मुनादी व जरूरी खबरें</span><span>→</span></div>
         <div class="menu-card bg-3" onclick="app.changeView('greetings')"><span>🎉 3. त्यौहार व बधाई संदेश (बैनर)</span><span>→</span></div>
         <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🐃 4. पशु हाट और सेकेंड-हैंड बाजार</span><span>→</span></div>
-        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><span>💬 5. गाँव की चौपाल / आपसी चर्चा (WhatsApp Group Style)</span><span>→</span></div>
+        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><span>💬 5. Admin Chat Room</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -692,7 +718,7 @@ class VillageApp {
         chatContentArea = `
           <div style="background: #fef2f2; border: 1px solid #f87171; border-radius: 12px; padding: 16px; text-align: center;">
             <p style="color: #991b1b; font-size: 13px; font-weight: bold; margin-bottom: 10px;">
-              🔒 यह ग्रुप पूरी तरह सुरक्षित (Private) है। केवल वही लोग देख और रिप्लाई कर सकते हैं जिन्हें एडमिन ने जोड़ा है।
+              🔒 यह Admin Chat Room पूरी तरह सुरक्षित है। केवल वही लोग देख और रिप्लाई कर सकते हैं जिन्हें एडमिन ने जोड़ा है।
             </p>
             <input class="form-control" id="verifyPhoneInput" placeholder="अपना रजिस्टर्ड मोबाइल नंबर दर्ज करें..." style="margin-bottom:8px;" />
             <button class="btn-submit" style="background: #dc2626;" onclick="app.verifyUserForChat()">🔐 चैट में प्रवेश करें</button>
@@ -703,18 +729,18 @@ class VillageApp {
           <div style="background: #f0fdf4; border: 1px solid #10b981; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
             <div style="font-size: 12px; font-weight: bold; color: #064e3b; margin-bottom: 6px;">✍️ संदेश या रिप्लाई भेजें:</div>
             <input class="form-control" id="cName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
-            <textarea class="form-control" id="cText" placeholder="अपनी चर्चा या संदेश यहाँ लिखें..." style="margin-bottom:8px; height:60px;"></textarea>
+            <textarea class="form-control" id="cText" placeholder="अपना संदेश यहाँ लिखें..." style="margin-bottom:8px; height:60px;"></textarea>
             <button class="btn-submit" onclick="app.submitChaupalMsg()">💬 संदेश भेजें</button>
           </div>
           <div style="margin-top: 10px;">
-            ${chaupalList || `<div class="empty-state">ग्रुप में अभी कोई संदेश नहीं है।</div>`}
+            ${chaupalList || `<div class="empty-state">चैट रूम में अभी कोई संदेश नहीं है।</div>`}
           </div>
         `;
       }
 
       let adminMemberAddSection = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `
         <div style="background: #eff6ff; border: 1px solid #2563eb; border-radius: 12px; padding: 12px; margin-bottom: 15px;">
-          <div style="font-size: 12px; font-weight: bold; color: #1e40af; margin-bottom: 6px;">⚙️ एडमिन टूल: चौपाल में नया सदस्य जोड़ें (नंबर से)</div>
+          <div style="font-size: 12px; font-weight: bold; color: #1e40af; margin-bottom: 6px;">⚙️ एडमिन टूल: चैट रूम में नया सदस्य जोड़ें (नंबर से)</div>
           <div style="display: flex; gap: 6px;">
             <input class="form-control" id="newMemberPhone" placeholder="सदस्य का मोबाइल नंबर लिखें..." style="margin-bottom:0;" />
             <button style="background: #2563eb; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addAllowedMember()">जोड़ें</button>
@@ -725,7 +751,7 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">💬 गाँव की चौपाल / आपसी चर्चा (Private Group)</div>
+          <div class="card-title">💬 Admin Chat Room</div>
           ${adminMemberAddSection}
           ${chatContentArea}
         </div>
