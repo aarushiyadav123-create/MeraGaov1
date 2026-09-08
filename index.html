@@ -106,7 +106,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
   </div>
 
   <div class="ticker">
-    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य</marquee>
+    <marquee id="dynamicTickerText" scrollamount="6">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य</marquee>
   </div>
 
   <div class="content" id="mainContent"></div>
@@ -348,7 +348,7 @@ class VillageApp {
     const tickerEl = document.getElementById('dynamicTickerText');
     if(!tickerEl) return;
     let approvedShops = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage);
-    let baseText = "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ लाइव मौसम: सामान्य";
+    let baseText = "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य";
     if(approvedShops.length > 0) {
       let shopTickerItems = approvedShops.map(s => `🛒 नई दुकान: ${s.name} (${s.category || 'Service'}) - ${s.phone}`).join(' | ');
       tickerEl.innerHTML = `${shopTickerItems} | ${baseText}`;
@@ -446,7 +446,7 @@ class VillageApp {
       const reader = new FileReader();
       reader.onloadend = () => { 
         this.tempImage = reader.result; 
-        alert("✅ फोटो चुनी गई है!");
+        alert("✅ फोटो चुन ली गई है!");
       };
       reader.readAsDataURL(file);
     }
@@ -686,7 +686,7 @@ class VillageApp {
               </select>
             </div>
             <div class="form-group">
-              <label>📷 फोटो अपलोड करें:</label>
+              <label>📷 फोटो चुनें:</label>
               <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             </div>
             <button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें</button>
@@ -794,7 +794,6 @@ class VillageApp {
         <div class="card">
           <div class="card-title">🏛️ गाँव का इतिहास और गैलरी (${displayVillageName})</div>
           <div class="live-upload-box">
-            <p style="font-size: 11px; color: #047857; margin-bottom: 8px; font-weight: bold;">🔴 आप यहाँ लाइव कैमरा से फोटो/वीडियो खींच सकते हैं या फाइल से अपलोड कर सकते हैं।</p>
             <input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
             <div class="form-group">
               <label>📂 सेक्शन चुनें:</label>
@@ -805,8 +804,8 @@ class VillageApp {
             </div>
             <textarea class="form-control" id="hgTitle" placeholder="इतिहास या फोटो/वीडियो का विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
             <div class="form-group">
-              <label>📷 लाइव कैमरा या फ़ाइल से फोटो/वीडियो चुनें:</label>
-              <input type="file" accept="image/*,video/*" capture="environment" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px;" />
+              <label>📷 फोटो या वीडियो चुनें:</label>
+              <input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px;" />
             </div>
             <button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button>
           </div>
