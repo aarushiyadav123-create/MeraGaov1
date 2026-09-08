@@ -197,7 +197,7 @@ class VillageApp {
       announcements: [],
       greetings: [],
       chaupalMessages: [],
-      allowedChatNumbers: [], 
+      allowedChatUsers: {}, // { phone: password }
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
@@ -314,9 +314,9 @@ class VillageApp {
           this.state.chaupalMessages = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'chaupal') this.render();
         });
-        onValue(ref(db, 'allowedChatNumbers'), snap => {
+        onValue(ref(db, 'allowedChatUsers'), snap => {
           const val = snap.val();
-          this.state.allowedChatNumbers = val ? Object.values(val) : [];
+          this.state.allowedChatUsers = val || {};
           if(this.state.view === 'chaupal' || this.state.view === 'admin') this.render();
         });
         onValue(ref(db, 'subAdmins'), snap => {
@@ -470,16 +470,19 @@ class VillageApp {
 
   verifyUserForChat() {
     const phoneInput = document.getElementById('verifyPhoneInput')?.value.trim();
-    if(!phoneInput) return alert("कृपया अपना मोबाइल नंबर दर्ज करें!");
-    
-    let isAllowed = this.state.allowedChatNumbers.includes(phoneInput) || this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn;
-    if(isAllowed) {
+    const passInput = document.getElementById('verifyPassInput')?.value.trim();
+    if(!phoneInput || !passInput) return alert("कृपया अपना मोबाइल नंबर और पासवर्ड दोनों दर्ज करें!");
+
+    let isMasterAdmin = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn);
+    let registeredPass = this.state.allowedChatUsers[phoneInput];
+
+    if(isMasterAdmin || (registeredPass && registeredPass === passInput)) {
       this.state.currentUserPhone = phoneInput;
       localStorage.setItem('currentUserPhone', phoneInput);
-      alert("सत्यापन सफल! अब आप Admin Chat Room देख और भेज सकते हैं।");
+      alert("सत्यापन सफल! अब आप Admin Chat Room देख और रिप्लाई कर सकते हैं।");
       this.render();
     } else {
-      alert("❌ आपका यह नंबर इस चैट में जोड़ा नहीं गया है! केवल एडमिन द्वारा जोड़े गए सदस्य ही यह चैट देख और रिप्लाई कर सकते हैं।");
+      alert("❌ गलत मोबाइल नंबर या पासवर्ड! यह नंबर या तो एडमिन द्वारा जोड़ा नहीं गया है या पासवर्ड गलत है।");
     }
   }
 
@@ -509,16 +512,31 @@ class VillageApp {
     }
   }
 
-  addAllowedMember() {
-    const newMemberPhone = document.getElementById('newMemberPhone')?.value.trim();
-    if(!newMemberPhone) return alert("कृपया जोड़ने के लिए मोबाइल नंबर लिखें!");
+  addAllowedMemberWithPassword() {
+    const phone = document.getElementById('newMemberPhone')?.value.trim();
+    const pwd = document.getElementById('newMemberPass')?.value.trim();
+
+    if(!phone || !pwd) return alert("कृपया सदस्य का मोबाइल नंबर और उसका पासवर्ड दोनों भरें!");
 
     if (window.firebaseDb) {
-      const { db, ref, push } = window.firebaseDb;
-      push(ref(db, 'allowedChatNumbers'), newMemberPhone).then(() => {
+      const { db, ref, set } = window.firebaseDb;
+      set(ref(db, `allowedChatUsers/${phone}`), pwd).then(() => {
         document.getElementById('newMemberPhone').value = '';
-        alert("नंबर सफलतापूर्वक चैट रूम में जोड़ दिया गया है!");
+        document.getElementById('newMemberPass').value = '';
+        alert("सफलतापूर्वक नया सदस्य और उसका पासवर्ड सेट कर दिया गया है!");
       });
+    }
+  }
+
+  removeAllowedMember(phone) {
+    if(confirm(`क्या आप इस नंबर (${phone}) को चैट रूम से हटाना चाहते हैं?`)) {
+      if (window.firebaseDb) {
+        const { db, ref, remove } = window.firebaseDb;
+        remove(ref(db, `allowedChatUsers/${phone}`)).then(() => {
+          alert("सदस्य हटा दिया गया है!");
+          this.render();
+        });
+      }
     }
   }
 
@@ -698,7 +716,7 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'chaupal') {
-      let isUserVerified = this.state.allowedChatNumbers.includes(this.state.currentUserPhone) || this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn;
+      let isUserVerified = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) || (this.state.currentUserPhone && this.state.allowedChatUsers[this.state.currentUserPhone]);
 
       let chaupalList = '';
       if(isUserVerified) {
@@ -718,16 +736,20 @@ class VillageApp {
         chatContentArea = `
           <div style="background: #fef2f2; border: 1px solid #f87171; border-radius: 12px; padding: 16px; text-align: center;">
             <p style="color: #991b1b; font-size: 13px; font-weight: bold; margin-bottom: 10px;">
-              🔒 यह Admin Chat Room पूरी तरह सुरक्षित है। केवल वही लोग देख और रिप्लाई कर सकते हैं जिन्हें एडमिन ने जोड़ा है।
+              🔒 यह Admin Chat Room सुरक्षित है। केवल वही लोग प्रवेश कर सकते हैं जिनका नंबर और पासवर्ड एडमिन ने जोड़ा है।
             </p>
             <input class="form-control" id="verifyPhoneInput" placeholder="अपना रजिस्टर्ड मोबाइल नंबर दर्ज करें..." style="margin-bottom:8px;" />
+            <input type="password" class="form-control" id="verifyPassInput" placeholder="अपना पासवर्ड दर्ज करें..." style="margin-bottom:8px;" />
             <button class="btn-submit" style="background: #dc2626;" onclick="app.verifyUserForChat()">🔐 चैट में प्रवेश करें</button>
           </div>
         `;
       } else {
         chatContentArea = `
           <div style="background: #f0fdf4; border: 1px solid #10b981; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-            <div style="font-size: 12px; font-weight: bold; color: #064e3b; margin-bottom: 6px;">✍️ संदेश या रिप्लाई भेजें:</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <div style="font-size: 12px; font-weight: bold; color: #064e3b;">✍️ संदेश या रिप्लाई भेजें:</div>
+              <button style="background:#dc2626; color:white; border:none; padding:3px 8px; border-radius:6px; font-size:10px; cursor:pointer;" onclick="app.state.currentUserPhone=''; localStorage.removeItem('currentUserPhone'); app.render();">लॉग आउट</button>
+            </div>
             <input class="form-control" id="cName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
             <textarea class="form-control" id="cText" placeholder="अपना संदेश यहाँ लिखें..." style="margin-bottom:8px; height:60px;"></textarea>
             <button class="btn-submit" onclick="app.submitChaupalMsg()">💬 संदेश भेजें</button>
@@ -740,10 +762,19 @@ class VillageApp {
 
       let adminMemberAddSection = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `
         <div style="background: #eff6ff; border: 1px solid #2563eb; border-radius: 12px; padding: 12px; margin-bottom: 15px;">
-          <div style="font-size: 12px; font-weight: bold; color: #1e40af; margin-bottom: 6px;">⚙️ एडमिन टूल: चैट रूम में नया सदस्य जोड़ें (नंबर से)</div>
-          <div style="display: flex; gap: 6px;">
-            <input class="form-control" id="newMemberPhone" placeholder="सदस्य का मोबाइल नंबर लिखें..." style="margin-bottom:0;" />
-            <button style="background: #2563eb; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addAllowedMember()">जोड़ें</button>
+          <div style="font-size: 12px; font-weight: bold; color: #1e40af; margin-bottom: 6px;">⚙️ एडमिन टूल: नया सदस्य और पासवर्ड जोड़ें</div>
+          <input class="form-control" id="newMemberPhone" placeholder="सदस्य का मोबाइल नंबर..." style="margin-bottom:8px;" />
+          <input class="form-control" id="newMemberPass" placeholder="इस सदस्य के लिए पासवर्ड सेट करें..." style="margin-bottom:8px;" />
+          <button style="background: #2563eb; color: white; border: none; width:100%; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addAllowedMemberWithPassword()">नंबर और पासवर्ड सेव करें</button>
+          
+          <div style="margin-top:10px; font-size:11px; color:#1e40af; font-weight:bold;">जुड़े हुए सदस्य:</div>
+          <div style="max-height: 100px; overflow-y:auto; margin-top:5px;">
+            ${Object.keys(this.state.allowedChatUsers).map(ph => `
+              <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:4px 8px; margin-bottom:4px; border-radius:6px; font-size:12px;">
+                <span>📱 ${ph} (पासवर्ड: ${this.state.allowedChatUsers[ph]})</span>
+                <button onclick="app.removeAllowedMember('${ph}')" style="background:#dc2626; color:white; border:none; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">हटाएं</button>
+              </div>
+            `).join('') || '<div style="font-size:11px; color:#666;">कोई सदस्य नहीं जोड़ा गया।</div>'}
           </div>
         </div>
       ` : '';
