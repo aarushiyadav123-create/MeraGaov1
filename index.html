@@ -50,13 +50,12 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; border-top: 1px solid #064e3b; }
 .content { padding: 18px; background: #f8fafc; min-height: 480px; }
 
-/* होमपेज के 5 मुख्य बटन (दुकान अब 1 नंबर पर) */
 .menu-card { border-radius: 14px; padding: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
-.bg-1 { background: linear-gradient(135deg, #0d9488, #0f766e); } /* 1. दुकान और सेवा बाजार */
-.bg-2 { background: linear-gradient(135deg, #ea580c, #c2410c); } /* 2. मुनादी व जरूरी खबरें */
-.bg-3 { background: linear-gradient(135deg, #db2777, #be185d); } /* 3. त्यौहार व बधाई संदेश / बैनर */
-.bg-4 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } /* 4. पशु हाट और सेकेंड-हैंड बाजार */
-.bg-5 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } /* 5. गाँव की चौपाल / आपसी चर्चा */
+.bg-1 { background: linear-gradient(135deg, #0d9488, #0f766e); } 
+.bg-2 { background: linear-gradient(135deg, #ea580c, #c2410c); } 
+.bg-3 { background: linear-gradient(135deg, #db2777, #be185d); } 
+.bg-4 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } 
+.bg-5 { background: linear-gradient(135deg, #7c3aed, #6d28d9); } 
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -67,7 +66,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .btn-submit { width: 100%; background: #047857; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 10px rgba(4,120,87,0.3); }
 
 .service-item, .media-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); position: relative; }
-.service-tag { background: #d1fae5; color: #064e3b; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 6px; }
+.service-tag { background: #d1fae5; color: #064e3b; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 4px; }
 .service-name { font-size: 14px; font-weight: 700; color: #0f172a; margin: 6px 0; }
 .service-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 8px; }
 .btn-call { display: block; width: 100%; background: #059669; color: white; text-align: center; text-decoration: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 13px; margin-top: 10px; }
@@ -94,10 +93,10 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
       <button class="header-btn" id="langToggleBtn">🌐 English</button>
 
       <div class="dropdown-menu" id="dropdownMenu">
-        <div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ <span id="mAdminText">Main Admin पैनल</span></div>
-        <div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 <span id="mSubText">Sub-Admin पैनल</span></div>
-        <div class="dropdown-item" onclick="app.changeView('policy')">📜 <span id="mPolicyText">Privacy Policy</span></div>
-        <div class="dropdown-item" onclick="app.changeView('about')">ℹ️ <span id="mAboutText">About Us</span></div>
+        <div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Main Admin पैनल</div>
+        <div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 Sub-Admin पैनल</div>
+        <div class="dropdown-item" onclick="app.changeView('policy')">📜 Privacy Policy</div>
+        <div class="dropdown-item" onclick="app.changeView('about')">ℹ️ About Us</div>
       </div>
     </div>
   </div>
@@ -171,10 +170,12 @@ class VillageApp {
       announcements: [],
       greetings: [],
       chaupalMessages: [],
+      allowedChatNumbers: [], // WhatsApp ग्रुप की तरह जिन नंबरों को अनुमति होगी
       subAdmins: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
-      isSubAdminLoggedIn: false
+      isSubAdminLoggedIn: false,
+      currentUserPhone: localStorage.getItem('currentUserPhone') || '' // यूजर का अपना नंबर
     };
 
     this.tempImage = '';
@@ -285,6 +286,11 @@ class VillageApp {
           const val = snap.val();
           this.state.chaupalMessages = val ? Object.keys(val).map(k => ({id: k, ...val[k]})).reverse() : [];
           if(this.state.view === 'chaupal') this.render();
+        });
+        onValue(ref(db, 'allowedChatNumbers'), snap => {
+          const val = snap.val();
+          this.state.allowedChatNumbers = val ? Object.values(val) : [];
+          if(this.state.view === 'chaupal' || this.state.view === 'admin') this.render();
         });
         onValue(ref(db, 'subAdmins'), snap => {
           const val = snap.val();
@@ -435,34 +441,57 @@ class VillageApp {
     this.tempImage = '';
   }
 
+  // व्हाट्सएप ग्रुप चैट लॉजिक: केवल वही देख और रिप्लाई कर सके जिसे एडमिन ने जोड़ा हो
+  verifyUserForChat() {
+    const phoneInput = document.getElementById('verifyPhoneInput')?.value.trim();
+    if(!phoneInput) return alert("कृपया अपना मोबाइल नंबर दर्ज करें!");
+    
+    let isAllowed = this.state.allowedChatNumbers.includes(phoneInput) || this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn;
+    if(isAllowed) {
+      this.state.currentUserPhone = phoneInput;
+      localStorage.setItem('currentUserPhone', phoneInput);
+      alert("सत्यापन सफल! अब आप ग्रुप संदेश देख और भेज सकते हैं।");
+      this.render();
+    } else {
+      alert("❌ आपका यह नंबर इस ग्रुप में जोड़ा नहीं गया है! केवल एडमिन द्वारा जोड़े गए सदस्य ही यह चैट देख और रिप्लाई कर सकते हैं।");
+    }
+  }
+
   submitChaupalMsg() {
     const senderName = document.getElementById('cName')?.value.trim();
-    const senderPhone = document.getElementById('cPhone')?.value.trim();
     const msgText = document.getElementById('cText')?.value.trim();
-    const isAdminNoAdded = document.getElementById('cAdminNoCheck')?.checked;
 
     if(!senderName || !msgText) return alert("कृपया अपना नाम और संदेश लिखें!");
 
-    let fullMsg = msgText;
-    if(isAdminNoAdded && senderPhone) {
-      fullMsg += ` (Admin Contact: ${senderPhone})`;
-    }
+    let fullMsg = `${msgText} (सम्पर्क: ${this.state.currentUserPhone})`;
 
     if (window.firebaseDb) {
       const { db, ref, push } = window.firebaseDb;
       push(ref(db, 'chaupalMessages'), {
         name: senderName,
-        phone: senderPhone || '',
+        phone: this.state.currentUserPhone,
         message: fullMsg,
         districtId: this.state.selectedDistrict,
         villageHi: this.state.searchVillage,
         timestamp: Date.now()
       }).then(() => {
         document.getElementById('cName').value = '';
-        document.getElementById('cPhone').value = '';
         document.getElementById('cText').value = '';
-        if(document.getElementById('cAdminNoCheck')) document.getElementById('cAdminNoCheck').checked = false;
+        alert("संदेश भेज दिया गया है!");
         this.render();
+      });
+    }
+  }
+
+  addAllowedMember() {
+    const newMemberPhone = document.getElementById('newMemberPhone')?.value.trim();
+    if(!newMemberPhone) return alert("कृपया जोड़ने के लिए मोबाइल नंबर लिखें!");
+
+    if (window.firebaseDb) {
+      const { db, ref, push } = window.firebaseDb;
+      push(ref(db, 'allowedChatNumbers'), newMemberPhone).then(() => {
+        document.getElementById('newMemberPhone').value = '';
+        alert("नंबर सफलतापूर्वक ग्रुप में जोड़ दिया गया है!");
       });
     }
   }
@@ -522,12 +551,11 @@ class VillageApp {
           </div>
         </div>
 
-        <!-- 5 मुख्य बटन (दुकान 1 नंबर पर, बधाई/बैनर 3 नंबर पर) -->
         <div class="menu-card bg-1" onclick="app.changeView('list')"><span>🛒 1. दुकान और सेवा बाजार</span><span>→</span></div>
         <div class="menu-card bg-2" onclick="app.changeView('announcements')"><span>📢 2. मुनादी व जरूरी खबरें</span><span>→</span></div>
         <div class="menu-card bg-3" onclick="app.changeView('greetings')"><span>🎉 3. त्यौहार व बधाई संदेश (बैनर)</span><span>→</span></div>
         <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🐃 4. पशु हाट और सेकेंड-हैंड बाजार</span><span>→</span></div>
-        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><span>💬 5. गाँव की चौपाल / आपसी चर्चा</span><span>→</span></div>
+        <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><span>💬 5. गाँव की चौपाल / आपसी चर्चा (WhatsApp Group Style)</span><span>→</span></div>
       `;
     } 
     else if (this.state.view === 'list') {
@@ -540,19 +568,35 @@ class VillageApp {
           ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
+
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
           <div class="card-title">🛒 दुकान और सेवा बाजार (${displayVillageName})</div>
           <div class="live-upload-box">
-            <input class="form-control" id="sName" placeholder="दुकान/सेवा का नाम..." style="margin-bottom:8px;" />
+            <input class="form-control" id="sName" placeholder="नाम / दुकान का नाम..." style="margin-bottom:8px;" />
             <input class="form-control" id="sPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
-            <select class="form-control" id="sCat" style="margin-bottom:8px;"><option value="किराना">किराना स्टोर</option><option value="मिस्त्री">मिस्त्री / सेवा</option><option value="अन्य">अन्य</option></select>
-            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <button class="btn-submit" onclick="app.submitShop()">📤 दुकान जोड़ें (अप्रूवल के लिए)</button>
+            <div class="form-group">
+              <label>📂 सेवा या दुकान की श्रेणी चुनें:</label>
+              <select class="form-control" id="sCat" style="margin-bottom:8px;">
+                <option value="किराना स्टोर">किराना स्टोर</option>
+                <option value="पंडित जी">पंडित जी</option>
+                <option value="ऑल मिस्त्री">ऑल मिस्त्री</option>
+                <option value="इलेक्ट्रीशियन">इलेक्ट्रीशियन</option>
+                <option value="प्लंबर">प्लंबर</option>
+                <option value="गाड़ी किराये के लिए">गाड़ी किराये के लिए (Taxi/Car/Tractor)</option>
+                <option value="मेडिसिन (दवाइयां)">मेडिसिन / मेडिकल स्टोर</option>
+                <option value="अन्य">अन्य सेवा</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>📷 फोटो अपलोड करें (दुकान या सेवा की):</label>
+              <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
+            </div>
+            <button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें (अप्रूवल के लिए)</button>
           </div>
         </div>
-        ${list || `<div class="empty-state">इस गाँव में अभी कोई दुकान उपलब्ध नहीं है।</div>`}
+        ${list || `<div class="empty-state">इस गाँव में अभी कोई दुकान या सेवा उपलब्ध नहीं है।</div>`}
       `;
     }
     else if (this.state.view === 'announcements') {
@@ -628,33 +672,62 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'chaupal') {
-      let chaupalList = this.state.chaupalMessages
-        .filter(c => c.districtId === this.state.selectedDistrict && c.villageHi === this.state.searchVillage)
-        .map(c => `
-          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 8px;">
-            <div style="font-size: 12px; font-weight: bold; color: #047857;">${c.name}</div>
-            <div style="font-size: 13px; color: #0f172a; margin-top: 3px;">${c.message}</div>
+      let isUserVerified = this.state.allowedChatNumbers.includes(this.state.currentUserPhone) || this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn;
+
+      let chaupalList = '';
+      if(isUserVerified) {
+        chaupalList = this.state.chaupalMessages
+          .filter(c => c.districtId === this.state.selectedDistrict && c.villageHi === this.state.searchVillage)
+          .map(c => `
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 8px;">
+              <div style="font-size: 12px; font-weight: bold; color: #047857;">${c.name}</div>
+              <div style="font-size: 13px; color: #0f172a; margin-top: 3px;">${c.message}</div>
+              ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('chaupalMessages', '${c.id}')">🗑️ डिलीट संदेश</button>` : ''}
+            </div>
+          `).join('');
+      }
+
+      let chatContentArea = '';
+      if(!isUserVerified) {
+        chatContentArea = `
+          <div style="background: #fef2f2; border: 1px solid #f87171; border-radius: 12px; padding: 16px; text-align: center;">
+            <p style="color: #991b1b; font-size: 13px; font-weight: bold; margin-bottom: 10px;">
+              🔒 यह ग्रुप पूरी तरह सुरक्षित (Private) है। केवल वही लोग देख और रिप्लाई कर सकते हैं जिन्हें एडमिन ने जोड़ा है।
+            </p>
+            <input class="form-control" id="verifyPhoneInput" placeholder="अपना रजिस्टर्ड मोबाइल नंबर दर्ज करें..." style="margin-bottom:8px;" />
+            <button class="btn-submit" style="background: #dc2626;" onclick="app.verifyUserForChat()">🔐 चैट में प्रवेश करें</button>
           </div>
-        `).join('');
+        `;
+      } else {
+        chatContentArea = `
+          <div style="background: #f0fdf4; border: 1px solid #10b981; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+            <div style="font-size: 12px; font-weight: bold; color: #064e3b; margin-bottom: 6px;">✍️ संदेश या रिप्लाई भेजें:</div>
+            <input class="form-control" id="cName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
+            <textarea class="form-control" id="cText" placeholder="अपनी चर्चा या संदेश यहाँ लिखें..." style="margin-bottom:8px; height:60px;"></textarea>
+            <button class="btn-submit" onclick="app.submitChaupalMsg()">💬 संदेश भेजें</button>
+          </div>
+          <div style="margin-top: 10px;">
+            ${chaupalList || `<div class="empty-state">ग्रुप में अभी कोई संदेश नहीं है।</div>`}
+          </div>
+        `;
+      }
+
+      let adminMemberAddSection = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `
+        <div style="background: #eff6ff; border: 1px solid #2563eb; border-radius: 12px; padding: 12px; margin-bottom: 15px;">
+          <div style="font-size: 12px; font-weight: bold; color: #1e40af; margin-bottom: 6px;">⚙️ एडमिन टूल: चौपाल में नया सदस्य जोड़ें (नंबर से)</div>
+          <div style="display: flex; gap: 6px;">
+            <input class="form-control" id="newMemberPhone" placeholder="सदस्य का मोबाइल नंबर लिखें..." style="margin-bottom:0;" />
+            <button style="background: #2563eb; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addAllowedMember()">जोड़ें</button>
+          </div>
+        </div>
+      ` : '';
 
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">💬 गाँव की चौपाल / आपसी चर्चा (ग्रुप चैट)</div>
-          <div class="live-upload-box">
-            <input class="form-control" id="cName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
-            <input class="form-control" id="cPhone" placeholder="आपका मोबाइल नंबर..." style="margin-bottom:8px;" />
-            <textarea class="form-control" id="cText" placeholder="अपनी चर्चा या संदेश यहाँ लिखें..." style="margin-bottom:8px; height:60px;"></textarea>
-            
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 12px; font-weight: bold; color: #064e3b;">
-              <input type="checkbox" id="cAdminNoCheck" /> <span>एडमिन के रूप में अपना नंबर जोड़ें</span>
-            </div>
-
-            <button class="btn-submit" onclick="app.submitChaupalMsg()">💬 संदेश भेजें</button>
-          </div>
-          <div style="margin-top: 10px;">
-            ${chaupalList || `<div class="empty-state">अभी कोई चर्चा नहीं हुई है। पहली चर्चा आप शुरू करें!</div>`}
-          </div>
+          <div class="card-title">💬 गाँव की चौपाल / आपसी चर्चा (Private Group)</div>
+          ${adminMemberAddSection}
+          ${chatContentArea}
         </div>
       `;
     }
@@ -686,14 +759,14 @@ class VillageApp {
         <div class="media-card" style="border: 2px solid #2563eb;">
           <span class="service-tag">${labelName}</span>
           <div class="service-name">${x.title || x.message || x.name || ''}</div>
-          ${x.name ? `<p style="font-size:11px; color:#555;">द्वारा: ${x.name} | फोन: ${x.phone}</p>` : ''}
+          ${x.name ? `<p style="font-size:11px; color:#555;">द्वारा: ${x.name} | फोन: ${x.phone} | श्रेणी: ${x.category || 'N/A'}</p>` : ''}
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
           <button class="approve-btn" onclick="app.approveItem('${path}', '${x.id}')">✅ Approve</button>
           <button class="delete-btn" onclick="app.deleteItem('${path}', '${x.id}')">❌ Reject</button>
         </div>
       `).join('');
 
-      let pServ = renderPend(this.state.services, 'services', 'Shop');
+      let pServ = renderPend(this.state.services, 'services', 'Shop/Service');
       let pAnn = renderPend(this.state.announcements, 'announcements', 'Announcement');
       let pGreet = renderPend(this.state.greetings, 'greetings', 'Greeting/Banner');
       let pMkt = renderPend(this.state.market, 'market', 'Market');
