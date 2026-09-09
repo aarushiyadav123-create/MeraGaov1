@@ -61,7 +61,9 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .dropdown-item { padding: 12px 16px; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .dropdown-item:hover { background: #ecfdf5; color: #047857; }
 
-.ticker { background: #047857; color: #fbbf24; padding: 8px 12px; font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; border-top: 1px solid #064e3b; }
+/* 🌟 बेहतर, बड़ी और डिजाइन की गई ऊपर की पट्टी (Ticker) */
+.ticker { background: linear-gradient(135deg, #022c22, #064e3b); color: #fde047; padding: 12px 16px; font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; border-top: 2px solid #059669; border-bottom: 2px solid #059669; box-shadow: inset 0 2px 6px rgba(0,0,0,0.4); letter-spacing: 0.5px; }
+
 .content { padding: 18px; background: #f8fafc; min-height: 480px; }
 
 .menu-card { border-radius: 14px; padding: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.12); position: relative; }
@@ -97,14 +99,12 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 </head>
 <body>
 
-<!-- स्प्लैश स्क्रीन HTML -->
 <div id="splashScreen">
   <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="splash-logo" alt="MeraGaov Logo" />
   <div class="splash-title">MeraGaov - मेरी पहचान</div>
   <div class="splash-subtitle">गाँव की हर खबर और जरूरत, अब आपके फोन पर</div>
 </div>
 
-<!-- वेलकम ग्रीटिंग डायलॉग कंटेनर -->
 <div id="welcomeModalContainer"></div>
 
 <div class="container">
@@ -312,7 +312,6 @@ class VillageApp {
       return;
     }
 
-    // ऑटोमैटिकली वर्तमान में सेलेक्टेड जिले की ही आईडी ली जाएगी
     const currentDist = this.state.selectedDistrict;
     
     if (!HARYANA_DISTRICTS_AND_VILLAGES[currentDist]) {
@@ -328,8 +327,6 @@ class VillageApp {
     }
 
     const newVillageObj = { hi: villageName, en: villageName };
-
-    // सिर्फ इसी जिले की लिस्ट में जुड़ेगा
     HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.push(newVillageObj);
 
     let savedVillages = JSON.parse(localStorage.getItem('customDistrictVillages')) || {};
@@ -428,7 +425,7 @@ class VillageApp {
     let approvedShops = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage);
     let baseText = "🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य";
     if(approvedShops.length > 0) {
-      let shopTickerItems = approvedShops.map(s => `🛒 नई दुकान: ${s.name} (${s.category || 'Service'}) - ${s.phone}`).join(' | ');
+      let shopTickerItems = approvedShops.map(s => `${s.name} (${s.category || 'Service'}) - ${s.phone}`).join(' | ');
       tickerEl.innerHTML = `${shopTickerItems} | ${baseText}`;
     } else {
       tickerEl.innerHTML = baseText;
@@ -548,7 +545,7 @@ class VillageApp {
     const phone = document.getElementById('sPhone')?.value.trim();
     const cat = document.getElementById('sCat')?.value;
     if(!name || !phone) return alert("कृपया दुकान का नाम और मोबाइल नंबर भरें!");
-    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान अप्रूवल के लिए भेज दी गई है!");
+    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
     this.tempImage = '';
   }
 
@@ -557,7 +554,7 @@ class VillageApp {
     const phone = document.getElementById('annPhone')?.value.trim();
     const title = document.getElementById('annTitle')?.value.trim();
     if(!name || !phone || !title) return alert("कृपया नाम, मोबाइल नंबर और मुनादी का विवरण भरें!");
-    this.saveData('announcements', { name, phone, title, imageUrl: this.tempImage || '' }, "मुनादी अप्रूवल के लिए भेज दी गई है!");
+    this.saveData('announcements', { name, phone, title, imageUrl: this.tempImage || '' }, "मुनादी एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
     this.tempImage = '';
   }
 
@@ -566,7 +563,7 @@ class VillageApp {
     const phone = document.getElementById('gPhone')?.value.trim();
     const message = document.getElementById('gMsg')?.value.trim();
     if(!name || !phone || !message) return alert("कृपया नाम, मोबाइल नंबर और संदेश विवरण भरें!");
-    this.saveData('greetings', { name, phone, message, imageUrl: this.tempImage || '' }, "बैनर/बधाई संदेश अप्रूवल के लिए भेज दिया गया है!");
+    this.saveData('greetings', { name, phone, message, imageUrl: this.tempImage || '' }, "बैनर/बधाई संदेश एडमिन के पास भेज दिया गया है, अप्रूव होने के बाद दिखेगा!");
     this.tempImage = '';
   }
 
@@ -576,7 +573,7 @@ class VillageApp {
     const title = document.getElementById('mTitle')?.value.trim();
     const itemType = document.getElementById('mItemType')?.value;
     if(!name || !phone || !title) return alert("कृपया नाम, मोबाइल नंबर और विवरण भरें!");
-    this.saveData('market', { name, phone, title, itemType, imageUrl: this.tempImage || '' }, "पोस्ट अप्रूवल के लिए भेज दी गई है!");
+    this.saveData('market', { name, phone, title, itemType, imageUrl: this.tempImage || '' }, "पोस्ट एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
     this.tempImage = '';
   }
 
@@ -592,7 +589,7 @@ class VillageApp {
       category, 
       mediaUrl: this.tempMedia, 
       mediaType: this.tempMediaType 
-    }, "इतिहास/गैलरी पोस्ट अप्रूवल के लिए भेज दी गई है!");
+    }, "इतिहास/गैलरी पोस्ट एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
     this.tempMedia = '';
   }
 
