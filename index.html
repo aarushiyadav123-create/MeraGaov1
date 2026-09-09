@@ -535,7 +535,6 @@ class VillageApp {
     }
   }
 
-  // 👇 एडमिन द्वारा पहले से जोड़े गए या चुने गए टेंपलेट/बने-बनाए बैनर के लिए लॉजिक
   generateGreetingBannerCanvas() {
     const name = document.getElementById('gName')?.value.trim();
     const phone = document.getElementById('gPhone')?.value.trim();
@@ -552,7 +551,6 @@ class VillageApp {
     canvas.height = 800;
     const ctx = canvas.getContext('2d');
 
-    // यदि एडमिन ने कोई प्री-डिजाइन टेंपलेट चुना है
     if (templateSelect && templateSelect !== 'default') {
       let templateImg = new Image();
       templateImg.crossOrigin = "anonymous";
@@ -561,7 +559,6 @@ class VillageApp {
         this.drawTextAndUserPhotoOnCanvas(ctx, name, phone, msg, canvas);
       };
       templateImg.onerror = () => {
-        // अगर इमेज लोड न हो तो डिफ़ॉल्ट बैकग्राउंड बना लें
         this.drawDefaultBannerBackground(ctx, name, phone, msg, canvas);
       };
       templateImg.src = templateSelect;
@@ -601,7 +598,6 @@ class VillageApp {
   }
 
   drawTextAndUserPhotoOnCanvas(ctx, name, phone, msg, canvas) {
-    // यदि टेंपलेट यूज़ हो रहा है तो ऊपर टेक्स्ट और नीचे फोटो/नाम सेट करें
     ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.fillRect(50, 50, 700, 120);
 
@@ -694,6 +690,7 @@ class VillageApp {
     if(!name || !message) return alert("कृपया नाम और संदेश भरें!");
     
     let finalImg = this.generatedBannerDataUrl || this.tempImage || '';
+    if(!finalImg) return alert("कृपया पहले 'सुंदर बैनर बनाएं' बटन दबाकर बैनर तैयार करें!");
 
     this.saveData('greetings', { name, phone, message, imageUrl: finalImg }, "बधाई बैनर एडमिन के पास भेज दिया गया है, अप्रूव होने के बाद दिखेगा!");
     this.generatedBannerDataUrl = '';
@@ -953,12 +950,12 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🎉 त्यौहार व बधाई संदेश (बने-बनाए बैनर व मेकर)</div>
+          <div class="card-title">🎉 त्यौहार व बधाई संदेश (बैनर मेकर)</div>
           <div class="live-upload-box">
-            <p style="font-size:12px; color:#064e3b; font-weight:bold; margin-bottom:10px;">✨ बने-बनाए बैनर फ्रेम चुनें या अपनी फोटो लगाकर नया बनाएं!</p>
+            <p style="font-size:12px; color:#064e3b; font-weight:bold; margin-bottom:10px;">✨ फ्रेम चुनें या अपनी फोटो लगाकर नया बैनर बनाएं!</p>
             
             <div class="form-group" style="text-align:left;">
-              <label>🖼️ बने-बनाए बैनर फ्रेम (Template) चुनें:</label>
+              <label>🖼️ बैनर फ्रेम (Template) चुनें:</label>
               <select class="form-control" id="gTemplateSelect" style="margin-bottom:8px;">
                 <option value="default">-- डिफ़ॉल्ट ग्रीन थीम फ्रेम --</option>
                 <option value="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800">त्यौहार / दीपावली स्पेशल फ्रेम</option>
