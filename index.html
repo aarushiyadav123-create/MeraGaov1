@@ -535,10 +535,12 @@ class VillageApp {
     }
   }
 
+  // 👇 एडमिन द्वारा पहले से जोड़े गए या चुने गए टेंपलेट/बने-बनाए बैनर के लिए लॉजिक
   generateGreetingBannerCanvas() {
     const name = document.getElementById('gName')?.value.trim();
     const phone = document.getElementById('gPhone')?.value.trim();
     const msg = document.getElementById('gMsg')?.value.trim();
+    const templateSelect = document.getElementById('gTemplateSelect')?.value;
 
     if(!name || !msg) {
       alert("कृपया अपना नाम और बधाई संदेश जरूर भरें!");
@@ -550,6 +552,25 @@ class VillageApp {
     canvas.height = 800;
     const ctx = canvas.getContext('2d');
 
+    // यदि एडमिन ने कोई प्री-डिजाइन टेंपलेट चुना है
+    if (templateSelect && templateSelect !== 'default') {
+      let templateImg = new Image();
+      templateImg.crossOrigin = "anonymous";
+      templateImg.onload = () => {
+        ctx.drawImage(templateImg, 0, 0, 800, 800);
+        this.drawTextAndUserPhotoOnCanvas(ctx, name, phone, msg, canvas);
+      };
+      templateImg.onerror = () => {
+        // अगर इमेज लोड न हो तो डिफ़ॉल्ट बैकग्राउंड बना लें
+        this.drawDefaultBannerBackground(ctx, name, phone, msg, canvas);
+      };
+      templateImg.src = templateSelect;
+    } else {
+      this.drawDefaultBannerBackground(ctx, name, phone, msg, canvas);
+    }
+  }
+
+  drawDefaultBannerBackground(ctx, name, phone, msg, canvas) {
     let bgGrad = ctx.createLinearGradient(0, 0, 800, 800);
     bgGrad.addColorStop(0, '#064e3b');
     bgGrad.addColorStop(0.5, '#047857');
@@ -576,7 +597,23 @@ class VillageApp {
     ctx.font = 'bold 30px "Hind", sans-serif';
     this.wrapText(ctx, msg, 400, 170, 620, 40);
 
-    // ✅ फोटो का साइज बड़ा किया गया (त्रिज्या 115 पिक्सेल, व्यास 230 पिक्सेल)
+    this.drawUserPhotoAndTextOverlay(ctx, name, phone, canvas);
+  }
+
+  drawTextAndUserPhotoOnCanvas(ctx, name, phone, msg, canvas) {
+    // यदि टेंपलेट यूज़ हो रहा है तो ऊपर टेक्स्ट और नीचे फोटो/नाम सेट करें
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(50, 50, 700, 120);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 28px "Hind", sans-serif';
+    ctx.textAlign = 'center';
+    this.wrapText(ctx, msg, 400, 95, 660, 35);
+
+    this.drawUserPhotoAndTextOverlay(ctx, name, phone, canvas);
+  }
+
+  drawUserPhotoAndTextOverlay(ctx, name, phone, canvas) {
     ctx.save();
     ctx.beginPath();
     ctx.arc(400, 470, 115, 0, Math.PI * 2, true);
@@ -916,15 +953,25 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🎉 त्यौहार व बधाई संदेश (डिजिटल बैनर मेकर)</div>
+          <div class="card-title">🎉 त्यौहार व बधाई संदेश (बने-बनाए बैनर व मेकर)</div>
           <div class="live-upload-box">
-            <p style="font-size:12px; color:#064e3b; font-weight:bold; margin-bottom:10px;">✨ अपना फोटो और नाम भरकर तुरंत सुंदर बैनर बनाएं!</p>
+            <p style="font-size:12px; color:#064e3b; font-weight:bold; margin-bottom:10px;">✨ बने-बनाए बैनर फ्रेम चुनें या अपनी फोटो लगाकर नया बनाएं!</p>
+            
+            <div class="form-group" style="text-align:left;">
+              <label>🖼️ बने-बनाए बैनर फ्रेम (Template) चुनें:</label>
+              <select class="form-control" id="gTemplateSelect" style="margin-bottom:8px;">
+                <option value="default">-- डिफ़ॉल्ट ग्रीन थीम फ्रेम --</option>
+                <option value="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800">त्यौहार / दीपावली स्पेशल फ्रेम</option>
+                <option value="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800">शुभकामना / उत्सव फ्रेम</option>
+              </select>
+            </div>
+
             <input class="form-control" id="gName" placeholder="आपका पूरा नाम..." style="margin-bottom:8px;" />
             <input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
             <textarea class="form-control" id="gMsg" placeholder="बधाई संदेश (जैसे: आप सभी को होली/दीपावली की हार्दिक शुभकामनाएं)..." style="margin-bottom:8px; height:60px;"></textarea>
             
             <div class="form-group" style="text-align:left;">
-              <label>📷 अपनी फोटो चुनें (बैनर पर लगाने के लिए):</label>
+              <label>📷 अपनी फोटो चुनें (फ्रेम पर लगाने के लिए):</label>
               <input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px;" />
             </div>
 
@@ -932,7 +979,7 @@ class VillageApp {
             
             <div id="bannerPreviewBox"></div>
 
-            <button class="btn-submit" style="margin-top:14px;" onclick="app.submitGreeting()">📤 बैनर एडमिन को भेजें</button>
+            <button class="btn-submit" style="margin-top:14px;" onclick="app.submitGreeting()">📤 बैनर एडमिन को भेजें (Live)</button>
           </div>
           ${items || `<div class="empty-state">कोई बधाई संदेश/बैनर उपलब्ध नहीं है।</div>`}
         </div>
