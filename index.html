@@ -31,7 +31,21 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind', sans-serif; }
 body { background-color: #064e3b; color: #0f172a; padding: 6px; }
-.container { max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+.container { max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; }
+
+/* 🌟 स्प्लैश स्क्रीन स्टाइल (Professional Splash Screen) */
+#splashScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #065f46, #047857); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.5s ease; }
+.splash-logo { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #fbbf24; background: #ffffff; object-fit: cover; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+.splash-title { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px; }
+.splash-subtitle { font-size: 13px; color: #a7f3d0; margin-top: 4px; }
+
+/* 🌟 वेलकम ग्रीटिंग डायलॉग स्टाइल */
+.welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9998; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.welcome-modal { background: #ffffff; width: 100%; max-width: 340px; border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: scaleUp 0.3s ease; }
+@keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.welcome-title { font-size: 20px; font-weight: 700; color: #064e3b; margin-bottom: 8px; }
+.welcome-text { font-size: 13px; color: #475569; line-height: 1.5; margin-bottom: 20px; }
+.welcome-btn { background: #047857; color: white; border: none; width: 100%; padding: 11px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(4,120,87,0.3); }
 
 .header { background: linear-gradient(135deg, #065f46, #047857); color: white; padding: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #059669; position: relative; }
 .title-box { display: flex; align-items: center; gap: 10px; }
@@ -82,6 +96,16 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 </style>
 </head>
 <body>
+
+<!-- 🌟 Professional Splash Screen HTML -->
+<div id="splashScreen">
+  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="splash-logo" alt="MeraGaov Logo" />
+  <div class="splash-title">MeraGaov - मेरी पहचान</div>
+  <div class="splash-subtitle">गाँव की हर खबर और जरूरत, अब आपके फोन पर</div>
+</div>
+
+<!-- 🌟 Welcome Greeting Modal HTML (Dynamic Injection Container) -->
+<div id="welcomeModalContainer"></div>
 
 <div class="container">
   <div class="header">
@@ -218,6 +242,50 @@ class VillageApp {
     this.initListeners();
     this.initFirebaseData();
     this.render();
+    this.handleStartupSplashAndWelcome();
+  }
+
+  // 🌟 स्प्लैश स्क्रीन और फर्स्ट टाइम वेलकम ग्रीटिंग लॉजिक
+  handleStartupSplashAndWelcome() {
+    // 1. स्प्लैश स्क्रीन को 1.5 सेकंड बाद फेट-आउट करके हटाना
+    setTimeout(() => {
+      const splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(() => splash.remove(), 500);
+      }
+    }, 1500);
+
+    // 2. चेक करना कि यूजर ने पहली बार ऐप खोली है या नहीं
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcomeMeraGaov');
+    if (!hasSeenWelcome) {
+      setTimeout(() => {
+        this.showWelcomeGreetingModal();
+      }, 1600);
+    }
+  }
+
+  showWelcomeGreetingModal() {
+    const container = document.getElementById('welcomeModalContainer');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="welcome-overlay">
+        <div class="welcome-modal">
+          <div class="welcome-title">राम-राम भाईयों! 🙏</div>
+          <div class="welcome-text">
+            हरियाणा के हमारे इस डिजिटल गाँव (MeraGaov) में आपका स्वागत है। यह ऐप आपके और पूरे गाँव के लिए बनाई गई है, जिससे आप हर जरूरी खबर और सेवा से जुड़े रह सकें।
+          </div>
+          <button class="welcome-btn" onclick="app.closeWelcomeModal()">शुरू करें</button>
+        </div>
+      </div>
+    `;
+  }
+
+  closeWelcomeModal() {
+    localStorage.setItem('hasSeenWelcomeMeraGaov', 'true');
+    const container = document.getElementById('welcomeModalContainer');
+    if (container) container.innerHTML = '';
   }
 
   loadCustomVillagesFromStorage() {
