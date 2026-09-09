@@ -217,7 +217,8 @@ class VillageApp {
       lang: 'hi',
       view: 'home',
       selectedDistrict: localStorage.getItem('selectedDistrict') || 'charkhi-dadri',
-      searchVillage: localStorage.getItem('searchVillage') || 'कलानौर',
+      searchVillage: localStorage.getItem('searchVillage') || '',
+      lockedVillage: localStorage.getItem('my_locked_village') || '',
       services: [],
       gallery: [],
       market: [],
@@ -227,9 +228,12 @@ class VillageApp {
       historyGallery: [],
       allowedChatUsers: {}, 
       subAdmins: [],
+      villagesConfig: {},
+      resetRequests: [],
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
       isSubAdminLoggedIn: false,
+      loggedInSubAdminVillage: '',
       currentUserPhone: localStorage.getItem('currentUserPhone') || '',
       isDistrictBoxOpen: false
     };
@@ -407,7 +411,17 @@ class VillageApp {
         });
         onValue(ref(db, 'subAdmins'), snap => {
           const val = snap.val();
-          this.state.subAdmins = val ? Object.keys(val).map(k => ({id: k, pwd: val[k]})) : [];
+          this.state.subAdmins = val ? Object.keys(val).map(k => ({id: k, ...val[k]})) : [];
+        });
+        onValue(ref(db, 'villages_config'), snap => {
+          const val = snap.val();
+          this.state.villagesConfig = val || {};
+          if(this.state.view === 'admin') this.render();
+        });
+        onValue(ref(db, 'reset_requests'), snap => {
+          const val = snap.val();
+          this.state.resetRequests = val ? Object.keys(val).map(k => ({id: k, ...val[k]})) : [];
+          if(this.state.view === 'admin') this.render();
         });
       }
     }, 1000);
@@ -446,6 +460,7 @@ class VillageApp {
     if(pwd === '1234') {
       this.state.isAdminLoggedIn = true;
       this.state.isSubAdminLoggedIn = false;
+      this.state.loggedInSubAdminVillage = '';
       this.changeView('admin');
     } else { alert("गलत पासवर्ड!"); }
   }
@@ -456,6 +471,7 @@ class VillageApp {
     if(matchedSub || pwd === '1234') {
       this.state.isAdminLoggedIn = (pwd === '1234');
       this.state.isSubAdminLoggedIn = true;
+      this.state.loggedInSubAdminVillage = matchedSub ? matchedSub.village : '';
       this.changeView('admin');
     } else { alert("गलत पासवर्ड!"); }
   }
@@ -505,6 +521,94 @@ class VillageApp {
         });
       }
     }
+  }
+
+  approveResetRequest(reqId, villageName) {
+    if (window.firebaseDb) {
+      const { db, ref, update } = window.firebaseDb;
+      update(ref(db, `reset_requests/${reqId}`), { status: 'approved' }).then(() => {
+        alert(`गाँव रीसेट अनुरोध स्वीकार कर लिया गया है!`);
+        this.render();
+      });
+    }
+  }
+
+  deleteResetRequest(reqId) {
+    if (window.firebaseDb) {
+      const { db, ref, remove } = window.firebaseDb;
+      remove(ref(db, `reset_requests/${reqId}`)).then(() => {
+        this.render();
+      });
+    }
+  }
+
+  saveMyVillage(selectedVillage) {
+    const alreadySaved = localStorage.getItem('my_locked_village');
+    
+    if (alreadySaved) {
+      let masterKey = prompt("आपका गांव पहले से '" + alreadySaved + "' सेट है। अगर आप एडमिन हैं, तो मास्टर पासवर्ड डालें:");
+      if (masterKey === "1234" || masterKey === "Admin@123") {
+        localStorage.setItem('my_locked_village', selectedVillage);
+        this.state.lockedVillage = selectedVillage;
+        this.state.searchVillage = selectedVillage;
+        alert("मास्टर एडमिन द्वारा गांव बदलकर '" + selectedVillage + "' कर दिया गया है!");
+        this.render();
+      } else {
+        alert("गलत पासवर्ड! आप अपना गांव नहीं बदल सकते।");
+      }
+      return;
+    }
+
+    localStorage.setItem('my_locked_village', selectedVillage);
+    this.state.lockedVillage = selectedVillage;
+    this.state.searchVillage = selectedVillage;
+    alert("बधाई हो! आपका गांव पक्का हो गया है: " + selectedVillage);
+    this.render();
+  }
+
+  requestVillageReset() {
+    const currentDeviceID = this.getDeviceIdentifier();
+    const currentLocked = localStorage.getItem('my_locked_village') || this.state.searchVillage;
+    const requestedVillage = prompt("आप कौन सा सही गाँव चुनना चाहते हैं उसका नाम लिखें:");
+
+    if (!requestedVillage) return;
+
+    if (window.firebaseDb) {
+      const { db, ref, set } = window.firebaseDb;
+      set(ref(db, 'reset_requests/' + currentDeviceID), {
+        device_id: currentDeviceID,
+        old_village: currentLocked,
+        new_requested_village: requestedVillage,
+        status: 'pending',
+        timestamp: Date.now()
+      }).then(() => {
+        alert("आपके गाँव बदलने की रिक्वेस्ट एडमिन को भेज दी गई है। एडमिन के अप्रूव करते ही आप नया गाँव चुन सकेंगे।");
+      });
+    }
+  }
+
+  checkResetApprovalStatus() {
+    const currentDeviceID = this.getDeviceIdentifier();
+    const req = this.state.resetRequests.find(r => r.device_id === currentDeviceID);
+    if (req && req.status === 'approved') {
+      localStorage.removeItem('my_locked_village');
+      this.state.lockedVillage = '';
+      if (window.firebaseDb) {
+        const { db, ref, remove } = window.firebaseDb;
+        remove(ref(db, 'reset_requests/' + currentDeviceID));
+      }
+      alert("एडमिन ने आपके गाँव बदलने की रिक्वेस्ट स्वीकार कर ली है! अब आप अपना सही गाँव चुन सकते हैं।");
+      this.render();
+    }
+  }
+
+  getDeviceIdentifier() {
+    let deviceId = localStorage.getItem('device_unique_id');
+    if (!deviceId) {
+      deviceId = 'dev_' + Math.random().toString(36.substring(2)) + Date.now();
+      localStorage.setItem('device_unique_id', deviceId);
+    }
+    return deviceId;
   }
 
   handleImage(input) {
@@ -802,6 +906,11 @@ class VillageApp {
   render() {
     const isEn = this.state.lang === 'en';
     const currentDistrictObj = HARYANA_DISTRICTS_AND_VILLAGES[this.state.selectedDistrict] || HARYANA_DISTRICTS_AND_VILLAGES['charkhi-dadri'];
+    
+    if (!this.state.lockedVillage && !this.state.searchVillage) {
+      this.state.searchVillage = currentDistrictObj.villages[0].hi;
+    }
+
     let currentVillageObj = currentDistrictObj.villages.find(v => v.hi === this.state.searchVillage || v.en === this.state.searchVillage);
     let displayVillageName = currentVillageObj ? (isEn ? currentVillageObj.en : currentVillageObj.hi) : this.state.searchVillage;
 
@@ -815,53 +924,50 @@ class VillageApp {
     if(!content) return;
 
     localStorage.setItem('selectedDistrict', this.state.selectedDistrict);
-    localStorage.setItem('searchVillage', this.state.searchVillage);
+    if(this.state.searchVillage) localStorage.setItem('searchVillage', this.state.searchVillage);
     this.updateTicker();
 
     let html = '';
 
-    if (this.state.view === 'home') {
-      let districtOptions = Object.keys(HARYANA_DISTRICTS_AND_VILLAGES).map(dKey => `
-        <option value="${dKey}" ${this.state.selectedDistrict === dKey ? 'selected' : ''}>${HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameHi}</option>
-      `).join('');
-
+    if (!this.state.lockedVillage) {
       let villageOptions = currentDistrictObj.villages.map(v => `
-        <option value="${v.hi}" ${(this.state.searchVillage === v.hi || this.state.searchVillage === v.en) ? 'selected' : ''}>${v.hi}</option>
+        <option value="${v.hi}">${v.hi}</option>
       `).join('');
 
-      let badgeHtml = this.unreadMessageCount > 0 ? `<span class="notification-badge">${this.unreadMessageCount} नया</span>` : '';
-
-      let districtBoxContent = this.state.isDistrictBoxOpen ? `
-        <div style="margin-top:10px; border-top: 1px solid #a7f3d0; padding-top: 10px;">
-          <div class="form-group">
+      html = `
+        <div class="card" style="text-align:center; padding: 25px 15px;">
+          <h2 style="color: #064e3b; margin-bottom: 10px; font-size: 20px;">🏡 अपना गाँव चुनें</h2>
+          <p style="font-size: 13px; color: #475569; margin-bottom: 15px;">कृपया अपने डिवाइस के लिए अपना मूल गाँव एक बार पक्का करें। इसके बाद ऐप सीधे आपके गाँव से जुड़ जाएगी।</p>
+          
+          <div class="form-group" style="text-align: left;">
             <label>जिला चुनें:</label>
-            <select class="form-control" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0].hi; app.render();">
-              ${districtOptions}
+            <select class="form-control" onchange="app.state.selectedDistrict = this.value; app.render();" style="margin-bottom:10px;">
+              ${Object.keys(HARYANA_DISTRICTS_AND_VILLAGES).map(dKey => `
+                <option value="${dKey}" ${this.state.selectedDistrict === dKey ? 'selected' : ''}>${HARYANA_DISTRICTS_AND_VILLAGES[dKey].nameHi}</option>
+              `).join('')}
             </select>
           </div>
-          <div class="form-group">
+
+          <div class="form-group" style="text-align: left;">
             <label>गाँव चुनें:</label>
-            <select class="form-control" onchange="app.state.searchVillage = this.value; app.render();">
+            <select class="form-control" id="initialVillageSelect" style="margin-bottom:15px;">
               ${villageOptions}
             </select>
           </div>
-          <div style="margin-top: 10px; border-top: 1px dashed #059669; padding-top: 10px;">
-            <label style="color:#047857; font-weight:700;">➕ नया गाँव/वार्ड जोड़ें:</label>
-            <div style="display: flex; gap: 6px; margin-top: 5px;">
-              <input class="form-control" id="newVillageNameInput" placeholder="गाँव का नाम..." style="margin-bottom:0;" />
-              <button style="background: #047857; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addNewVillageToDistrict()">जोड़ें</button>
-            </div>
-          </div>
+
+          <button class="btn-submit" onclick="app.saveMyVillage(document.getElementById('initialVillageSelect').value)">🔒 मेरा गाँव पक्का करें (Lock)</button>
         </div>
-      ` : '';
+      `;
+    } else if (this.state.view === 'home') {
+      let badgeHtml = this.unreadMessageCount > 0 ? `<span class="notification-badge">${this.unreadMessageCount} नया</span>` : '';
 
       html = `
-        <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
-          <div class="card-title" style="color: #064e3b; cursor:pointer; margin-bottom:0;" onclick="app.state.isDistrictBoxOpen = !app.state.isDistrictBoxOpen; app.render();">
-            <span>📍 जिला: ${currentDistrictObj.nameHi} | गाँव: ${displayVillageName}</span>
-            <span style="background:#047857; color:white; padding:2px 8px; border-radius:6px; font-size:11px;">${this.state.isDistrictBoxOpen ? '▲ छुपाएं' : '▼ बदलें'}</span>
+        <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0; text-align: center; padding: 14px;">
+          <div style="font-size: 15px; font-weight: 700; color: #064e3b; margin-bottom: 4px;">📍 आपका लॉक किया गया गाँव: ${this.state.lockedVillage}</div>
+          <div style="font-size: 11px; color: #047857;">यह डिवाइस सुरक्षित रूप से आपके गाँव से जुड़ी है।</div>
+          <div style="margin-top: 8px;">
+            <button style="background: #dc2626; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;" onclick="app.requestVillageReset()">✏️ गलत गाँव चुन गया? रीसेट रिक्वेस्ट भेजें</button>
           </div>
-          ${districtBoxContent}
         </div>
 
         <div class="menu-card bg-1" onclick="app.changeView('list')"><span>🛒 1. दुकान और सेवा बाजार</span><span>→</span></div>
@@ -873,13 +979,13 @@ class VillageApp {
       `;
     } 
     else if (this.state.view === 'list') {
-      let list = this.state.services.filter(s => s.status === 'approved' && s.districtId === this.state.selectedDistrict && s.villageHi === this.state.searchVillage).map(s => `
+      let list = this.state.services.filter(s => s.status === 'approved' && s.villageHi === this.state.searchVillage).map(s => `
         <div class="service-item">
           <span class="service-tag">${s.category || 'Shop'}</span>
           <div class="service-name">${s.name}</div>
           ${s.imageUrl ? `<img src="${s.imageUrl}" class="service-img" />` : ''}
           <a href="tel:${s.phone}" class="btn-call">📞 कॉल करें: ${s.phone}</a>
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट</button>` : ''}
+          ${(this.state.isAdminLoggedIn || (this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminVillage === this.state.searchVillage)) ? `<button class="delete-btn" onclick="app.deleteItem('services', '${s.id}')">🗑️ डिलीट</button>` : ''}
         </div>
       `).join('');
 
@@ -914,12 +1020,12 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'announcements') {
-      let items = this.state.announcements.filter(a => a.status === 'approved' && a.districtId === this.state.selectedDistrict && a.villageHi === this.state.searchVillage).map(a => `
+      let items = this.state.announcements.filter(a => a.status === 'approved' && a.villageHi === this.state.searchVillage).map(a => `
         <div class="service-item">
           <div class="service-name">${a.title}</div>
           <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>जारीकर्ता:</b> ${a.name} | <b>फोन:</b> ${a.phone}</p>
           ${a.imageUrl ? `<img src="${a.imageUrl}" class="service-img"/>` : ''}
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ Delete</button>`:''}
+          ${(this.state.isAdminLoggedIn || (this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminVillage === this.state.searchVillage))?`<button class="delete-btn" onclick="app.deleteItem('announcements', '${a.id}')">🗑️ Delete</button>`:''}
         </div>
       `).join('');
       html = `
@@ -938,12 +1044,12 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'greetings') {
-      let items = this.state.greetings.filter(g => g.status === 'approved' && g.districtId === this.state.selectedDistrict && g.villageHi === this.state.searchVillage).map(g => `
+      let items = this.state.greetings.filter(g => g.status === 'approved' && g.villageHi === this.state.searchVillage).map(g => `
         <div class="service-item" style="border-left: 4px solid #db2777;">
           <div class="service-name">${g.message}</div>
           <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>बधाईकर्ता:</b> ${g.name} | <b>फोन:</b> ${g.phone}</p>
           ${g.imageUrl ? `<img src="${g.imageUrl}" class="service-img"/>` : ''}
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('greetings', '${g.id}')">🗑️ Delete</button>`:''}
+          ${(this.state.isAdminLoggedIn || (this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminVillage === this.state.searchVillage))?`<button class="delete-btn" onclick="app.deleteItem('greetings', '${g.id}')">🗑️ Delete</button>`:''}
         </div>
       `).join('');
       
@@ -983,14 +1089,14 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'market') {
-      let items = this.state.market.filter(m => m.status === 'approved' && m.districtId === this.state.selectedDistrict && m.villageHi === this.state.searchVillage).map(m => `
+      let items = this.state.market.filter(m => m.status === 'approved' && m.villageHi === this.state.searchVillage).map(m => `
         <div class="service-item" style="border-left: 4px solid #2563eb;">
           <span class="service-tag">${m.itemType || 'खरीद-बिक्री'}</span>
           <div class="service-name">${m.title}</div>
           <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>विक्रेता:</b> ${m.name} | <b>फोन:</b> ${m.phone}</p>
           ${m.imageUrl ? `<img src="${m.imageUrl}" class="service-img"/>` : ''}
           <a href="tel:${m.phone}" class="btn-call">📞 संपर्क करें: ${m.phone}</a>
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ Delete</button>`:''}
+          ${(this.state.isAdminLoggedIn || (this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminVillage === this.state.searchVillage))?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ Delete</button>`:''}
         </div>
       `).join('');
       html = `
@@ -1018,13 +1124,13 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'historyGallery') {
-      let items = this.state.historyGallery.filter(hg => hg.status === 'approved' && hg.districtId === this.state.selectedDistrict && hg.villageHi === this.state.searchVillage).map(hg => `
+      let items = this.state.historyGallery.filter(hg => hg.status === 'approved' && hg.villageHi === this.state.searchVillage).map(hg => `
         <div class="service-item" style="border-left: 4px solid #0891b2;">
           <span class="service-tag">${hg.category}</span>
           <div class="service-name">${hg.title}</div>
           <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>प्रस्तुतकर्ता:</b> ${hg.name}</p>
           ${hg.mediaType === 'video' ? `<video src="${hg.mediaUrl}" controls class="service-video"></video>` : `<img src="${hg.mediaUrl}" class="service-img"/>`}
-          ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('historyGallery', '${hg.id}')">🗑️ Delete</button>`:''}
+          ${(this.state.isAdminLoggedIn || (this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminVillage === this.state.searchVillage))?`<button class="delete-btn" onclick="app.deleteItem('historyGallery', '${hg.id}')">🗑️ Delete</button>`:''}
         </div>
       `).join('');
       
@@ -1058,12 +1164,12 @@ class VillageApp {
       let chaupalList = '';
       if(isUserVerified) {
         chaupalList = this.state.chaupalMessages
-          .filter(c => c.districtId === this.state.selectedDistrict && c.villageHi === this.state.searchVillage)
+          .filter(c => c.villageHi === this.state.searchVillage)
           .map(c => `
             <div style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 8px;">
               <div style="font-size: 12px; font-weight: bold; color: #047857;">${c.name}</div>
               <div style="font-size: 13px; color: #0f172a; margin-top: 3px;">${c.message}</div>
-              ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `<button class="delete-btn" onclick="app.deleteItem('chaupalMessages', '${c.id}')">🗑️ डिलीट संदेश</button>` : ''}
+              ${(this.state.isAdminLoggedIn || (this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminVillage === this.state.searchVillage)) ? `<button class="delete-btn" onclick="app.deleteItem('chaupalMessages', '${c.id}')">🗑️ डिलीट संदेश</button>` : ''}
             </div>
           `).join('');
       }
@@ -1097,7 +1203,7 @@ class VillageApp {
         `;
       }
 
-      let adminMemberAddSection = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `
+      let adminMemberAddSection = (this.state.isAdminLoggedIn || (this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminVillage === this.state.searchVillage)) ? `
         <div style="background: #eff6ff; border: 1px solid #2563eb; border-radius: 12px; padding: 12px; margin-bottom: 15px;">
           <div style="font-size: 12px; font-weight: bold; color: #1e40af; margin-bottom: 6px;">⚙️ नया सदस्य और पासवर्ड जोड़ें</div>
           <input class="form-control" id="newMemberPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
@@ -1124,9 +1230,11 @@ class VillageApp {
     else if (this.state.view === 'admin') {
       if(!this.state.isAdminLoggedIn && !this.state.isSubAdminLoggedIn) return this.changeView('home');
 
-      let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && x.districtId === this.state.selectedDistrict && x.villageHi === this.state.searchVillage).map(x => `
+      let targetVillageFilter = this.state.isAdminLoggedIn ? null : this.state.loggedInSubAdminVillage;
+
+      let renderPend = (arr, path, labelName) => arr.filter(x => x.status === 'pending' && (!targetVillageFilter || x.villageHi === targetVillageFilter)).map(x => `
         <div class="media-card" style="border: 2px solid #2563eb;">
-          <span class="service-tag">${labelName}</span>
+          <span class="service-tag">${labelName} - (${x.villageHi || 'गाँव'})</span>
           <div class="service-name">${x.title || x.message || x.name || ''}</div>
           ${x.name ? `<p style="font-size:11px; color:#555;">द्वारा: ${x.name} | फोन: ${x.phone || 'N/A'}</p>` : ''}
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
@@ -1141,11 +1249,25 @@ class VillageApp {
       let pMkt = renderPend(this.state.market, 'market', 'Market');
       let pHg = renderPend(this.state.historyGallery, 'historyGallery', 'History');
 
+      let resetRequestsHtml = '';
+      if (this.state.isAdminLoggedIn) {
+        resetRequestsHtml = this.state.resetRequests.filter(r => r.status === 'pending').map(r => `
+          <div class="media-card" style="border: 2px solid #dc2626; background: #fef2f2;">
+            <span class="service-tag" style="background:#fecaca; color:#991b1b;">गाँव रीसेट अनुरोध</span>
+            <div class="service-name">पुराना गाँव: ${r.old_village} ➡️ नया माँगा गया: ${r.new_requested_village}</div>
+            <p style="font-size:11px; color:#555;">डिफ़ाइस आईडी: ${r.device_id}</p>
+            <button class="approve-btn" onclick="app.approveResetRequest('${r.id}', '${r.new_requested_village}')">✅ रीसेट की अनुमति दें</button>
+            <button class="delete-btn" onclick="app.deleteResetRequest('${r.id}')">❌ रद्द करें</button>
+          </div>
+        `).join('');
+      }
+
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card"><div class="card-title">📥 Admin Approval Panel</div></div>
+        <div class="card"><div class="card-title">📥 Admin Approval Panel ${targetVillageFilter ? '(' + targetVillageFilter + ')' : ''}</div></div>
+        ${resetRequestsHtml || ''}
         ${pServ || ''} ${pAnn || ''} ${pGreet || ''} ${pMkt || ''} ${pHg || ''}
-        ${(!pServ && !pAnn && !pGreet && !pMkt && !pHg) ? '<div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>' : ''}
+        ${(!resetRequestsHtml && !pServ && !pAnn && !pGreet && !pMkt && !pHg) ? '<div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>' : ''}
       `;
     }
 
