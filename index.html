@@ -61,7 +61,6 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .dropdown-item { padding: 12px 16px; font-size: 13px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .dropdown-item:hover { background: #ecfdf5; color: #047857; }
 
-/* 🌟 बेहतर, बड़ी और डिजाइन की गई ऊपर की पट्टी (Ticker) */
 .ticker { background: linear-gradient(135deg, #022c22, #064e3b); color: #fde047; padding: 12px 16px; font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; border-top: 2px solid #059669; border-bottom: 2px solid #059669; box-shadow: inset 0 2px 6px rgba(0,0,0,0.4); letter-spacing: 0.5px; }
 
 .content { padding: 18px; background: #f8fafc; min-height: 480px; }
@@ -237,6 +236,8 @@ class VillageApp {
     this.tempImage = '';
     this.tempMedia = ''; 
     this.tempMediaType = 'image'; 
+    this.generatedBannerDataUrl = '';
+    this.bannerUserPhotoObj = null;
     this.unreadMessageCount = 0;
 
     this.initListeners();
@@ -313,16 +314,11 @@ class VillageApp {
     }
 
     const currentDist = this.state.selectedDistrict;
-    
-    if (!HARYANA_DISTRICTS_AND_VILLAGES[currentDist]) {
-      alert("अमान्य जिला! कृपया पहले सही जिला चुनें।");
-      return;
-    }
+    if (!HARYANA_DISTRICTS_AND_VILLAGES[currentDist]) return;
 
     const exists = HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.some(v => v.hi === villageName || v.en === villageName);
-    
     if (exists) {
-      alert(`यह गाँव '${villageName}' पहले से ही ${HARYANA_DISTRICTS_AND_VILLAGES[currentDist].nameHi} जिले की सूची में मौजूद है!`);
+      alert(`यह गाँव '${villageName}' पहले से ही मौजूद है!`);
       return;
     }
 
@@ -330,16 +326,13 @@ class VillageApp {
     HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.push(newVillageObj);
 
     let savedVillages = JSON.parse(localStorage.getItem('customDistrictVillages')) || {};
-    if (!savedVillages[currentDist]) {
-      savedVillages[currentDist] = [];
-    }
+    if (!savedVillages[currentDist]) savedVillages[currentDist] = [];
     savedVillages[currentDist].push(newVillageObj);
     localStorage.setItem('customDistrictVillages', JSON.stringify(savedVillages));
 
     this.state.searchVillage = villageName;
     if(inputEl) inputEl.value = '';
-
-    alert(`सफलतापूर्वक '${villageName}' को ${HARYANA_DISTRICTS_AND_VILLAGES[currentDist].nameHi} जिले में जोड़ दिया गया है!`);
+    alert(`सफलतापूर्वक '${villageName}' जोड़ दिया गया है!`);
     this.render();
   }
 
@@ -468,9 +461,7 @@ class VillageApp {
 
   changeView(viewName) {
     this.state.view = viewName;
-    if(viewName === 'chaupal') {
-      this.unreadMessageCount = 0;
-    }
+    if(viewName === 'chaupal') this.unreadMessageCount = 0;
     this.render();
   }
 
@@ -527,6 +518,159 @@ class VillageApp {
     }
   }
 
+  handleBannerUserPhoto(input) {
+    const file = input.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        let img = new Image();
+        img.onload = () => {
+          this.bannerUserPhotoObj = img;
+          alert("✅ आपकी फोटो बैनर के लिए लोड हो गई है! अब 'बैनर बनाएं' बटन दबाएं।");
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  generateGreetingBannerCanvas() {
+    const name = document.getElementById('gName')?.value.trim();
+    const phone = document.getElementById('gPhone')?.value.trim();
+    const msg = document.getElementById('gMsg')?.value.trim();
+
+    if(!name || !msg) {
+      alert("कृपया अपना नाम और बधाई संदेश जरूर भरें!");
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    // 1. सुंदर बैकग्राउंड ग्रेडिएंट (त्यौहारी लुक)
+    let bgGrad = ctx.createLinearGradient(0, 0, 800, 800);
+    bgGrad.addColorStop(0, '#064e3b');
+    bgGrad.addColorStop(0.5, '#047857');
+    bgGrad.addColorStop(1, '#022c22');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 800, 800);
+
+    // बॉर्डर डिज़ाइन
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 12;
+    ctx.strokeRect(20, 20, 760, 760);
+
+    // हेडर टेक्स्ट (गाँव का नाम)
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = 'bold 36px "Hind", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`🌾 MeraGaov - ${this.state.searchVillage} 🌾`, 400, 80);
+
+    // बधाई संदेश बॉक्स
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.fillRect(60, 120, 680, 220);
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(60, 120, 680, 220);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 32px "Hind", sans-serif';
+    this.wrapText(ctx, msg, 400, 180, 620, 42);
+
+    // यूजर की फोटो या डिफ़ॉल्ट आइकॉन गोलाकार फ्रेम में
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(400, 480, 90, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(310, 390, 180, 180);
+
+    if (this.bannerUserPhotoObj) {
+      ctx.drawImage(this.bannerUserPhotoObj, 310, 390, 180, 180);
+    } else {
+      ctx.fillStyle = '#064e3b';
+      ctx.font = 'bold 60px "Hind", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText("👤", 400, 505);
+    }
+    ctx.restore();
+
+    // गोलाकार फ्रेम की बॉर्डर
+    ctx.beginPath();
+    ctx.arc(400, 480, 90, 0, Math.PI * 2, true);
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.stroke();
+
+    // नाम और मोबाइल नंबर
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = 'bold 36px "Hind", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(name, 400, 630);
+
+    if(phone) {
+      ctx.fillStyle = '#a7f3d0';
+      ctx.font = '26px "Hind", sans-serif';
+      ctx.fillText(`संपर्क: ${phone}`, 400, 680);
+    }
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '18px "Hind", sans-serif';
+    ctx.fillText("डिजिटल गाँव ऐप द्वारा स्वतः निर्मित बैनर", 400, 740);
+
+    // रिजल्ट डेटा यूआरएल सेट करें
+    this.generatedBannerDataUrl = canvas.toDataURL('image/png');
+    
+    // प्रीव्यू दिखाएं
+    const previewBox = document.getElementById('bannerPreviewBox');
+    if(previewBox) {
+      previewBox.innerHTML = `
+        <div style="margin-top:10px; text-align:center;">
+          <b style="color:#047857; font-size:13px;">✨ आपका बैनर तैयार है! नीचे क्लिक करके भेजें या डाउनलोड करें:</b><br>
+          <img src="${this.generatedBannerDataUrl}" style="width:100%; max-width:280px; border-radius:12px; border:2px solid #059669; margin-top:8px;" /><br>
+          <a href="${this.generatedBannerDataUrl}" download="MeraGaov_Banner.png" style="display:inline-block; background:#2563eb; color:white; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px; margin-top:8px;">📥 बैनर डाउनलोड करें</a>
+        </div>
+      `;
+    }
+    alert("🎉 बधाई बैनर सफलतापूर्वक बन गया है!");
+  }
+
+  wrapText(context, text, x, y, maxWidth, lineHeight) {
+    let words = text.split(' ');
+    let line = '';
+    for(let n = 0; n < words.length; n++) {
+      let testLine = line + words[n] + ' ';
+      let metrics = context.measureText(testLine);
+      let testWidth = metrics.width;
+      if (testWidth > maxWidth && n > 0) {
+        context.fillText(line, x, y);
+        line = words[n] + ' ';
+        y += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    context.fillText(line, x, y);
+  }
+
+  submitGreeting() {
+    const name = document.getElementById('gName')?.value.trim();
+    const phone = document.getElementById('gPhone')?.value.trim();
+    const message = document.getElementById('gMsg')?.value.trim();
+
+    if(!name || !message) return alert("कृपया नाम और संदेश भरें!");
+    
+    // अगर यूजर ने बैनर जनरेट किया है तो वही इमेज जाएगी, वरना tempImage
+    let finalImg = this.generatedBannerDataUrl || this.tempImage || '';
+
+    this.saveData('greetings', { name, phone, message, imageUrl: finalImg }, "बधाई बैनर एडमिन के पास भेज दिया गया है, अप्रूव होने के बाद दिखेगा!");
+    this.generatedBannerDataUrl = '';
+    this.tempImage = '';
+  }
+
   handleHistoryGalleryMedia(input) {
     const file = input.files[0];
     if(file) {
@@ -545,7 +689,7 @@ class VillageApp {
     const phone = document.getElementById('sPhone')?.value.trim();
     const cat = document.getElementById('sCat')?.value;
     if(!name || !phone) return alert("कृपया दुकान का नाम और मोबाइल नंबर भरें!");
-    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
+    this.saveData('services', { name, phone, category: cat, imageUrl: this.tempImage || '' }, "दुकान एडमिन के पास भेज दी गई है!");
     this.tempImage = '';
   }
 
@@ -553,17 +697,8 @@ class VillageApp {
     const name = document.getElementById('annName')?.value.trim();
     const phone = document.getElementById('annPhone')?.value.trim();
     const title = document.getElementById('annTitle')?.value.trim();
-    if(!name || !phone || !title) return alert("कृपया नाम, मोबाइल नंबर और मुनादी का विवरण भरें!");
-    this.saveData('announcements', { name, phone, title, imageUrl: this.tempImage || '' }, "मुनादी एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
-    this.tempImage = '';
-  }
-
-  submitGreeting() {
-    const name = document.getElementById('gName')?.value.trim();
-    const phone = document.getElementById('gPhone')?.value.trim();
-    const message = document.getElementById('gMsg')?.value.trim();
-    if(!name || !phone || !message) return alert("कृपया नाम, मोबाइल नंबर और संदेश विवरण भरें!");
-    this.saveData('greetings', { name, phone, message, imageUrl: this.tempImage || '' }, "बैनर/बधाई संदेश एडमिन के पास भेज दिया गया है, अप्रूव होने के बाद दिखेगा!");
+    if(!name || !phone || !title) return alert("कृपया सभी विवरण भरें!");
+    this.saveData('announcements', { name, phone, title, imageUrl: this.tempImage || '' }, "मुनादी भेज दी गई है!");
     this.tempImage = '';
   }
 
@@ -572,8 +707,8 @@ class VillageApp {
     const phone = document.getElementById('mPhone')?.value.trim();
     const title = document.getElementById('mTitle')?.value.trim();
     const itemType = document.getElementById('mItemType')?.value;
-    if(!name || !phone || !title) return alert("कृपया नाम, मोबाइल नंबर और विवरण भरें!");
-    this.saveData('market', { name, phone, title, itemType, imageUrl: this.tempImage || '' }, "पोस्ट एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
+    if(!name || !phone || !title) return alert("कृपया सभी विवरण भरें!");
+    this.saveData('market', { name, phone, title, itemType, imageUrl: this.tempImage || '' }, "पोस्ट भेज दी गई है!");
     this.tempImage = '';
   }
 
@@ -581,42 +716,29 @@ class VillageApp {
     const name = document.getElementById('hgName')?.value.trim();
     const title = document.getElementById('hgTitle')?.value.trim();
     const category = document.getElementById('hgCategory')?.value;
-    if(!name || !title || !this.tempMedia) return alert("कृपया नाम, विवरण और फोटो/वीडियो ज़रूर चुनें!");
-    
-    this.saveData('historyGallery', { 
-      name, 
-      title, 
-      category, 
-      mediaUrl: this.tempMedia, 
-      mediaType: this.tempMediaType 
-    }, "इतिहास/गैलरी पोस्ट एडमिन के पास भेज दी गई है, अप्रूव होने के बाद दिखेगी!");
+    if(!name || !title || !this.tempMedia) return alert("कृपया सभी विवरण भरें!");
+    this.saveData('historyGallery', { name, title, category, mediaUrl: this.tempMedia, mediaType: this.tempMediaType }, "इतिहास पोस्ट भेज दी गई है!");
     this.tempMedia = '';
   }
 
   verifyUserForChat() {
     const phoneInput = document.getElementById('verifyPhoneInput')?.value.trim();
     const passInput = document.getElementById('verifyPassInput')?.value.trim();
-    if(!phoneInput || !passInput) return alert("कृपया अपना मोबाइल नंबर और पासवर्ड दोनों दर्ज करें!");
-
     let isMasterAdmin = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn);
     let registeredPass = this.state.allowedChatUsers[phoneInput];
 
     if(isMasterAdmin || (registeredPass && registeredPass === passInput)) {
       this.state.currentUserPhone = phoneInput;
       localStorage.setItem('currentUserPhone', phoneInput);
-      alert("सत्यापन सफल! चैट रूम में आपका स्वागत है।");
+      alert("सत्यापन सफल!");
       this.render();
-    } else {
-      alert("❌ गलत मोबाइल नंबर या पासवर्ड!");
-    }
+    } else { alert("❌ गलत मोबाइल नंबर या पासवर्ड!"); }
   }
 
   submitChaupalMsg() {
     const senderName = document.getElementById('cName')?.value.trim();
     const msgText = document.getElementById('cText')?.value.trim();
-
-    if(!senderName || !msgText) return alert("कृपया अपना नाम और संदेश लिखें!");
-
+    if(!senderName || !msgText) return alert("कृपया नाम और संदेश लिखें!");
     let fullMsg = `${msgText} (सम्पर्क: ${this.state.currentUserPhone})`;
 
     if (window.firebaseDb) {
@@ -628,38 +750,25 @@ class VillageApp {
         districtId: this.state.selectedDistrict,
         villageHi: this.state.searchVillage,
         timestamp: Date.now()
-      }).then(() => {
-        document.getElementById('cName').value = '';
-        document.getElementById('cText').value = '';
-        this.render();
-      });
+      }).then(() => { this.render(); });
     }
   }
 
   addAllowedMemberWithPassword() {
     const phone = document.getElementById('newMemberPhone')?.value.trim();
     const pwd = document.getElementById('newMemberPass')?.value.trim();
-
-    if(!phone || !pwd) return alert("कृपया सदस्य का मोबाइल नंबर और उसका पासवर्ड दोनों भरें!");
-
+    if(!phone || !pwd) return alert("मोबाइल नंबर और पासवर्ड भरें!");
     if (window.firebaseDb) {
       const { db, ref, set } = window.firebaseDb;
-      set(ref(db, `allowedChatUsers/${phone}`), pwd).then(() => {
-        document.getElementById('newMemberPhone').value = '';
-        document.getElementById('newMemberPass').value = '';
-        alert("सफलतापूर्वक नया सदस्य और उसका पासवर्ड सेट कर दिया गया है!");
-      });
+      set(ref(db, `allowedChatUsers/${phone}`), pwd).then(() => { alert("सफलतापूर्वक सेव हो गया!"); });
     }
   }
 
   removeAllowedMember(phone) {
-    if(confirm(`क्या आप इस नंबर (${phone}) को चैट रूम से हटाना चाहते हैं?`)) {
+    if(confirm("हटाना चाहते हैं?")) {
       if (window.firebaseDb) {
         const { db, ref, remove } = window.firebaseDb;
-        remove(ref(db, `allowedChatUsers/${phone}`)).then(() => {
-          alert("सदस्य हटा दिया गया है!");
-          this.render();
-        });
+        remove(ref(db, `allowedChatUsers/${phone}`)).then(() => { this.render(); });
       }
     }
   }
@@ -681,7 +790,6 @@ class VillageApp {
 
     localStorage.setItem('selectedDistrict', this.state.selectedDistrict);
     localStorage.setItem('searchVillage', this.state.searchVillage);
-
     this.updateTicker();
 
     let html = '';
@@ -702,20 +810,20 @@ class VillageApp {
           <div class="card-title" style="color: #064e3b;">📍 जिला व गाँव चुनें</div>
           <div class="form-group">
             <label>जिला चुनें:</label>
-            <select class="form-control" id="districtSelect" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0].hi; app.render();">
+            <select class="form-control" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0].hi; app.render();">
               ${districtOptions}
             </select>
           </div>
           <div class="form-group">
             <label>गाँव चुनें:</label>
-            <select class="form-control" id="villageDropdownSelect" onchange="app.state.searchVillage = this.value; app.render();">
+            <select class="form-control" onchange="app.state.searchVillage = this.value; app.render();">
               ${villageOptions}
             </select>
           </div>
           <div style="margin-top: 10px; border-top: 1px dashed #059669; padding-top: 10px;">
-            <label style="color:#047857; font-weight:700;">➕ ${currentDistrictObj.nameHi} जिले में नया गाँव/वार्ड जोड़ें:</label>
+            <label style="color:#047857; font-weight:700;">➕ नया गाँव/वार्ड जोड़ें:</label>
             <div style="display: flex; gap: 6px; margin-top: 5px;">
-              <input class="form-control" id="newVillageNameInput" placeholder="गाँव का नाम लिखें..." style="margin-bottom:0;" />
+              <input class="form-control" id="newVillageNameInput" placeholder="गाँव का नाम..." style="margin-bottom:0;" />
               <button style="background: #047857; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addNewVillageToDistrict()">जोड़ें</button>
             </div>
           </div>
@@ -723,9 +831,9 @@ class VillageApp {
 
         <div class="menu-card bg-1" onclick="app.changeView('list')"><span>🛒 1. दुकान और सेवा बाजार</span><span>→</span></div>
         <div class="menu-card bg-2" onclick="app.changeView('announcements')"><span>📢 2. मुनादी व जरूरी खबरें</span><span>→</span></div>
-        <div class="menu-card bg-3" onclick="app.changeView('greetings')"><span>🎉 3. त्यौहार व बधाई संदेश (बैनर)</span><span>→</span></div>
-        <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🚜 4. बाइक, ट्रैक्टर, भैंस, गाय खरीद-बिक्री बाज़ार</span><span>→</span></div>
-        <div class="menu-card bg-6" onclick="app.changeView('historyGallery')"><span>🏛️ 5. गाँव का इतिहास और गैलरी (फोटो/वीडियो)</span><span>→</span></div>
+        <div class="menu-card bg-3" onclick="app.changeView('greetings')"><span>🎉 3. त्यौहार व बधाई संदेश (बैनर मेकर)</span><span>→</span></div>
+        <div class="menu-card bg-4" onclick="app.changeView('market')"><span>🚜 4. खरीद-बिक्री बाज़ार</span><span>→</span></div>
+        <div class="menu-card bg-6" onclick="app.changeView('historyGallery')"><span>🏛️ 5. गाँव का इतिहास और गैलरी</span><span>→</span></div>
         <div class="menu-card bg-5" onclick="app.changeView('chaupal')"><div style="display:flex; align-items:center; gap:8px;"><span>💬 6. Admin Chat Room</span> ${badgeHtml}</div><span>→</span></div>
       `;
     } 
@@ -748,16 +856,16 @@ class VillageApp {
             <input class="form-control" id="sName" placeholder="नाम / दुकान का नाम..." style="margin-bottom:8px;" />
             <input class="form-control" id="sPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
             <div class="form-group">
-              <label>📂 सेवा या दुकान की श्रेणी चुनें:</label>
+              <label>📂 श्रेणी चुनें:</label>
               <select class="form-control" id="sCat" style="margin-bottom:8px;">
                 <option value="किराना स्टोर">किराना स्टोर</option>
                 <option value="पंडित जी">पंडित जी</option>
                 <option value="ऑल मिस्त्री">ऑल मिस्त्री</option>
                 <option value="इलेक्ट्रीशियन">इलेक्ट्रीशियन</option>
                 <option value="प्लंबर">प्लंबर</option>
-                <option value="गाड़ी किराये के लिए">गाड़ी किराये के लिए (Taxi/Car/Tractor)</option>
-                <option value="मेडिसिन (दवाइयां)">मेडिसिन / मेडिकल स्टोर</option>
-                <option value="अन्य">अन्य सेवा</option>
+                <option value="गाड़ी किराये के लिए">गाड़ी किराये के लिए</option>
+                <option value="मेडिसिन">मेडिकल स्टोर</option>
+                <option value="अन्य">अन्य</option>
               </select>
             </div>
             <div class="form-group">
@@ -767,7 +875,7 @@ class VillageApp {
             <button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें</button>
           </div>
         </div>
-        ${list || `<div class="empty-state">इस गाँव में अभी कोई दुकान या सेवा उपलब्ध नहीं है।</div>`}
+        ${list || `<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}
       `;
     }
     else if (this.state.view === 'announcements') {
@@ -803,16 +911,27 @@ class VillageApp {
           ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('greetings', '${g.id}')">🗑️ Delete</button>`:''}
         </div>
       `).join('');
+      
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🎉 त्यौहार व बधाई संदेश (बैनर)</div>
+          <div class="card-title">🎉 त्यौहार व बधाई संदेश (डिजिटल बैनर मेकर)</div>
           <div class="live-upload-box">
-            <input class="form-control" id="gName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
+            <p style="font-size:12px; color:#064e3b; font-weight:bold; margin-bottom:10px;">✨ अपना फोटो और नाम भरकर तुरंत सुंदर बैनर बनाएं!</p>
+            <input class="form-control" id="gName" placeholder="आपका पूरा नाम..." style="margin-bottom:8px;" />
             <input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
-            <textarea class="form-control" id="gMsg" placeholder="बधाई संदेश या बैनर विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
-            <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
-            <button class="btn-submit" onclick="app.submitGreeting()">📤 बैनर/संदेश भेजें</button>
+            <textarea class="form-control" id="gMsg" placeholder="बधाई संदेश (जैसे: आप सभी को होली/दीपावली की हार्दिक शुभकामनाएं)..." style="margin-bottom:8px; height:60px;"></textarea>
+            
+            <div class="form-group" style="text-align:left;">
+              <label>📷 अपनी फोटो चुनें (बैनर पर लगाने के लिए):</label>
+              <input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px;" />
+            </div>
+
+            <button class="btn-submit" style="background:#2563eb;" onclick="app.generateGreetingBannerCanvas()">🎨 सुंदर बैनर बनाएं</button>
+            
+            <div id="bannerPreviewBox"></div>
+
+            <button class="btn-submit" style="margin-top:14px;" onclick="app.submitGreeting()">📤 बैनर एडमिन को भेजें</button>
           </div>
           ${items || `<div class="empty-state">कोई बधाई संदेश/बैनर उपलब्ध नहीं है।</div>`}
         </div>
@@ -823,7 +942,7 @@ class VillageApp {
         <div class="service-item" style="border-left: 4px solid #2563eb;">
           <span class="service-tag">${m.itemType || 'खरीद-बिक्री'}</span>
           <div class="service-name">${m.title}</div>
-          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>विक्रेता/खरीदार:</b> ${m.name} | <b>फोन:</b> ${m.phone}</p>
+          <p style="font-size: 11px; color: #047857; margin-bottom: 6px;"><b>विक्रेता:</b> ${m.name} | <b>फोन:</b> ${m.phone}</p>
           ${m.imageUrl ? `<img src="${m.imageUrl}" class="service-img"/>` : ''}
           <a href="tel:${m.phone}" class="btn-call">📞 संपर्क करें: ${m.phone}</a>
           ${(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn)?`<button class="delete-btn" onclick="app.deleteItem('market', '${m.id}')">🗑️ Delete</button>`:''}
@@ -832,24 +951,24 @@ class VillageApp {
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
         <div class="card">
-          <div class="card-title">🚜 बाइक, ट्रैक्टर, भैंस, गाय खरीद-बिक्री बाज़ार (${displayVillageName})</div>
+          <div class="card-title">🚜 खरीद-बिक्री बाज़ार (${displayVillageName})</div>
           <div class="live-upload-box">
             <input class="form-control" id="mName" placeholder="आपका नाम..." style="margin-bottom:8px;" />
             <input class="form-control" id="mPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
             <div class="form-group">
               <label>📂 श्रेणी चुनें:</label>
               <select class="form-control" id="mItemType" style="margin-bottom:8px;">
-                <option value="भैंस / गाय (Animal)">भैंस / गाय (Buy/Sell)</option>
-                <option value="ट्रैक्टर (Tractor)">ट्रैक्टर (Tractor)</option>
-                <option value="बाइक (Bike)">बाइक (Bike)</option>
-                <option value="अन्य वाहन/पशु">अन्य वाहन या पशु</option>
+                <option value="भैंस / गाय">भैंस / गाय</option>
+                <option value="ट्रैक्टर">ट्रैक्टर</option>
+                <option value="बाइक">बाइक</option>
+                <option value="अन्य">अन्य</option>
               </select>
             </div>
             <textarea class="form-control" id="mTitle" placeholder="विवरण लिखें..." style="margin-bottom:8px; height:60px;"></textarea>
             <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px;" />
             <button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button>
           </div>
-          ${items || `<div class="empty-state">इस श्रेणी में अभी कोई पोस्ट उपलब्ध नहीं है।</div>`}
+          ${items || `<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}
         </div>
       `;
     }
@@ -873,18 +992,18 @@ class VillageApp {
             <div class="form-group">
               <label>📂 सेक्शन चुनें:</label>
               <select class="form-control" id="hgCategory" style="margin-bottom:8px;">
-                <option value="गाँव का इतिहास (History)">गाँव का इतिहास (History)</option>
-                <option value="गाँव की गैलरी (Photo/Video Gallery)">गाँव की गैलरी (Photo/Video)</option>
+                <option value="गाँव का इतिहास">गाँव का इतिहास</option>
+                <option value="गाँव की गैलरी">गाँव की गैलरी (फोटो/वीडियो)</option>
               </select>
             </div>
-            <textarea class="form-control" id="hgTitle" placeholder="इतिहास या फोटो/वीडियो का विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
+            <textarea class="form-control" id="hgTitle" placeholder="विवरण..." style="margin-bottom:8px; height:60px;"></textarea>
             <div class="form-group">
               <label>📷 फोटो या वीडियो चुनें:</label>
               <input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px;" />
             </div>
             <button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button>
           </div>
-          ${items || `<div class="empty-state">इस गाँव के लिए अभी कोई स्वीकृत इतिहास या गैलरी मीडिया उपलब्ध नहीं है।</div>`}
+          ${items || `<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}
         </div>
       `;
     }
@@ -911,8 +1030,8 @@ class VillageApp {
             <p style="color: #991b1b; font-size: 13px; font-weight: bold; margin-bottom: 10px;">
               🔒 यह Admin Chat Room सुरक्षित है। कृपया अपना रजिस्टर्ड मोबाइल नंबर और पासवर्ड दर्ज करें।
             </p>
-            <input class="form-control" id="verifyPhoneInput" placeholder="मोबाइल नंबर दर्ज करें..." style="margin-bottom:8px;" />
-            <input type="password" class="form-control" id="verifyPassInput" placeholder="पासवर्ड दर्ज करें..." style="margin-bottom:8px;" />
+            <input class="form-control" id="verifyPhoneInput" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
+            <input type="password" class="form-control" id="verifyPassInput" placeholder="पासवर्ड..." style="margin-bottom:8px;" />
             <button class="btn-submit" style="background: #dc2626;" onclick="app.verifyUserForChat()">🔐 चैट में प्रवेश करें</button>
           </div>
         `;
@@ -936,19 +1055,9 @@ class VillageApp {
       let adminMemberAddSection = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? `
         <div style="background: #eff6ff; border: 1px solid #2563eb; border-radius: 12px; padding: 12px; margin-bottom: 15px;">
           <div style="font-size: 12px; font-weight: bold; color: #1e40af; margin-bottom: 6px;">⚙️ नया सदस्य और पासवर्ड जोड़ें</div>
-          <input class="form-control" id="newMemberPhone" placeholder="सदस्य का मोबाइल नंबर..." style="margin-bottom:8px;" />
-          <input class="form-control" id="newMemberPass" placeholder="पासवर्ड सेट करें..." style="margin-bottom:8px;" />
+          <input class="form-control" id="newMemberPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px;" />
+          <input class="form-control" id="newMemberPass" placeholder="पासवर्ड..." style="margin-bottom:8px;" />
           <button style="background: #2563eb; color: white; border: none; width:100%; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addAllowedMemberWithPassword()">सेव करें</button>
-          
-          <div style="margin-top:10px; font-size:11px; color:#1e40af; font-weight:bold;">जुड़े हुए सदस्य:</div>
-          <div style="max-height: 100px; overflow-y:auto; margin-top:5px;">
-            ${Object.keys(this.state.allowedChatUsers).map(ph => `
-              <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:4px 8px; margin-bottom:4px; border-radius:6px; font-size:12px;">
-                <span>📱 ${ph}</span>
-                <button onclick="app.removeAllowedMember('${ph}')" style="background:#dc2626; color:white; border:none; padding:2px 6px; border-radius:4px; font-size:10px; cursor:pointer;">हटाएं</button>
-              </div>
-            `).join('') || '<div style="font-size:11px; color:#666;">कोई सदस्य नहीं जोड़ा गया।</div>'}
-          </div>
         </div>
       ` : '';
 
@@ -962,25 +1071,10 @@ class VillageApp {
       `;
     }
     else if (this.state.view === 'policy') {
-      html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card">
-          <div class="card-title">📜 Privacy Policy</div>
-          <p style="font-size:13px; color:#334155;">आपकी डेटा सुरक्षा हमारी प्राथमिकता है।</p>
-        </div>
-      `;
+      html = `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📜 Privacy Policy</div><p style="font-size:13px; color:#334155;">डेटा सुरक्षा सुरक्षित है।</p></div>`;
     }
     else if (this.state.view === 'about') {
-      html = `
-        <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card">
-          <div class="card-title">ℹ️ About Us</div>
-          <p style="font-size:13px; color:#334155; line-height: 1.6;">
-            गाँव को डिजिटल रूप से सशक्त बनाना।<br>
-            <b>संचालक / निर्माता:</b> Kusum w/o Rajesh Yadav
-          </p>
-        </div>
-      `;
+      html = `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px; color:#334155;">संचालक: Kusum w/o Rajesh Yadav</p></div>`;
     }
     else if (this.state.view === 'admin') {
       if(!this.state.isAdminLoggedIn && !this.state.isSubAdminLoggedIn) return this.changeView('home');
@@ -990,23 +1084,21 @@ class VillageApp {
           <span class="service-tag">${labelName}</span>
           <div class="service-name">${x.title || x.message || x.name || ''}</div>
           ${x.name ? `<p style="font-size:11px; color:#555;">द्वारा: ${x.name} | फोन: ${x.phone || 'N/A'}</p>` : ''}
-        
           ${x.imageUrl ? `<img src="${x.imageUrl}" class="service-img"/>` : ''}
-          ${x.mediaUrl ? (x.mediaType === 'video' ? `<video src="${x.mediaUrl}" controls class="service-video"></video>` : `<img src="${x.mediaUrl}" class="service-img"/>`) : ''}
           <button class="approve-btn" onclick="app.approveItem('${path}', '${x.id}')">✅ Approve</button>
           <button class="delete-btn" onclick="app.deleteItem('${path}', '${x.id}')">❌ Reject</button>
         </div>
       `).join('');
 
-      let pServ = renderPend(this.state.services, 'services', 'Shop/Service');
+      let pServ = renderPend(this.state.services, 'services', 'Shop');
       let pAnn = renderPend(this.state.announcements, 'announcements', 'Announcement');
       let pGreet = renderPend(this.state.greetings, 'greetings', 'Greeting/Banner');
       let pMkt = renderPend(this.state.market, 'market', 'Market');
-      let pHg = renderPend(this.state.historyGallery, 'historyGallery', 'History & Gallery');
+      let pHg = renderPend(this.state.historyGallery, 'historyGallery', 'History');
 
       html = `
         <button class="back-btn" onclick="app.changeView('home')">← होम</button>
-        <div class="card"><div class="card-title">📥 Admin Approval Panel (${displayVillageName})</div></div>
+        <div class="card"><div class="card-title">📥 Admin Approval Panel</div></div>
         ${pServ || ''} ${pAnn || ''} ${pGreet || ''} ${pMkt || ''} ${pHg || ''}
         ${(!pServ && !pAnn && !pGreet && !pMkt && !pHg) ? '<div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>' : ''}
       `;
