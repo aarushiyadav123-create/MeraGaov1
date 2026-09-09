@@ -76,7 +76,7 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .notification-badge { background: #dc2626; color: white; font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: bold; display: none; }
 
 .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-.card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.card-title { font-size: 14px; font-weight: 700; color: #064e3b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 
 .form-group { margin-bottom: 12px; position: relative; }
 .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; }
@@ -230,7 +230,8 @@ class VillageApp {
       userAvatarUrl: localStorage.getItem('userCustomAvatar') || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       isAdminLoggedIn: false,
       isSubAdminLoggedIn: false,
-      currentUserPhone: localStorage.getItem('currentUserPhone') || ''
+      currentUserPhone: localStorage.getItem('currentUserPhone') || '',
+      isDistrictBoxOpen: false
     };
 
     this.tempImage = '';
@@ -549,7 +550,6 @@ class VillageApp {
     canvas.height = 800;
     const ctx = canvas.getContext('2d');
 
-    // 1. सुंदर बैकग्राउंड ग्रेडिएंट (त्यौहारी लुक)
     let bgGrad = ctx.createLinearGradient(0, 0, 800, 800);
     bgGrad.addColorStop(0, '#064e3b');
     bgGrad.addColorStop(0.5, '#047857');
@@ -557,59 +557,54 @@ class VillageApp {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, 800, 800);
 
-    // बॉर्डर डिज़ाइन
     ctx.strokeStyle = '#fbbf24';
     ctx.lineWidth = 12;
     ctx.strokeRect(20, 20, 760, 760);
 
-    // हेडर टेक्स्ट (गाँव का नाम)
     ctx.fillStyle = '#fbbf24';
     ctx.font = 'bold 36px "Hind", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`🌾 MeraGaov - ${this.state.searchVillage} 🌾`, 400, 80);
 
-    // बधाई संदेश बॉक्स
     ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.fillRect(60, 120, 680, 220);
+    ctx.fillRect(60, 115, 680, 210);
     ctx.strokeStyle = '#10b981';
     ctx.lineWidth = 2;
-    ctx.strokeRect(60, 120, 680, 220);
+    ctx.strokeRect(60, 115, 680, 210);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 32px "Hind", sans-serif';
-    this.wrapText(ctx, msg, 400, 180, 620, 42);
+    ctx.font = 'bold 30px "Hind", sans-serif';
+    this.wrapText(ctx, msg, 400, 170, 620, 40);
 
-    // यूजर की फोटो या डिफ़ॉल्ट आइकॉन गोलाकार फ्रेम में
+    // ✅ फोटो का साइज बड़ा किया गया (त्रिज्या 115 पिक्सेल, व्यास 230 पिक्सेल)
     ctx.save();
     ctx.beginPath();
-    ctx.arc(400, 480, 90, 0, Math.PI * 2, true);
+    ctx.arc(400, 470, 115, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.clip();
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(310, 390, 180, 180);
+    ctx.fillRect(285, 355, 230, 230);
 
     if (this.bannerUserPhotoObj) {
-      ctx.drawImage(this.bannerUserPhotoObj, 310, 390, 180, 180);
+      ctx.drawImage(this.bannerUserPhotoObj, 285, 355, 230, 230);
     } else {
       ctx.fillStyle = '#064e3b';
-      ctx.font = 'bold 60px "Hind", sans-serif';
+      ctx.font = 'bold 70px "Hind", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText("👤", 400, 505);
+      ctx.fillText("👤", 400, 495);
     }
     ctx.restore();
 
-    // गोलाकार फ्रेम की बॉर्डर
     ctx.beginPath();
-    ctx.arc(400, 480, 90, 0, Math.PI * 2, true);
+    ctx.arc(400, 470, 115, 0, Math.PI * 2, true);
     ctx.lineWidth = 6;
     ctx.strokeStyle = '#fbbf24';
     ctx.stroke();
 
-    // नाम और मोबाइल नंबर
     ctx.fillStyle = '#fbbf24';
     ctx.font = 'bold 36px "Hind", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(name, 400, 630);
+    ctx.fillText(name, 400, 635);
 
     if(phone) {
       ctx.fillStyle = '#a7f3d0';
@@ -621,16 +616,14 @@ class VillageApp {
     ctx.font = '18px "Hind", sans-serif';
     ctx.fillText("डिजिटल गाँव ऐप द्वारा स्वतः निर्मित बैनर", 400, 740);
 
-    // रिजल्ट डेटा यूआरएल सेट करें
     this.generatedBannerDataUrl = canvas.toDataURL('image/png');
     
-    // प्रीव्यू दिखाएं
     const previewBox = document.getElementById('bannerPreviewBox');
     if(previewBox) {
       previewBox.innerHTML = `
-        <div style="margin-top:10px; text-align:center;">
-          <b style="color:#047857; font-size:13px;">✨ आपका बैनर तैयार है! नीचे क्लिक करके भेजें या डाउनलोड करें:</b><br>
-          <img src="${this.generatedBannerDataUrl}" style="width:100%; max-width:280px; border-radius:12px; border:2px solid #059669; margin-top:8px;" /><br>
+        <div style="margin-top:12px; text-align:center; background:#ffffff; padding:12px; border-radius:12px; border:2px solid #059669;">
+          <b style="color:#047857; font-size:13px;">✨ आपका बैनर लाइव तैयार है! नीचे से डाउनलोड करें या एडमिन को भेजें:</b><br>
+          <img src="${this.generatedBannerDataUrl}" style="width:100%; max-width:300px; border-radius:12px; border:2px solid #059669; margin-top:8px;" /><br>
           <a href="${this.generatedBannerDataUrl}" download="MeraGaov_Banner.png" style="display:inline-block; background:#2563eb; color:white; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px; margin-top:8px;">📥 बैनर डाउनलोड करें</a>
         </div>
       `;
@@ -663,7 +656,6 @@ class VillageApp {
 
     if(!name || !message) return alert("कृपया नाम और संदेश भरें!");
     
-    // अगर यूजर ने बैनर जनरेट किया है तो वही इमेज जाएगी, वरना tempImage
     let finalImg = this.generatedBannerDataUrl || this.tempImage || '';
 
     this.saveData('greetings', { name, phone, message, imageUrl: finalImg }, "बधाई बैनर एडमिन के पास भेज दिया गया है, अप्रूव होने के बाद दिखेगा!");
@@ -805,9 +797,8 @@ class VillageApp {
 
       let badgeHtml = this.unreadMessageCount > 0 ? `<span class="notification-badge">${this.unreadMessageCount} नया</span>` : '';
 
-      html = `
-        <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
-          <div class="card-title" style="color: #064e3b;">📍 जिला व गाँव चुनें</div>
+      let districtBoxContent = this.state.isDistrictBoxOpen ? `
+        <div style="margin-top:10px; border-top: 1px solid #a7f3d0; padding-top: 10px;">
           <div class="form-group">
             <label>जिला चुनें:</label>
             <select class="form-control" onchange="app.state.selectedDistrict = this.value; app.state.searchVillage = HARYANA_DISTRICTS_AND_VILLAGES[this.value].villages[0].hi; app.render();">
@@ -827,6 +818,16 @@ class VillageApp {
               <button style="background: #047857; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addNewVillageToDistrict()">जोड़ें</button>
             </div>
           </div>
+        </div>
+      ` : '';
+
+      html = `
+        <div class="card" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
+          <div class="card-title" style="color: #064e3b; cursor:pointer; margin-bottom:0;" onclick="app.state.isDistrictBoxOpen = !app.state.isDistrictBoxOpen; app.render();">
+            <span>📍 जिला: ${currentDistrictObj.nameHi} | गाँव: ${displayVillageName}</span>
+            <span style="background:#047857; color:white; padding:2px 8px; border-radius:6px; font-size:11px;">${this.state.isDistrictBoxOpen ? '▲ छुपाएं' : '▼ बदलें'}</span>
+          </div>
+          ${districtBoxContent}
         </div>
 
         <div class="menu-card bg-1" onclick="app.changeView('list')"><span>🛒 1. दुकान और सेवा बाजार</span><span>→</span></div>
