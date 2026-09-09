@@ -33,13 +33,13 @@
 body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 .container { max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; }
 
-/* 🌟 स्प्लैश स्क्रीन स्टाइल (Professional Splash Screen) */
+/* स्प्लैश स्क्रीन स्टाइल */
 #splashScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #065f46, #047857); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.5s ease; }
 .splash-logo { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #fbbf24; background: #ffffff; object-fit: cover; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 .splash-title { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px; }
 .splash-subtitle { font-size: 13px; color: #a7f3d0; margin-top: 4px; }
 
-/* 🌟 वेलकम ग्रीटिंग डायलॉग स्टाइल */
+/* वेलकम ग्रीटिंग डायलॉग स्टाइल */
 .welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9998; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .welcome-modal { background: #ffffff; width: 100%; max-width: 340px; border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: scaleUp 0.3s ease; }
 @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -97,14 +97,14 @@ body { background-color: #064e3b; color: #0f172a; padding: 6px; }
 </head>
 <body>
 
-<!-- 🌟 Professional Splash Screen HTML -->
+<!-- स्प्लैश स्क्रीन HTML -->
 <div id="splashScreen">
   <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="splash-logo" alt="MeraGaov Logo" />
   <div class="splash-title">MeraGaov - मेरी पहचान</div>
   <div class="splash-subtitle">गाँव की हर खबर और जरूरत, अब आपके फोन पर</div>
 </div>
 
-<!-- 🌟 Welcome Greeting Modal HTML (Dynamic Injection Container) -->
+<!-- वेलकम ग्रीटिंग डायलॉग कंटेनर -->
 <div id="welcomeModalContainer"></div>
 
 <div class="container">
@@ -245,9 +245,7 @@ class VillageApp {
     this.handleStartupSplashAndWelcome();
   }
 
-  // 🌟 स्प्लैश स्क्रीन और फर्स्ट टाइम वेलकम ग्रीटिंग लॉजिक
   handleStartupSplashAndWelcome() {
-    // 1. स्प्लैश स्क्रीन को 1.5 सेकंड बाद फेट-आउट करके हटाना
     setTimeout(() => {
       const splash = document.getElementById('splashScreen');
       if (splash) {
@@ -256,7 +254,6 @@ class VillageApp {
       }
     }, 1500);
 
-    // 2. चेक करना कि यूजर ने पहली बार ऐप खोली है या नहीं
     const hasSeenWelcome = localStorage.getItem('hasSeenWelcomeMeraGaov');
     if (!hasSeenWelcome) {
       setTimeout(() => {
@@ -315,24 +312,37 @@ class VillageApp {
       return;
     }
 
+    // ऑटोमैटिकली वर्तमान में सेलेक्टेड जिले की ही आईडी ली जाएगी
     const currentDist = this.state.selectedDistrict;
-    const exists = HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.some(v => v.hi === villageName);
+    
+    if (!HARYANA_DISTRICTS_AND_VILLAGES[currentDist]) {
+      alert("अमान्य जिला! कृपया पहले सही जिला चुनें।");
+      return;
+    }
+
+    const exists = HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.some(v => v.hi === villageName || v.en === villageName);
     
     if (exists) {
-      alert("यह गाँव सूची में पहले से मौजूद है!");
+      alert(`यह गाँव '${villageName}' पहले से ही ${HARYANA_DISTRICTS_AND_VILLAGES[currentDist].nameHi} जिले की सूची में मौजूद है!`);
       return;
     }
 
     const newVillageObj = { hi: villageName, en: villageName };
+
+    // सिर्फ इसी जिले की लिस्ट में जुड़ेगा
     HARYANA_DISTRICTS_AND_VILLAGES[currentDist].villages.push(newVillageObj);
 
     let savedVillages = JSON.parse(localStorage.getItem('customDistrictVillages')) || {};
-    if (!savedVillages[currentDist]) savedVillages[currentDist] = [];
+    if (!savedVillages[currentDist]) {
+      savedVillages[currentDist] = [];
+    }
     savedVillages[currentDist].push(newVillageObj);
     localStorage.setItem('customDistrictVillages', JSON.stringify(savedVillages));
 
     this.state.searchVillage = villageName;
-    alert(`गाँव '${villageName}' सफलतापूर्वक जोड़ दिया गया है!`);
+    if(inputEl) inputEl.value = '';
+
+    alert(`सफलतापूर्वक '${villageName}' को ${HARYANA_DISTRICTS_AND_VILLAGES[currentDist].nameHi} जिले में जोड़ दिया गया है!`);
     this.render();
   }
 
@@ -706,7 +716,7 @@ class VillageApp {
             </select>
           </div>
           <div style="margin-top: 10px; border-top: 1px dashed #059669; padding-top: 10px;">
-            <label style="color:#047857; font-weight:700;">➕ इसी जिले में नया गाँव/वार्ड जोड़ें:</label>
+            <label style="color:#047857; font-weight:700;">➕ ${currentDistrictObj.nameHi} जिले में नया गाँव/वार्ड जोड़ें:</label>
             <div style="display: flex; gap: 6px; margin-top: 5px;">
               <input class="form-control" id="newVillageNameInput" placeholder="गाँव का नाम लिखें..." style="margin-bottom:0;" />
               <button style="background: #047857; color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: bold; cursor: pointer;" onclick="app.addNewVillageToDistrict()">जोड़ें</button>
