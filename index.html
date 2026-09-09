@@ -139,7 +139,8 @@ services:[],announcements:[],greetings:[],market:[],historyGallery:[],chaupalMes
 allowedChatUsers:{},subAdmins:[],villagesConfig:{},resetRequests:[],
 userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
 isAdminLoggedIn:false,isSubAdminLoggedIn:false,loggedInSubAdminVillage:"",
-loggedInSubAdminDistrict:"",currentUserPhone:localStorage.getItem("currentUserPhone")||""
+loggedInSubAdminDistrict:"",currentUserPhone:localStorage.getItem("currentUserPhone")||"",
+adminPreviewMode:false, globalVillageSearchQuery:""
 };
 this.tempImage="";this.tempMedia="";this.tempMediaType="image";this.generatedBannerDataUrl="";this.bannerUserPhotoObj=null;this.unreadMessageCount=0;
 if(this.state.lockedVillage){
@@ -309,7 +310,7 @@ remove(ref(db,`${path}/${id}`)).then(()=>this.render()).catch(e=>alert(e.message
 saveMyVillage(v){
 if(!v)return;
 let old=this.state.lockedVillage;
-if(old){
+if(old && !this.state.isAdminLoggedIn){
 if(prompt(`आपका गाँव '${old}' पहले से सेट है। बदलने के लिए मास्टर पासवर्ड डालें:`)!=="1234")return alert("गलत पासवर्ड!");
 }
 let d=this.state.selectedDistrict;
@@ -608,7 +609,7 @@ const pending=(arr,path,label)=>arr.filter(x=>x.status==="pending"&&x.districtId
 <div class="service-name">${this.esc(x.title||x.message||x.name)}</div>
 ${x.name?`<p style="font-size:11px">द्वारा: ${this.esc(x.name)} | ${this.esc(x.phone||"")}</p>`:""}
 ${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}
-${x.mediaUrl?`<${x.mediaType==="video"?"video controls":"img"} src="${this.esc(x.mediaUrl)}" class="${x.mediaType==="video"?"service-video":"service-img"}"></${x.mediaType==="video"?"video":"img"}>`:""}
+${x.mediaUrl?`<${x.mediaType==="video"?"video controls":"img"} src="${this.esc(x.mediaUrl)}" class="${x.mediaType==="video"?"video-media":"service-img"}"></${x.mediaType==="video"?"video":"img"}>`:""}
 <button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button>
 <button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Reject</button>
 </div>`).join("");
@@ -617,7 +618,50 @@ let reset=this.state.isAdminLoggedIn?this.state.resetRequests.filter(x=>x.status
 <div class="service-name">${this.esc(x.old_village)} ➡️ ${this.esc(x.new_requested_village)}</div>
 <button class="approve-btn" onclick="app.approveResetRequest('${this.esc(x.id)}')">✅ अनुमति दें</button>
 <button class="delete-btn" onclick="app.deleteResetRequest('${this.esc(x.id)}')">❌ रद्द</button></div>`).join(""):"";
-let html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📥 Admin Approval Panel ${sub?`(${this.esc(sub)})`:""}</div></div>${reset}${pending(this.state.services,"services","Shop")}${pending(this.state.announcements,"announcements","Announcement")}${pending(this.state.greetings,"greetings","Greeting")}${pending(this.state.market,"market","Market")}${pending(this.state.historyGallery,"historyGallery","History")}`;
+
+let allVillagesSearchBox="";
+if(this.state.isAdminLoggedIn){
+let query=(this.state.globalVillageSearchQuery||"").toLowerCase();
+let matchedVillages=[];
+Object.keys(D).forEach(dKey=>{
+D[dKey].villages.forEach(vArr=>{
+let vName=vArr[0];
+if(!query || vName.toLowerCase().includes(query)){
+matchedVillages.push({district:dKey, districtName:D[dKey].nameHi, village:vName});
+}
+});
+});
+let villageListHtml=matchedVillages.slice(0,10).map(item=>`
+<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f1f5f9;font-size:13px">
+<span><b>${this.esc(item.village)}</b> (${this.esc(item.districtName)})</span>
+<button class="header-btn" onclick="app.state.selectedDistrict='${item.district}';app.state.lockedVillage='${item.village}';app.state.searchVillage='${item.village}';localStorage.setItem('my_locked_village','${item.village}');localStorage.setItem('my_locked_district','${item.district}');localStorage.setItem('searchVillage','${item.village}');app.changeView('home')">खोलें</button>
+</div>
+`).join("");
+
+allVillagesSearchBox=`
+<div class="card" style="background:#f0fdf4;border:1px solid #10b981">
+<div class="card-title">🏘️ पूरे Haryana के गाँवों की Admin Search</div>
+<input class="form-control" placeholder="गाँव का नाम खोजें..." value="${this.esc(this.state.globalVillageSearchQuery)}" oninput="app.state.globalVillageSearchQuery=this.value;app.render()">
+<div style="max-height:160px;overflow-y:auto;margin-top:8px">${villageListHtml||'<div style="text-align:center;color:#64748b;font-size:12px;padding:8px">कोई गाँव नहीं मिला</div>'}</div>
+</div>
+`;
+}
+
+let previewToggle="";
+if(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn){
+previewToggle=`
+<div class="card" style="background:#eff6ff;border:1px solid #3b82f6;text-align:center">
+<button class="btn-submit" style="background:${this.state.adminPreviewMode?'#dc2626':'#2563eb'}" onclick="app.state.adminPreviewMode=!app.state.adminPreviewMode;app.render()">
+👁️ Admin Preview Mode: ${this.state.adminPreviewMode?'ON (सामान्य यूजर व्यू)':'OFF (एडमिन कंट्रोल्स दिख रहे हैं)'}
+</button>
+</div>
+`;
+}
+
+let html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button>
+${previewToggle}
+${allVillagesSearchBox}
+<div class="card"><div class="card-title">📊 Admin Dashboard / Approval Panel ${sub?`(${this.esc(sub)})`:""}</div></div>${reset}${pending(this.state.services,"services","Shop")}${pending(this.state.announcements,"announcements","Announcement")}${pending(this.state.greetings,"greetings","Greeting")}${pending(this.state.market,"market","Market")}${pending(this.state.historyGallery,"historyGallery","History")}`;
 return html||`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>`;
 }
 
@@ -635,17 +679,32 @@ if(this.state.searchVillage)localStorage.setItem("searchVillage",this.state.sear
 this.updateTicker();
 
 let html="";
-if(!this.state.lockedVillage){
+if(!this.state.lockedVillage && !this.state.isAdminLoggedIn){
 let ds=Object.keys(D).map(k=>`<option value="${k}" ${k===this.state.selectedDistrict?"selected":""}>${this.esc(D[k].nameHi)}</option>`).join("");
 html=`<div class="card" style="text-align:center"><h2 style="color:#064e3b">🏡 अपना गाँव चुनें</h2>
 <p style="font-size:13px;color:#475569;margin:8px 0 15px">एक बार अपना गाँव पक्का करें।</p>
 <select class="form-control" onchange="app.state.selectedDistrict=this.value;app.state.searchVillage='';app.render()" style="margin-bottom:10px">${ds}</select>
 <select class="form-control" id="initialVillageSelect" style="margin-bottom:10px">${vo}</select>
 <button class="btn-submit" onclick="app.saveMyVillage(document.getElementById('initialVillageSelect').value)">🔒 मेरा गाँव पक्का करें</button></div>`;
-}else if(this.state.view==="home"){
+}else if(this.state.view==="home" || (!this.state.lockedVillage && this.state.isAdminLoggedIn)){
 let badge=this.unreadMessageCount?`<span class="badge">${this.unreadMessageCount} नया</span>`:"";
-html=`<div class="card" style="background:#ecfdf5;text-align:center"><b>📍 आपका गाँव: ${this.esc(this.state.lockedVillage)}</b><div style="font-size:11px;color:#047857">यह डिवाइस आपके गाँव से जुड़ी है।</div>
+let masterUnlockBox="";
+if(this.state.isAdminLoggedIn && !this.state.lockedVillage){
+let ds=Object.keys(D).map(k=>`<option value="${k}" ${k===this.state.selectedDistrict?"selected":""}>${this.esc(D[k].nameHi)}</option>`).join("");
+masterUnlockBox=`<div class="card" style="background:#fefce8;border:1px solid #facc15">
+<b style="color:#854d0e">🔐 Master Admin Override</b>
+<p style="font-size:12px;color:#713f12;margin:4px 0 8px">Locked village को भी Master Admin किसी भी समय खोल सकता है:</p>
+<select class="form-control" onchange="app.state.selectedDistrict=this.value;app.state.searchVillage='';app.render()" style="margin-bottom:6px">${ds}</select>
+<select class="form-control" id="masterVillageSelect" style="margin-bottom:8px">${vo}</select>
+<button class="btn-submit" style="background:#ca8a04" onclick="app.saveMyVillage(document.getElementById('masterVillageSelect').value)">🔓 इस गाँव को खोलें</button>
+</div>`;
+}
+let lockedInfo=this.state.lockedVillage?`
+<div class="card" style="background:#ecfdf5;text-align:center"><b>📍 आपका गाँव: ${this.esc(this.state.lockedVillage)}</b><div style="font-size:11px;color:#047857">यह डिवाइस आपके गाँव से जुड़ी है।</div>
 <button class="delete-btn" onclick="app.requestVillageReset()">✏️ गलत गाँव? रीसेट रिक्वेस्ट</button></div>
+`:masterUnlockBox;
+
+html=`${lockedInfo}
 <div class="menu-card bg-1" onclick="app.changeView('list')">🛒 1. दुकान और सेवा बाजार →</div>
 <div class="menu-card bg-2" onclick="app.changeView('announcements')">📢 2. मुनादी व जरूरी खबरें →</div>
 <div class="menu-card bg-3" onclick="app.changeView('greetings')">🎉 3. त्यौहार व बधाई संदेश →</div>
@@ -658,8 +717,8 @@ else if(this.state.view==="greetings")html=this.renderForm({title:"🎉 त्�
 else if(this.state.view==="market")html=this.renderForm({title:"🚜 खरीद-बिक्री बाज़ार",type:"market"});
 else if(this.state.view==="historyGallery")html=this.renderForm({title:"🏛️ गाँव का इतिहास और गैलरी",type:"history"});
 else if(this.state.view==="chaupal")html=this.renderChat();
-else if(this.state.view==="policy")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📜 Privacy Policy</div><p style="font-size:13px;line-height:1.6">उपयोगकर्ता द्वारा भेजी गई जानकारी MeraGaov Firebase database में सेव हो सकती है।</p></div>`;
-else if(this.state.view==="about")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px">MeraGaov - मेरी पहचान</p></div>`;
+else if(this.state.view==="policy")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📜 बड़ा Privacy + User Policy</div><p style="font-size:13px;line-height:1.6">MeraGaov प्लेटफ़ॉर्म आपकी गोपनीयता और डेटा सुरक्षा को पूरी गंभीरता से लेता है। हमारे प्लेटफ़ॉर्म पर शेयर की जाने वाली सभी जानकारियाँ, चैट संदेश, और डिजिटल विज्ञापन Firebase डेटाबेस के माध्यम से सुरक्षित रूप से संरक्षित किए जाते हैं। उपयोगकर्ता किसी भी सामग्री को अपलोड करते समय यह सुनिश्चित करें कि वह किसी भी प्रकार की भ्रामक या आपत्तिजनक न हो। एडमिनिस्ट्रेटर के पास सुरक्षा नियमों के तहत किसी भी गलत कंटेंट को हटाने का पूरा अधिकार सुरक्षित है।</p></div>`;
+else if(this.state.view==="about")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px;line-height:1.6"><b>MeraGaov - मेरी पहचान</b><br><br>गाँव की हर खबर और जरूरत, अब आपके फोन पर।<br><br><b>संचालक:</b> Kusum w/o Rajesh Yadav</p></div>`;
 else if(this.state.view==="admin")html=this.renderAdmin();
 document.getElementById("mainContent").innerHTML=html;
 }
