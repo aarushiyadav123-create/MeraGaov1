@@ -142,7 +142,7 @@ services:[],announcements:[],greetings:[],market:[],historyGallery:[],chaupalMes
 allowedChatUsers:{},subAdmins:[],villagesConfig:{},villageUnlockRequests:{},
 userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
 isAdminLoggedIn:false,isSubAdminLoggedIn:false,loggedInSubAdminVillage:"",
-loggedInSubAdminDistrict:"",loggedInSubAdminName:"",currentUserPhone:localStorage.getItem("currentUserPhone")||"",
+loggedInSubAdminDistrict:"",loggedInSubAdminName:"",loggedInSubAdminPhone:"",currentUserPhone:localStorage.getItem("currentUserPhone")||"",
 globalVillageSearchQuery:""
 };
 this.tempImage="";this.tempMedia="";this.tempMediaType="image";this.generatedBannerDataUrl="";this.bannerUserPhotoObj=null;this.unreadMessageCount=0;
@@ -269,9 +269,8 @@ updateTicker(){
 let e=document.getElementById("dynamicTickerText");if(!e)return;
 let base="🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य";
 
-// केवल मुनादी (announcements) और बधाई संदेश (greetings) जो एडमिन द्वारा Approved हैं, वे ही ऊपर वाली पट्टी (Ticker) पर चलेंगे। दुकान और खरीद-बिक्री की चीजें टिकर में नहीं चलेंगी।
 let allowedTickerItems = [
-...this.state.announcements.filter(x=>x.status==="approved"),
+...this.state.announcements.filter(x=>x.status==="approved" && x.showOnTicker === true),
 ...this.state.greetings.filter(x=>x.status==="approved")
 ];
 
@@ -309,6 +308,7 @@ this.state.isAdminLoggedIn=false;
 this.state.loggedInSubAdminVillage=s.village||s.villageHi||"";
 this.state.loggedInSubAdminDistrict=s.districtId||s.district||"";
 this.state.loggedInSubAdminName=s.name||"Sub-Admin";
+this.state.loggedInSubAdminPhone=s.phone||"";
 if(s.districtId&&D[s.districtId])this.state.selectedDistrict=s.districtId;
 this.state.searchVillage=this.state.loggedInSubAdminVillage;
 this.changeView("admin");
@@ -316,11 +316,11 @@ this.changeView("admin");
 
 changeView(v){this.state.view=v;if(v==="chaupal")this.unreadMessageCount=0;this.render()}
 
-saveData(path,data,msg){
+saveData(path,data,msg,extra={}){
 if(!window.firebaseDb)return alert("Firebase अभी कनेक्ट नहीं है।");
 let {db,ref,push}=window.firebaseDb;
 push(ref(db,path),{
-...data,districtId:this.state.selectedDistrict,
+...data,...extra,districtId:this.state.selectedDistrict,
 villageHi:this.state.searchVillage,status:"pending",timestamp:Date.now()
 }).then(()=>{alert(msg);this.tempImage="";this.tempMedia="";this.changeView("home")})
 .catch(e=>alert("Firebase Error: "+e.message));
@@ -343,13 +343,20 @@ remove(ref(db,`${path}/${id}`)).then(()=>this.render()).catch(e=>alert(e.message
 addSubAdminConfig(){
 let d=document.getElementById("subAdminDist").value;
 let nameInput=document.getElementById("subAdminName")?.value.trim()||"";
+let phoneInput=document.getElementById("subAdminPhone")?.value.trim()||"";
 let v=document.getElementById("subAdminVillage").value.trim();
 let p=document.getElementById("subAdminPwd").value.trim();
 if(!v||!p)return alert("गाँव और पासवर्ड भरें!");
 if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है।");
-let {db,ref,push}=window.firebaseDb;
-push(ref(db,"subAdmins"),{districtId:d,name:nameInput,village:v,pwd:p,timestamp:Date.now()})
-.then(()=>{alert("सब-एडमिन सफलतापूर्वक जोड़ दिया गया!");this.render()})
+let {db,ref,push,set}=window.firebaseDb;
+push(ref(db,"subAdmins"),{districtId:d,name:nameInput,phone:phoneInput,village:v,pwd:p,timestamp:Date.now()})
+.then(()=>{
+if(phoneInput&&p){
+set(ref(db,"allowedChatUsers/"+phoneInput),p);
+}
+alert("सब-एडमिन सफलतापूर्वक जोड़ दिया गया!");
+this.render();
+})
 .catch(e=>alert(e.message));
 }
 
@@ -463,8 +470,9 @@ this.saveData("services",{name:n,phone:p,category:c,imageUrl:this.tempImage},"�
 
 submitAnnouncement(){
 let n=document.getElementById("annName")?.value.trim(),p=document.getElementById("annPhone")?.value.trim(),t=document.getElementById("annTitle")?.value.trim();
+let showTicker=document.getElementById("annShowTicker")?.checked||false;
 if(!n||!p||!t)return alert("सभी विवरण भरें!");
-this.saveData("announcements",{name:n,phone:p,title:t,imageUrl:this.tempImage},"मुनादी भेज दी गई!");
+this.saveData("announcements",{name:n,phone:p,title:t,imageUrl:this.tempImage,showOnTicker:showTicker},"मुनादी भेज दी गई!");
 }
 
 submitMarket(){
@@ -525,7 +533,7 @@ localStorage.setItem("searchVillage",selVil);
 localStorage.setItem("userDistrict",selDist);
 localStorage.setItem("userVillage",selVil);
 localStorage.setItem("villageLocked","true");
-alert(`✅ आपका गाँव "${selVil}" सफलतापूर्वक लॉक कर दिया गया है! अब आप इसी गाँव की निजी सामग्री देख पाएंगे।`);
+alert(`✅ आपका गाँव "${selVil}" सफलतापूर्वक लॉक कर दिया गया है!`);
 this.render();
 }
 
@@ -544,7 +552,7 @@ status:"pending"
 this.state.villageUnlockRequested=true;
 localStorage.setItem("villageUnlockRequested","true");
 this.state.userPhone=phone;
-alert("📤 गाँव बदलने का अनुरोध एडमिन के पास भेज दिया गया है। एडमिन द्वारा स्वीकृति के बाद आप दूसरा गाँव चुन सकेंगे।");
+alert("📤 अनुरोध भेज दिया गया है।");
 this.render();
 }).catch(e=>alert(e.message));
 }
@@ -589,6 +597,9 @@ if(view.type==="announcement")html+=`
 <input class="form-control" id="annPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px">
 <textarea class="form-control" id="annTitle" placeholder="मुनादी का विवरण..." style="margin-bottom:8px;height:70px"></textarea>
 <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px">
+<div style="text-align:left;margin-bottom:8px;font-size:12px">
+<label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="annShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label>
+</div>
 <button class="btn-submit" onclick="app.submitAnnouncement()">📤 मुनादी भेजें</button>
 </div>${this.listItems(this.state.announcements,"Announcement")||`<div class="empty-state">कोई मुनादी उपलब्ध नहीं है।</div>`}`;
 if(view.type==="market")html+=`
@@ -662,8 +673,7 @@ ${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर
 return `
 <button class="back-btn" onclick="app.changeView('home')">← होम</button>
 <div class="card">
-<div class="card-title">🌐 All Village - ओपन मार्केट (खरीद-बिक्री व दुकानें)</div>
-<p style="font-size:12px;color:#475569;margin-bottom:12px">यहाँ सभी गाँवों की दुकानें और खरीद-बिक्री की पोस्ट उपलब्ध हैं। (गाँव का इतिहास और निजी मुनादी यहाँ नहीं दिखती)</p>
+<div class="card-title">🌐 All Village - ओपन मार्केट</div>
 </div>
 <h3 style="font-size:14px;color:#fff;margin:10px 0">🏪 सभी गाँवों की दुकानें व सेवाएं</h3>
 ${sHtml||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}
@@ -757,7 +767,7 @@ return `
 
 unlockRequestsBox=`
 <div class="card" style="background:#f0fdf4;border:1px solid #10b981">
-<div class="card-title">🔓 गाँव रीसेट/बदलाव अनुरोध (Village Unlock Requests)</div>
+<div class="card-title">🔓 गाँव रीसेट अनुरोध</div>
 <div style="margin-top:10px">${reqs||'<div style="color:#064e3b;font-size:12px">कोई लंबित अनुरोध नहीं है।</div>'}</div>
 </div>
 `;
@@ -768,20 +778,21 @@ if(this.state.isAdminLoggedIn){
 let dsOptions=Object.keys(D).map(k=>`<option value="${k}">${this.esc(D[k].nameHi)}</option>`).join("");
 let subAdminList=this.state.subAdmins.map(s=>`
 <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px">
-<span><b>${this.esc(s.name||"Sub-Admin")}</b> - ${this.esc(s.village)} (${this.esc(s.districtId)})</span>
+<span><b>${this.esc(s.name||"Sub-Admin")}</b> (${this.esc(s.phone||"")}) - ${this.esc(s.village)}</span>
 <button class="delete-btn" style="margin:0" onclick="app.deleteSubAdmin('${s.id}')">🗑️ हटाएं</button>
 </div>
 `).join("");
 
 subAdminManagerBox=`
 <div class="card" style="background:#fefce8;border:1px solid #facc15">
-<div class="card-title">🔑 सब-एडमिन (Sub-Admin) जोड़ें</div>
+<div class="card-title">🔑 सब-एडमिन जोड़ें</div>
 <select class="form-control" id="subAdminDist" style="margin-bottom:8px">${dsOptions}</select>
-<input class="form-control" id="subAdminName" placeholder="सब-एडमिन का नाम..." style="margin-bottom:8px">
-<input class="form-control" id="subAdminVillage" placeholder="गाँव का नाम (जैसे: कलानौर)..." style="margin-bottom:8px">
-<input class="form-control" id="subAdminPwd" type="password" placeholder="सब-एडमिन गुप्त पासवर्ड..." style="margin-bottom:8px">
+<input class="form-control" id="subAdminName" placeholder="नाम..." style="margin-bottom:8px">
+<input class="form-control" id="subAdminPhone" placeholder="मोबाइल नंबर (चैट एक्सेस के लिए)..." style="margin-bottom:8px">
+<input class="form-control" id="subAdminVillage" placeholder="गाँव का नाम..." style="margin-bottom:8px">
+<input class="form-control" id="subAdminPwd" type="password" placeholder="गुप्त पासवर्ड..." style="margin-bottom:8px">
 <button class="btn-submit" style="background:#ca8a04" onclick="app.addSubAdminConfig()">➕ सब-एडमिन सेव करें</button>
-<div style="margin-top:10px">${subAdminList||'<div style="color:#713f12;font-size:12px">कोई सब-एडमिन नहीं जोड़ा गया है।</div>'}</div>
+<div style="margin-top:10px">${subAdminList||'<div style="color:#713f12;font-size:12px">कोई सब-एडमिन नहीं।</div>'}</div>
 </div>
 `;
 }
@@ -790,7 +801,7 @@ let html=`<button class="back-btn" onclick="app.changeView('home')">← हो�
 ${directVillageOpenBox}
 ${unlockRequestsBox}
 ${subAdminManagerBox}
-<div class="card"><div class="card-title">📊 Admin Dashboard / Approval Panel ${targetVillage?`(${this.esc(targetVillage)})`:""}</div></div>${pending(this.state.services,"services","Shop")}${pending(this.state.announcements,"announcements","Announcement")}${pending(this.state.greetings,"greetings","Greeting")}${pending(this.state.market,"market","Market")}${pending(this.state.historyGallery,"historyGallery","History")}`;
+<div class="card"><div class="card-title">📊 Admin Dashboard ${targetVillage?`(${this.esc(targetVillage)})`:""}</div></div>${pending(this.state.services,"services","Shop")}${pending(this.state.announcements,"announcements","Announcement")}${pending(this.state.greetings,"greetings","Greeting")}${pending(this.state.market,"market","Market")}${pending(this.state.historyGallery,"historyGallery","History")}`;
 return html||`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>`;
 }
 
@@ -815,22 +826,22 @@ let vilOptions=curD.villages.map(v=>`<option value="${this.esc(v[0])}">${this.es
 
 html=`
 <div class="card" style="background:#f0fdf4;border:2px solid #10b981;text-align:center">
-<div class="card-title" style="justify-content:center;color:#064e3b">🏡 अपना गाँव चुनें (Village Selection)</div>
-<p style="font-size:12px;color:#475569;margin-bottom:12px">एक बार गाँव चुनने के बाद लॉक हो जाएगा और आप केवल अपने ही गाँव की निजी सामग्री देख सकेंगे।</p>
-<div class="form-group" style="text-align:left"><label>जिला चुनें</label>
+<div class="card-title" style="justify-content:center;color:#064e3b">🏡 अपना गाँव चुनें</div>
+<div class="form-group" style="text-align:left"><label>जिला</label>
 <select class="form-control" id="setupDistrictSelect" onchange="app.state.selectedDistrict=this.value;app.render()">${dsOptions}</select>
 </div>
-<div class="form-group" style="text-align:left"><label>गाँव चुनें</label>
+<div class="form-group" style="text-align:left"><label>गाँव</label>
 <select class="form-control" id="setupVillageSelect">${vilOptions}</select>
 </div>
-<button class="btn-submit" style="background:#059669;padding:12px;margin-top:8px" onclick="app.lockUserVillage()">🔒 यह गाँव लॉक करें और आगे बढ़ें</button>
+<button class="btn-submit" style="background:#059669;padding:12px;margin-top:8px" onclick="app.lockUserVillage()">🔒 गाँव लॉक करें</button>
 </div>
 `;
 }else if(this.state.view==="home"){
 html=`<div class="card" style="background:#f0fdf4;border:1px solid #10b981;text-align:center">
-<b style="color:#064e3b">🏡 आपका लॉक किया गया गाँव: ${this.esc(this.state.searchVillage)} ${this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminName?`| स्वागत है ${this.esc(this.state.loggedInSubAdminName)}`:""}</b>
-<p style="font-size:12px;color:#475569;margin:6px 0 10px">आप केवल अपने गाँव की निजी सामग्री देख सकते हैं। अन्य गाँवों के लिए ऊपर दिए गए "All Village" बाज़ार पर क्लिक करें।</p>
-${this.state.villageUnlockRequested?`<p style="font-size:12px;color:#dc2626;font-weight:bold">⏳ गाँव बदलने का अनुरोध एडमिन के पास लंबित है।</p>`:`<button class="btn-submit" style="background:#dc2626;padding:8px;font-size:12px;width:auto" onclick="app.requestVillageUnlock()">⚠️ गलती से गलत गाँव चुन लिया? एडमिन से रीसेट अनुरोध करें</button>`}
+<b style="color:#064e3b">🏡 ${this.esc(this.state.searchVillage)} ${this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminName?`| ${this.esc(this.state.loggedInSubAdminName)}`:""}</b>
+<div style="margin-top:8px">
+${this.state.villageUnlockRequested?`<p style="font-size:11px;color:#dc2626;font-weight:bold">⏳ रीसेट अनुरोध लंबित है</p>`:`<button class="btn-submit" style="background:#dc2626;padding:6px 10px;font-size:11px;width:auto" onclick="app.requestVillageUnlock()">⚠️ गाँव रीसेट अनुरोध</button>`}
+</div>
 </div>
 <div class="menu-card-small" onclick="app.changeView('allVillageMarket')">🌐 All Village (ओपन बाज़ार) →</div>
 <div class="menu-card bg-1" onclick="app.changeView('list')">🛒 1. दुकान और सेवा बाजार →</div>
@@ -846,8 +857,8 @@ else if(this.state.view==="market")html=this.renderForm({title:"🚜 खरी�
 else if(this.state.view==="historyGallery")html=this.renderForm({title:"🏛️ गाँव का इतिहास और गैलरी",type:"history"});
 else if(this.state.view==="allVillageMarket")html=this.renderAllVillageMarket();
 else if(this.state.view==="chaupal")html=this.renderChat();
-else if(this.state.view==="policy")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📜 बड़ा Privacy + User Policy</div><p style="font-size:13px;line-height:1.6">MeraGaov प्लेटफ़ॉर्म आपकी गोपनीयता और डेटा सुरक्षा को पूरी गंभीरता से लेता है। हमारे प्लेटफ़ॉर्म पर शेयर की जाने वाली सभी जानकारियाँ, चैट संदेश, और डिजिटल विज्ञापन Firebase डेटाबेस के माध्यम से सुरक्षित रूप से संरक्षित किए जाते हैं। उपयोगकर्ता किसी भी सामग्री को अपलोड करते समय यह सुनिश्चित करें कि वह किसी भी प्रकार की भ्रामक या आपत्तिजनक न हो। एडमिनिस्ट्रेटर के पास सुरक्षा नियमों के तहत किसी भी गलत कंटेंट को हटाने का पूरा अधिकार सुरक्षित है।</p></div>`;
-else if(this.state.view==="about")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px;line-height:1.6"><b>MeraGaov - मेरी पहचान</b><br><br>गाँव की हर खबर और जरूरत, अब आपके फोन पर。<br><br><b>संचालक:</b> Kusum w/o Rajesh Yadav</p></div>`;
+else if(this.state.view==="policy")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📜 Privacy Policy</div><p style="font-size:13px;line-height:1.6">MeraGaov प्लेटफ़ॉर्म आपकी गोपनीयता और डेटा सुरक्षा को पूरी गंभीरता से लेता है।</p></div>`;
+else if(this.state.view==="about")html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><p style="font-size:13px;line-height:1.6"><b>MeraGaov - मेरी पहचान</b><br><br><b>संचालक:</b> Kusum w/o Rajesh Yadav</p></div>`;
 else if(this.state.view==="admin")html=this.renderAdmin();
 document.getElementById("mainContent").innerHTML=html;
 }
@@ -857,9 +868,8 @@ let app;
 try{app=new VillageApp()}catch(e){
 console.error(e);
 document.getElementById("splashScreen")?.remove();
-document.getElementById("mainContent").innerHTML=`<div class="card" style="text-align:center;border:2px solid #dc2626"><h3 style="color:#dc2626">⚠️ App खोलने में समस्या</h3><p style="font-size:13px;margin-top:8px">${String(e.message||e)}</p></div>`;
+document.getElementById("mainContent").innerHTML=`<div class="card" style="text-align:center;border:2px solid #dc2626"><h3 style="color:#dc2626">⚠️ समस्या</h3><p style="font-size:13px;margin-top:8px">${String(e.message||e)}</p></div>`;
 }
 </script>
 </body>
 </html>
-
