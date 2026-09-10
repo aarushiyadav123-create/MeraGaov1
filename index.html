@@ -54,6 +54,7 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .ticker{background:#022c22;color:#fde047;padding:12px 16px;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;border-block:2px solid #059669}
 .content{padding:18px;background:#f8fafc;min-height:480px}
 .menu-card{border-radius:14px;padding:16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:bold;font-size:14px;color:#fff;box-shadow:0 4px 10px #0002}
+.menu-card-small{border-radius:10px;padding:10px 14px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:bold;font-size:13px;color:#fff;box-shadow:0 2px 6px #0002;background:linear-gradient(135deg,#d97706,#b45309)}
 .bg-1{background:linear-gradient(135deg,#0d9488,#0f766e)}.bg-2{background:linear-gradient(135deg,#ea580c,#c2410c)}
 .bg-3{background:linear-gradient(135deg,#db2777,#be185d)}.bg-4{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
 .bg-5{background:linear-gradient(135deg,#7c3aed,#6d28d9)}.bg-6{background:linear-gradient(135deg,#0891b2,#155e75)}
@@ -141,7 +142,7 @@ services:[],announcements:[],greetings:[],market:[],historyGallery:[],chaupalMes
 allowedChatUsers:{},subAdmins:[],villagesConfig:{},villageUnlockRequests:{},
 userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
 isAdminLoggedIn:false,isSubAdminLoggedIn:false,loggedInSubAdminVillage:"",
-loggedInSubAdminDistrict:"",currentUserPhone:localStorage.getItem("currentUserPhone")||"",
+loggedInSubAdminDistrict:"",loggedInSubAdminName:"",currentUserPhone:localStorage.getItem("currentUserPhone")||"",
 globalVillageSearchQuery:""
 };
 this.tempImage="";this.tempMedia="";this.tempMediaType="image";this.generatedBannerDataUrl="";this.bannerUserPhotoObj=null;this.unreadMessageCount=0;
@@ -239,7 +240,10 @@ this.state.chaupalMessages=a;
 if(["home","chaupal"].includes(this.state.view))this.render();
 });
 listen("allowedChatUsers",v=>{this.state.allowedChatUsers=v||{};if(["chaupal","admin"].includes(this.state.view))this.render()});
-listen("subAdmins",v=>{this.state.subAdmins=v?Object.keys(v).map(k=>({id:k,...v[k]})):[]});
+listen("subAdmins",v=>{
+this.state.subAdmins=v?Object.keys(v).map(k=>({id:k,...v[k]})):[];
+if(this.state.view==="admin")this.render();
+});
 listen("villages_config",v=>{this.state.villagesConfig=v||{};if(this.state.view==="admin")this.render()});
 listen("villageUnlockRequests",v=>{
 this.state.villageUnlockRequests=v||{};
@@ -263,9 +267,21 @@ if(this.state.view==="admin")this.render();
 
 updateTicker(){
 let e=document.getElementById("dynamicTickerText");if(!e)return;
-let a=this.state.services.filter(x=>x.status==="approved"&&x.districtId===this.state.selectedDistrict&&x.villageHi===this.state.searchVillage);
 let base="🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य";
-e.textContent=a.length?a.map(x=>`${x.name} (${x.category||"Service"}) - ${x.phone||""}`).join(" | ")+" | "+base:base;
+
+// केवल मुनादी (announcements) और बधाई संदेश (greetings) जो एडमिन द्वारा Approved हैं, वे ही ऊपर वाली पट्टी (Ticker) पर चलेंगे। दुकान और खरीद-बिक्री की चीजें टिकर में नहीं चलेंगी।
+let allowedTickerItems = [
+...this.state.announcements.filter(x=>x.status==="approved"),
+...this.state.greetings.filter(x=>x.status==="approved")
+];
+
+let itemsText = allowedTickerItems.map(x => {
+let vil = x.villageHi || "";
+let titleText = x.title || x.message || x.name || "";
+return vil ? `📍 ${vil}: ${titleText}` : titleText;
+}).filter(Boolean).join(" | ");
+
+e.textContent = itemsText ? `${itemsText} | ${base}` : base;
 }
 
 changeUserAvatar(input){
@@ -292,6 +308,7 @@ this.state.isSubAdminLoggedIn=true;
 this.state.isAdminLoggedIn=false;
 this.state.loggedInSubAdminVillage=s.village||s.villageHi||"";
 this.state.loggedInSubAdminDistrict=s.districtId||s.district||"";
+this.state.loggedInSubAdminName=s.name||"Sub-Admin";
 if(s.districtId&&D[s.districtId])this.state.selectedDistrict=s.districtId;
 this.state.searchVillage=this.state.loggedInSubAdminVillage;
 this.changeView("admin");
@@ -325,12 +342,13 @@ remove(ref(db,`${path}/${id}`)).then(()=>this.render()).catch(e=>alert(e.message
 
 addSubAdminConfig(){
 let d=document.getElementById("subAdminDist").value;
+let nameInput=document.getElementById("subAdminName")?.value.trim()||"";
 let v=document.getElementById("subAdminVillage").value.trim();
 let p=document.getElementById("subAdminPwd").value.trim();
 if(!v||!p)return alert("गाँव और पासवर्ड भरें!");
 if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है।");
 let {db,ref,push}=window.firebaseDb;
-push(ref(db,"subAdmins"),{districtId:d,village:v,pwd:p,timestamp:Date.now()})
+push(ref(db,"subAdmins"),{districtId:d,name:nameInput,village:v,pwd:p,timestamp:Date.now()})
 .then(()=>{alert("सब-एडमिन सफलतापूर्वक जोड़ दिया गया!");this.render()})
 .catch(e=>alert(e.message));
 }
@@ -350,6 +368,19 @@ let x=[v,v];D[d].villages.push(x);
 let all=JSON.parse(localStorage.getItem("customDistrictVillages")||"{}");
 (all[d]??=[]).push(x);localStorage.setItem("customDistrictVillages",JSON.stringify(all));
 this.state.searchVillage=v;e.value="";this.render();
+}
+
+adminDirectOpenVillage(){
+let selDist=document.getElementById("adminDirectDistSelect")?.value;
+let selVil=document.getElementById("adminDirectVilSelect")?.value;
+if(!selVil)return alert("गाँव चुनें!");
+this.state.selectedDistrict=selDist;
+this.state.searchVillage=selVil;
+this.state.villageLocked=true;
+localStorage.setItem("selectedDistrict",selDist);
+localStorage.setItem("searchVillage",selVil);
+localStorage.setItem("villageLocked","true");
+this.changeView("home");
 }
 
 handleImage(input){
@@ -689,6 +720,29 @@ ${x.mediaUrl?`<${x.mediaType==="video"?"video controls":"img"} src="${this.esc(x
 <button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Reject</button>
 </div>`).join("");
 
+let directVillageOpenBox="";
+if(this.state.isAdminLoggedIn){
+let dsOptions=Object.keys(D).map(k=>`<option value="${k}">${this.esc(D[k].nameHi)}</option>`).join("");
+let curD=D[this.state.selectedDistrict]||D["charkhi-dadri"];
+let vilOptions=curD.villages.map(v=>`<option value="${this.esc(v[0])}">${this.esc(v[0])}</option>`).join("");
+
+directVillageOpenBox=`
+<div class="card" style="background:#f0fdf4;border:1px solid #10b981">
+<div class="card-title">🚀 एडमिन डायरेक्ट गाँव खोलें</div>
+<div class="form-group"><label>जिला चुनें</label>
+<select class="form-control" id="adminDirectDistSelect" onchange="
+let dKey=this.value;
+let dObj=D[dKey];
+let vSel=document.getElementById('adminDirectVilSelect');
+if(dObj&&vSel){vSel.innerHTML=dObj.villages.map(v=>\`<option value='\${v[0]}'>\${v[0]}</option>\`).join('');}
+">${dsOptions}</select></div>
+<div class="form-group"><label>गाँव चुनें</label>
+<select class="form-control" id="adminDirectVilSelect">${vilOptions}</select></div>
+<button class="btn-submit" style="background:#059669" onclick="app.adminDirectOpenVillage()">🔓 यह गाँव तुरंत खोलें</button>
+</div>
+`;
+}
+
 let unlockRequestsBox="";
 if(this.state.isAdminLoggedIn){
 let reqs=Object.keys(this.state.villageUnlockRequests||{}).filter(k=>this.state.villageUnlockRequests[k].status==="pending").map(k=>{
@@ -714,7 +768,7 @@ if(this.state.isAdminLoggedIn){
 let dsOptions=Object.keys(D).map(k=>`<option value="${k}">${this.esc(D[k].nameHi)}</option>`).join("");
 let subAdminList=this.state.subAdmins.map(s=>`
 <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px">
-<span><b>${this.esc(s.village)}</b> (${this.esc(s.districtId)}) - पास: ${this.esc(s.pwd)}</span>
+<span><b>${this.esc(s.name||"Sub-Admin")}</b> - ${this.esc(s.village)} (${this.esc(s.districtId)})</span>
 <button class="delete-btn" style="margin:0" onclick="app.deleteSubAdmin('${s.id}')">🗑️ हटाएं</button>
 </div>
 `).join("");
@@ -723,8 +777,9 @@ subAdminManagerBox=`
 <div class="card" style="background:#fefce8;border:1px solid #facc15">
 <div class="card-title">🔑 सब-एडमिन (Sub-Admin) जोड़ें</div>
 <select class="form-control" id="subAdminDist" style="margin-bottom:8px">${dsOptions}</select>
+<input class="form-control" id="subAdminName" placeholder="सब-एडमिन का नाम..." style="margin-bottom:8px">
 <input class="form-control" id="subAdminVillage" placeholder="गाँव का नाम (जैसे: कलानौर)..." style="margin-bottom:8px">
-<input class="form-control" id="subAdminPwd" placeholder="सब-एडमिन पासवर्ड..." style="margin-bottom:8px">
+<input class="form-control" id="subAdminPwd" type="password" placeholder="सब-एडमिन गुप्त पासवर्ड..." style="margin-bottom:8px">
 <button class="btn-submit" style="background:#ca8a04" onclick="app.addSubAdminConfig()">➕ सब-एडमिन सेव करें</button>
 <div style="margin-top:10px">${subAdminList||'<div style="color:#713f12;font-size:12px">कोई सब-एडमिन नहीं जोड़ा गया है।</div>'}</div>
 </div>
@@ -732,6 +787,7 @@ subAdminManagerBox=`
 }
 
 let html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button>
+${directVillageOpenBox}
 ${unlockRequestsBox}
 ${subAdminManagerBox}
 <div class="card"><div class="card-title">📊 Admin Dashboard / Approval Panel ${targetVillage?`(${this.esc(targetVillage)})`:""}</div></div>${pending(this.state.services,"services","Shop")}${pending(this.state.announcements,"announcements","Announcement")}${pending(this.state.greetings,"greetings","Greeting")}${pending(this.state.market,"market","Market")}${pending(this.state.historyGallery,"historyGallery","History")}`;
@@ -744,7 +800,8 @@ if(!d){this.state.selectedDistrict="charkhi-dadri";d=D[this.state.selectedDistri
 if(!this.state.searchVillage)this.state.searchVillage=d.villages[0]?.[0]||"";
 
 let village=this.villageObj(),display=village?(this.state.lang==="en"?village[1]:village[0]):this.state.searchVillage;
-document.getElementById("headerTitleText").textContent="MeraGaov - "+display;
+let subAdminBadgeText = this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminName ? ` [Sub-Admin: ${this.state.loggedInSubAdminName}]` : "";
+document.getElementById("headerTitleText").textContent="MeraGaov - "+display+subAdminBadgeText;
 document.getElementById("headerUserAvatar").src=this.state.userAvatarUrl;
 localStorage.setItem("selectedDistrict",this.state.selectedDistrict);
 if(this.state.searchVillage)localStorage.setItem("searchVillage",this.state.searchVillage);
@@ -771,17 +828,17 @@ html=`
 `;
 }else if(this.state.view==="home"){
 html=`<div class="card" style="background:#f0fdf4;border:1px solid #10b981;text-align:center">
-<b style="color:#064e3b">🏡 आपका लॉक किया गया गाँव: ${this.esc(this.state.searchVillage)}</b>
-<p style="font-size:12px;color:#475569;margin:6px 0 10px">आप केवल अपने गाँव की निजी सामग्री देख सकते हैं। अन्य गाँवों के लिए "All Village" बाज़ार देखें।</p>
+<b style="color:#064e3b">🏡 आपका लॉक किया गया गाँव: ${this.esc(this.state.searchVillage)} ${this.state.isSubAdminLoggedIn && this.state.loggedInSubAdminName?`| स्वागत है ${this.esc(this.state.loggedInSubAdminName)}`:""}</b>
+<p style="font-size:12px;color:#475569;margin:6px 0 10px">आप केवल अपने गाँव की निजी सामग्री देख सकते हैं। अन्य गाँवों के लिए ऊपर दिए गए "All Village" बाज़ार पर क्लिक करें।</p>
 ${this.state.villageUnlockRequested?`<p style="font-size:12px;color:#dc2626;font-weight:bold">⏳ गाँव बदलने का अनुरोध एडमिन के पास लंबित है।</p>`:`<button class="btn-submit" style="background:#dc2626;padding:8px;font-size:12px;width:auto" onclick="app.requestVillageUnlock()">⚠️ गलती से गलत गाँव चुन लिया? एडमिन से रीसेट अनुरोध करें</button>`}
 </div>
+<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">🌐 All Village (ओपन बाज़ार) →</div>
 <div class="menu-card bg-1" onclick="app.changeView('list')">🛒 1. दुकान और सेवा बाजार →</div>
 <div class="menu-card bg-2" onclick="app.changeView('announcements')">📢 2. मुनादी व जरूरी खबरें →</div>
 <div class="menu-card bg-3" onclick="app.changeView('greetings')">🎉 3. त्यौहार व बधाई संदेश →</div>
 <div class="menu-card bg-4" onclick="app.changeView('market')">🚜 4. खरीद-बिक्री बाज़ार →</div>
 <div class="menu-card bg-6" onclick="app.changeView('historyGallery')">🏛️ 5. गाँव का इतिहास और गैलरी →</div>
-<div class="menu-card" style="background:linear-gradient(135deg,#d97706,#b45309)" onclick="app.changeView('allVillageMarket')">🌐 6. All Village (ओपन बाज़ार) →</div>
-<div class="menu-card bg-5" onclick="app.changeView('chaupal')">💬 7. Admin Chat Room ${this.unreadMessageCount?`<span class="badge">${this.unreadMessageCount} नया</span>`:""} →</div>`;
+<div class="menu-card bg-5" onclick="app.changeView('chaupal')">💬 6. Admin Chat Room ${this.unreadMessageCount?`<span class="badge">${this.unreadMessageCount} नया</span>`:""} →</div>`;
 }else if(this.state.view==="list")html=this.renderForm({title:"🛒 दुकान और सेवा बाजार",type:"shop"});
 else if(this.state.view==="announcements")html=this.renderForm({title:"📢 मुनादी व जरूरी खबरें",type:"announcement"});
 else if(this.state.view==="greetings")html=this.renderForm({title:"🎉 त्यौहार व बधाई संदेश",type:"greeting"});
