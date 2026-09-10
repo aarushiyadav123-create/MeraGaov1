@@ -207,7 +207,7 @@ this.state.villageLocked=false;this.state.villageUnlockRequested=false;
 localStorage.removeItem("villageLocked");localStorage.removeItem("villageUnlockRequested");
 localStorage.removeItem("userVillage");localStorage.removeItem("userDistrict");
 this.state.userVillage="";this.state.userDistrict="";
-alert("🎉 एडमिन ने आपके गाँव बदलने के अनुरोध को स्वीकृत कर दिया है!");
+alert("एडमिन ने आपके गाँव बदलने के अनुरोध को स्वीकृत कर दिया है!");
 }
 if(this.state.view==="admin")this.render();
 });
@@ -278,7 +278,7 @@ let all=JSON.parse(localStorage.getItem("customDistrictVillages")||"{}");
 (all[d]??=[]).push(x);
 localStorage.setItem("customDistrictVillages",JSON.stringify(all));
 this.state.searchVillage=v;e.value="";
-alert(`✅ नया गाँव "${v}" सफलतापूर्वक जोड़ दिया गया है!`);
+alert(`नया गाँव "${v}" सफलतापूर्वक जोड़ दिया गया है!`);
 this.render();
 }
 adminDirectOpenVillage(){
@@ -287,24 +287,24 @@ let selDist=document.getElementById("adminDirectDistSelect")?.value,selVil=docum
 if(!selDist||!D[selDist]||!selVil)return alert("सही जिला और गाँव चुनें!");
 this.state.selectedDistrict=selDist;this.state.searchVillage=selVil;this.state.villageLocked=true;
 localStorage.setItem("selectedDistrict",selDist);localStorage.setItem("searchVillage",selVil);localStorage.setItem("villageLocked","true");
-alert(`🔓 Admin Mode चालू\nजिला: ${D[selDist].nameHi}\nगाँव: ${selVil}`);
+alert(`Admin Mode चालू\nजिला: ${D[selDist].nameHi}\nगाँव: ${selVil}`);
 this.changeView("home");
 }
 handleImage(input){
 let f=input?.files?.[0];if(!f||!f.type.startsWith("image/"))return alert("केवल फोटो चुनें।");
 if(f.size>2*1024*1024)return alert("फोटो 2 MB से छोटी रखें।");
-let r=new FileReader();r.onload=()=>{this.tempImage=r.result;alert("✅ फोटो चुन ली गई है!");};r.readAsDataURL(f);
+let r=new FileReader();r.onload=()=>{this.tempImage=r.result;alert("फोटो चुन ली गई है!");};r.readAsDataURL(f);
 }
 handleBannerUserPhoto(input){
 let f=input?.files?.[0];if(!f||!f.type.startsWith("image/"))return alert("केवल फोटो चुनें।");
 if(f.size>2*1024*1024)return alert("फोटो 2 MB से छोटी रखें।");
-let r=new FileReader();r.onload=()=>{let img=new Image();img.onload=()=>{this.bannerUserPhotoObj=img;alert("✅ फोटो बैनर के लिए तैयार है!");};img.src=r.result;};r.readAsDataURL(f);
+let r=new FileReader();r.onload=()=>{let img=new Image();img.onload=()=>{this.bannerUserPhotoObj=img;alert("फोटो बैनर के लिए तैयार है!");};img.src=r.result;};r.readAsDataURL(f);
 }
 handleHistoryGalleryMedia(input){
 let f=input?.files?.[0];if(!f||(!f.type.startsWith("image/")&&!f.type.startsWith("video/")))return alert("फोटो या वीडियो चुनें।");
 if(f.size>5*1024*1024)return alert("5 MB से छोटा रखें।");
 this.tempMediaType=f.type.startsWith("video")?"video":"image";
-let r=new FileReader();r.onload=()=>{this.tempMedia=r.result;alert("✅ मीडिया चुन लिया गया!");};r.readAsDataURL(f);
+let r=new FileReader();r.onload=()=>{this.tempMedia=r.result;alert("मीडिया चुन लिया गया!");};r.readAsDataURL(f);
 }
 wrapText(ctx,text,x,y,max,lineH){
 let words=String(text).split(/\s+/),line="";
@@ -326,19 +326,19 @@ x.fillStyle="#fbbf24";x.font='bold 36px Hind';x.fillText(name,400,635);
 if(phone){x.fillStyle="#a7f3d0";x.font="26px Hind";x.fillText(`संपर्क: ${phone}`,400,680);}
 x.fillStyle="#fff";x.font="18px Hind";x.fillText("MeraGaov डिजिटल गाँव",400,740);
 try{this.generatedBannerDataUrl=c.toDataURL("image/png");}catch(e){return alert("बैनर नहीं बना।");}
-document.getElementById("bannerPreviewBox").innerHTML=`<div class="card" style="text-align:center"><b style="color:#047857">✨ बैनर तैयार है!</b><br><img src="${this.generatedBannerDataUrl}" style="width:100%;max-width:300px;border-radius:12px;margin:8px 0"><br><a href="${this.generatedBannerDataUrl}" download="MeraGaov_Banner.png" class="btn-submit" style="display:inline-block;text-decoration:none;width:auto;background:#2563eb">📥 डाउनलोड करें</a></div>`;
-alert("🎉 बैनर बन गया!");
+document.getElementById("bannerPreviewBox").innerHTML=`<div class="card" style="text-align:center"><b style="color:#047857">बैनर तैयार है!</b><br><img src="${this.generatedBannerDataUrl}" style="width:100%;max-width:300px;border-radius:12px;margin:8px 0"><br><a href="${this.generatedBannerDataUrl}" download="MeraGaov_Banner.png" class="btn-submit" style="display:inline-block;text-decoration:none;width:auto;background:#2563eb">📥 डाउनलोड करें</a></div>`;
+alert("बैनर बन गया!");
 }
 submitGreeting(){
-let n=document.getElementById("gName")?.value.trim(),p=document.getElementById("gPhone")?.value.trim(),m=document.getElementById("gMsg")?.value.trim();
+let n=document.getElementById("gName")?.value.trim(),p=document.getElementById("gPhone")?.value.trim(),m=document.getElementById("gMsg")?.value.trim(),showTicker=document.getElementById("gShowTicker")?.checked||false;
 if(!n||!m)return alert("नाम और संदेश भरें!");
 let img=this.generatedBannerDataUrl||this.tempImage;if(!img)return alert("पहले बैनर बनाएं!");
-this.saveData("greetings",{name:n,phone:p,message:m,imageUrl:img},"बैनर एडमिन के पास भेज दिया गया है!");
+this.saveData("greetings",{name:n,phone:p,message:m,imageUrl:img,showOnTicker:showTicker},"बैनर एडमिन के पास भेज दिया गया है!");
 }
 submitShop(){
-let n=document.getElementById("sName")?.value.trim(),p=document.getElementById("sPhone")?.value.trim(),c=document.getElementById("sCat")?.value;
+let n=document.getElementById("sName")?.value.trim(),p=document.getElementById("sPhone")?.value.trim(),c=document.getElementById("sCat")?.value,showTicker=document.getElementById("sShowTicker")?.checked||false;
 if(!n||!p)return alert("दुकान का नाम और नंबर भरें!");
-this.saveData("services",{name:n,phone:p,category:c,imageUrl:this.tempImage},"दुकान/सेवा एडमिन के पास भेज दी गई!");
+this.saveData("services",{name:n,phone:p,category:c,imageUrl:this.tempImage,showOnTicker:showTicker},"दुकान/सेवा एडमिन के पास भेज दी गई!");
 }
 submitAnnouncement(){
 let n=document.getElementById("annName")?.value.trim(),p=document.getElementById("annPhone")?.value.trim(),t=document.getElementById("annTitle")?.value.trim(),showTicker=document.getElementById("annShowTicker")?.checked||false;
@@ -346,18 +346,18 @@ if(!n||!p||!t)return alert("सभी विवरण भरें!");
 this.saveData("announcements",{name:n,phone:p,title:t,imageUrl:this.tempImage,showOnTicker:showTicker},"मुनादी एडमिन के पास भेज दी गई!");
 }
 submitMarket(){
-let n=document.getElementById("mName")?.value.trim(),p=document.getElementById("mPhone")?.value.trim(),t=document.getElementById("mTitle")?.value.trim(),it=document.getElementById("mItemType")?.value;
+let n=document.getElementById("mName")?.value.trim(),p=document.getElementById("mPhone")?.value.trim(),t=document.getElementById("mTitle")?.value.trim(),it=document.getElementById("mItemType")?.value,showTicker=document.getElementById("mShowTicker")?.checked||false;
 if(!n||!p||!t)return alert("सभी विवरण भरें!");
-this.saveData("market",{name:n,phone:p,title:t,itemType:it,imageUrl:this.tempImage},"पोस्ट एडमिन के पास भेज दी गई!");
+this.saveData("market",{name:n,phone:p,title:t,itemType:it,imageUrl:this.tempImage,showOnTicker:showTicker},"पोस्ट एडमिन के पास भेज दी गई!");
 }
 submitHistoryGallery(){
-let n=document.getElementById("hgName")?.value.trim(),t=document.getElementById("hgTitle")?.value.trim(),c=document.getElementById("hgCategory")?.value;
+let n=document.getElementById("hgName")?.value.trim(),t=document.getElementById("hgTitle")?.value.trim(),c=document.getElementById("hgCategory")?.value,showTicker=document.getElementById("hgShowTicker")?.checked||false;
 if(!n||!t||!this.tempMedia)return alert("सभी विवरण भरें!");
-this.saveData("historyGallery",{name:n,title:t,category:c,mediaUrl:this.tempMedia,mediaType:this.tempMediaType},"इतिहास पोस्ट एडमिन के पास भेज दी गई!");
+this.saveData("historyGallery",{name:n,title:t,category:c,mediaUrl:this.tempMedia,mediaType:this.tempMediaType,showOnTicker:showTicker},"इतिहास पोस्ट एडमिन के पास भेज दी गई!");
 }
 verifyUserForChat(){
 let p=document.getElementById("verifyPhoneInput")?.value.trim(),pass=document.getElementById("verifyPassInput")?.value.trim();
-if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn&&(!p||this.state.allowedChatUsers[p]!==pass))return alert("❌ गलत मोबाइल नंबर या पासवर्ड!");
+if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn&&(!p||this.state.allowedChatUsers[p]!==pass))return alert("गलत मोबाइल नंबर या पासवर्ड!");
 this.state.currentUserPhone=p;localStorage.setItem("currentUserPhone",p);alert("सत्यापन सफल!");this.render();
 }
 submitChaupalMsg(){
@@ -376,7 +376,7 @@ let selDist=document.getElementById("setupDistrictSelect").value,selVil=document
 if(!selVil)return alert("कृपया अपना गाँव चुनें!");
 this.state.selectedDistrict=selDist;this.state.searchVillage=selVil;this.state.userDistrict=selDist;this.state.userVillage=selVil;this.state.villageLocked=true;
 localStorage.setItem("selectedDistrict",selDist);localStorage.setItem("searchVillage",selVil);localStorage.setItem("userDistrict",selDist);localStorage.setItem("userVillage",selVil);localStorage.setItem("villageLocked","true");
-alert(`✅ आपका गाँव "${selVil}" सफलतापूर्वक लॉक कर दिया गया है!`);
+alert(`आपका गाँव "${selVil}" सफलतापूर्वक लॉक कर दिया गया है!`);
 this.render();
 }
 requestVillageUnlock(){
@@ -385,7 +385,7 @@ if(!phone||!(phone=phone.trim()))return;
 window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.db,"villageUnlockRequests/"+phone),{phone,oldDistrict:this.state.userDistrict,oldVillage:this.state.userVillage,timestamp:Date.now(),status:"pending"}).then(()=>{
 this.state.villageUnlockRequested=true;this.state.userPhone=phone;this.state.currentUserPhone=phone;
 localStorage.setItem("villageUnlockRequested","true");localStorage.setItem("currentUserPhone",phone);
-alert("📤 अनुरोध एडमिन के पास भेज दिया गया है।");this.render();
+alert("अनुरोध एडमिन के पास भेज दिया गया है।");this.render();
 }).catch(e=>alert(e.message));
 }
 approveVillageUnlock(phone){
@@ -407,28 +407,27 @@ renderForm(view){
 let d=this.state.searchVillage;
 let html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">${view.title}<span>📍 ${this.esc(d)}</span></div>`;
 if(view.type==="shop"){
-html+=`<div class="live-upload-box"><input class="form-control" id="sName" placeholder="नाम / दुकान का नाम..." style="margin-bottom:8px"><input class="form-control" id="sPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="sCat" style="margin-bottom:8px"><option>किराना स्टोर</option><option>पंडित जी</option><option>मिस्त्री</option><option>इलेक्ट्रीशियन</option><option>प्लंबर</option><option>गाड़ी किराये के लिए</option><option>मेडिकल स्टोर</option><option>अन्य</option></select><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें</button></div>${this.listItems(this.state.services,"Shop")||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><input class="form-control" id="sName" placeholder="नाम / दुकान का नाम..." style="margin-bottom:8px"><input class="form-control" id="sPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="sCat" style="margin-bottom:8px"><option>किराना स्टोर</option><option>पंडित जी</option><option>मिस्त्री</option><option>इलेक्ट्रीशियन</option><option>प्लंबर</option><option>गाड़ी किराये के लिए</option><option>मेडिकल स्टोर</option><option>अन्य</option></select><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="sShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें</button></div>${this.listItems(this.state.services,"Shop")||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="announcement"){
 html+=`<div class="live-upload-box"><input class="form-control" id="annName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="annPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="annTitle" placeholder="मुनादी का विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="annShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitAnnouncement()">📤 मुनादी भेजें</button></div>${this.listItems(this.state.announcements,"Announcement")||`<div class="empty-state">कोई मुनादी उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="market"){
-html+=`<div class="live-upload-box"><input class="form-control" id="mName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="mPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="mItemType" style="margin-bottom:8px"><option>भैंस / गाय</option><option>ट्रैक्टर</option><option>बाइक</option><option>अन्य</option></select><textarea class="form-control" id="mTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button></div>${this.listItems(this.state.market,"Market")||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><input class="form-control" id="mName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="mPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="mItemType" style="margin-bottom:8px"><option>भैंस / गाय</option><option>ट्रैक्टर</option><option>बाइक</option><option>अन्य</option></select><textarea class="form-control" id="mTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="mShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button></div>${this.listItems(this.state.market,"Market")||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="history"){
-html+=`<div class="live-upload-box"><input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px"><select class="form-control" id="hgCategory" style="margin-bottom:8px"><option>गाँव का इतिहास</option><option>गाँव की गैलरी</option></select><textarea class="form-control" id="hgTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px"><button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button></div>${this.listItems(this.state.historyGallery,"History")||`<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px"><select class="form-control" id="hgCategory" style="margin-bottom:8px"><option>गाँव का इतिहास</option><option>गाँव की गैलरी</option></select><textarea class="form-control" id="hgTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="hgShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button></div>${this.listItems(this.state.historyGallery,"History")||`<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="greeting"){
-html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSelect" style="margin-bottom:8px"><option value="default">ग्रीन थीम फ्रेम</option></select><input class="form-control" id="gName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="gMsg" placeholder="बधाई संदेश..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px"><button class="btn-submit" style="background:#2563eb" onclick="app.generateGreetingBannerCanvas()">🎨 सुंदर बैनर बनाएं</button><div id="bannerPreviewBox"></div><button class="btn-submit" onclick="app.submitGreeting()">📤 बैनर एडमिन को भेजें</button></div>${this.listItems(this.state.greetings,"Greeting")||`<div class="empty-state">कोई बधाई संदेश उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSelect" style="margin-bottom:8px"><option value="default">ग्रीन थीम फ्रेम</option></select><input class="form-control" id="gName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="gMsg" placeholder="बधाई संदेश..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px"><button class="btn-submit" style="background:#2563eb" onclick="app.generateGreetingBannerCanvas()">🎨 सुंदर बैनर बनाएं</button><div id="bannerPreviewBox"></div><div style="text-align:left;margin:8px 0;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="gShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitGreeting()">📤 बैनर एडमिन को भेजें</button></div>${this.listItems(this.state.greetings,"Greeting")||`<div class="empty-state">कोई बधाई संदेश उपलब्ध नहीं है।</div>`}`;
 }
 return html+"</div>";
 }
 renderAllVillageMarket(){
+let curDist=this.state.selectedDistrict;
+let curVil=this.state.searchVillage;
 let allServices=[],allMarket=[];
-Object.keys(D).forEach(dk=>D[dk].villages.forEach(vil=>{
-let vn=vil[0];
-this.state.services.filter(x=>x.status==="approved"&&x.districtId===dk&&x.villageHi===vn).forEach(item=>allServices.push({...item,displayVillage:vn,displayDistrict:D[dk].nameHi}));
-this.state.market.filter(x=>x.status==="approved"&&x.districtId===dk&&x.villageHi===vn).forEach(item=>allMarket.push({...item,displayVillage:vn,displayDistrict:D[dk].nameHi}));
-}));
-let sHtml=allServices.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.category||"Service")} | 📍 ${this.esc(x.displayVillage)} (${this.esc(x.displayDistrict)})</span><div class="service-name">${this.esc(x.title||x.name||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>नाम:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
-let mHtml=allMarket.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.itemType||"Market")} | 📍 ${this.esc(x.displayVillage)} (${this.esc(x.displayDistrict)})</span><div class="service-name">${this.esc(x.title||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>विक्रेता:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
-return `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">🌐 All Village - ओपन मार्केट</div><p style="font-size:12px;color:#64748b">केवल सभी गाँवों की स्वीकृत दुकानें, सेवाएँ और खरीद-बिक्री पोस्ट यहाँ दिखाई दे रही हैं।</p></div><h3 style="font-size:14px;color:#064e3b;margin:10px 0">🏪 सभी गाँवों की दुकानें व सेवाएं</h3>${sHtml||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}<h3 style="font-size:14px;color:#064e3b;margin:10px 0">🚜 सभी गाँवों का खरीद-बिक्री बाज़ार</h3>${mHtml||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
+this.state.services.filter(x=>x.status==="approved"&&x.districtId===curDist&&x.villageHi===curVil).forEach(item=>allServices.push(item));
+this.state.market.filter(x=>x.status==="approved"&&x.districtId===curDist&&x.villageHi===curVil).forEach(item=>allMarket.push(item));
+let sHtml=allServices.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.category||"Service")} | 📍 ${this.esc(curVil)}</span><div class="service-name">${this.esc(x.title||x.name||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>नाम:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
+let mHtml=allMarket.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.itemType||"Market")} | 📍 ${this.esc(curVil)}</span><div class="service-name">${this.esc(x.title||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>विक्रेता:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
+return `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">🌐 All Village - ओपन मार्केट (${this.esc(curVil)})</div><p style="font-size:12px;color:#64748b">केवल आपके अपने लॉक किए गए गाँव की स्वीकृत दुकानें, सेवाएँ और खरीद-बिक्री पोस्ट यहाँ दिखाई दे रही हैं।</p></div><h3 style="font-size:14px;color:#064e3b;margin:10px 0">🏪 आपके गाँव की दुकानें व सेवाएं</h3>${sHtml||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}<h3 style="font-size:14px;color:#064e3b;margin:10px 0">🚜 आपके गाँव का खरीद-बिक्री बाज़ार</h3>${mHtml||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
 }
 renderChat(){
 let verified=this.state.isAdminLoggedIn||this.state.isSubAdminLoggedIn||(this.state.currentUserPhone&&this.state.allowedChatUsers[this.state.currentUserPhone]);
@@ -489,7 +488,7 @@ html=`<div class="card" style="background:#f0fdf4;border:1px solid #10b981;text-
 }else if(this.state.view==="chaupal"){html=this.renderChat();
 }else if(this.state.view==="policy"){html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📜 MeraGaov Privacy Policy</div><div class="policy-text"><p><b>MeraGaov - मेरी पहचान</b> गाँव और ग्रामीण समुदाय को डिजिटल रूप से जोड़ने के उद्देश्य से बनाया गया प्लेटफ़ॉर्म है। हम उपयोगकर्ताओं की गोपनीयता का सम्मान करते हैं।</p><br><p><b>1. जानकारी का उपयोग:</b> दुकान, सेवा, मुनादी, खरीद-बिक्री या बधाई संदेश आदि में दी गई जानकारी डिजिटल गाँव सेवा हेतु प्रदर्शित होती है।</p><br><p><b>2. मोबाइल नंबर व मीडिया:</b> सार्वजनिक रूप से प्रदर्शित होने वाले नंबर व फोटो केवल अधिकृत उपयोग के लिए हैं। संवेदनशील जानकारी साझा न करें।</p><br><p><b>3. Admin Approval:</b> सामग्री एडमिन द्वारा जाँचे जाने के बाद सार्वजनिक होती है।</p></div></div>`;
 }else if(this.state.view==="about"){html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><div style="font-size:13px;line-height:1.7;color:#334155"><h3 style="color:#064e3b;margin-bottom:8px">MeraGaov - मेरी पहचान</h3><p><b>एक डिजिटल गाँव, एक डिजिटल पहचान</b></p><br><p>MeraGaov एक ग्रामीण डिजिटल प्लेटफ़ॉर्म है जिसका उद्देश्य गाँव के लोगों को एक ही जगह पर गाँव की जरूरी जानकारी, स्थानीय सेवाएँ और आपसी संपर्क उपलब्ध कराना है।</p><br><p><b>👩‍💼 संचालक:</b> Kusum w/o Rajesh Yadav</p><br><p style="background:#ecfdf5;padding:10px;border-radius:10px;color:#065f46"><b>धन्यवाद 🙏</b><br>MeraGaov - मेरी पहचान</p></div></div>`;
-}else if(this.state.view==="admin"){html=this.renderAdmin();}
+}else if(this.state.view==="admin"){html=this.adminDirectOpenVillage();html+=this.renderAdmin();}
 document.getElementById("mainContent").innerHTML=html;
 }
 }
