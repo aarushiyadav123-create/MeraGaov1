@@ -269,16 +269,15 @@ updateTicker(){
 let e=document.getElementById("dynamicTickerText");if(!e)return;
 let base="🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य";
 
-let allApprovedItems = [
-...this.state.services.filter(x=>x.status==="approved"),
+// केवल मुनादी (announcements) और बधाई संदेश (greetings) जो एडमिन द्वारा Approved हैं, वे ही ऊपर वाली पट्टी (Ticker) पर चलेंगे। दुकान और खरीद-बिक्री की चीजें टिकर में नहीं चलेंगी।
+let allowedTickerItems = [
 ...this.state.announcements.filter(x=>x.status==="approved"),
-...this.state.market.filter(x=>x.status==="approved"),
 ...this.state.greetings.filter(x=>x.status==="approved")
 ];
 
-let itemsText = allApprovedItems.map(x => {
+let itemsText = allowedTickerItems.map(x => {
 let vil = x.villageHi || "";
-let titleText = x.title || x.name || x.message || "";
+let titleText = x.title || x.message || x.name || "";
 return vil ? `📍 ${vil}: ${titleText}` : titleText;
 }).filter(Boolean).join(" | ");
 
@@ -833,13 +832,13 @@ html=`<div class="card" style="background:#f0fdf4;border:1px solid #10b981;text-
 <p style="font-size:12px;color:#475569;margin:6px 0 10px">आप केवल अपने गाँव की निजी सामग्री देख सकते हैं। अन्य गाँवों के लिए ऊपर दिए गए "All Village" बाज़ार पर क्लिक करें।</p>
 ${this.state.villageUnlockRequested?`<p style="font-size:12px;color:#dc2626;font-weight:bold">⏳ गाँव बदलने का अनुरोध एडमिन के पास लंबित है।</p>`:`<button class="btn-submit" style="background:#dc2626;padding:8px;font-size:12px;width:auto" onclick="app.requestVillageUnlock()">⚠️ गलती से गलत गाँव चुन लिया? एडमिन से रीसेट अनुरोध करें</button>`}
 </div>
-<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">🌐 6. All Village (ओपन बाज़ार) →</div>
+<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">🌐 All Village (ओपन बाज़ार) →</div>
 <div class="menu-card bg-1" onclick="app.changeView('list')">🛒 1. दुकान और सेवा बाजार →</div>
 <div class="menu-card bg-2" onclick="app.changeView('announcements')">📢 2. मुनादी व जरूरी खबरें →</div>
 <div class="menu-card bg-3" onclick="app.changeView('greetings')">🎉 3. त्यौहार व बधाई संदेश →</div>
 <div class="menu-card bg-4" onclick="app.changeView('market')">🚜 4. खरीद-बिक्री बाज़ार →</div>
 <div class="menu-card bg-6" onclick="app.changeView('historyGallery')">🏛️ 5. गाँव का इतिहास और गैलरी →</div>
-<div class="menu-card bg-5" onclick="app.changeView('chaupal')">💬 7. Admin Chat Room ${this.unreadMessageCount?`<span class="badge">${this.unreadMessageCount} नया</span>`:""} →</div>`;
+<div class="menu-card bg-5" onclick="app.changeView('chaupal')">💬 6. Admin Chat Room ${this.unreadMessageCount?`<span class="badge">${this.unreadMessageCount} नया</span>`:""} →</div>`;
 }else if(this.state.view==="list")html=this.renderForm({title:"🛒 दुकान और सेवा बाजार",type:"shop"});
 else if(this.state.view==="announcements")html=this.renderForm({title:"📢 मुनादी व जरूरी खबरें",type:"announcement"});
 else if(this.state.view==="greetings")html=this.renderForm({title:"🎉 त्यौहार व बधाई संदेश",type:"greeting"});
@@ -863,3 +862,4 @@ document.getElementById("mainContent").innerHTML=`<div class="card" style="text-
 </script>
 </body>
 </html>
+
