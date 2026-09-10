@@ -215,7 +215,7 @@ if(this.state.view==="admin")this.render();
 updateTicker(){
 let e=document.getElementById("dynamicTickerText");if(!e)return;
 let base="🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूँ: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य";
-let items=[...this.state.announcements.filter(x=>x.status==="approved"&&x.showOnTicker&&x.villageHi===this.state.searchVillage),...this.state.greetings.filter(x=>x.status==="approved"&&x.villageHi===this.state.searchVillage)].map(x=>x.villageHi?`📍 ${x.villageHi}: ${x.title||x.message||x.name}`:(x.title||x.message||x.name)).filter(Boolean).join(" | ");
+let items=[...this.state.announcements.filter(x=>x.status==="approved"&&x.showOnTicker&&x.villageHi===this.state.searchVillage),...this.state.greetings.filter(x=>x.status==="approved"&&x.showOnTicker&&x.villageHi===this.state.searchVillage)].map(x=>x.villageHi?`📍 ${x.villageHi}: ${x.title||x.message||x.name}`:(x.title||x.message||x.name)).filter(Boolean).join(" | ");
 e.textContent=items?`${items} | ${base}`:base;
 }
 changeUserAvatar(input){
