@@ -152,12 +152,16 @@ status(t){let e=document.getElementById("firebaseStatus");if(!e)return;e.textCon
 villageObj(){
 let d=D[this.state.selectedDistrict];return d?.villages.find(v=>v[0]===this.state.searchVillage||v[1]===this.state.searchVillage)
 }
+
+// सुरक्षा नियम: मास्टर एडमिन कहीं भी एक्सेस कर सकता है, सब-एडमिन केवल अपने अलॉटेड गाँव में
 isAdminForVillage(v){
-return this.state.isAdminLoggedIn||(
-this.state.isSubAdminLoggedIn&&
-this.state.loggedInSubAdminVillage===v&&
-this.state.loggedInSubAdminDistrict===this.state.selectedDistrict);
+if(this.state.isAdminLoggedIn)return true;
+if(this.state.isSubAdminLoggedIn){
+return this.state.loggedInSubAdminVillage===v && this.state.loggedInSubAdminDistrict===this.state.selectedDistrict;
 }
+return false;
+}
+
 startup(){
 setTimeout(()=>{let s=document.getElementById("splashScreen");if(s){s.style.opacity=0;setTimeout(()=>s.remove(),500)}},1000);
 if(!localStorage.getItem("hasSeenWelcomeMeraGaov"))setTimeout(()=>this.welcome(),1100);
@@ -267,6 +271,9 @@ this.state.isSubAdminLoggedIn=true;
 this.state.isAdminLoggedIn=false;
 this.state.loggedInSubAdminVillage=s.village||s.villageHi||"";
 this.state.loggedInSubAdminDistrict=s.districtId||s.district||"";
+// यदि सब-एडमिन किसी अन्य जिले का है, तो उसका जिला स्वतः सेट हो जाएगा
+if(s.districtId&&D[s.districtId])this.state.selectedDistrict=s.districtId;
+this.state.searchVillage=this.state.loggedInSubAdminVillage;
 this.changeView("admin");
 }
 
@@ -546,8 +553,17 @@ return `<button class="back-btn" onclick="app.changeView('home')">← होम<
 
 renderAdmin(){
 if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.changeView("home");
-let sub=this.state.isAdminLoggedIn?null:this.state.loggedInSubAdminVillage;
-const pending=(arr,path,label)=>arr.filter(x=>x.status==="pending"&&x.districtId===this.state.selectedDistrict&&(!sub||x.villageHi===sub)).map(x=>`
+
+// सब-एडमिन केवल अपने गाँव के पेंडिंग आइटम्स देख सकता है, मास्टर एडमिन सभी के पेंडिंग आइटम्स देख सकता है
+let targetVillage = this.state.isAdminLoggedIn ? null : this.state.loggedInSubAdminVillage;
+let targetDistrict = this.state.isAdminLoggedIn ? null : this.state.loggedInSubAdminDistrict;
+
+const pending=(arr,path,label)=>arr.filter(x=>{
+let matchStatus = x.status==="pending";
+let matchDistrict = this.state.isAdminLoggedIn ? (x.districtId===this.state.selectedDistrict) : (x.districtId===targetDistrict);
+let matchVillage = this.state.isAdminLoggedIn ? true : (x.villageHi===targetVillage);
+return matchStatus && matchDistrict && matchVillage;
+}).map(x=>`
 <div class="media-card"><span class="service-tag">${label} - ${this.esc(x.villageHi)}</span>
 <div class="service-name">${this.esc(x.title||x.message||x.name)}</div>
 ${x.name?`<p style="font-size:11px">द्वारा: ${this.esc(x.name)} | ${this.esc(x.phone||"")}</p>`:""}
@@ -581,7 +597,7 @@ subAdminManagerBox=`
 
 let html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button>
 ${subAdminManagerBox}
-<div class="card"><div class="card-title">📊 Admin Dashboard / Approval Panel ${sub?`(${this.esc(sub)})`:""}</div></div>${pending(this.state.services,"services","Shop")}${pending(this.state.announcements,"announcements","Announcement")}${pending(this.state.greetings,"greetings","Greeting")}${pending(this.state.market,"market","Market")}${pending(this.state.historyGallery,"historyGallery","History")}`;
+<div class="card"><div class="card-title">📊 Admin Dashboard / Approval Panel ${targetVillage?`(${this.esc(targetVillage)})`:""}</div></div>${pending(this.state.services,"services","Shop")}${pending(this.state.announcements,"announcements","Announcement")}${pending(this.state.greetings,"greetings","Greeting")}${pending(this.state.market,"market","Market")}${pending(this.state.historyGallery,"historyGallery","History")}`;
 return html||`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="empty-state">कोई पेंडिंग अनुरोध नहीं है।</div>`;
 }
 
