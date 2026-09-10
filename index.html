@@ -139,7 +139,7 @@ setTimeout(()=>{let s=document.getElementById("splashScreen");if(s){s.style.opac
 if(!localStorage.getItem("hasSeenWelcomeMeraGaov")){setTimeout(()=>this.welcome(),1100);}
 }
 welcome(){
-document.getElementById("welcomeModalContainer").innerHTML=`<div class="welcome-overlay"><div class="welcome-modal"><div class="welcome-title">राम-राम भाईयों! 🙏</div><div class="welcome-text">हरियाणा के हमारे डिजिटल गाँव <b>MeraGaov</b> में आपका स्वागत है।<br><br>गाँव की खबर, दुकान, सेवाएँ, खरीद-बिक्री, बधाई संदेश, इतिहास और गाँव की चौपाल सुविधाएँ एक ही जगह मिलती हैं।</div><button class="welcome-btn" onclick="app.closeWelcome()">शुरू करें</button></div></div>`;
+document.getElementById("welcomeModalContainer").innerHTML=`<div class="welcome-overlay"><div class="welcome-modal"><div class="welcome-title">राम-राम भाईयों! 🙏</div><div class="welcome-text">हरियाणा के हमारे डिजिटल गाँव <b>MeraGaov</b> में आपका स्वागत है。<br><br>गाँव की खबर, दुकान, सेवाएँ, खरीद-बिक्री, बधाई संदेश, इतिहास और गाँव की चौपाल सुविधाएँ एक ही जगह मिलती हैं।</div><button class="welcome-btn" onclick="app.closeWelcome()">शुरू करें</button></div></div>`;
 }
 closeWelcome(){
 localStorage.setItem("hasSeenWelcomeMeraGaov","true");
@@ -420,14 +420,13 @@ html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSe
 return html+"</div>";
 }
 renderAllVillageMarket(){
-let curDist=this.state.selectedDistrict;
-let curVil=this.state.searchVillage;
-let allServices=[],allMarket=[];
-this.state.services.filter(x=>x.status==="approved"&&x.districtId===curDist&&x.villageHi===curVil).forEach(item=>allServices.push(item));
-this.state.market.filter(x=>x.status==="approved"&&x.districtId===curDist&&x.villageHi===curVil).forEach(item=>allMarket.push(item));
-let sHtml=allServices.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.category||"Service")} | 📍 ${this.esc(curVil)}</span><div class="service-name">${this.esc(x.title||x.name||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>नाम:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
-let mHtml=allMarket.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.itemType||"Market")} | 📍 ${this.esc(curVil)}</span><div class="service-name">${this.esc(x.title||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>विक्रेता:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
-return `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">🌐 All Village - ओपन मार्केट (${this.esc(curVil)})</div><p style="font-size:12px;color:#64748b">केवल आपके अपने लॉक किए गए गाँव की स्वीकृत दुकानें, सेवाएँ और खरीद-बिक्री पोस्ट यहाँ दिखाई दे रही हैं।</p></div><h3 style="font-size:14px;color:#064e3b;margin:10px 0">🏪 आपके गाँव की दुकानें व सेवाएं</h3>${sHtml||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}<h3 style="font-size:14px;color:#064e3b;margin:10px 0">🚜 आपके गाँव का खरीद-बिक्री बाज़ार</h3>${mHtml||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
+let allServices=this.state.services.filter(x=>x.status==="approved");
+let allMarket=this.state.market.filter(x=>x.status==="approved");
+
+let sHtml=allServices.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.category||"Service")} | 📍 ${this.esc(x.villageHi||"गाँव")}</span><div class="service-name">${this.esc(x.title||x.name||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>नाम:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
+let mHtml=allMarket.map(x=>`<div class="service-item"><span class="service-tag">${this.esc(x.itemType||"Market")} | 📍 ${this.esc(x.villageHi||"गाँव")}</span><div class="service-name">${this.esc(x.title||"")}</div>${x.name?`<p style="font-size:11px;color:#047857"><b>विक्रेता:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.phone?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}</div>`).join("");
+
+return `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">🌐 All Village - ओपन मार्केट</div><p style="font-size:12px;color:#64748b">यहाँ सभी गाँवों की स्वीकृत दुकानें, सेवाएँ और खरीद-बिक्री पोस्ट दिखाई दे रही हैं। आप किसी भी गाँव का सामान देख सकते हैं।</p></div><h3 style="font-size:14px;color:#064e3b;margin:10px 0">🏪 सभी गाँवों की दुकानें व सेवाएं</h3>${sHtml||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}<h3 style="font-size:14px;color:#064e3b;margin:10px 0">🚜 सभी गाँवों का खरीद-बिक्री बाज़ार</h3>${mHtml||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
 }
 renderChat(){
 let verified=this.state.isAdminLoggedIn||this.state.isSubAdminLoggedIn||(this.state.currentUserPhone&&this.state.allowedChatUsers[this.state.currentUserPhone]);
