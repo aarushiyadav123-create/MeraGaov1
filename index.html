@@ -10,126 +10,102 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800">
+<body class="bg-emerald-950 font-sans text-gray-800 min-h-screen">
 
-    <!-- टॉप बैनर / फोटो सेक्शन (Admin/Sub-Admin Approved) -->
-    <div id="top-banner-container" class="w-full bg-green-800 text-white text-center py-2 px-4 shadow">
-        <img id="village-banner-img" src="" alt="गाँव का बैनर" class="w-full max-h-48 object-cover rounded hidden mb-2">
-        <p id="village-banner-text" class="text-sm font-medium">स्वागत है आपका अपने डिजिटल गाँव में!</p>
-    </div>
-
-    <!-- गाँव चयन स्क्रीन (केवल पहली बार या रीसेट पर) -->
-    <div id="village-setup-screen" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
-            <h2 class="text-2xl font-bold mb-4 text-green-700">अपना गाँव चुनें</h2>
-            <p class="text-sm text-gray-600 mb-4">कृपया अपने गाँव का नाम दर्ज करें ताकि आपको सही जानकारी मिल सके।</p>
-            <input type="text" id="input-village-name" placeholder="गाँव का नाम (जैसे: Malkosh)" class="w-full border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500">
-            <button onclick="saveVillageAndProceed()" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700 transition">शुरू करें</button>
+    <!-- गाँव चयन स्क्रीन (केवल पहली बार) -->
+    <div id="village-setup-screen" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <h2 class="text-2xl font-bold mb-3 text-green-800">अपना गाँव चुनें</h2>
+            <p class="text-sm text-gray-600 mb-4">गाँव का नाम दर्ज करें ताकि आपके गाँव की सही जानकारी दिख सके।</p>
+            <input type="text" id="input-village-name" placeholder="गाँव का नाम (जैसे: Malkosh)" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-600 text-lg">
+            <button onclick="saveVillageAndProceed()" class="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition shadow">शुरू करें</button>
         </div>
     </div>
 
     <!-- मुख्य ऐप कंटेनर -->
-    <div id="main-app" class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="bg-green-700 text-white p-4 shadow-md flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img id="header-avatar" src="" class="w-10 h-10 rounded-full border border-white object-cover hidden" alt="Profile">
+    <div id="main-app" class="max-w-md mx-auto bg-emerald-900 min-h-screen flex flex-col shadow-2xl pb-10">
+        
+        <!-- टॉप हेडर (यूज़र और गाँव का नाम) -->
+        <div class="bg-emerald-900 p-4 text-white flex justify-between items-center border-b border-emerald-800">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-full bg-amber-500 overflow-hidden border-2 border-white flex items-center justify-center font-bold text-lg">गाँव</div>
                 <div>
-                    <h1 class="text-xl font-bold">MeraGaov - <span id="display-village-name">गाँव</span></h1>
-                    <p class="text-xs text-green-200">लाइव एडमिन डैशबोर्ड एक्टिव</p>
+                    <h1 class="font-bold text-lg leading-tight">MeraGaov - <span id="display-village-name">गाँव</span></h1>
                 </div>
             </div>
-            <button onclick="requestVillageReset()" class="bg-amber-600 text-xs px-3 py-1 rounded hover:bg-amber-700">गाँव रीसेट अनुरोध</button>
-        </header>
+            <div class="flex gap-2">
+                <button onclick="switchView('home')" class="bg-amber-500 text-emerald-950 font-bold px-3 py-1 rounded-lg text-xs shadow">Menu</button>
+            </div>
+        </div>
 
-        <!-- Navigation Tabs -->
-        <nav class="bg-white shadow flex overflow-x-auto">
-            <button onclick="switchTab('munadi')" id="btn-munadi" class="flex-1 py-3 px-3 text-center font-medium border-b-2 border-green-600 text-green-600 whitespace-nowrap text-sm">मुनादी</button>
-            <button onclick="switchTab('bazar')" id="btn-bazar" class="flex-1 py-3 px-3 text-center font-medium border-b-2 border-transparent text-gray-600 whitespace-nowrap text-sm">बाज़ार</button>
-            <button onclick="switchTab('badhai')" id="btn-badhai" class="flex-1 py-3 px-3 text-center font-medium border-b-2 border-transparent text-gray-600 whitespace-nowrap text-sm">बधाई</button>
-            <button onclick="switchTab('history')" id="btn-history" class="flex-1 py-3 px-3 text-center font-medium border-b-2 border-transparent text-gray-600 whitespace-nowrap text-sm">इतिहास</button>
-            <button onclick="switchTab('admin')" id="btn-admin" class="flex-1 py-3 px-3 text-center font-medium border-b-2 border-transparent text-gray-600 whitespace-nowrap text-sm">Admin Dashboard</button>
-        </nav>
+        <!-- लाइव बैनर / फोटो सेक्शन (Admin Approved) -->
+        <div id="top-banner-box" class="w-full bg-emerald-800 text-white text-center py-2 px-4 shadow hidden">
+            <img id="village-banner-img" src="" alt="गाँव का बैनर" class="w-full max-h-40 object-cover rounded-lg mb-1 hidden">
+            <p id="village-banner-text" class="text-xs font-medium">स्वागत है आपका अपने डिजिटल गाँव में!</p>
+        </div>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 p-4 max-w-4xl w-full mx-auto">
+        <!-- मंडी भाव / टिकर पट्टी -->
+        <div class="bg-emerald-950 text-amber-300 text-xs py-2 px-3 overflow-x-auto whitespace-nowrap border-b border-emerald-900 font-medium">
+            🌾 सरसों: ₹5,400/क्विंटल | 🌽 बाजरा: ₹2,600/क्विंटल | 🌤️ मौसम: सामान्य
+        </div>
+
+        <!-- होम पेज व्यू (स्टायलिश मेनू बटन) -->
+        <div id="view-home" class="p-4 space-y-3 flex-1">
             
-            <!-- 1. मुनादी Tab -->
-            <div id="tab-munadi" class="tab-content">
-                <div class="bg-white p-4 rounded shadow mb-4">
-                    <h3 class="font-bold text-lg mb-2 text-green-800">नई मुनादी जोड़ें</h3>
-                    <input type="text" id="munadi-title" placeholder="शीर्षक" class="w-full border p-2 rounded mb-2">
-                    <textarea id="munadi-desc" placeholder="सूचना यहाँ लिखें..." class="w-full border p-2 rounded mb-2"></textarea>
-                    <button onclick="addMunadi()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">पब्लिश करें</button>
-                </div>
-                <div id="munadi-list" class="space-y-3"></div>
+            <!-- गाँव कार्ड और रीसेट बटन -->
+            <div class="bg-white rounded-xl p-4 shadow-md text-center border border-gray-100">
+                <h3 class="text-xl font-bold text-emerald-900 mb-2 flex items-center justify-center gap-1">🏠 <span id="card-village-name">गाँव</span></h3>
+                <button onclick="requestVillageReset()" class="bg-red-600 text-white text-xs px-4 py-1.5 rounded-full font-semibold hover:bg-red-700 transition shadow">⚠️ गाँव रीसेट अनुरोध</button>
             </div>
 
-            <!-- 2. बाज़ार Tab -->
-            <div id="tab-bazar" class="tab-content hidden">
-                <div class="bg-white p-4 rounded shadow mb-4">
-                    <h3 class="font-bold text-lg mb-2 text-green-800">खरीद-बिक्री के लिए डालें</h3>
-                    <input type="text" id="bazar-item" placeholder="चीज़ का नाम (जैसे: साइकिल, गेहूँ)" class="w-full border p-2 rounded mb-2">
-                    <input type="text" id="bazar-price" placeholder="कीमत / विवरण" class="w-full border p-2 rounded mb-2">
-                    <button onclick="addBazarItem()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">जोड़ें</button>
-                </div>
-                <div id="bazar-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            <!-- मेनू बटन्स -->
+            <button onclick="openFeature('all_village')" class="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
+                <span>🌍 All Village (ओपन बाज़ार)</span> <span>→</span>
+            </button>
+
+            <button onclick="openFeature('dukan')" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
+                <span>🛒 1. दुकान और सेवा बाज़ार</span> <span>→</span>
+            </button>
+
+            <button onclick="openFeature('munadi')" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
+                <span>📢 2. मुनादी व जरूरी खबरें</span> <span>→</span>
+            </button>
+
+            <button onclick="openFeature('badhai')" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
+                <span>🎉 3. त्यौहार व बधाई संदेश</span> <span>→</span>
+            </button>
+
+            <button onclick="openFeature('bazar')" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
+                <span>🚜 4. खरीद-बिक्री बाज़ार</span> <span>→</span>
+            </button>
+
+            <button onclick="openFeature('history')" class="w-full bg-cyan-800 hover:bg-cyan-900 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
+                <span>🏛️ 5. गाँव का इतिहास और गैलरी</span> <span>→</span>
+            </button>
+
+            <button onclick="openFeature('chat')" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
+                <span>💬 6. Admin Chat Room</span> <span class="bg-red-500 text-xs px-2 py-0.5 rounded-full">लाइव</span> <span>→</span>
+            </button>
+
+            <!-- Admin Dashboard Button -->
+            <button onclick="openFeature('admin')" class="w-full bg-slate-800 hover:bg-slate-900 text-amber-300 font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm border border-amber-500/30">
+                <span>⚙️ Main Admin Dashboard</span> <span>→</span>
+            </button>
+        </div>
+
+        <!-- फीचर्स डिटेल व्यू (Dynamic Content Area) -->
+        <div id="view-content" class="p-4 hidden flex-1 bg-gray-50 text-gray-800">
+            <button onclick="backToHome()" class="mb-4 bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">← पीछे जाएं (Menu)</button>
+            <div id="dynamic-content-area" class="space-y-4">
+                <!-- यहाँ अलग-अलग फीचर्स लोड होंगे -->
             </div>
+        </div>
 
-            <!-- 3. बधाई संदेश Tab -->
-            <div id="tab-badhai" class="tab-content hidden">
-                <div class="bg-white p-4 rounded shadow mb-4">
-                    <h3 class="font-bold text-lg mb-2 text-green-800">बधाई संदेश भेजें</h3>
-                    <input type="text" id="badhai-name" placeholder="किसको बधाई है?" class="w-full border p-2 rounded mb-2">
-                    <textarea id="badhai-msg" placeholder="संदेश..." class="w-full border p-2 rounded mb-2"></textarea>
-                    <button onclick="addBadhai()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">भेजें</button>
-                </div>
-                <div id="badhai-list" class="space-y-3"></div>
-            </div>
-
-            <!-- 4. इतिहास Tab -->
-            <div id="tab-history" class="tab-content hidden">
-                <div class="bg-white p-4 rounded shadow mb-4">
-                    <h3 class="font-bold text-lg mb-2 text-green-800">गाँव का इतिहास जोड़ें</h3>
-                    <textarea id="history-desc" placeholder="गाँव के इतिहास के बारे में यहाँ लिखें..." class="w-full border p-2 rounded mb-2 h-32"></textarea>
-                    <button onclick="saveHistory()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">इतिहास सेव करें</button>
-                </div>
-                <div class="bg-white p-4 rounded shadow">
-                    <h4 class="font-bold text-md mb-2 text-gray-700">हमारे गाँव का इतिहास:</h4>
-                    <div id="history-display" class="text-gray-600 whitespace-pre-line">अभी इतिहास नहीं जोड़ा गया है।</div>
-                </div>
-            </div>
-
-            <!-- 5. Admin Dashboard Tab (Cleaned & Powered) -->
-            <div id="tab-admin" class="tab-content hidden space-y-4">
-                <div class="bg-white p-4 rounded shadow border border-blue-100">
-                    <h3 class="font-bold text-lg mb-2 text-blue-800">डैशबोर्ड नियंत्रण (Admin Control)</h3>
-                    <p class="text-sm text-gray-600 mb-4">यहाँ से आप अपने गाँव के बैनर, फोटो और सभी डेटा को सीधे कंट्रोल और डिलीट कर सकते हैं।</p>
-                    
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">बैनर इमेज लिंक (URL)</label>
-                            <input type="text" id="admin-banner-url" placeholder="https://image-link.jpg" class="w-full border p-2 rounded text-sm mb-1">
-                            <button onclick="updateBanner()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs hover:bg-blue-700">बैनर लाइव करें</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- गाँव के डेटा मैनेजमेंट टूल्स -->
-                <div class="bg-white p-4 rounded shadow">
-                    <h4 class="font-bold text-md mb-3 text-gray-700">लाइव डेटा डिलीट / मैनेज करें</h4>
-                    <div id="admin-manage-list" class="space-y-2 text-sm">
-                        <!-- डायनेमिक डेटा यहाँ लोड होगा जिसे एडमिन डिलीट कर सकेगा -->
-                    </div>
-                </div>
-            </div>
-
-        </main>
     </div>
 
     <!-- JavaScript Logic -->
     <script>
-        // Firebase कॉन्फ़िगरेशन (अपनी असली डिटेल्स यहाँ डालें)
+        // Firebase कॉन्फ़िगरेशन (अपनी असली डिटेल्स यहाँ भरें)
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
@@ -151,9 +127,10 @@
                 currentVillage = savedVillage;
                 document.getElementById("village-setup-screen").classList.add("hidden");
                 document.getElementById("display-village-name").innerText = currentVillage;
+                document.getElementById("card-village-name").innerText = currentVillage;
                 loadLiveData();
             } else {
-                // अगर पहली बार है तभी पॉप-अप दिखेगा, वरना नहीं
+                // पहली बार आने पर ही पॉप-अप खुलेगा, दोबारा कभी परेशान नहीं करेगा
                 document.getElementById("village-setup-screen").classList.remove("hidden");
             }
         };
@@ -168,147 +145,292 @@
             currentVillage = villageInput;
             document.getElementById("village-setup-screen").classList.add("hidden");
             document.getElementById("display-village-name").innerText = currentVillage;
+            document.getElementById("card-village-name").innerText = currentVillage;
             loadLiveData();
         }
 
         function requestVillageReset() {
             let newVillage = prompt("नया गाँव दर्ज करें:");
             if(newVillage) {
-                localStorage.setItem("meragaov_name", newVillage);
-                currentVillage = newVillage;
+                localStorage.setItem("meragaov_name", newVillage.trim());
+                currentVillage = newVillage.trim();
                 location.reload();
             }
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('nav button').forEach(el => {
-                el.classList.remove('border-green-600', 'text-green-600');
-                el.classList.add('border-transparent', 'text-gray-600');
-            });
-
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            const activeBtn = document.getElementById('btn-' + tabName);
-            activeBtn.classList.add('border-green-600', 'text-green-600');
-            activeBtn.classList.remove('border-transparent', 'text-gray-600');
+        function switchView(view) {
+            if(view === 'home') {
+                document.getElementById('view-home').classList.remove('hidden');
+                document.getElementById('view-content').classList.add('hidden');
+            } else {
+                document.getElementById('view-home').classList.add('hidden');
+                document.getElementById('view-content').classList.remove('hidden');
+            }
         }
 
-        function loadLiveData() {
-            let safeVillageKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
+        function backToHome() {
+            switchView('home');
+        }
 
+        function openFeature(featureKey) {
+            switchView('content');
+            const area = document.getElementById('dynamic-content-area');
+            area.innerHTML = '';
+
+            let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
+
+            if (featureKey === 'munadi') {
+                area.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow border">
+                        <h3 class="font-bold text-lg mb-3 text-emerald-800">📢 मुनादी व जरूरी खबरें</h3>
+                        <input type="text" id="m-title" placeholder="शीर्षक" class="w-full border p-2.5 rounded-lg mb-2 text-sm">
+                        <textarea id="m-desc" placeholder="सूचना यहाँ विस्तार से लिखें..." class="w-full border p-2.5 rounded-lg mb-2 text-sm h-24"></textarea>
+                        <button onclick="addMunadiData()" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg text-sm shadow">पब्लिश करें</button>
+                    </div>
+                    <div id="list-munadi" class="space-y-3 mt-4"></div>
+                `;
+                loadMunadiList(safeKey);
+            } 
+            else if (featureKey === 'bazar') {
+                area.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow border">
+                        <h3 class="font-bold text-lg mb-3 text-blue-800">🚜 खरीद-बिक्री बाज़ार</h3>
+                        <input type="text" id="b-item" placeholder="चीज़ का नाम (जैसे: साइकिल, गेहूँ)" class="w-full border p-2.5 rounded-lg mb-2 text-sm">
+                        <input type="text" id="b-price" placeholder="कीमत / विवरण" class="w-full border p-2.5 rounded-lg mb-2 text-sm">
+                        <button onclick="addBazarData()" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg text-sm shadow">बाज़ार में डालें</button>
+                    </div>
+                    <div id="list-bazar" class="space-y-3 mt-4"></div>
+                `;
+                loadBazarList(safeKey);
+            }
+            else if (featureKey === 'badhai') {
+                area.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow border">
+                        <h3 class="font-bold text-lg mb-3 text-pink-600">🎉 त्यौहार व बधाई संदेश</h3>
+                        <input type="text" id="bd-name" placeholder="किसको बधाई है?" class="w-full border p-2.5 rounded-lg mb-2 text-sm">
+                        <textarea id="bd-msg" placeholder="बधाई संदेश..." class="w-full border p-2.5 rounded-lg mb-2 text-sm"></textarea>
+                        <button onclick="addBadhaiData()" class="w-full bg-pink-600 text-white font-bold py-2.5 rounded-lg text-sm shadow">संदेश भेजें</button>
+                    </div>
+                    <div id="list-badhai" class="space-y-3 mt-4"></div>
+                `;
+                loadBadhaiList(safeKey);
+            }
+            else if (featureKey === 'history') {
+                area.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow border">
+                        <h3 class="font-bold text-lg mb-3 text-cyan-800">🏛️ गाँव का इतिहास और जानकारी</h3>
+                        <textarea id="h-text" placeholder="गाँव के इतिहास के बारे में यहाँ लिखें..." class="w-full border p-2.5 rounded-lg mb-2 text-sm h-32"></textarea>
+                        <button onclick="saveHistoryData()" class="w-full bg-cyan-700 text-white font-bold py-2.5 rounded-lg text-sm shadow">इतिहास सेव करें</button>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow border mt-4">
+                        <h4 class="font-bold text-md mb-2 text-gray-700">गाँव का इतिहास:</h4>
+                        <div id="display-history-text" class="text-gray-600 text-sm whitespace-pre-line">লোড हो रहा है...</div>
+                    </div>
+                `;
+                loadHistoryData(safeKey);
+            }
+            else if (featureKey === 'chat') {
+                area.innerHTML = `
+                    <div class="bg-white rounded-xl shadow border flex flex-col h-[70vh]">
+                        <div class="p-3 border-b bg-purple-50 font-bold text-purple-900 text-sm">💬 Admin Chat Room (लाइव)</div>
+                        <div id="chat-messages" class="flex-1 p-3 overflow-y-auto space-y-2 text-sm"></div>
+                        <div class="p-2 border-t flex gap-2 bg-gray-50">
+                            <input type="text" id="chat-input" placeholder="संदेश लिखें..." class="flex-1 border p-2 rounded-lg text-sm" onkeypress="handleChatKey(event)">
+                            <button onclick="sendChatMessage()" class="bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-bold">सेंड</button>
+                        </div>
+                    </div>
+                `;
+                loadChatMessages(safeKey);
+            }
+            else if (featureKey === 'admin') {
+                area.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow border space-y-4">
+                        <h3 class="font-bold text-lg text-slate-800">⚙️ Main Admin Dashboard</h3>
+                        <p class="text-xs text-gray-500">यहाँ से एडमिन बैनर इमेज लाइव कर सकते हैं और किसी भी पोस्ट को डिलीट कर सकते हैं।</p>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">बैनर इमेज लिंक (URL)</label>
+                            <input type="text" id="admin-banner-link" placeholder="https://..." class="w-full border p-2 rounded-lg text-sm mb-2">
+                            <button onclick="updateBannerLive()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-xs font-bold shadow">बैनर लाइव करें</button>
+                        </div>
+
+                        <hr>
+                        <h4 class="font-bold text-sm text-red-600">🗑️ डेटा नियंत्रण और डिलीट पावर</h4>
+                        <div id="admin-delete-list" class="space-y-2 text-xs"></div>
+                    </div>
+                `;
+                loadAdminDataManagement(safeKey);
+            }
+            else {
+                area.innerHTML = `<div class="bg-white p-4 rounded shadow text-center">यह फीचर जल्द आ रहा है!</div>`;
+            }
+        }
+
+        // --- डेटा लोडिंग और सेविंग फंक्शन्स ---
+
+        function loadLiveData() {
+            let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
             // बैनर सिंक
-            db.ref('villages/' + safeVillageKey + '/banner').on('value', (snapshot) => {
+            db.ref('villages/' + safeKey + '/banner').on('value', (snapshot) => {
+                const box = document.getElementById('top-banner-box');
                 const img = document.getElementById('village-banner-img');
                 if(snapshot.exists() && snapshot.val().url) {
                     img.src = snapshot.val().url;
                     img.classList.remove('hidden');
+                    box.classList.remove('hidden');
                 } else {
-                    img.classList.add('hidden');
-                }
-            });
-
-            // 1. मुनादी
-            db.ref('villages/' + safeVillageKey + '/munadi').on('value', (snapshot) => {
-                const list = document.getElementById('munadi-list');
-                const adminList = document.getElementById('admin-manage-list');
-                list.innerHTML = '';
-                if (!snapshot.exists()) {
-                    list.innerHTML = '<p class="text-gray-500 text-sm">अभी कोई मुनादी नहीं है।</p>';
-                    return;
-                }
-                snapshot.forEach((child) => {
-                    let d = child.val();
-                    let key = child.key;
-                    list.innerHTML += `<div class="bg-white p-4 rounded shadow"><h4 class="font-bold text-green-800">${escapeHtml(d.title)}</h4><p class="text-gray-700">${escapeHtml(d.desc)}</p></div>`;
-                });
-            });
-
-            // 2. बाज़ार
-            db.ref('villages/' + safeVillageKey + '/bazar').on('value', (snapshot) => {
-                const list = document.getElementById('bazar-list');
-                list.innerHTML = '';
-                if (!snapshot.exists()) {
-                    list.innerHTML = '<p class="text-gray-500 text-sm">बाज़ार में अभी कोई सामान नहीं है।</p>';
-                    return;
-                }
-                snapshot.forEach((child) => {
-                    let d = child.val();
-                    list.innerHTML += `<div class="bg-white p-4 rounded shadow"><h4 class="font-bold">${escapeHtml(d.item)}</h4><p class="text-green-600 font-semibold">${escapeHtml(d.price)}</p></div>`;
-                });
-            });
-
-            // 3. बधाई
-            db.ref('villages/' + safeVillageKey + '/badhai').on('value', (snapshot) => {
-                const list = document.getElementById('badhai-list');
-                list.innerHTML = '';
-                if (!snapshot.exists()) {
-                    list.innerHTML = '<p class="text-gray-500 text-sm">अभी कोई बधाई संदेश नहीं है।</p>';
-                    return;
-                }
-                snapshot.forEach((child) => {
-                    let d = child.val();
-                    list.innerHTML += `<div class="bg-white p-4 rounded shadow"><h4 class="font-bold text-pink-600">बधाई: ${escapeHtml(d.name)}</h4><p>${escapeHtml(d.msg)}</p></div>`;
-                });
-            });
-
-            // 4. इतिहास
-            db.ref('villages/' + safeVillageKey + '/history').on('value', (snapshot) => {
-                const display = document.getElementById('history-display');
-                if (snapshot.exists() && snapshot.val().text) {
-                    display.innerText = snapshot.val().text;
-                } else {
-                    display.innerText = "अभी इतिहास नहीं जोड़ा गया है।";
+                    box.classList.add('hidden');
                 }
             });
         }
 
-        function updateBanner() {
+        function updateBannerLive() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
-            let url = document.getElementById('admin-banner-url').value.trim();
+            let url = document.getElementById('admin-banner-link').value.trim();
             db.ref('villages/' + safeKey + '/banner').set({ url });
             alert("बैनर सफलताપूर्वक लाइव कर दिया गया है!");
         }
 
-        function addMunadi() {
+        // मुनादी
+        function addMunadiData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
-            let title = document.getElementById('munadi-title').value.trim();
-            let desc = document.getElementById('munadi-desc').value.trim();
+            let title = document.getElementById('m-title').value.trim();
+            let desc = document.getElementById('m-desc').value.trim();
             if(title && desc) {
                 db.ref('villages/' + safeKey + '/munadi').push({ title, desc });
-                document.getElementById('munadi-title').value = '';
-                document.getElementById('munadi-desc').value = '';
+                document.getElementById('m-title').value = '';
+                document.getElementById('m-desc').value = '';
             } else { alert("कृपया दोनों फील्ड भरें!"); }
         }
+        function loadMunadiList(safeKey) {
+            db.ref('villages/' + safeKey + '/munadi').on('value', (snapshot) => {
+                const list = document.getElementById('list-munadi');
+                if(!list) return;
+                list.innerHTML = '';
+                if(!snapshot.exists()) { list.innerHTML = '<p class="text-xs text-gray-500">कोई मुनादी नहीं है।</p>'; return; }
+                snapshot.forEach((child) => {
+                    let d = child.val();
+                    list.innerHTML += `<div class="bg-white p-3 rounded-lg shadow-sm border"><h4 class="font-bold text-green-800 text-sm">${escapeHtml(d.title)}</h4><p class="text-xs text-gray-600 mt-1">${escapeHtml(d.desc)}</p></div>`;
+                });
+            });
+        }
 
-        function addBazarItem() {
+        // बाज़ार
+        function addBazarData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
-            let item = document.getElementById('bazar-item').value.trim();
-            let price = document.getElementById('bazar-price').value.trim();
+            let item = document.getElementById('b-item').value.trim();
+            let price = document.getElementById('b-price').value.trim();
             if(item && price) {
                 db.ref('villages/' + safeKey + '/bazar').push({ item, price });
-                document.getElementById('bazar-item').value = '';
-                document.getElementById('bazar-price').value = '';
+                document.getElementById('b-item').value = '';
+                document.getElementById('b-price').value = '';
             } else { alert("कृपया दोनों फील्ड भरें!"); }
         }
+        function loadBazarList(safeKey) {
+            db.ref('villages/' + safeKey + '/bazar').on('value', (snapshot) => {
+                const list = document.getElementById('list-bazar');
+                if(!list) return;
+                list.innerHTML = '';
+                if(!snapshot.exists()) { list.innerHTML = '<p class="text-xs text-gray-500">बाज़ार खाली है।</p>'; return; }
+                snapshot.forEach((child) => {
+                    let d = child.val();
+                    list.innerHTML += `<div class="bg-white p-3 rounded-lg shadow-sm border flex justify-between items-center"><span class="font-bold text-sm">${escapeHtml(d.item)}</span><span class="text-blue-600 text-xs font-semibold">${escapeHtml(d.price)}</span></div>`;
+                });
+            });
+        }
 
-        function addBadhai() {
+        // बधाई
+        function addBadhaiData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
-            let name = document.getElementById('badhai-name').value.trim();
-            let msg = document.getElementById('badhai-msg').value.trim();
+            let name = document.getElementById('bd-name').value.trim();
+            let msg = document.getElementById('bd-msg').value.trim();
             if(name && msg) {
                 db.ref('villages/' + safeKey + '/badhai').push({ name, msg });
-                document.getElementById('badhai-name').value = '';
-                document.getElementById('badhai-msg').value = '';
+                document.getElementById('bd-name').value = '';
+                document.getElementById('bd-msg').value = '';
             } else { alert("कृपया दोनों फील्ड भरें!"); }
         }
+        function loadBadhaiList(safeKey) {
+            db.ref('villages/' + safeKey + '/badhai').on('value', (snapshot) => {
+                const list = document.getElementById('list-badhai');
+                if(!list) return;
+                list.innerHTML = '';
+                if(!snapshot.exists()) { list.innerHTML = '<p class="text-xs text-gray-500">कोई बधाई संदेश नहीं है।</p>'; return; }
+                snapshot.forEach((child) => {
+                    let d = child.val();
+                    list.innerHTML += `<div class="bg-white p-3 rounded-lg shadow-sm border"><h4 class="font-bold text-pink-600 text-sm">बधाई: ${escapeHtml(d.name)}</h4><p class="text-xs text-gray-600 mt-1">${escapeHtml(d.msg)}</p></div>`;
+                });
+            });
+        }
 
-        function saveHistory() {
+        // इतिहास
+        function saveHistoryData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
-            let text = document.getElementById('history-desc').value.trim();
+            let text = document.getElementById('h-text').value.trim();
             if(text) {
                 db.ref('villages/' + safeKey + '/history').set({ text });
                 alert("इतिहास सेव हो गया!");
             } else { alert("कृपया कुछ लिखें!"); }
+        }
+        function loadHistoryData(safeKey) {
+            db.ref('villages/' + safeKey + '/history').on('value', (snapshot) => {
+                const disp = document.getElementById('display-history-text');
+                if(!disp) return;
+                if(snapshot.exists() && snapshot.val().text) {
+                    disp.innerText = snapshot.val().text;
+                } else {
+                    disp.innerText = "अभी इतिहास नहीं जोड़ा गया है।";
+                }
+            });
+        }
+
+        // चैट
+        function sendChatMessage() {
+            let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
+            let text = document.getElementById('chat-input').value.trim();
+            if(text) {
+                db.ref('villages/' + safeKey + '/chat').push({ text });
+                document.getElementById('chat-input').value = '';
+            }
+        }
+        function handleChatKey(e) { if(e.key === 'Enter') sendChatMessage(); }
+        function loadChatMessages(safeKey) {
+            db.ref('villages/' + safeKey + '/chat').on('value', (snapshot) => {
+                const box = document.getElementById('chat-messages');
+                if(!box) return;
+                box.innerHTML = '';
+                if(!snapshot.exists()) { box.innerHTML = '<p class="text-xs text-gray-400 text-center">चैट शुरू करें...</p>'; return; }
+                snapshot.forEach((child) => {
+                    let d = child.val();
+                    box.innerHTML += `<div class="bg-gray-100 p-2 rounded text-xs">${escapeHtml(d.text)}</div>`;
+                });
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        // एडमिन डिलीट पावर
+        function loadAdminDataManagement(safeKey) {
+            const adminList = document.getElementById('admin-delete-list');
+            if(!adminList) return;
+            adminList.innerHTML = '<p class="text-gray-500">मुनादी और बाज़ार की लिस्ट:</p>';
+            
+            db.ref('villages/' + safeKey + '/munadi').on('value', (snapshot) => {
+                if(snapshot.exists()) {
+                    snapshot.forEach((child) => {
+                        let k = child.key;
+                        let val = child.val();
+                        adminList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded border"><span>📢 ${escapeHtml(val.title)}</span><button onclick="deleteItem('munadi', '${k}')" class="bg-red-600 text-white px-2 py-1 rounded text-[10px]">डिलीट</button></div>`;
+                    });
+                }
+            });
+        }
+
+        function deleteItem(type, id) {
+            let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
+            if(confirm("क्या आप इसे डिलीट करना चाहते हैं?")) {
+                db.ref('villages/' + safeKey + '/' + type + '/' + id).remove();
+                alert("सफलतापूर्वक डिलीट हो गया!");
+            }
         }
 
         function escapeHtml(text) {
