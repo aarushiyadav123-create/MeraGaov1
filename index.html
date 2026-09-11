@@ -6,7 +6,7 @@
     <title>MeraGaov - मेरी पहचान</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDKs (Compat Version) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
@@ -15,9 +15,18 @@
     <!-- गाँव चयन स्क्रीन (केवल पहली बार) -->
     <div id="village-setup-screen" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
-            <h2 class="text-2xl font-bold mb-3 text-green-800">अपना गाँव चुनें</h2>
-            <p class="text-sm text-gray-600 mb-4">गाँव का नाम दर्ज करें ताकि आपके गाँव की सही जानकारी दिख सके।</p>
-            <input type="text" id="input-village-name" placeholder="गाँव का नाम (जैसे: Malkosh)" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-600 text-lg">
+            <h2 class="text-2xl font-bold mb-3 text-green-800">जिला और गाँव चुनें</h2>
+            <p class="text-sm text-gray-600 mb-4">अपने जिला और गाँव का नाम चुनें ताकि सही जानकारी दिख सके।</p>
+            
+            <select id="input-district" class="w-full border border-gray-300 rounded-lg p-3 mb-3 text-sm bg-white">
+                <option value="चरखी दादरी">चरखी दादरी</option>
+                <option value="भिवानी">भिवानी</option>
+                <option value="रोहतक">रोहतक</option>
+                <option value="झज्जर">झज्जर</option>
+            </select>
+
+            <input type="text" id="input-village-name" placeholder="गाँव का नाम (जैसे: Malkosh)" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-600 text-sm">
+            
             <button onclick="saveVillageAndProceed()" class="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition shadow">शुरू करें</button>
         </div>
     </div>
@@ -25,17 +34,16 @@
     <!-- मुख्य ऐप कंटेनर -->
     <div id="main-app" class="max-w-md mx-auto bg-emerald-900 min-h-screen flex flex-col shadow-2xl pb-10">
         
-        <!-- टॉप हेडर (यूज़र और गाँव का नाम) -->
+        <!-- टॉप हेडर -->
         <div class="bg-emerald-900 p-4 text-white flex justify-between items-center border-b border-emerald-800">
             <div class="flex items-center gap-2">
-                <div class="w-10 h-10 rounded-full bg-amber-500 overflow-hidden border-2 border-white flex items-center justify-center font-bold text-lg">गाँव</div>
+                <div class="w-10 h-10 rounded-full bg-amber-500 overflow-hidden border-2 border-white flex items-center justify-center font-bold text-lg text-emerald-950">गाँव</div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight">MeraGaov - <span id="display-village-name">गाँव</span></h1>
+                    <h1 class="font-bold text-base leading-tight">MeraGaov - <span id="display-village-name">गाँव</span></h1>
+                    <p class="text-[10px] text-emerald-200" id="display-district-name">जिला: -</p>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="switchView('home')" class="bg-amber-500 text-emerald-950 font-bold px-3 py-1 rounded-lg text-xs shadow">Menu</button>
-            </div>
+            <button onclick="switchView('home')" class="bg-amber-500 text-emerald-950 font-bold px-3 py-1 rounded-lg text-xs shadow">Menu</button>
         </div>
 
         <!-- लाइव बैनर / फोटो सेक्शन (Admin Approved) -->
@@ -54,8 +62,8 @@
             
             <!-- गाँव कार्ड और रीसेट बटन -->
             <div class="bg-white rounded-xl p-4 shadow-md text-center border border-gray-100">
-                <h3 class="text-xl font-bold text-emerald-900 mb-2 flex items-center justify-center gap-1">🏠 <span id="card-village-name">गाँव</span></h3>
-                <button onclick="requestVillageReset()" class="bg-red-600 text-white text-xs px-4 py-1.5 rounded-full font-semibold hover:bg-red-700 transition shadow">⚠️ गाँव रीसेट अनुरोध</button>
+                <h3 class="text-xl font-bold text-emerald-900 mb-1 flex items-center justify-center gap-1">🏠 <span id="card-village-name">गाँव</span></h3>
+                <button onclick="requestVillageReset()" class="bg-red-600 text-white text-xs px-4 py-1.5 rounded-full font-semibold hover:bg-red-700 transition shadow mt-2">⚠️ गाँव रीसेट अनुरोध</button>
             </div>
 
             <!-- मेनू बटन्स -->
@@ -84,7 +92,7 @@
             </button>
 
             <button onclick="openFeature('chat')" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold p-3.5 rounded-xl shadow-md flex justify-between items-center transition text-sm">
-                <span>💬 6. Admin Chat Room</span> <span class="bg-red-500 text-xs px-2 py-0.5 rounded-full">लाइव</span> <span>→</span>
+                <span>💬 6. Admin Chat Room</span> <span class="bg-red-500 text-xs px-2 py-0.5 rounded-full text-white">लाइव</span> <span>→</span>
             </button>
 
             <!-- Admin Dashboard Button -->
@@ -93,19 +101,16 @@
             </button>
         </div>
 
-        <!-- फीचर्स डिटेल व्यू (Dynamic Content Area) -->
+        <!-- फीचर्स डिटेल व्यू -->
         <div id="view-content" class="p-4 hidden flex-1 bg-gray-50 text-gray-800">
             <button onclick="backToHome()" class="mb-4 bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow">← पीछे जाएं (Menu)</button>
-            <div id="dynamic-content-area" class="space-y-4">
-                <!-- यहाँ अलग-अलग फीचर्स लोड होंगे -->
-            </div>
+            <div id="dynamic-content-area" class="space-y-4"></div>
         </div>
 
     </div>
 
     <!-- JavaScript Logic -->
     <script>
-        // Firebase कॉन्फ़िगरेशन (अपनी असली डिटेल्स यहाँ भरें)
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
@@ -120,33 +125,47 @@
         const db = firebase.database();
 
         let currentVillage = "";
+        let currentDistrict = "";
 
         window.onload = function() {
             const savedVillage = localStorage.getItem("meragaov_name");
-            if (savedVillage) {
+            const savedDistrict = localStorage.getItem("meragaov_district");
+            
+            if (savedVillage && savedDistrict) {
                 currentVillage = savedVillage;
+                currentDistrict = savedDistrict;
                 document.getElementById("village-setup-screen").classList.add("hidden");
-                document.getElementById("display-village-name").innerText = currentVillage;
-                document.getElementById("card-village-name").innerText = currentVillage;
+                updateUIWithVillageData();
                 loadLiveData();
             } else {
-                // पहली बार आने पर ही पॉप-अप खुलेगा, दोबारा कभी परेशान नहीं करेगा
                 document.getElementById("village-setup-screen").classList.remove("hidden");
             }
         };
 
         function saveVillageAndProceed() {
+            const district = document.getElementById("input-district").value;
             const villageInput = document.getElementById("input-village-name").value.trim();
+            
             if (villageInput === "") {
                 alert("कृपया गाँव का नाम दर्ज करें!");
                 return;
             }
+            
             localStorage.setItem("meragaov_name", villageInput);
+            localStorage.setItem("meragaov_district", district);
+            
             currentVillage = villageInput;
+            currentDistrict = district;
+            
             document.getElementById("village-setup-screen").classList.add("hidden");
-            document.getElementById("display-village-name").innerText = currentVillage;
-            document.getElementById("card-village-name").innerText = currentVillage;
+            updateUIWithVillageData();
             loadLiveData();
+        }
+
+        function updateUIWithVillageData() {
+            document.getElementById("display-village-name").innerText = currentVillage;
+            document.getElementById("display-district-name").innerText = "जिला: " + currentDistrict;
+            document.getElementById("card-village-name").innerText = currentVillage;
         }
 
         function requestVillageReset() {
@@ -256,21 +275,18 @@
 
                         <hr>
                         <h4 class="font-bold text-sm text-red-600">🗑️ डेटा नियंत्रण और डिलीट पावर</h4>
-                        <div id="admin-delete-list" class="space-y-2 text-xs"></div>
+                        <div id="admin-delete-list" class="space-y-2 text-xs mt-2"></div>
                     </div>
                 `;
                 loadAdminDataManagement(safeKey);
             }
             else {
-                area.innerHTML = `<div class="bg-white p-4 rounded shadow text-center">यह फीचर जल्द आ रहा है!</div>`;
+                area.innerHTML = `<div class="bg-white p-4 rounded shadow text-center text-sm">यह फीचर जल्द आ रहा है!</div>`;
             }
         }
 
-        // --- डेटा लोडिंग और सेविंग फंक्शन्स ---
-
         function loadLiveData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
-            // बैनर सिंक
             db.ref('villages/' + safeKey + '/banner').on('value', (snapshot) => {
                 const box = document.getElementById('top-banner-box');
                 const img = document.getElementById('village-banner-img');
@@ -291,7 +307,6 @@
             alert("बैनर सफलताપूर्वक लाइव कर दिया गया है!");
         }
 
-        // मुनादी
         function addMunadiData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
             let title = document.getElementById('m-title').value.trim();
@@ -302,6 +317,7 @@
                 document.getElementById('m-desc').value = '';
             } else { alert("कृपया दोनों फील्ड भरें!"); }
         }
+
         function loadMunadiList(safeKey) {
             db.ref('villages/' + safeKey + '/munadi').on('value', (snapshot) => {
                 const list = document.getElementById('list-munadi');
@@ -315,7 +331,6 @@
             });
         }
 
-        // बाज़ार
         function addBazarData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
             let item = document.getElementById('b-item').value.trim();
@@ -326,6 +341,7 @@
                 document.getElementById('b-price').value = '';
             } else { alert("कृपया दोनों फील्ड भरें!"); }
         }
+
         function loadBazarList(safeKey) {
             db.ref('villages/' + safeKey + '/bazar').on('value', (snapshot) => {
                 const list = document.getElementById('list-bazar');
@@ -339,7 +355,6 @@
             });
         }
 
-        // बधाई
         function addBadhaiData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
             let name = document.getElementById('bd-name').value.trim();
@@ -350,6 +365,7 @@
                 document.getElementById('bd-msg').value = '';
             } else { alert("कृपया दोनों फील्ड भरें!"); }
         }
+
         function loadBadhaiList(safeKey) {
             db.ref('villages/' + safeKey + '/badhai').on('value', (snapshot) => {
                 const list = document.getElementById('list-badhai');
@@ -363,7 +379,6 @@
             });
         }
 
-        // इतिहास
         function saveHistoryData() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
             let text = document.getElementById('h-text').value.trim();
@@ -372,6 +387,7 @@
                 alert("इतिहास सेव हो गया!");
             } else { alert("कृपया कुछ लिखें!"); }
         }
+
         function loadHistoryData(safeKey) {
             db.ref('villages/' + safeKey + '/history').on('value', (snapshot) => {
                 const disp = document.getElementById('display-history-text');
@@ -384,7 +400,6 @@
             });
         }
 
-        // चैट
         function sendChatMessage() {
             let safeKey = currentVillage.replace(/[.#$\/\[\]]/g, "_");
             let text = document.getElementById('chat-input').value.trim();
@@ -393,7 +408,9 @@
                 document.getElementById('chat-input').value = '';
             }
         }
+
         function handleChatKey(e) { if(e.key === 'Enter') sendChatMessage(); }
+
         function loadChatMessages(safeKey) {
             db.ref('villages/' + safeKey + '/chat').on('value', (snapshot) => {
                 const box = document.getElementById('chat-messages');
@@ -408,18 +425,17 @@
             });
         }
 
-        // एडमिन डिलीट पावर
         function loadAdminDataManagement(safeKey) {
             const adminList = document.getElementById('admin-delete-list');
             if(!adminList) return;
-            adminList.innerHTML = '<p class="text-gray-500">मुनादी और बाज़ार की लिस्ट:</p>';
+            adminList.innerHTML = '<p class="text-gray-500 text-xs">मुनादी लिस्ट:</p>';
             
             db.ref('villages/' + safeKey + '/munadi').on('value', (snapshot) => {
                 if(snapshot.exists()) {
                     snapshot.forEach((child) => {
                         let k = child.key;
                         let val = child.val();
-                        adminList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded border"><span>📢 ${escapeHtml(val.title)}</span><button onclick="deleteItem('munadi', '${k}')" class="bg-red-600 text-white px-2 py-1 rounded text-[10px]">डिलीट</button></div>`;
+                        adminList.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded border mt-1"><span>📢 ${escapeHtml(val.title)}</span><button onclick="deleteItem('munadi', '${k}')" class="bg-red-600 text-white px-2 py-1 rounded text-[10px]">डिलीट</button></div>`;
                     });
                 }
             });
