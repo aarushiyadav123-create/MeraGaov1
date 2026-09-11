@@ -521,7 +521,7 @@ return;
 }else{
 let approvedGreetings=this.state.greetings.filter(x=>x.status==="approved"&&x.villageHi===this.state.searchVillage&&x.imageUrl);
 let bannerImg=approvedGreetings.length>0?approvedGreetings[0].imageUrl:"https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&auto=format&fit=crop";
-dashBannerEl.innerHTML=`<div class="village-banner-dash" onclick="document.getElementById('dashBannerImageInput').click()" title="बैनर फोटो बदलने के लिए यहाँ क्लिक करें"><b>🌟 ${this.esc(display)} डिजिटल डैशबोर्ड</b><br><span style="font-size:11px;color:#a7f3d0">📸 फोटो बदलने के लिए यहाँ क्लिक करें</span><img src="${bannerImg}"></div>`;
+dashBannerEl.innerHTML=`<div class="village-banner-dash" onclick="document.getElementById('dashBannerImageInput').click()" title="बैनर फोटो बदलने के लिए यहाँ क्लिक करें"><b>🌟 ${this.esc(display)} डिजिटल डैशबोर्ड</b><img src="${bannerImg}"></div>`;
 }
 
 let html="";
