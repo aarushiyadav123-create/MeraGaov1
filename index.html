@@ -35,7 +35,7 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .bg-1{background:linear-gradient(135deg,#0d9488,#0f766e)}.bg-2{background:linear-gradient(135deg,#ea580c,#c2410c)}
 .bg-3{background:linear-gradient(135deg,#db2777,#be185d)}.bg-4{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
 .bg-5{background:linear-gradient(135deg,#7c3aed,#6d28d9)}.bg-6{background:linear-gradient(135deg,#0891b2,#155e75)}
-.bg-7{background:linear-gradient(135deg,#475569,#334155)}
+.bg-7{background:linear-gradient(135deg,#475569,#334155)}.bg-8{background:linear-gradient(135deg,#0284c7,#0369a1)}
 .card,.service-item,.media-card{background:#fff;border:1px solid #cbd5e1;border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px #0000000d}
 .service-item{border:2px solid #e2e8f0;margin-bottom:16px;background:#ffffff}
 .card-title{font-size:14px;font-weight:700;color:#064e3b;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px}
@@ -121,7 +121,7 @@ searchVillage:localStorage.getItem("searchVillage")||"",
 userVillage:localStorage.getItem("userVillage")||"",
 userDistrict:localStorage.getItem("userDistrict")||"",
 villageLocked:localStorage.getItem("villageLocked")==="true",
-services:[],announcements:[],greetings:[],market:[],historyGallery:[],chaupalMessages:[],
+services:[],announcements:[],greetings:[],market:[],historyGallery:[],sarpanchDetails:[],chaupalMessages:[],
 allowedChatUsers:{},subAdmins:[],villagesConfig:{},villageUnlockRequests:{},
 userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
 isAdminLoggedIn:false,isSubAdminLoggedIn:false,
@@ -189,7 +189,7 @@ const {db,ref,onValue}=window.firebaseDb;
 const listen=(path,fn)=>onValue(ref(db,path),s=>fn(s.val()),e=>console.error(path,e));
 const load=(key,val)=>{
 this.state[key]=val?Object.keys(val).map(k=>({id:k,...val[k]})).reverse():[];
-if(["list","announcements","greetings","market","historyGallery","admin"].includes(this.state.view))this.render();
+if(["list","announcements","greetings","market","historyGallery","sarpanchDetails","admin"].includes(this.state.view))this.render();
 this.updateTicker();
 };
 listen("services",v=>load("services",v));
@@ -197,6 +197,7 @@ listen("announcements",v=>load("announcements",v));
 listen("market",v=>load("market",v));
 listen("greetings",v=>load("greetings",v));
 listen("historyGallery",v=>load("historyGallery",v));
+listen("sarpanchDetails",v=>load("sarpanchDetails",v));
 listen("chaupalMessages",v=>{
 let a=v?Object.keys(v).map(k=>({id:k,...v[k]})).reverse():[];
 if(this.state.view!=="chaupal"&&a.length>this.state.chaupalMessages.length){this.unreadMessageCount+=a.length-this.state.chaupalMessages.length;}
@@ -380,25 +381,14 @@ this.saveData("market",{name:n,phone:p,title:t,itemType:it,imageUrl:this.tempIma
 }
 submitHistoryGallery(){
 let n=document.getElementById("hgName")?.value.trim(),t=document.getElementById("hgTitle")?.value.trim(),c=document.getElementById("hgCategory")?.value;
-let sarpanch=document.getElementById("hgSarpanch")?.value.trim()||"";
-let totalWards=document.getElementById("hgTotalWards")?.value.trim()||"";
-let panchs=document.getElementById("hgPanchs")?.value.trim()||"";
-let population=document.getElementById("hgPopulation")?.value.trim()||"";
 let showTicker=document.getElementById("hgShowTicker")?.checked||false;
 if(!n||!t||!this.tempMedia)return alert("सभी विवरण भरें!");
-this.saveData("historyGallery",{name:n,title:t,category:c,sarpanch,totalWards,panchs,population,mediaUrl:this.tempMedia,mediaType:this.tempMediaType,showOnTicker:showTicker},"इतिहास पोस्ट अपलोड कर दी गई!");
+this.saveData("historyGallery",{name:n,title:t,category:c,mediaUrl:this.tempMedia,mediaType:this.tempMediaType,showOnTicker:showTicker},"इतिहास पोस्ट अपलोड कर दी गई!");
 }
-
-/* History Form Toggle Function */
-toggleHistoryForm(){
-let fContainer=document.getElementById("historyFormContainer");
-if(fContainer){
-if(fContainer.style.display==="none"||fContainer.style.display===""){
-fContainer.style.display="block";
-}else{
-fContainer.style.display="none";
-}
-}
+submitSarpanchDetails(){
+let name=document.getElementById("sdName")?.value.trim(),sarpanch=document.getElementById("sdSarpanch")?.value.trim(),totalWards=document.getElementById("sdTotalWards")?.value.trim(),panchs=document.getElementById("sdPanchs")?.value.trim(),population=document.getElementById("sdPopulation")?.value.trim();
+if(!sarpanch)return alert("सरपंच का नाम भरें!");
+this.saveData("sarpanchDetails",{name,sarpanch,totalWards,panchs,population,imageUrl:this.tempImage},"सरपंच व वार्ड विवरण सेव कर दिया गया!");
 }
 
 verifyUserForChat(){
@@ -440,18 +430,18 @@ listItems(arr,type){
 return arr.filter(x=>x.status==="approved"&&x.districtId===this.state.selectedDistrict&&x.villageHi===this.state.searchVillage).map(x=>`
 <div class="service-item">
 <span class="service-tag">${this.esc(x.category||x.itemType||type)}</span>
-<div class="service-name">${this.esc(x.title||x.message||x.name||"")}</div>
+<div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch||"")}</div>
 ${x.sarpanch?`<p style="font-size:12px;color:#064e3b"><b>सरपंच:</b> ${this.esc(x.sarpanch)}</p>`:""}
 ${x.totalWards?`<p style="font-size:12px;color:#064e3b"><b>कुल वार्ड:</b> ${this.esc(x.totalWards)}</p>`:""}
 ${x.panchs?`<p style="font-size:12px;color:#064e3b"><b>पंचों के नाम:</b> ${this.esc(x.panchs)}</p>`:""}
 ${x.population?`<p style="font-size:12px;color:#064e3b"><b>कुल आबादी:</b> ${this.esc(x.population)}</p>`:""}
-${x.name?`<p style="font-size:11px;color:#047857"><b>नाम:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}
+${x.name&&type!=="Sarpanch"?`<p style="font-size:11px;color:#047857"><b>नाम:</b> ${this.esc(x.name)}${x.phone?` | <b>फोन:</b> ${this.esc(x.phone)}`:""}</p>`:""}
 ${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}
 ${x.mediaUrl?(x.mediaType==="video"?`<video src="${this.esc(x.mediaUrl)}" controls class="service-video"></video>`:`<img src="${this.esc(x.mediaUrl)}" class="service-img">`):""}
 ${x.phone&&type==="Market"?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}
 <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
-${this.isAdminForVillage(this.state.searchVillage)?`<button class="live-btn" onclick="app.makeItemLiveDirect('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":"historyGallery"}','${this.esc(x.id)}')">🔴 Live</button>`:""}
-${this.isAdminForVillage(this.state.searchVillage)?`<button class="delete-btn" onclick="app.deleteItem('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":"historyGallery"}','${this.esc(x.id)}')">🗑️ Delete</button>`:""}
+${this.isAdminForVillage(this.state.searchVillage)?`<button class="live-btn" onclick="app.makeItemLiveDirect('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":type==="Sarpanch"?"sarpanchDetails":"historyGallery"}','${this.esc(x.id)}')">🔴 Live</button>`:""}
+${this.isAdminForVillage(this.state.searchVillage)?`<button class="delete-btn" onclick="app.deleteItem('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":type==="Sarpanch"?"sarpanchDetails":"historyGallery"}','${this.esc(x.id)}')">🗑️ Delete</button>`:""}
 </div>
 </div>`).join("");
 }
@@ -465,25 +455,9 @@ html+=`<div class="live-upload-box"><input class="form-control" id="annName" pla
 }else if(view.type==="market"){
 html+=`<div class="live-upload-box"><input class="form-control" id="mName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="mPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="mItemType" style="margin-bottom:8px"><option>भैंस / गाय</option><option>ट्रैक्टर</option><option>बाइक</option><option>अन्य</option></select><textarea class="form-control" id="mTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="mShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button></div>${this.listItems(this.state.market,"Market")||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="history"){
-html+=`
-<button class="btn-submit" style="background:#0284c7; margin-bottom:15px;" onclick="app.toggleHistoryForm()">➕ नया इतिहास / गैलरी पोस्ट जोड़ें</button>
-<div id="historyFormContainer" style="display:none;">
-  <div class="live-upload-box">
-    <input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px">
-    <select class="form-control" id="hgCategory" style="margin-bottom:8px"><option>गाँव का इतिहास</option><option>गाँव की गैलरी</option></select>
-    <input class="form-control" id="hgSarpanch" placeholder="वर्तमान सरपंच का नाम..." style="margin-bottom:8px">
-    <input class="form-control" id="hgTotalWards" placeholder="कुल वार्ड संख्या..." style="margin-bottom:8px">
-    <textarea class="form-control" id="hgPanchs" placeholder="पंचों के नाम (कॉमा लगाकर)..." style="margin-bottom:8px;height:50px"></textarea>
-    <input class="form-control" id="hgPopulation" placeholder="गाँव की कुल आबादी..." style="margin-bottom:8px">
-    <textarea class="form-control" id="hgTitle" placeholder="इतिहास या विवरण..." style="margin-bottom:8px;height:70px"></textarea>
-    <input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px">
-    <div style="text-align:left;margin-bottom:8px;font-size:12px">
-      <label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="hgShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label>
-    </div>
-    <button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button>
-  </div>
-</div>
-${this.listItems(this.state.historyGallery,"History")||`<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px"><select class="form-control" id="hgCategory" style="margin-bottom:8px"><option>गाँव का इतिहास</option><option>गाँव की गैलरी</option></select><textarea class="form-control" id="hgTitle" placeholder="इतिहास या विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="hgShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button></div>${this.listItems(this.state.historyGallery,"History")||`<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}`;
+}else if(view.type==="sarpanch"){
+html+=`<div class="live-upload-box"><input class="form-control" id="sdName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="sdSarpanch" placeholder="वर्तमान सरपंच का नाम..." style="margin-bottom:8px"><input class="form-control" id="sdTotalWards" placeholder="कुल वार्ड संख्या..." style="margin-bottom:8px"><textarea class="form-control" id="sdPanchs" placeholder="पंचों के नाम (कॉमा लगाकर)..." style="margin-bottom:8px;height:50px"></textarea><input class="form-control" id="sdPopulation" placeholder="गाँव की कुल आबादी..." style="margin-bottom:8px"><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><button class="btn-submit" onclick="app.submitSarpanchDetails()">📤 विवरण सेव करें</button></div>${this.listItems(this.state.sarpanchDetails,"Sarpanch")||`<div class="empty-state">कोई विवरण उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="greeting"){
 html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSelect" style="margin-bottom:8px"><option value="default">ग्रीन थीम फ्रेम</option></select><input class="form-control" id="gName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="gMsg" placeholder="बधाई संदेश..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px"><button class="btn-submit" style="background:#2563eb" onclick="app.generateGreetingBannerCanvas()">🎨 सुंदर बैनर बनाएं</button><div id="bannerPreviewBox"></div><div style="text-align:left;margin:8px 0;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="gShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitGreeting()">📤 बैनर लाइव करें</button></div>${this.listItems(this.state.greetings,"Greeting")||`<div class="empty-state">कोई बधाई संदेश उपलब्ध नहीं है।</div>`}`;
 }
@@ -519,7 +493,7 @@ return arr.filter(x=>{
 let matchesTarget = this.state.isAdminLoggedIn ? x.districtId===this.state.selectedDistrict : (x.districtId===targetDistrict && x.villageHi===targetVillage);
 let isSubAdminQueue = this.hasSubAdminForCurrentVillage() ? x.status==="pending_subadmin" : x.status==="pending";
 return matchesTarget && (x.status==="pending" || x.status==="pending_subadmin");
-}).map(x=>`<div class="media-card"><span class="service-tag">${label} - ${this.esc(x.villageHi)}</span><div class="service-name">${this.esc(x.title||x.message||x.name)}</div>${x.name?`<p style="font-size:11px">द्वारा: ${this.esc(x.name)} | ${this.esc(x.phone||"")}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.mediaUrl?(x.mediaType==="video"?`<video src="${this.esc(x.mediaUrl)}" controls class="service-video"></video>`:`<img src="${this.esc(x.mediaUrl)}" class="service-img">`):""}<div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve & Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Reject</button></div></div>`).join("");
+}).map(x=>`<div class="media-card"><span class="service-tag">${label} - ${this.esc(x.villageHi)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div>${x.name?`<p style="font-size:11px">द्वारा: ${this.esc(x.name)} | ${this.esc(x.phone||"")}</p>`:""}${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}${x.mediaUrl?(x.mediaType==="video"?`<video src="${this.esc(x.mediaUrl)}" controls class="service-video"></video>`:`<img src="${this.esc(x.mediaUrl)}" class="service-img">`):""}<div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve & Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Reject</button></div></div>`).join("");
 };
 
 let directVillageOpenBox="";
@@ -535,7 +509,7 @@ let dsOptions=Object.keys(D).map(k=>`<option value="${k}">${this.esc(D[k].nameHi
 let subAdminList=this.state.subAdmins.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px"><span><b>${this.esc(s.name||"Sub-Admin")}</b> ${s.phone?`(${this.esc(s.phone)})`:""} - ${this.esc(s.village)}</span><button class="delete-btn" style="margin:0" onclick="app.deleteSubAdmin('${s.id}')">🗑️ हटाएं</button></div>`).join("");
 subAdminManagerBox=`<div class="card" style="background:#fefce8;border:1px solid #facc15"><div class="card-title">🔑 सब-एडमिन जोड़ें</div><select class="form-control" id="subAdminDist" style="margin-bottom:8px">${dsOptions}</select><input class="form-control" id="subAdminName" placeholder="नाम..." style="margin-bottom:8px"><input class="form-control" id="subAdminPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><input class="form-control" id="subAdminVillage" placeholder="गाँव का नाम..." style="margin-bottom:8px"><input class="form-control" id="subAdminPwd" type="password" placeholder="गुप्त पासवर्ड..." style="margin-bottom:8px"><button class="btn-submit" style="background:#ca8a04" onclick="app.addSubAdminConfig()">➕ सब-एडमिन सेव करें</button><div style="margin-top:10px">${subAdminList||'<div style="color:#713f12;font-size:12px">कोई सब-एडमिन नहीं।</div>'}</div></div>`;
 }
-return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>${directVillageOpenBox}${subAdminManagerBox}<div class="card" style="background:#eff6ff;border:1px solid #60a5fa"><div class="card-title">📊 Dashboard - ${this.state.isSubAdminLoggedIn?this.esc(this.state.loggedInSubAdminName):"Main Admin"}</div><div style="font-size:12px;line-height:1.7"><b>गाँव:</b> ${this.esc(this.state.searchVillage)}<br><b>अधिकार:</b> ${this.hasSubAdminForCurrentVillage()?"इस गाँव के सब-एडमिन के पास अप्रूवल पावर है।":"डायरेक्ट लाइव सिस्टम"}</div></div>${pendingList(this.state.services,"services","Shop")}${pendingList(this.state.announcements,"announcements","Announcement")}${pendingList(this.state.greetings,"greetings","Greeting")}${pendingList(this.state.market,"market","Market")}${pendingList(this.state.historyGallery,"historyGallery","History")}`;
+return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>${directVillageOpenBox}${subAdminManagerBox}<div class="card" style="background:#eff6ff;border:1px solid #60a5fa"><div class="card-title">📊 Dashboard - ${this.state.isSubAdminLoggedIn?this.esc(this.state.loggedInSubAdminName):"Main Admin"}</div><div style="font-size:12px;line-height:1.7"><b>गाँव:</b> ${this.esc(this.state.searchVillage)}<br><b>अधिकार:</b> ${this.hasSubAdminForCurrentVillage()?"इस गाँव के सब-एडमिन के पास अप्रूवल पावर है।":"डायरेक्ट लाइव सिस्टम"}</div></div>${pendingList(this.state.services,"services","Shop")}${pendingList(this.state.announcements,"announcements","Announcement")}${pendingList(this.state.greetings,"greetings","Greeting")}${pendingList(this.state.market,"market","Market")}${pendingList(this.state.sarpanchDetails,"sarpanchDetails","Sarpanch")}${pendingList(this.state.historyGallery,"historyGallery","History")}`;
 }
 render(){
 let d=D[this.state.selectedDistrict];if(!d){this.state.selectedDistrict="charkhi-dadri";d=D[this.state.selectedDistrict];}
@@ -566,12 +540,13 @@ dashBannerEl.innerHTML=`<div class="village-banner-dash" onclick="document.getEl
 
 let html="";
 if(this.state.view==="home"){
-html=`<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">🌐 All Village (ओपन बाज़ार) →</div><div class="menu-card bg-1" onclick="app.changeView('list')">🛒 1. दुकान और सेवा बाजार →</div><div class="menu-card bg-2" onclick="app.changeView('announcements')">📢 2. मुनादी व जरूरी खबरें →</div><div class="menu-card bg-3" onclick="app.changeView('greetings')">🎉 3. त्यौहार व बधाई संदेश →</div><div class="menu-card bg-4" onclick="app.changeView('market')">🚜 4. खरीद-बिक्री बाज़ार →</div><div class="menu-card bg-6" onclick="app.changeView('historyGallery')">🏛️ 5. गाँव का इतिहास और गैलरी →</div><div class="menu-card bg-5" onclick="app.changeView('chaupal')">💬 6. Admin Chat Room ${this.unreadMessageCount?`<span class="badge">${this.unreadMessageCount} नया</span>`:""} →</div><div class="menu-card bg-7" onclick="app.changeView('jokes')">😂 चुटकुला ऑफ़ द डे (Joke of the Day) →</div>`;
+html=`<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">🌐 All Village (ओपन बाज़ार) →</div><div class="menu-card bg-1" onclick="app.changeView('list')">🛒 1. दुकान और सेवा बाजार →</div><div class="menu-card bg-2" onclick="app.changeView('announcements')">📢 2. मुनादी व जरूरी खबरें →</div><div class="menu-card bg-3" onclick="app.changeView('greetings')">🎉 3. त्यौहार व बधाई संदेश →</div><div class="menu-card bg-4" onclick="app.changeView('market')">🚜 4. खरीद-बिक्री बाज़ार →</div><div class="menu-card bg-8" onclick="app.changeView('sarpanch')">🏛️ 5. सरपंच, वार्ड व आबादी विवरण →</div><div class="menu-card bg-6" onclick="app.changeView('historyGallery')">📸 6. गाँव का इतिहास और गैलरी →</div><div class="menu-card bg-5" onclick="app.changeView('chaupal')">💬 7. Admin Chat Room ${this.unreadMessageCount?`<span class="badge">${this.unreadMessageCount} नया</span>`:""} →</div><div class="menu-card bg-7" onclick="app.changeView('jokes')">😂 चुटकुला ऑफ़ द डे (Joke of the Day) →</div>`;
 }else if(this.state.view==="list"){html=this.renderForm({title:"🛒 दुकान और सेवा बाजार",type:"shop"});
 }else if(this.state.view==="announcements"){html=this.renderForm({title:"📢 मुनादी व जरूरी खबरें",type:"announcement"});
 }else if(this.state.view==="greetings"){html=this.renderForm({title:"🎉 त्यौहार व बधाई संदेश",type:"greeting"});
 }else if(this.state.view==="market"){html=this.renderForm({title:"🚜 खरीद-बिक्री बाज़ार",type:"market"});
-}else if(this.state.view==="historyGallery"){html=this.renderForm({title:"🏛️ गाँव का इतिहास और गैलरी",type:"history"});
+}else if(this.state.view==="historyGallery"){html=this.renderForm({title:"📸 गाँव का इतिहास और गैलरी",type:"history"});
+}else if(this.state.view==="sarpanch"){html=this.renderForm({title:"🏛️ सरपंच, वार्ड व आबादी विवरण",type:"sarpanch"});
 }else if(this.state.view==="allVillageMarket"){html=this.renderAllVillageMarket();
 }else if(this.state.view==="jokes"){html=this.renderJokes();
 }else if(this.state.view==="chaupal"){html=this.renderChat();
