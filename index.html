@@ -388,6 +388,19 @@ let showTicker=document.getElementById("hgShowTicker")?.checked||false;
 if(!n||!t||!this.tempMedia)return alert("सभी विवरण भरें!");
 this.saveData("historyGallery",{name:n,title:t,category:c,sarpanch,totalWards,panchs,population,mediaUrl:this.tempMedia,mediaType:this.tempMediaType,showOnTicker:showTicker},"इतिहास पोस्ट अपलोड कर दी गई!");
 }
+
+/* History Form Toggle Function */
+toggleHistoryForm(){
+let fContainer=document.getElementById("historyFormContainer");
+if(fContainer){
+if(fContainer.style.display==="none"||fContainer.style.display===""){
+fContainer.style.display="block";
+}else{
+fContainer.style.display="none";
+}
+}
+}
+
 verifyUserForChat(){
 let p=document.getElementById("verifyPhoneInput")?.value.trim(),pass=document.getElementById("verifyPassInput")?.value.trim();
 if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn&&(!p||this.state.allowedChatUsers[p]!==pass))return alert("गलत मोबाइल नंबर या पासवर्ड!");
@@ -452,7 +465,25 @@ html+=`<div class="live-upload-box"><input class="form-control" id="annName" pla
 }else if(view.type==="market"){
 html+=`<div class="live-upload-box"><input class="form-control" id="mName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="mPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="mItemType" style="margin-bottom:8px"><option>भैंस / गाय</option><option>ट्रैक्टर</option><option>बाइक</option><option>अन्य</option></select><textarea class="form-control" id="mTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="mShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button></div>${this.listItems(this.state.market,"Market")||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="history"){
-html+=`<div class="live-upload-box"><input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px"><select class="form-control" id="hgCategory" style="margin-bottom:8px"><option>गाँव का इतिहास</option><option>गाँव की गैलरी</option></select><input class="form-control" id="hgSarpanch" placeholder="वर्तमान सरपंच का नाम..." style="margin-bottom:8px"><input class="form-control" id="hgTotalWards" placeholder="कुल वार्ड संख्या..." style="margin-bottom:8px"><textarea class="form-control" id="hgPanchs" placeholder="पंचों के नाम (कॉमा लगाकर)..." style="margin-bottom:8px;height:50px"></textarea><input class="form-control" id="hgPopulation" placeholder="गाँव की कुल आबादी..." style="margin-bottom:8px"><textarea class="form-control" id="hgTitle" placeholder="इतिहास या विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="hgShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button></div>${this.listItems(this.state.historyGallery,"History")||`<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}`;
+html+=`
+<button class="btn-submit" style="background:#0284c7; margin-bottom:15px;" onclick="app.toggleHistoryForm()">➕ नया इतिहास / गैलरी पोस्ट जोड़ें</button>
+<div id="historyFormContainer" style="display:none;">
+  <div class="live-upload-box">
+    <input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px">
+    <select class="form-control" id="hgCategory" style="margin-bottom:8px"><option>गाँव का इतिहास</option><option>गाँव की गैलरी</option></select>
+    <input class="form-control" id="hgSarpanch" placeholder="वर्तमान सरपंच का नाम..." style="margin-bottom:8px">
+    <input class="form-control" id="hgTotalWards" placeholder="कुल वार्ड संख्या..." style="margin-bottom:8px">
+    <textarea class="form-control" id="hgPanchs" placeholder="पंचों के नाम (कॉमा लगाकर)..." style="margin-bottom:8px;height:50px"></textarea>
+    <input class="form-control" id="hgPopulation" placeholder="गाँव की कुल आबादी..." style="margin-bottom:8px">
+    <textarea class="form-control" id="hgTitle" placeholder="इतिहास या विवरण..." style="margin-bottom:8px;height:70px"></textarea>
+    <input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px">
+    <div style="text-align:left;margin-bottom:8px;font-size:12px">
+      <label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="hgShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label>
+    </div>
+    <button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button>
+  </div>
+</div>
+${this.listItems(this.state.historyGallery,"History")||`<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="greeting"){
 html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSelect" style="margin-bottom:8px"><option value="default">ग्रीन थीम फ्रेम</option></select><input class="form-control" id="gName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="gMsg" placeholder="बधाई संदेश..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px"><button class="btn-submit" style="background:#2563eb" onclick="app.generateGreetingBannerCanvas()">🎨 सुंदर बैनर बनाएं</button><div id="bannerPreviewBox"></div><div style="text-align:left;margin:8px 0;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="gShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitGreeting()">📤 बैनर लाइव करें</button></div>${this.listItems(this.state.greetings,"Greeting")||`<div class="empty-state">कोई बधाई संदेश उपलब्ध नहीं है।</div>`}`;
 }
