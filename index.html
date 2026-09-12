@@ -556,7 +556,7 @@ html=`<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">
 document.getElementById("mainContent").innerHTML=html;
 }
 }
-let app;try{app=new VillageApp();}catch(e){console.error(e);document.getElementById("splashScreen")?.remove();document.getElementById("mainContent").innerHTML=`<div class="card" style="text-align:center;border:2px solid #dc2626"><h3 style="color:#dc2626">⚠️ समस्या</h3><p style="font-size:13px;margin-top:8px">${String(e.message||e)}</p></div>`;}
+let app;try{app=main=new VillageApp();}catch(e){console.error(e);document.getElementById("splashScreen")?.remove();document.getElementById("mainContent").innerHTML=`<div class="card" style="text-align:center;border:2px solid #dc2626"><h3 style="color:#dc2626">⚠️ समस्या</h3><p style="font-size:13px;margin-top:8px">${String(e.message||e)}</p></div>`;}
 </script>
 </body>
 </html>
