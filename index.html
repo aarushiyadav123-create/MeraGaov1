@@ -449,11 +449,35 @@ renderForm(view){
 let d=this.state.searchVillage;
 let html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">${view.title}<span>📍 ${this.esc(d)}</span></div>`;
 if(view.type==="shop"){
-html+=`<div class="live-upload-box"><input class="form-control" id="sName" placeholder="नाम / दुकान का नाम..." style="margin-bottom:8px"><input class="form-control" id="sPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="sCat" style="margin-bottom:8px"><option>किराना स्टोर</option><option>पंडित जी</option><option>मिस्त्री</option><option>इलेक्ट्रीशियन</option><option>प्लंबर</option><option>गाड़ी किराये के लिए</option><option>मेडिकल स्टोर</option><option>अन्य</option></select><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="sShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें</button></div>${this.listItems(this.state.services,"Shop")||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><input class="form-control" id="sName" placeholder="नाम / दुकान का नाम..." style="margin-bottom:8px"><input class="form-control" id="sPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px">
+<select class="form-control" id="sCat" style="margin-bottom:8px">
+    <option value="mistri">🛠️ मिस्त्री / कारीगर</option>
+    <option value="dukan">🏥 दुकान / सीएसएसी</option>
+    <option value="kirana">🛒 किराना स्टोर</option>
+    <option value="krishi">🌾 कृषि व खाद-बीज</option>
+    <option value="medical">💊 स्वास्थ्य / मेडिकल</option>
+    <option value="pandit">🛕 पंडित जी</option>
+    <option value="electrician">⚡ इलेक्ट्रीशियन</option>
+    <option value="plumber">🔧 प्लंबर</option>
+    <option value="vehicle">🚗 गाड़ी किराये के लिए</option>
+    <option value="other">📦 अन्य</option>
+</select>
+<input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="sShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें</button></div>${this.listItems(this.state.services,"Shop")||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="announcement"){
 html+=`<div class="live-upload-box"><input class="form-control" id="annName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="annPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="annTitle" placeholder="मुनादी का विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="annShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitAnnouncement()">📤 मुनादी भेजें</button></div>${this.listItems(this.state.announcements,"Announcement")||`<div class="empty-state">कोई मुनादी उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="market"){
-html+=`<div class="live-upload-box"><input class="form-control" id="mName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="mPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><select class="form-control" id="mItemType" style="margin-bottom:8px"><option>भैंस / गाय</option><option>ट्रैक्टर</option><option>बाइक</option><option>अन्य</option></select><textarea class="form-control" id="mTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="mShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button></div>${this.listItems(this.state.market,"Market")||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><input class="form-control" id="mName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="mPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px">
+<select class="form-control" id="mItemType" style="margin-bottom:8px">
+    <option value="buffalo_cow">🐃 भैंस / गाय</option>
+    <option value="tractor">🚜 ट्रैक्टर</option>
+    <option value="bike">🏍️ बाइक</option>
+    <option value="jwar">🌾 जवार</option>
+    <option value="berseem">🌿 बरसीम</option>
+    <option value="wheat">🌾 गेहूं</option>
+    <option value="tuda">🌾 तूड़ा</option>
+    <option value="other">📦 अन्य</option>
+</select>
+<textarea class="form-control" id="mTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="mShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button></div>${this.listItems(this.state.market,"Market")||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="history"){
 html+=`<div class="live-upload-box"><input class="form-control" id="hgName" placeholder="आपका नाम..." style="margin-bottom:8px"><select class="form-control" id="hgCategory" style="margin-bottom:8px"><option>गाँव का इतिहास</option><option>गाँव की गैलरी</option></select><textarea class="form-control" id="hgTitle" placeholder="इतिहास या विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*,video/*" class="form-control" onchange="app.handleHistoryGalleryMedia(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="hgShowTicker"> 📢 इसे ऊपर लाइव पट्टी (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitHistoryGallery()">📤 पोस्ट अपलोड करें</button></div>${this.listItems(this.state.historyGallery,"History")||`<div class="empty-state">कोई मीडिया उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="sarpanch"){
@@ -535,7 +559,7 @@ return;
 }else{
 let approvedGreetings=this.state.greetings.filter(x=>x.status==="approved"&&x.villageHi===this.state.searchVillage&&x.imageUrl);
 let bannerImg=approvedGreetings.length>0?approvedGreetings[0].imageUrl:"https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&auto=format&fit=crop";
-dashBannerEl.innerHTML=`<div class="village-banner-dash" onclick="document.getElementById('dashBannerImageInput').click()" title="बैनर फोटो बदलने के लिए यहाँ क्लिक करें"><b>🌟 ${this.esc(display)} डिजिटल डैशबोर्ड</b><img src="${bannerImg}"></div>`;
+dashBannerEl.innerHTML=`<div class="village-banner-dash" onclick="document.getElementById('dashBannerImageInput').click()" style="cursor:pointer" title="बैनर बदलने के लिए क्लिक करें"><b>🌟 ${this.esc(display)} डिजिटल डैशबोर्ड</b><img src="${bannerImg}"></div>`;
 }
 
 let html="";
