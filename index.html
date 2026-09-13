@@ -54,10 +54,6 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .delete-btn{background:#dc2626}.approve-btn{background:#2563eb}.live-btn{background:#059669}
 .firebase-status{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:7px 12px;border-radius:20px;font-size:11px;z-index:10000;display:none}
 .policy-text{font-size:13px;line-height:1.7;color:#334155}
-
-/* New Admin Popup CSS Style */
-#adminPopupModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99999;justify-content:center;align-items:center}
-.admin-popup-box{background:#fff;padding:20px;border-radius:14px;width:90%;max-width:350px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.3);border:3px solid #10b981}
 </style>
 </head>
 <body>
@@ -67,17 +63,6 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 <div style="font-size:22px;font-weight:700">MeraGaov - मेरी पहचान</div>
 <div style="font-size:13px;color:#a7f3d0">गाँव की हर खबर और जरूरत, अब आपके फोन पर</div>
 </div>
-
-<!-- Admin Popup Modal HTML -->
-<div id="adminPopupModal">
-  <div class="admin-popup-box">
-    <div style="font-size:32px;margin-bottom:8px">🔔</div>
-    <h3 style="color:#064e3b;margin-bottom:8px">नई रिक्वेस्ट आई है!</h3>
-    <p id="adminPopupText" style="font-size:13px;color:#334155;margin-bottom:15px">Shop या Live की नई रिक्वेस्ट सबमिट की गई है।</p>
-    <button class="btn-submit" onclick="app.closeAdminPopup()" style="background:#059669">ठीक है</button>
-  </div>
-</div>
-
 <input type="file" id="dashBannerImageInput" accept="image/*" hidden onchange="app.updateDashboardBannerPhoto(this)">
 <div class="container">
 <header class="header">
@@ -146,7 +131,6 @@ loggedInSubAdminVillage:"",loggedInSubAdminDistrict:"",loggedInSubAdminName:"",l
 currentUserPhone:localStorage.getItem("currentUserPhone")||""
 };
 this.tempImage="";this.tempMedia="";this.tempMediaType="image";this.generatedBannerDataUrl="";this.bannerUserPhotoObj=null;this.unreadMessageCount=0;
-this.isVillageDataOpen=false; // State for toggle button of village data
 this.listeners();this.firebase();this.render();this.startup();
 }
 esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
@@ -207,29 +191,19 @@ if(this.firebaseStarted||!window.firebaseDb)return;
 this.firebaseStarted=true;
 const {db,ref,onValue}=window.firebaseDb;
 const listen=(path,fn)=>onValue(ref(db,path),s=>fn(s.val()),e=>console.error(path,e));
-const load=(key,val,isRequestNode=false)=>{
-let prevCount = this.state[key]?.length || 0;
-let newArr = val?Object.keys(val).map(k=>({id:k,...val[k]})).reverse():[];
-this.state[key]=newArr;
-
-// Trigger Admin Popup if a new item/request is added and user is admin or sub-admin
-if(isRequestNode && newArr.length > prevCount && prevCount > 0){
-  if(this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn){
-    this.showAdminPopup("नया Shop या Live अनुरोध प्राप्त हुआ है!");
-  }
-}
-
+const load=(key,val)=>{
+this.state[key]=val?Object.keys(val).map(k=>({id:k,...val[k]})).reverse():[];
 if(["list","announcements","greetings","market","historyGallery","sarpanchDetails","admin","feedback","khelKud"].includes(this.state.view))this.render();
 this.updateTicker();
 };
-listen("services",v=>load("services",v,true));
-listen("announcements",v=>load("announcements",v,true));
-listen("market",v=>load("market",v,true));
-listen("greetings",v=>load("greetings",v,true));
-listen("historyGallery",v=>load("historyGallery",v,true));
-listen("sarpanchDetails",v=>load("sarpanchDetails",v,true));
+listen("services",v=>load("services",v));
+listen("announcements",v=>load("announcements",v));
+listen("market",v=>load("market",v));
+listen("greetings",v=>load("greetings",v));
+listen("historyGallery",v=>load("historyGallery",v));
+listen("sarpanchDetails",v=>load("sarpanchDetails",v));
 listen("feedbacks",v=>load("feedbacks",v));
-listen("khelKud",v=>load("khelKud",v,true));
+listen("khelKud",v=>load("khelKud",v));
 listen("chaupalMessages",v=>{
 let a=v?Object.keys(v).map(k=>({id:k,...v[k]})).reverse():[];
 if(this.state.view!=="chaupal"&&a.length>this.state.chaupalMessages.length){this.unreadMessageCount+=a.length-this.state.chaupalMessages.length;}
@@ -249,20 +223,6 @@ this.state.userVillage="";this.state.userDistrict="";
 }
 if(this.state.view==="admin")this.render();
 });
-}
-showAdminPopup(msg){
-  let el = document.getElementById("adminPopupText");
-  if(el) el.textContent = msg;
-  let modal = document.getElementById("adminPopupModal");
-  if(modal) modal.style.display = "flex";
-}
-closeAdminPopup(){
-  let modal = document.getElementById("adminPopupModal");
-  if(modal) modal.style.display = "none";
-}
-toggleVillageDataSection(){
-  this.isVillageDataOpen = !this.isVillageDataOpen;
-  this.render();
 }
 updateTicker(){
 let e=document.getElementById("dynamicTickerText");
@@ -371,6 +331,12 @@ this.state.searchVillage=v;e.value="";
 alert(`नया गाँव "${v}" सफलतापूर्वक जोड़ दिया गया है!`);
 this.render();
 }
+toggleSubAdminForm(){
+let f = document.getElementById("subAdminFormContainer");
+if(f){
+f.style.display = f.style.display === "none" ? "block" : "none";
+}
+}
 addNewSubAdmin(){
 if(!this.state.isAdminLoggedIn)return alert("केवल Main Admin नया Sub-Admin जोड़ सकता है!");
 let name=document.getElementById("subAdminNameInput")?.value.trim();
@@ -384,17 +350,18 @@ if(!name||!phone||!village||!pwd)return alert("कृपया सभी वि�
 if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है!");
 let {db,ref,push,update}=window.firebaseDb;
 
-let newSubRef = push(ref(db, "subAdmins"), {
+push(ref(db, "subAdmins"), {
 name, phone, districtId: dist, village, villageHi: village, pwd, timestamp: Date.now()
 });
 
 let chatUpdates = {};
 chatUpdates[`allowedChatUsers/${phone}`] = pwd;
 update(ref(db), chatUpdates).then(()=>{
-alert(`सब-एडमिन "${name}" (${village}) सफलतापूर्वक जोड़ दिए गए हैं और चैट में भी अधिकृत कर दिए गए हैं!`);
+alert(`सब-एडमिन "${name}" (${village}) सफलतापूर्वक जोड़ दिए गए हैं!`);
 document.getElementById("subAdminNameInput").value="";
 document.getElementById("subAdminPhoneInput").value="";
 document.getElementById("subAdminPwdInput").value="";
+document.getElementById("subAdminFormContainer").style.display = "none";
 this.render();
 }).catch(e=>alert(e.message));
 }
@@ -603,11 +570,13 @@ if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.chang
 let filterVillage = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminVillage : null;
 let filterDistrict = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminDistrict : null;
 
+// सुधार 2: पेंडिंग रिक्वेस्ट जो मुख्य रूप से अप्रूव होने के लिए आई हैं, उन्हें सबसे ऊपर और साफ़ रूप में दिखाना
 const globalPendingList=(arr,path,label)=>arr.filter(x=>{
 if(filterVillage && x.villageHi !== filterVillage) return false;
 if(filterDistrict && x.districtId !== filterDistrict) return false;
-return true;
-}).map(x=>`<div class="media-card"><span class="service-tag">${label} | 📍 ${this.esc(x.villageHi||"गाँव")} | Status: ${this.esc(x.status)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
+// केवल पेंडिंग आइटम्स को पहले दिखाएंगे ताकि एडमिन/सब-एडमिन तुरंत देख सकें
+return x.status && x.status !== "approved";
+}).map(x=>`<div class="media-card" style="border:2px solid #fbbf24;background:#fffbeb"><span class="service-tag" style="background:#fbbf24;color:#0f172a">⏳ पेंडिंग: ${label} | 📍 ${this.esc(x.villageHi||"गाँव")}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve (गाँव में भेजें)</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
 
 let adminPanelTools = "";
 
@@ -631,17 +600,23 @@ adminPanelTools = `
 
     <hr style="border:0;border-top:1px solid #cbd5e1;margin:12px 0">
 
-    <label style="color:#064e3b;font-size:14px;font-weight:bold">🔑 नया Sub-Admin जोड़ें (नाम, नंबर, गाँव और पासवर्ड)</label>
-    <input class="form-control" id="subAdminNameInput" placeholder="सब-एडमिन का नाम..." style="margin:6px 0">
-    <input class="form-control" id="subAdminPhoneInput" placeholder="मोबाइल नंबर (Chat Access हेतु)..." style="margin:6px 0">
-    <select class="form-control" id="subAdminDistSelect" style="margin:6px 0" onchange="let d=this.value, s=document.getElementById('subAdminVillageSelect'); s.innerHTML=D[d]?D[d].villages.map(v=>\`<option value='\${v[0]}'>\${v[0]}</option>\`).join(''):'';">
-      ${Object.keys(D).map(k=>`<option value="${k}">${D[k].nameHi}</option>`).join("")}
-    </select>
-    <select class="form-control" id="subAdminVillageSelect" style="margin:6px 0">
-      ${D[this.state.selectedDistrict]?.villages.map(v=>`<option value="${v[0]}">${v[0]}</option>`).join("")}
-    </select>
-    <input class="form-control" id="subAdminPwdInput" placeholder="लॉगिन पासवर्ड..." style="margin:6px 0">
-    <button class="btn-submit" style="background:#2563eb" onclick="app.addNewSubAdmin()">➕ Sub-Admin जोड़ें व Chat में Active करें</button>
+    <!-- सुधार 1: सब-एडमिन जोड़ने का फॉर्म एक बटन के अंदर (Collapsible Toggle) कर दिया गया है -->
+    <button class="btn-submit" style="background:#2563eb;margin-bottom:10px" onclick="app.toggleSubAdminForm()">➕ नया Sub-Admin जोड़ें (फॉर्म खोलें/बंद करें)</button>
+    
+    <div id="subAdminFormContainer" style="display:none;background:#f8fafc;padding:12px;border-radius:10px;border:1px solid #cbd5e1;">
+      <label style="color:#064e3b;font-size:13px;font-weight:bold;margin-bottom:6px;display:block">सब-एडमिन विवरण भरें:</label>
+      <input class="form-control" id="subAdminNameInput" placeholder="सब-एडमिन का नाम..." style="margin-bottom:8px">
+      <input class="form-control" id="subAdminPhoneInput" placeholder="मोबाइल नंबर (Chat Access हेतु)..." style="margin-bottom:8px">
+      <select class="form-control" id="subAdminDistSelect" style="margin-bottom:8px" onchange="let d=this.value, s=document.getElementById('subAdminVillageSelect'); s.innerHTML=D[d]?D[d].villages.map(v=>\`<option value='\${v[0]}'>\${v[0]}</option>\`).join(''):'';">
+        ${Object.keys(D).map(k=>`<option value="${k}">${D[k].nameHi}</option>`).join("")}
+      </select>
+      <select class="form-control" id="subAdminVillageSelect" style="margin-bottom:8px">
+        ${D[this.state.selectedDistrict]?.villages.map(v=>`<option value="${v[0]}">${v[0]}</option>`).join("")}
+      </select>
+      <input class="form-control" id="subAdminPwdInput" placeholder="लॉगिन पासवर्ड..." style="margin-bottom:8px">
+      <button class="btn-submit" style="background:#10b981" onclick="app.addNewSubAdmin()">💾 सब-एडमिन सुरक्षित करें</button>
+    </div>
+
   </div>
 </div>`;
 } else {
@@ -652,24 +627,21 @@ adminPanelTools = `
 </div>`;
 }
 
-let toggleBtnText = this.isVillageDataOpen ? "📂 सभी गाँवों का डेटा छुपाएं" : "📁 सभी गाँवों का डेटा खोलें";
-let villageDataDisplay = this.isVillageDataOpen ? "block" : "none";
+let pendingCombined = (
+  globalPendingList(this.state.services,"services","Shop") +
+  globalPendingList(this.state.announcements,"announcements","Announcement") +
+  globalPendingList(this.state.greetings,"greetings","Greeting") +
+  globalPendingList(this.state.market,"market","Market") +
+  globalPendingList(this.state.feedbacks,"feedbacks","Feedback") +
+  globalPendingList(this.state.khelKud,"khelKud","KhelKud")
+);
 
 return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>
 <div class="card"><div class="card-title">📊 ${this.state.isAdminLoggedIn?"Main Admin Dashboard":"Sub-Admin Panel"}</div></div>
 ${adminPanelTools}
-
-<button class="btn-submit" style="background:#2563eb;margin-bottom:12px;" onclick="app.toggleVillageDataSection()">${toggleBtnText}</button>
-
-<div id="villageDataContainer" style="display:${villageDataDisplay};">
-<h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">🌐 ${this.state.isSubAdminLoggedIn?`गाँव (${this.state.loggedInSubAdminVillage}) का डेटा`:"सभी गाँवों का डेटा:"}:</h3>
-${globalPendingList(this.state.services,"services","Shop")||""}
-${globalPendingList(this.state.announcements,"announcements","Announcement")||""}
-${globalPendingList(this.state.greetings,"greetings","Greeting")||""}
-${globalPendingList(this.state.market,"market","Market")||""}
-${globalPendingList(this.state.feedbacks,"feedbacks","Feedback")||""}
-${globalPendingList(this.state.khelKud,"khelKud","KhelKud")||""}
-</div>`;
+<h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">⏳ अप्रूवल के लिए पेंडिंग रिक्वेस्ट्स (Pending Requests):</h3>
+${pendingCombined || `<div class="empty-state">अभी कोई पेंडिंग रिक्वेस्ट नहीं है। सभी डेटा अप्रूव्ड हैं।</div>`}
+`;
 }
 render(){
 let d=D[this.state.selectedDistrict];if(!d){this.state.selectedDistrict="charkhi-dadri";d=D[this.state.selectedDistrict];}
