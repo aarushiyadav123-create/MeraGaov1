@@ -128,7 +128,8 @@ userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
 isAdminLoggedIn:false,isSubAdminLoggedIn:false,
 adminName:localStorage.getItem("adminName")||"Admin",
 loggedInSubAdminVillage:"",loggedInSubAdminDistrict:"",loggedInSubAdminName:"",loggedInSubAdminPhone:"",
-currentUserPhone:localStorage.getItem("currentUserPhone")||""
+currentUserPhone:localStorage.getItem("currentUserPhone")||"",
+showGlobalManagedToggle:false
 };
 this.tempImage="";this.tempMedia="";this.tempMediaType="image";this.generatedBannerDataUrl="";this.bannerUserPhotoObj=null;this.unreadMessageCount=0;
 this.listeners();this.firebase();this.render();this.startup();
@@ -634,19 +635,9 @@ let pendingCombined = (
   globalPendingList(this.state.khelKud,"khelKud","KhelKud")
 );
 
-// एडमिन के लिए ग्लोबल मैनेज्ड ऑल-विलेज लिस्ट (जो अप्रूव्ड हैं उन्हें मैनेज करने के लिए)
+// एडमिन के लिए ग्लोबल मैनेज्ड ऑल-विलेज लिस्ट (टॉगल बटन के अंदर)
 let allManagedList = "";
 if(this.state.isAdminLoggedIn){
-let renderGlobalItems=(arr,path,label)=>arr.map(x=>`
-<div class="media-card" style="border:1px solid #cbd5e1;background:#f8fafc">
-<span class="service-tag">${label} | 📍 ${this.esc(x.villageHi||"गाँव")}</span>
-<div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch||"")}</div>
-${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}
-<div style="margin-top:8px">
-<button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">🗑️ Delete</button>
-</div>
-</div>`).join("");
-
 let totalGlobalArr = [
   ...this.state.services.map(x=>({...x, pType:'services', lName:'Shop'})),
   ...this.state.announcements.map(x=>({...x, pType:'announcements', lName:'Announcement'})),
@@ -654,20 +645,28 @@ let totalGlobalArr = [
   ...this.state.greetings.map(x=>({...x, pType:'greetings', lName:'Greeting'}))
 ];
 
+let isOpen = this.state.showGlobalManagedToggle;
+
 allManagedList = `
 <div class="card" style="margin-top:16px;background:#fefce8;border:2px solid #facc15;">
-  <div class="card-title" style="color:#854d0e">🌐 ग्लोबल ऑल-विलेज डेटा मैनेजमेंट (Global Managed)</div>
-  <p style="font-size:12px;color:#713f12;margin-bottom:10px">यहाँ से एडमिन सभी गाँवों का लाइव डेटा देख और कंट्रोल कर सकते हैं:</p>
-  ${totalGlobalArr.map(x=>`
-    <div class="media-card" style="background:#fff;border:1px solid #fde047;margin-bottom:10px">
-      <span class="service-tag" style="background:#fef08a;color:#713f12">${x.lName} | 📍 ${this.esc(x.villageHi||"गाँव")}</span>
-      <div class="service-name">${this.esc(x.title||x.message||x.name||"")}</div>
-      ${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}
-      <div style="margin-top:6px">
-        <button class="delete-btn" onclick="app.deleteItem('${x.pType}','${this.esc(x.id)}')">🗑️ Delete</button>
+  <div class="card-title" style="color:#854d0e;cursor:pointer;margin-bottom:0" onclick="app.state.showGlobalManagedToggle=!app.state.showGlobalManagedToggle;app.render()">
+    <span>🌐 ग्लोबल ऑल-विलेज डेटा मैनेजमेंट (Global Managed)</span>
+    <span>${isOpen ? '▲ छुपाएं' : '▼ खोलें'}</span>
+  </div>
+  ${isOpen ? `
+    <p style="font-size:12px;color:#713f12;margin:10px 0">यहाँ से एडमिन सभी गाँवों का लाइव डेटा देख और कंट्रोल कर सकते हैं:</p>
+    ${totalGlobalArr.map(x=>`
+      <div class="media-card" style="background:#fff;border:1px solid #fde047;margin-bottom:10px">
+        <span class="service-tag" style="background:#fef08a;color:#713f12">${x.lName} | 📍 ${this.esc(x.villageHi||"गाँव")}</span>
+        <div class="service-name">${this.esc(x.title||x.message||x.name||"")}</div>
+        ${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}
+        <div style="margin-top:6px;display:flex;gap:6px">
+          <button class="live-btn" onclick="app.makeItemLiveDirect('${x.pType}','${this.esc(x.id)}')">🔴 Live</button>
+          <button class="delete-btn" onclick="app.deleteItem('${x.pType}','${this.esc(x.id)}')">🗑️ Delete</button>
+        </div>
       </div>
-    </div>
-  `).join("") || `<div class="empty-state">कोई ग्लोबल डेटा उपलब्ध नहीं है।</div>`}
+    `).join("") || `<div class="empty-state">कोई ग्लोबल डेटा उपलब्ध नहीं है।</div>`}
+  ` : ''}
 </div>`;
 }
 
