@@ -23,8 +23,8 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .header-right{display:flex;gap:5px;align-items:center;position:relative}
 .header-btn{background:#10b981;color:#fff;border:0;padding:5px 9px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:11px}
 .menu-btn-style{background:#fbbf24;color:#0f172a}
-.dropdown-menu{position:absolute;top:42px;right:0;background:#fff;border-radius:12px;box-shadow:0 10px 25px #0004;border:1px solid #cbd5e1;width:220px;z-index:1000;overflow:hidden;display:none}
-.dropdown-item{padding:12px 16px;font-size:13px;font-weight:bold;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.dropdown-menu{position:absolute;top:42px;right:0;background:#fff;border-radius:12px;box-shadow:0 10px 25px #0004;border:1px solid #cbd5e1;width:240px;z-index:1000;overflow:hidden;display:none}
+.dropdown-item{padding:10px 14px;font-size:13px;font-weight:bold;border-bottom:1px solid #f1f5f9;cursor:pointer;color:#0f172a;text-align:left;white-space:nowrap}
 .dropdown-item:hover{background:#ecfdf5;color:#047857}
 .ticker{background:#022c22;color:#fde047;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;border-bottom:2px solid #059669}
 .village-banner-dash{background:linear-gradient(135deg,#047857,#065f46);margin:12px;border-radius:14px;padding:12px;color:#fff;box-shadow:0 4px 15px #0003;text-align:center;border:2px solid #fbbf24;cursor:pointer;position:relative}
@@ -77,11 +77,11 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 <button class="header-btn menu-btn-style" id="menuToggleBtn">☰ Menu</button>
 <button class="header-btn" id="langToggleBtn">🌐 English</button>
 <div class="dropdown-menu" id="dropdownMenu">
-<div class="dropdown-item" onclick="app.requestAdminAccess()" data-i18n="mAdmin">⚙️ Main Admin पैनल</div>
-<div class="dropdown-item" onclick="app.requestSubAdminAccess()" data-i18n="mSubAdmin">🔑 Sub-Admin पैनल</div>
-<div class="dropdown-item" onclick="app.changeView('policy')" data-i18n="mPolicy">📜 Privacy Policy & Disclaimer</div>
-<div class="dropdown-item" onclick="app.changeView('feedback')" data-i18n="mFeedback">✍️ Feedback / शिकायत</div>
-<div class="dropdown-item" onclick="app.changeView('about')" data-i18n="mAbout">ℹ️ About Us</div>
+<div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Main Admin पैनल</div>
+<div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 Sub-Admin पैनल</div>
+<div class="dropdown-item" onclick="app.changeView('policy')">📜 Privacy Policy</div>
+<div class="dropdown-item" onclick="app.changeView('feedback')">✍️ Feedback / शिकायत</div>
+<div class="dropdown-item" onclick="app.changeView('about')">ℹ️ About Us</div>
 </div>
 </div>
 </header>
@@ -125,12 +125,7 @@ hi:{
   adminDash:"📊 Admin Dashboard",
   adminControl:"⚙️ एडमिन कंट्रोल पैनल",
   directOpen:"डायरेक्ट गाँव खोलें (Admin Power)",
-  enterVillageBtn:"🚀 इस गाँव में प्रवेश करें",
-  mAdmin:"⚙️ Main Admin पैनल",
-  mSubAdmin:"🔑 Sub-Admin पैनल",
-  mPolicy:"📜 Privacy Policy & Disclaimer",
-  mFeedback:"✍️ Feedback / शिकायत",
-  mAbout:"ℹ️ About Us"
+  enterVillageBtn:"🚀 इस गाँव में प्रवेश करें"
 },
 en:{
   appTitle:"MeraGaov - Digital Identity",
@@ -153,12 +148,7 @@ en:{
   adminDash:"📊 Admin Dashboard",
   adminControl:"⚙️ Admin Control Panel",
   directOpen:"Direct Open Village (Admin Power)",
-  enterVillageBtn:"🚀 Enter This Village",
-  mAdmin:"⚙️ Main Admin Panel",
-  mSubAdmin:"🔑 Sub-Admin Panel",
-  mPolicy:"📜 Privacy Policy & Disclaimer",
-  mFeedback:"✍️ Feedback / Complaints",
-  mAbout:"ℹ️ About Us"
+  enterVillageBtn:"🚀 Enter This Village"
 }
 };
 const jokesList=[
@@ -186,7 +176,7 @@ isAdminLoggedIn:false,isSubAdminLoggedIn:false,
 loggedInSubAdminVillage:"",loggedInSubAdminDistrict:"",loggedInSubAdminName:"",loggedInSubAdminPhone:"",
 currentUserPhone:localStorage.getItem("currentUserPhone")||""
 };
-this.tempImage="";this.tempMedia="";this.tempMediaType="image";this.generatedBannerDataUrl="";this.bannerUserPhotoObj=null;this.unreadMessageCount=0;
+this.tempImage="";this.tempMedia="";this.tempMediaType="image";this.generatedBannerDataUrl="";this.bannerUserPhotoObj=null;
 this.listeners();this.firebase();this.render();this.startup();
 }
 t(k){return i18n[this.state.lang]?.[k]||i18n["hi"][k]||k;}
@@ -412,13 +402,6 @@ ${this.isAdminForVillage(this.state.searchVillage)?`<button class="delete-btn" o
 </div>`).join("");
 }
 renderAllVillageMarket(){
-// यहाँ सभी गाँवों की approved पोस्ट्स दिखाई देंगी साथ में उनके जिले और गाँव का नाम tag के साथ!
-let combineAll=(path,typeName)=> [
-  ...this.state.services,
-  ...this.state.market,
-  ...this.state.announcements
-].filter(x=>x.status==="approved");
-
 let allPosts=[
   ...this.state.services.filter(x=>x.status==="approved").map(x=>({...x, srcType:"Shop"})),
   ...this.state.market.filter(x=>x.status==="approved").map(x=>({...x, srcType:"Market"})),
@@ -472,14 +455,13 @@ if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.chang
 
 const pendingList=(arr,path,label)=>arr.filter(x=>x.status==="pending"||x.status==="pending_subadmin").map(x=>`<div class="media-card"><span class="service-tag">${label} - 📍 ${this.esc(x.villageHi)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
 
-// एडमिन सुपर पावर: सभी गाँवों की कुल एक्टिविटी और कंट्रोल देखने के लिए
 let allActiveItems=[
   ...this.state.services.map(x=>({...x, pPath:"services", label:"Shop"})),
   ...this.state.announcements.map(x=>({...x, pPath:"announcements", label:"Announcement"})),
   ...this.state.market.map(x=>({...x, pPath:"market", label:"Market"}))
 ];
 
-let villageStatsHtml=`<div class="card" style="margin-top:14px;background:#f8fafc"><h3 style="font-size:13px;color:#064e3b;margin-bottom:8px">📍 गाँव-वार पोस्ट और कण्ट्रोल (Admin Super Power)</h3>`;
+let villageStatsHtml=`<div class="card" style="margin-top:14px;background:#f8fafc"><h3 style="font-size:13px;color:#064e3b;margin-bottom:8px">📍 गाँव-वार पोस्ट और कण्ट्रोल (Admin Power)</h3>`;
 let villagesWithActivity = {};
 allActiveItems.forEach(item=>{
   let key = `${item.districtId}__${item.villageHi||"Unknown"}`;
