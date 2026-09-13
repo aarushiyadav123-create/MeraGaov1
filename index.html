@@ -299,7 +299,7 @@ submitFeedback(){
 let name=document.getElementById("fbName")?.value.trim(),phone=document.getElementById("fbPhone")?.value.trim(),msg=document.getElementById("fbMsg")?.value.trim();
 if(!name||!msg)return alert("नाम और संदेश लिखें!");
 if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है!");
-window.firebaseDb.push(window.firebaseDb.ref(window.firebaseDb.db,"feedbacks"),{name,phone,message:msg,districtId:this.state.selectedDistrict,villageHi:this.state.searchVillage,timestamp:Date.now()})
+window.firebaseDb.push(window.firebaseDb.ref(window.firebaseDb.db,"feedbacks"),{name,phone,message:msg,districtId:this.state.selectedDistrict,villageHi:this.state.searchVillage,timestamp:Date.now(),status:"approved"})
 .then(()=>{alert("आपकी शिकायत/फीडबैक dakshyadav.co.in पोर्टल पर भेज दी गई है!");this.changeView("home");})
 .catch(e=>alert(e.message));
 }
@@ -530,8 +530,34 @@ return `<button class="back-btn" onclick="app.changeView('home')">← होम<
 }
 renderAdmin(){
 if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.changeView("home");
-const pendingList=(arr,path,label)=>arr.filter(x=>x.status==="pending"||x.status==="pending_subadmin").map(x=>`<div class="media-card"><span class="service-tag">${label} - ${this.esc(x.villageHi)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
-return `<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">📊 Admin Dashboard</div></div>${pendingList(this.state.services,"services","Shop")}${pendingList(this.state.announcements,"announcements","Announcement")}${pendingList(this.state.greetings,"greetings","Greeting")}${pendingList(this.state.market,"market","Market")}${pendingList(this.state.feedbacks,"feedbacks","Feedback")}${pendingList(this.state.khelKud,"khelKud","KhelKud")}`;
+const pendingList=(arr,path,label)=>arr.filter(x=>x.status==="pending"||x.status==="pending_subadmin").map(x=>`<div class="media-card"><span class="service-tag">${label} - ${this.esc(x.villageHi)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
+  
+let adminPanelTools = `
+<div class="card" style="background:#f0fdf4;border:2px solid #10b981;">
+  <div class="card-title" style="color:#064e3b">⚙️ एडमिन कंट्रोल पैनल</div>
+  <div class="form-group">
+    <label>डायरेक्ट गाँव खोलें (Admin Power)</label>
+    <select class="form-control" id="adminDirectDistSelect" style="margin-bottom:8px" onchange="let d=this.value, s=document.getElementById('adminDirectVilSelect'); s.innerHTML=D[d]?D[d].villages.map(v=>\`<option value='\${v[0]}'>\${v[0]}</option>\`).join(''):'';">
+      ${Object.keys(D).map(k=>`<option value="${k}">${D[k].nameHi}</option>`).join("")}
+    </select>
+    <select class="form-control" id="adminDirectVilSelect" style="margin-bottom:8px">
+      ${D[this.state.selectedDistrict]?.villages.map(v=>`<option value="${v[0]}">${v[0]}</option>`).join("")}
+    </select>
+    <button class="btn-submit" style="background:#059669" onclick="app.adminDirectOpenVillage()">🚀 इस गाँव में प्रवेश करें</button>
+  </div>
+</div>`;
+
+return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>
+<div class="card"><div class="card-title">📊 Admin Dashboard</div></div>
+${adminPanelTools}
+<h3 style="font-size:14px;color:#fff;margin:12px 0 8px">पेंडिंग अप्रूवल सूची:</h3>
+${pendingList(this.state.services,"services","Shop")||""}
+${pendingList(this.state.announcements,"announcements","Announcement")||""}
+${pendingList(this.state.greetings,"greetings","Greeting")||""}
+${pendingList(this.state.market,"market","Market")||""}
+${pendingList(this.state.feedbacks,"feedbacks","Feedback")||""}
+${pendingList(this.state.khelKud,"khelKud","KhelKud")||""}
+`;
 }
 render(){
 let d=D[this.state.selectedDistrict];if(!d){this.state.selectedDistrict="charkhi-dadri";d=D[this.state.selectedDistrict];}
