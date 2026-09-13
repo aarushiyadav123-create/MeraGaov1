@@ -570,13 +570,12 @@ if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.chang
 let filterVillage = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminVillage : null;
 let filterDistrict = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminDistrict : null;
 
-// सुधार 2: पेंडिंग रिक्वेस्ट जो मुख्य रूप से अप्रूव होने के लिए आई हैं, उन्हें सबसे ऊपर और साफ़ रूप में दिखाना
+// पेंडिंग रिक्वेस्ट लिस्ट
 const globalPendingList=(arr,path,label)=>arr.filter(x=>{
 if(filterVillage && x.villageHi !== filterVillage) return false;
 if(filterDistrict && x.districtId !== filterDistrict) return false;
-// केवल पेंडिंग आइटम्स को पहले दिखाएंगे ताकि एडमिन/सब-एडमिन तुरंत देख सकें
 return x.status && x.status !== "approved";
-}).map(x=>`<div class="media-card" style="border:2px solid #fbbf24;background:#fffbeb"><span class="service-tag" style="background:#fbbf24;color:#0f172a">⏳ पेंडिंग: ${label} | 📍 ${this.esc(x.villageHi||"गाँव")}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve (गाँव में भेजें)</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
+}).map(x=>`<div class="media-card" style="border:2px solid #fbbf24;background:#fffbeb"><span class="service-tag" style="background:#fbbf24;color:#0f172a">⏳ पेंडिंग: ${label} | 📍 ${this.esc(x.villageHi||"गाँव")}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
 
 let adminPanelTools = "";
 
@@ -600,8 +599,7 @@ adminPanelTools = `
 
     <hr style="border:0;border-top:1px solid #cbd5e1;margin:12px 0">
 
-    <!-- सुधार 1: सब-एडमिन जोड़ने का फॉर्म एक बटन के अंदर (Collapsible Toggle) कर दिया गया है -->
-    <button class="btn-submit" style="background:#2563eb;margin-bottom:10px" onclick="app.toggleSubAdminForm()">➕ नया Sub-Admin जोड़ें (फॉर्म खोलें/बंद करें)</button>
+    <button class="btn-submit" style="background:#2563eb;margin-bottom:10px" onclick="app.toggleSubAdminForm()">➕ नया Sub-Admin जोड़ें</button>
     
     <div id="subAdminFormContainer" style="display:none;background:#f8fafc;padding:12px;border-radius:10px;border:1px solid #cbd5e1;">
       <label style="color:#064e3b;font-size:13px;font-weight:bold;margin-bottom:6px;display:block">सब-एडमिन विवरण भरें:</label>
