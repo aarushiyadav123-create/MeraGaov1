@@ -23,9 +23,9 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .header-right{display:flex;gap:5px;align-items:center;position:relative}
 .header-btn{background:#10b981;color:#fff;border:0;padding:5px 9px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:11px}
 .menu-btn-style{background:#fbbf24;color:#0f172a}
-.dropdown-menu{position:absolute;top:42px;right:0;background:#fff;border-radius:12px;box-shadow:0 10px 25px #0004;border:1px solid #cbd5e1;width:220px;z-index:1000;overflow:hidden;display:none}
-.dropdown-item{padding:12px 16px;font-size:13px;font-weight:bold;border-bottom:1px solid #f1f5f9;cursor:pointer}
-.dropdown-item:hover{background:#ecfdf5;color:#047857}
+.dropdown-menu{position:absolute;top:42px;right:0;background:#fff;border-radius:12px;box-shadow:0 10px 25px #0004;border:1px solid #cbd5e1;width:70px;z-index:1000;overflow:hidden;display:none;text-align:center}
+.dropdown-item{padding:12px;font-size:18px;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.dropdown-item:hover{background:#ecfdf5}
 .ticker{background:#022c22;color:#fde047;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;border-bottom:2px solid #059669}
 .village-banner-dash{background:linear-gradient(135deg,#047857,#065f46);margin:12px;border-radius:14px;padding:12px;color:#fff;box-shadow:0 4px 15px #0003;text-align:center;border:2px solid #fbbf24;cursor:pointer;position:relative}
 .village-banner-dash img{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-top:8px;border:1px solid #fbbf24}
@@ -54,7 +54,6 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .delete-btn{background:#dc2626}.approve-btn{background:#2563eb}.live-btn{background:#059669}
 .firebase-status{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:7px 12px;border-radius:20px;font-size:11px;z-index:10000;display:none}
 .badge{background:#dc2626;color:#fff;font-size:10px;padding:2px 7px;border-radius:10px}
-.admin-power{background:#ecfdf5;border:1px solid #10b981;color:#065f46;border-radius:10px;padding:10px;font-size:12px;margin-bottom:12px}
 .policy-text{font-size:13px;line-height:1.7;color:#334155}
 </style>
 </head>
@@ -80,16 +79,15 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 <button class="header-btn menu-btn-style" id="menuToggleBtn">☰ Menu</button>
 <button class="header-btn" id="langToggleBtn">🌐 English</button>
 <div class="dropdown-menu" id="dropdownMenu">
-<div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Main Admin पैनल</div>
-<div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 Sub-Admin पैनल</div>
-<div class="dropdown-item" onclick="app.changeView('policy')">📜 Privacy Policy & Disclaimer</div>
-<div class="dropdown-item" onclick="app.changeView('feedback')">✍️ Feedback / शिकायत</div>
-<div class="dropdown-item" onclick="app.changeView('about')">ℹ️ About Us</div>
+<div class="dropdown-item" onclick="app.requestAdminAccess()" title="Admin">⚙️</div>
+<div class="dropdown-item" onclick="app.requestSubAdminAccess()" title="Sub-Admin">🔑</div>
+<div class="dropdown-item" onclick="app.changeView('policy')" title="Policy">📜</div>
+<div class="dropdown-item" onclick="app.changeView('feedback')" title="Feedback">✍️</div>
+<div class="dropdown-item" onclick="app.changeView('about')" title="About">ℹ️</div>
 </div>
 </div>
 </header>
 
-<!-- मुख्य मार्केट और मंडी टिकर -->
 <div class="ticker">
 <marquee id="dynamicTickerText">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूं: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य</marquee>
 </div>
@@ -129,6 +127,7 @@ services:[],announcements:[],greetings:[],market:[],historyGallery:[],sarpanchDe
 allowedChatUsers:{},subAdmins:[],villagesConfig:{},villageUnlockRequests:{},
 userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
 isAdminLoggedIn:false,isSubAdminLoggedIn:false,
+adminName:localStorage.getItem("adminName")||"Admin",
 loggedInSubAdminVillage:"",loggedInSubAdminDistrict:"",loggedInSubAdminName:"",loggedInSubAdminPhone:"",
 currentUserPhone:localStorage.getItem("currentUserPhone")||""
 };
@@ -251,7 +250,9 @@ r.readAsDataURL(f);
 }
 requestAdminAccess(){
 let p=prompt("एडमिन पासवर्ड दर्ज करें:");
-if(p==="1234"){this.state.isAdminLoggedIn=true;this.state.isSubAdminLoggedIn=false;this.changeView("admin");}else alert("गलत पासवर्ड!");
+if(p==="1234"){
+this.state.isAdminLoggedIn=true;this.state.isSubAdminLoggedIn=false;this.changeView("admin");
+}else alert("गलत पासवर्ड!");
 }
 requestSubAdminAccess(){
 let p=prompt("सब-एडमिन पासवर्ड दर्ज करें:");
@@ -285,7 +286,7 @@ let {db,ref,update}=window.firebaseDb;
 update(ref(db,`${path}/${id}`),{status:"approved"}).then(()=>{alert("सफलतापूर्वक अप्रूव हो गया!");this.render();}).catch(e=>alert(e.message));
 }
 makeItemLiveDirect(path,id){
-if(!this.isAdminForVillage(this.state.searchVillage))return alert("केवल एडमिन या सब-एडमिन इसे डायरेक्ट लाइव कर सकते हैं!");
+if(!this.isAdminForVillage(this.state.searchVillage)&&!this.state.isAdminLoggedIn)return alert("केवल एडमिन इसे डायरेक्ट लाइव कर सकते हैं!");
 if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है।");
 let {db,ref,update}=window.firebaseDb;
 update(ref(db,`${path}/${id}`),{status:"approved",showOnTicker:true}).then(()=>{alert("सफलतापूर्वक डायरेक्ट लाइव कर दिया गया!");this.render();}).catch(e=>alert(e.message));
@@ -300,22 +301,14 @@ let name=document.getElementById("fbName")?.value.trim(),phone=document.getEleme
 if(!name||!msg)return alert("नाम और संदेश लिखें!");
 if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है!");
 window.firebaseDb.push(window.firebaseDb.ref(window.firebaseDb.db,"feedbacks"),{name,phone,message:msg,districtId:this.state.selectedDistrict,villageHi:this.state.searchVillage,timestamp:Date.now(),status:"approved"})
-.then(()=>{alert("आपकी शिकायत/फीडबैक dakshyadav.co.in पोर्टल पर भेज दी गई है!");this.changeView("home");})
+.then(()=>{alert("आपकी शिकायत/फीडबैक भेज दी गई है!");this.changeView("home");})
 .catch(e=>alert(e.message));
 }
 submitKhelKud(){
 let name=document.getElementById("kkName")?.value.trim(),phone=document.getElementById("kkPhone")?.value.trim(),title=document.getElementById("kkTitle")?.value.trim(),player=document.getElementById("kkPlayer")?.value.trim();
-if(!title)return alert(" टूर्नामेंट या खेल विवरण भरें!");
+if(!title)return alert("टूर्नामेंट या खेल विवरण भरें!");
 this.saveData("khelKud",{name,phone,title,player,imageUrl:this.tempImage},"खेल-कूद जानकारी सेव कर दी गई!");
 }
-addSubAdminConfig(){
-let d=document.getElementById("subAdminDist").value,name=document.getElementById("subAdminName")?.value.trim()||"",phone=document.getElementById("subAdminPhone")?.value.trim()||"",v=document.getElementById("subAdminVillage").value.trim(),p=document.getElementById("subAdminPwd").value.trim();
-if(!v||!p)return alert("गाँव और पासवर्ड भरें!");
-if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है!");
-let {db,ref,push,set}=window.firebaseDb;
-push(ref(db,"subAdmins"),{districtId:d,name,phone,village:v,pwd:p,timestamp:Date.now()}).then(()=>{if(phone&&p)set(ref(db,"allowedChatUsers/"+phone),p);alert("सब-एडमिन सफलतापूर्वक जोड़ दिया गया!");this.render();}).catch(e=>alert(e.message));
-}
-deleteSubAdmin(id){if(confirm("सब-एडमिन हटाना चाहते हैं?")&&window.firebaseDb)window.firebaseDb.remove(window.firebaseDb.ref(window.firebaseDb.db,"subAdmins/"+id)).then(()=>this.render());}
 addNewVillageToDistrict(){
 let e=document.getElementById("newVillageNameInput"),v=e?.value.trim(),d=this.state.selectedDistrict;
 if(!v)return alert("गाँव का नाम डालें!");
@@ -435,7 +428,7 @@ if(!phone||!(phone=phone.trim()))return;
 window.firebaseDb.set(window.firebaseDb.ref(window.firebaseDb.db,"villageUnlockRequests/"+phone),{phone,oldDistrict:this.state.userDistrict,oldVillage:this.state.userVillage,timestamp:Date.now(),status:"pending"}).then(()=>{
 this.state.villageUnlockRequested=true;this.state.userPhone=phone;this.state.currentUserPhone=phone;
 localStorage.setItem("villageUnlockRequested","true");localStorage.setItem("currentUserPhone",phone);
-alert("अनुरोध एडमिन के पास भेज दिया गया है।");this.render();
+alert("अनुरोध एडमिन के पास भेज दिया गया है। मैदान खुला है।");this.render();
 }).catch(e=>alert(e.message));
 }
 listItems(arr,type){
@@ -449,8 +442,8 @@ ${x.name&&type!=="Sarpanch"&&type!=="Feedback"?`<p style="font-size:11px;color:#
 ${x.imageUrl?`<img src="${this.esc(x.imageUrl)}" class="service-img">`:""}
 ${x.phone&&type==="Market"?`<a href="tel:${this.esc(x.phone)}" class="btn-call">📞 संपर्क करें</a>`:""}
 <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
-${this.isAdminForVillage(this.state.searchVillage)?`<button class="live-btn" onclick="app.makeItemLiveDirect('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":type==="Sarpanch"?"sarpanchDetails":type==="KhelKud"?"khelKud":"historyGallery"}','${this.esc(x.id)}')">🔴 Live</button>`:""}
-${this.isAdminForVillage(this.state.searchVillage)?`<button class="delete-btn" onclick="app.deleteItem('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":type==="Sarpanch"?"sarpanchDetails":type==="KhelKud"?"khelKud":"historyGallery"}','${this.esc(x.id)}')">🗑️ Delete</button>`:""}
+${this.isAdminForVillage(this.state.searchVillage)||this.state.isAdminLoggedIn?`<button class="live-btn" onclick="app.makeItemLiveDirect('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":type==="Sarpanch"?"sarpanchDetails":type==="KhelKud"?"khelKud":"historyGallery"}','${this.esc(x.id)}')">🔴 Live</button>`:""}
+${this.isAdminForVillage(this.state.searchVillage)||this.state.isAdminLoggedIn?`<button class="delete-btn" onclick="app.deleteItem('${type==="Shop"?"services":type==="Announcement"?"announcements":type==="Greeting"?"greetings":type==="Market"?"market":type==="Sarpanch"?"sarpanchDetails":type==="KhelKud"?"khelKud":"historyGallery"}','${this.esc(x.id)}')">🗑️ Delete</button>`:""}
 </div>
 </div>`).join("");
 }
@@ -491,21 +484,21 @@ html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSe
 return html+"</div>";
 }
 renderFeedbackForm(){
-let feedbacksList = this.state.feedbacks.filter(x=>x.districtId===this.state.selectedDistrict&&x.villageHi===this.state.searchVillage).map(x=>`
+let feedbacksList = this.state.feedbacks.map(x=>`
 <div class="service-item">
-<b style="color:#047857">${this.esc(x.name)} (${this.esc(x.phone||"नंबर नहीं")})</b>
+<b style="color:#047857">${this.esc(x.name)} (${this.esc(x.phone||"नंबर नहीं")}) [गाँव: ${this.esc(x.villageHi||"N/A")}]</b>
 <p style="margin-top:6px;font-size:13px">${this.esc(x.message)}</p>
-${this.isAdminForVillage(this.state.searchVillage)?`<button class="delete-btn" onclick="app.deleteItem('feedbacks','${this.esc(x.id)}')">🗑️ डिलीट</button>`:""}
+${this.state.isAdminLoggedIn?`<button class="delete-btn" onclick="app.deleteItem('feedbacks','${this.esc(x.id)}')">🗑️ डिलीट</button>`:""}
 </div>`).join("");
 
 return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>
 <div class="card">
-<div class="card-title">✍️ Feedback / शिकायत भेजें (dakshyadav.co.in)</div>
+<div class="card-title">✍️ Feedback / शिकायत भेजें</div>
 <div class="live-upload-box">
 <input class="form-control" id="fbName" placeholder="आपका नाम..." style="margin-bottom:8px">
 <input class="form-control" id="fbPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px">
 <textarea class="form-control" id="fbMsg" placeholder="अपनी शिकायत या सुझाव यहाँ लिखें..." style="margin-bottom:8px;height:90px"></textarea>
-<button class="btn-submit" onclick="app.submitFeedback()">📤 dakshyadav.co.in पर भेजें</button>
+<button class="btn-submit" onclick="app.submitFeedback()">📤 भेजें</button>
 </div>
 <h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">प्राप्त फीडback व शिकायतें:</h3>
 ${feedbacksList||`<div class="empty-state">अभी कोई फीडबैक नहीं है।</div>`}
@@ -530,13 +523,14 @@ return `<button class="back-btn" onclick="app.changeView('home')">← होम<
 }
 renderAdmin(){
 if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.changeView("home");
-const pendingList=(arr,path,label)=>arr.filter(x=>x.status==="pending"||x.status==="pending_subadmin").map(x=>`<div class="media-card"><span class="service-tag">${label} - ${this.esc(x.villageHi)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
-  
+
+const globalPendingList=(arr,path,label)=>arr.map(x=>`<div class="media-card"><span class="service-tag">${label} | 📍 ${this.esc(x.villageHi||"गाँव")} | Status: ${this.esc(x.status)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
+
 let adminPanelTools = `
 <div class="card" style="background:#f0fdf4;border:2px solid #10b981;">
-  <div class="card-title" style="color:#064e3b">⚙️ एडमिन कंट्रोल पैनल</div>
+  <div class="card-title" style="color:#064e3b">⚙️ Admin Control</div>
   <div class="form-group">
-    <label>डायरेक्ट गाँव खोलें (Admin Power)</label>
+    <label>डायरेक्ट किसी भी गाँव में प्रवेश करें</label>
     <select class="form-control" id="adminDirectDistSelect" style="margin-bottom:8px" onchange="let d=this.value, s=document.getElementById('adminDirectVilSelect'); s.innerHTML=D[d]?D[d].villages.map(v=>\`<option value='\${v[0]}'>\${v[0]}</option>\`).join(''):'';">
       ${Object.keys(D).map(k=>`<option value="${k}">${D[k].nameHi}</option>`).join("")}
     </select>
@@ -550,13 +544,13 @@ let adminPanelTools = `
 return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>
 <div class="card"><div class="card-title">📊 Admin Dashboard</div></div>
 ${adminPanelTools}
-<h3 style="font-size:14px;color:#fff;margin:12px 0 8px">पेंडिंग अप्रूवल सूची:</h3>
-${pendingList(this.state.services,"services","Shop")||""}
-${pendingList(this.state.announcements,"announcements","Announcement")||""}
-${pendingList(this.state.greetings,"greetings","Greeting")||""}
-${pendingList(this.state.market,"market","Market")||""}
-${pendingList(this.state.feedbacks,"feedbacks","Feedback")||""}
-${pendingList(this.state.khelKud,"khelKud","KhelKud")||""}
+<h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">🌐 सभी गाँवों का डेटा (Global Management):</h3>
+${globalPendingList(this.state.services,"services","Shop")||""}
+${globalPendingList(this.state.announcements,"announcements","Announcement")||""}
+${globalPendingList(this.state.greetings,"greetings","Greeting")||""}
+${globalPendingList(this.state.market,"market","Market")||""}
+${globalPendingList(this.state.feedbacks,"feedbacks","Feedback")||""}
+${globalPendingList(this.state.khelKud,"khelKud","KhelKud")||""}
 `;
 }
 render(){
@@ -614,11 +608,11 @@ html=`<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">
 <div class="card-title">📜 Privacy Policy & Legal Disclaimer</div>
 <div class="policy-text">
 <p><b>1. सार्वजनिक मंच (Public Platform):</b><br>MeraGaov एक सार्वजनिक मंच है जहाँ ग्रामीण नागरिक अपनी स्थानीय जानकारी, दुकानें, खरीद-बिक्री और विचार साझा करते हैं।</p><br>
-<p><b>2. कानूनी दायित्व से मुक्ति (Disclaimer):</b><br>इस प्लेटफ़ॉर्म पर किसी भी यूजर द्वारा पोस्ट की गई सामग्री (Content) के लिए ऐप के मालिक (Admin/Owner) किसी भी प्रकार से जिम्मेदार या उत्तरदायी (Liable) नहीं हैं। समस्त पोस्ट की जिम्मेदारी केवल संबंधित यूजर की होगी।</p><br>
-<p><b>3. एडमिन के अधिकार (Admin Powers):</b><br>एडमिन के पास यह पूरा अधिकार सुरक्षित है कि वह किसी भी आपत्तिजनक, भ्रामक या गलत पोस्ट को बिना किसी पूर्व सूचना के तुरंत डिलीट कर सके और नियम तोड़ने वाले यूजर को ब्लॉक कर सके।</p>
+<p><b>2. कानूनी दायित्व से मुक्ति (Disclaimer):</b><br>इस प्लेटफ़ॉर्म पर किसी भी यूजर द्वारा पोस्ट की गई सामग्री के लिए कोई उत्तरदायित्व नहीं है। समस्त पोस्ट की जिम्मेदारी संबंधित यूजर की होगी।</p><br>
+<p><b>3. एडमिन के अधिकार:</b><br>एडमिन के पास आपत्तिजनक पोस्ट हटाने का अधिकार सुरक्षित है।</p>
 </div>
 </div>`;
-}else if(this.state.view==="about"){html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><div style="font-size:13px;line-height:1.7;color:#334155"><h3 style="color:#064e3b;margin-bottom:8px">MeraGaov - मेरी पहचान</h3><p><b>एक डिजिटल गाँव, एक डिजिटल पहचान</b></p><br><p><b>👩‍💼 संचालक:</b> Kusum w/o Rajesh Yadav</p></div></div>`;
+}else if(this.state.view==="about"){html=`<button class="back-btn" onclick="app.changeView('home')">← होम</button><div class="card"><div class="card-title">ℹ️ About Us</div><div style="font-size:13px;line-height:1.7;color:#334155"><h3 style="color:#064e3b;margin-bottom:8px">MeraGaov - मेरी पहचान</h3><p><b>एक डिजिटल गाँव, एक डिजिटल पहचान</b></p></div></div>`;
 }else if(this.state.view==="admin"){html=this.renderAdmin();}
 document.getElementById("mainContent").innerHTML=html;
 }
