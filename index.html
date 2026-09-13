@@ -148,7 +148,9 @@ return this.state.subAdmins.some(s=>s.village===this.state.searchVillage&&s.dist
 }
 isAdminForVillage(v){
 if(this.state.isAdminLoggedIn)return true;
-if(this.state.isSubAdminLoggedIn){return this.state.loggedInSubAdminVillage===v&&this.state.loggedInSubAdminDistrict===this.state.selectedDistrict;}
+if(this.state.isSubAdminLoggedIn){
+return this.state.loggedInSubAdminVillage===v && this.state.loggedInSubAdminDistrict===this.state.selectedDistrict;
+}
 return false;
 }
 startup(){
@@ -264,9 +266,20 @@ this.state.loggedInSubAdminName=s.name||"Sub-Admin";
 this.state.loggedInSubAdminPhone=s.phone||"";
 if(s.districtId&&D[s.districtId])this.state.selectedDistrict=s.districtId;
 this.state.searchVillage=this.state.loggedInSubAdminVillage;
+this.state.villageLocked=true;
+localStorage.setItem("selectedDistrict",this.state.selectedDistrict);
+localStorage.setItem("searchVillage",this.state.searchVillage);
+localStorage.setItem("villageLocked","true");
 this.changeView("admin");
 }
-changeView(v){this.state.view=v;if(v==="chaupal")this.unreadMessageCount=0;this.render();}
+changeView(v){
+if(this.state.isSubAdminLoggedIn && v==="admin"){
+// Sub-admin should only see their village admin dashboard view
+}
+this.state.view=v;
+if(v==="chaupal")this.unreadMessageCount=0;
+this.render();
+}
 saveData(path,data,msg,extra={}){
 if(!window.firebaseDb)return alert("Firebase अभी कनेक्ट नहीं है।");
 let {db,ref,push}=window.firebaseDb;
@@ -320,6 +333,35 @@ localStorage.setItem("customDistrictVillages",JSON.stringify(all));
 this.state.searchVillage=v;e.value="";
 alert(`नया गाँव "${v}" सफलतापूर्वक जोड़ दिया गया है!`);
 this.render();
+}
+addNewSubAdmin(){
+if(!this.state.isAdminLoggedIn)return alert("केवल Main Admin नया Sub-Admin जोड़ सकता है!");
+let name=document.getElementById("subAdminNameInput")?.value.trim();
+let phone=document.getElementById("subAdminPhoneInput")?.value.trim();
+let dist=document.getElementById("subAdminDistSelect")?.value;
+let village=document.getElementById("subAdminVillageSelect")?.value;
+let pwd=document.getElementById("subAdminPwdInput")?.value.trim();
+
+if(!name||!phone||!village||!pwd)return alert("कृपया सभी विवरण (नाम, नंबर, गाँव, पासवर्ड) भरें!");
+
+if(!window.firebaseDb)return alert("Firebase कनेक्ट नहीं है!");
+let {db,ref,push,update}=window.firebaseDb;
+
+// 1. Add to subAdmins node
+let newSubRef = push(ref(db, "subAdmins"), {
+name, phone, districtId: dist, village, villageHi: village, pwd, timestamp: Date.now()
+});
+
+// 2. Automatically add to allowedChatUsers with name & village info
+let chatUpdates = {};
+chatUpdates[`allowedChatUsers/${phone}`] = pwd;
+update(ref(db), chatUpdates).then(()=>{
+alert(`सब-एडमिन "${name}" (${village}) सफलतापूर्वक जोड़ दिए गए हैं और चैट में भी अधिकृत कर दिए गए हैं!`);
+document.getElementById("subAdminNameInput").value="";
+document.getElementById("subAdminPhoneInput").value="";
+document.getElementById("subAdminPwdInput").value="";
+this.render();
+}).catch(e=>alert(e.message));
 }
 adminDirectOpenVillage(){
 if(!this.state.isAdminLoggedIn)return alert("केवल Main Admin अनुमति रखता है!");
@@ -523,11 +565,22 @@ return `<button class="back-btn" onclick="app.changeView('home')">← होम<
 renderAdmin(){
 if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.changeView("home");
 
-const globalPendingList=(arr,path,label)=>arr.map(x=>`<div class="media-card"><span class="service-tag">${label} | 📍 ${this.esc(x.villageHi||"गाँव")} | Status: ${this.esc(x.status)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
+// Filter lists based on who is logged in
+let filterVillage = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminVillage : null;
+let filterDistrict = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminDistrict : null;
 
-let adminPanelTools = `
+const globalPendingList=(arr,path,label)=>arr.filter(x=>{
+if(filterVillage && x.villageHi !== filterVillage) return false;
+if(filterDistrict && x.districtId !== filterDistrict) return false;
+return true;
+}).map(x=>`<div class="media-card"><span class="service-tag">${label} | 📍 ${this.esc(x.villageHi||"गाँव")} | Status: ${this.esc(x.status)}</span><div class="service-name">${this.esc(x.title||x.message||x.name||x.sarpanch)}</div><div style="margin-top:8px"><button class="approve-btn" onclick="app.approveItem('${path}','${this.esc(x.id)}')">✅ Approve</button><button class="live-btn" onclick="app.makeItemLiveDirect('${path}','${this.esc(x.id)}')">🔴 Direct Live</button><button class="delete-btn" onclick="app.deleteItem('${path}','${this.esc(x.id)}')">❌ Delete</button></div></div>`).join("");
+
+let adminPanelTools = "";
+
+if(this.state.isAdminLoggedIn){
+adminPanelTools = `
 <div class="card" style="background:#f0fdf4;border:2px solid #10b981;">
-  <div class="card-title" style="color:#064e3b">⚙️ Admin Control</div>
+  <div class="card-title" style="color:#064e3b">⚙️ Main Admin Control</div>
   <div class="form-group">
     <label>डायरेक्ट किसी भी गाँव में प्रवेश करें</label>
     <select class="form-control" id="adminDirectDistSelect" style="margin-bottom:8px" onchange="let d=this.value, s=document.getElementById('adminDirectVilSelect'); s.innerHTML=D[d]?D[d].villages.map(v=>\`<option value='\${v[0]}'>\${v[0]}</option>\`).join(''):'';">
@@ -540,14 +593,35 @@ let adminPanelTools = `
 
     <label>नया गाँव जोड़ें (${D[this.state.selectedDistrict]?.nameHi})</label>
     <input class="form-control" id="newVillageNameInput" placeholder="गाँव का नाम..." style="margin-bottom:8px">
-    <button class="btn-submit" style="background:#047857" onclick="app.addNewVillageToDistrict()">➕ नया गाँव जोड़ें</button>
+    <button class="btn-submit" style="background:#047857;margin-bottom:14px" onclick="app.addNewVillageToDistrict()">➕ नया गाँव जोड़ें</button>
+
+    <hr style="border:0;border-top:1px solid #cbd5e1;margin:12px 0">
+
+    <label style="color:#064e3b;font-size:14px;font-weight:bold">🔑 नया Sub-Admin जोड़ें (नाम, नंबर, गाँव और पासवर्ड)</label>
+    <input class="form-control" id="subAdminNameInput" placeholder="सब-एडमिन का नाम..." style="margin:6px 0">
+    <input class="form-control" id="subAdminPhoneInput" placeholder="मोबाइल नंबर (Chat Access हेतु)..." style="margin:6px 0">
+    <select class="form-control" id="subAdminDistSelect" style="margin:6px 0" onchange="let d=this.value, s=document.getElementById('subAdminVillageSelect'); s.innerHTML=D[d]?D[d].villages.map(v=>\`<option value='\${v[0]}'>\${v[0]}</option>\`).join(''):'';">
+      ${Object.keys(D).map(k=>`<option value="${k}">${D[k].nameHi}</option>`).join("")}
+    </select>
+    <select class="form-control" id="subAdminVillageSelect" style="margin:6px 0">
+      ${D[this.state.selectedDistrict]?.villages.map(v=>`<option value="${v[0]}">${v[0]}</option>`).join("")}
+    </select>
+    <input class="form-control" id="subAdminPwdInput" placeholder="लॉगिन पासवर्ड..." style="margin:6px 0">
+    <button class="btn-submit" style="background:#2563eb" onclick="app.addNewSubAdmin()">➕ Sub-Admin जोड़ें व Chat में Active करें</button>
   </div>
 </div>`;
+} else {
+adminPanelTools = `
+<div class="card" style="background:#eff6ff;border:2px solid #3b82f6;">
+  <div class="card-title" style="color:#1d4ed8">🔑 Sub-Admin Dashboard</div>
+  <p style="font-size:13px">आप केवल अपने गाँव <b>${this.esc(this.state.loggedInSubAdminVillage)}</b> का डेटा प्रबंधित कर सकते हैं।</p>
+</div>`;
+}
 
 return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>
-<div class="card"><div class="card-title">📊 Admin Dashboard</div></div>
+<div class="card"><div class="card-title">📊 ${this.state.isAdminLoggedIn?"Main Admin Dashboard":"Sub-Admin Panel"}</div></div>
 ${adminPanelTools}
-<h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">🌐 सभी गाँवों का डेटा (Global Management):</h3>
+<h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">🌐 ${this.state.isSubAdminLoggedIn?`गाँव (${this.state.loggedInSubAdminVillage}) का डेटा`:"सभी गाँवों का डेटा (Global Management)"}:</h3>
 ${globalPendingList(this.state.services,"services","Shop")||""}
 ${globalPendingList(this.state.announcements,"announcements","Announcement")||""}
 ${globalPendingList(this.state.greetings,"greetings","Greeting")||""}
