@@ -19,7 +19,9 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .title-box{display:flex;align-items:center;gap:8px}
 .user-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #fbbf24;background:#064e3b;cursor:pointer}
 .title{font-size:15px;font-weight:700}
-.village-badge-corner{background:#022c22;border:1px solid #10b981;color:#fde047;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:bold;display:inline-block;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.header-username-input{background:transparent;border:none;border-bottom:1px dashed #fbbf24;color:#fff;font-size:14px;font-weight:bold;outline:none;width:110px;padding:1px 3px}
+.header-username-input::placeholder{color:#a7f3d0}
+.village-badge-corner{background:#022c22;border:1px solid #10b981;color:#fde047;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:bold;display:inline-block;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .header-right{display:flex;gap:5px;align-items:center;position:relative}
 .header-btn{background:#10b981;color:#fff;border:0;padding:5px 9px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:11px}
 .menu-btn-style{background:#fbbf24;color:#0f172a}
@@ -27,7 +29,7 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .dropdown-item{padding:10px 14px;font-size:13px;font-weight:600;border-bottom:1px solid #f1f5f9;cursor:pointer;display:flex;align-items:center;gap:8px;color:#0f172a}
 .dropdown-item:hover{background:#ecfdf5}
 .ticker{background:#022c22;color:#fde047;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;border-bottom:2px solid #059669}
-.village-banner-dash{background:linear-gradient(135deg,#047857,#065f46);margin:12px;border-radius:14px;padding:12px;color:#fff;box-shadow:0 4px 15px #0003;text-align:center;border:2px solid #fbbf24;position:relative}
+.village-banner-dash{background:linear-gradient(135deg,#047857,#065f46);margin:12px;border-radius:14px;padding:12px;color:#fff;box-shadow:0 4px 15px #0003;text-align:center;border:2px solid #fbbf24;cursor:pointer;position:relative}
 .village-banner-dash img{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-top:8px;border:1px solid #fbbf24}
 .content{padding:14px 18px;background:#f8fafc;min-height:480px}
 .menu-card{border-radius:14px;padding:14px 16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:bold;font-size:14px;color:#fff;box-shadow:0 4px 10px #0002}
@@ -63,13 +65,14 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 <div style="font-size:22px;font-weight:700">MeraGaov - मेरी पहचान</div>
 <div style="font-size:13px;color:#a7f3d0">गाँव की हर खबर और जरूरत, अब आपके फोन पर</div>
 </div>
+<input type="file" id="dashBannerImageInput" accept="image/*" hidden onchange="app.updateDashboardBannerPhoto(this)">
 <div class="container">
 <header class="header">
 <div class="title-box">
 <input type="file" id="profileImageInput" accept="image/*" hidden onchange="app.changeUserAvatar(this)">
-<img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" onclick="profileImageInput.click()" title="प्रोफाइल फोटो बदलने के लिए क्लिक करें">
+<img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" onclick="profileImageInput.click()">
 <div>
-<div class="title" id="headerTitleText">MeraGaov</div>
+<input type="text" id="headerUsernameInput" class="header-username-input" placeholder="User Name" oninput="app.saveHeaderUsername(this.value)">
 <div class="village-badge-corner" id="headerVillageBadge" onclick="app.requestVillageUnlock()" title="गाँव बदलने के लिए क्लिक करें">📍 लोड हो रहा...</div>
 </div>
 </div>
@@ -106,7 +109,7 @@ const D={
 const jokesList=[
 "तऊ बोला: बेटा अंग्रेजी में 'Apple' ने के कह्या करें? पोता: सेब तऊ! तऊ: बेबे के फूंके मारै है, मन्ने अंग्रेजी पूछ् राखी थी!",
 "एक हरियाणवी छोरा अंग्रेजी बोलन लाग्या: 'I want a glass of water.' दूजा बोला: 'भाई, बाल्टी भरकै पी ले, अंग्रेजी झाड़ण की जरूरत कोन्या!'",
-"मास्टर: बता Yo 'Honesty is the best policy' का हिंदी अनुवाद कै होवै है? छात्र: मास्टर जी, ईमानदारी सबतै बढ़िया ठेकेदारी सै!",
+"मास्टर: बता यो 'Honesty is the best policy' का हिंदी अनुवाद कै होवै है? छात्र: मास्टर जी, ईमानदारी सबतै बढ़िया ठेकेदारी सै!",
 "ताया ताश खेलने बैठ्या और बोला: 'पत्ता फेंकण तै पैल्या राम का नाम लेवियो!' दूजा बोला: 'तऊ, ताश में ना, किस्मत काम आया करै!'",
 "पत्नी: जी सुणो हो, मन्ने सपने में राजकुमार मिल्या! पति: अच्छा, फेर कसूती कुटाई कोन्या करी उसनें तेरी?"
 ];
@@ -124,7 +127,7 @@ villageLocked:localStorage.getItem("villageLocked")==="true",
 services:[],announcements:[],greetings:[],market:[],historyGallery:[],sarpanchDetails:[],chaupalMessages:[],feedbacks:[],khelKud:[],
 allowedChatUsers:{},subAdmins:[],villagesConfig:{},villageUnlockRequests:{},
 userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
-userName:localStorage.getItem("userName")||"यूज़र",
+headerUsername:localStorage.getItem("headerUsername")||"User",
 isAdminLoggedIn:false,isSubAdminLoggedIn:false,
 adminName:localStorage.getItem("adminName")||"Admin",
 loggedInSubAdminVillage:"",loggedInSubAdminDistrict:"",loggedInSubAdminName:"",loggedInSubAdminPhone:"",
@@ -171,6 +174,8 @@ document.getElementById("menuToggleBtn").onclick=e=>{
 e.stopPropagation();let m=document.getElementById("dropdownMenu");m.style.display=m.style.display==="block"?"none":"block";
 };
 document.addEventListener("click",()=>{let m=document.getElementById("dropdownMenu");if(m)m.style.display="none";});
+
+// English / Language Toggle Fix & Enhancement
 document.getElementById("langToggleBtn").onclick=()=>{
 this.state.lang=this.state.lang==="hi"?"en":"hi";
 document.getElementById("langToggleBtn").textContent=this.state.lang==="hi"?"🌐 English":"🌐 हिंदी";
@@ -178,6 +183,10 @@ this.render();
 };
 window.addEventListener("firebase-ready",()=>this.setupFirebase());
 window.addEventListener("firebase-error",()=>this.status("⚠️ Firebase connect नहीं हुआ"));
+}
+saveHeaderUsername(val){
+this.state.headerUsername=val;
+localStorage.setItem("headerUsername",val);
 }
 firebase(){
 if(window.firebaseDb)return this.setupFirebase();
@@ -238,6 +247,16 @@ let f=input?.files?.[0];if(!f||!f.type.startsWith("image/"))return alert("के
 if(f.size>2*1024*1024)return alert("फोटो 2 MB से छोटी रखें।");
 let r=new FileReader();
 r.onload=()=>{this.state.userAvatarUrl=r.result;localStorage.setItem("userCustomAvatar",r.result);document.getElementById("headerUserAvatar").src=r.result;alert("प्रोफाइल फोटो बदल दी गई!");};
+r.readAsDataURL(f);
+}
+updateDashboardBannerPhoto(input){
+let f=input?.files?.[0];if(!f||!f.type.startsWith("image/"))return alert("केवल फोटो चुनें।");
+if(f.size>2*1024*1024)return alert("फोटो 2 MB से छोटी रखें।");
+let r=new FileReader();
+r.onload=()=>{
+let imgUrl=r.result;
+this.saveData("greetings",{name:this.state.isSubAdminLoggedIn?this.state.loggedInSubAdminName:"Admin",phone:"",message:`🌟 ${this.state.searchVillage} डिजिटल डैशबोर्ड स्पेशल बैनर`,imageUrl:imgUrl,showOnTicker:true},"डैशबोर्ड बैनर फोटो सफलतापूर्वक बदल दी गई!");
+};
 r.readAsDataURL(f);
 }
 requestAdminAccess(){
@@ -410,8 +429,7 @@ submitGreeting(){
 let n=document.getElementById("gName")?.value.trim(),p=document.getElementById("gPhone")?.value.trim(),m=document.getElementById("gMsg")?.value.trim(),showTicker=document.getElementById("gShowTicker")?.checked||false;
 if(!n||!m)return alert("नाम और संदेश भरें!");
 let img=this.generatedBannerDataUrl||this.tempImage;if(!img)return alert("पहले बैनर बनाएं!");
-// अलग पाथ 'villageBanners' पर सेव होगा ताकि मेन डैशबोर्ड सीधे हर यूजर के पोस्ट से ओवरराइट न हो
-this.saveData("villageBanners",{name:n,phone:p,message:m,imageUrl:img,showOnTicker:showTicker},"डैशबोर्ड बैनर सेव कर दिया गया!");
+this.saveData("greetings",{name:n,phone:p,message:m,imageUrl:img,showOnTicker:showTicker},"बैनर सेव कर दिया गया!");
 }
 submitShop(){
 let n=document.getElementById("sName")?.value.trim(),p=document.getElementById("sPhone")?.value.trim(),c=document.getElementById("sCat")?.value,showTicker=document.getElementById("sShowTicker")?.checked||false;
@@ -452,10 +470,9 @@ window.firebaseDb.push(window.firebaseDb.ref(window.firebaseDb.db,"chaupalMessag
 }
 lockUserVillage(){
 let selDist=document.getElementById("setupDistrictSelect").value,selVil=document.getElementById("setupVillageSelect").value;
-let uName=document.getElementById("setupUserNameInput")?.value.trim()||"यूज़र";
 if(!selVil)return alert("कृपया अपना गाँव चुनें!");
-this.state.selectedDistrict=selDist;this.state.searchVillage=selVil;this.state.userDistrict=selDist;this.state.userVillage=selVil;this.state.userName=uName;this.state.villageLocked=true;
-localStorage.setItem("selectedDistrict",selDist);localStorage.setItem("searchVillage",selVil);localStorage.setItem("userDistrict",selDist);localStorage.setItem("userVillage",selVil);localStorage.setItem("userName",uName);localStorage.setItem("villageLocked","true");
+this.state.selectedDistrict=selDist;this.state.searchVillage=selVil;this.state.userDistrict=selDist;this.state.userVillage=selVil;this.state.villageLocked=true;
+localStorage.setItem("selectedDistrict",selDist);localStorage.setItem("searchVillage",selVil);localStorage.setItem("userDistrict",selDist);localStorage.setItem("userVillage",selVil);localStorage.setItem("villageLocked","true");
 this.render();
 }
 requestVillageUnlock(){
@@ -494,9 +511,6 @@ html+=`<div class="live-upload-box"><input class="form-control" id="sName" place
     <option value="kirana">🛒 किराना स्टोर</option>
     <option value="krishi">🌾 कृषि व खाद-बीज</option>
     <option value="medical">💊 स्वास्थ्य / मेडिकल</option>
-    <option value="advocate">⚖️ एडवोकेट (Advocate)</option>
-    <option value="tailor">✂️ टेलर (Tailor)</option>
-    <option value="salon">💇‍♂️ सैलून (Salon)</option>
     <option value="other">📦 अन्य</option>
 </select>
 <input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><div style="text-align:left;margin-bottom:8px;font-size:12px"><label style="cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="sShowTicker"> 📢 इसे ऊपर लोकल लाइव खबर (Ticker) पर भी भेजें</label></div><button class="btn-submit" onclick="app.submitShop()">📤 दुकान/सेवा जोड़ें</button></div>${this.listItems(this.state.services,"Shop")||`<div class="empty-state">कोई दुकान उपलब्ध नहीं है।</div>`}`;
@@ -508,8 +522,6 @@ html+=`<div class="live-upload-box"><input class="form-control" id="mName" place
     <option value="buffalo_cow">🐃 भैंस / गाय</option>
     <option value="tractor">🚜 ट्रैक्टर</option>
     <option value="wheat">🌾 गेहूं</option>
-    <option value="jowar">🌾 जवार (Jowar)</option>
-    <option value="berseem">🌾 बरसीम (Berseem)</option>
     <option value="other">📦 अन्य</option>
 </select>
 <textarea class="form-control" id="mTitle" placeholder="विवरण..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><button class="btn-submit" onclick="app.submitMarket()">📤 पोस्ट भेजें</button></div>${this.listItems(this.state.market,"Market")||`<div class="empty-state">कोई पोस्ट उपलब्ध नहीं है।</div>`}`;
@@ -520,7 +532,7 @@ html+=`<div class="live-upload-box"><input class="form-control" id="hgName" plac
 }else if(view.type==="sarpanch"){
 html+=`<div class="live-upload-box"><input class="form-control" id="sdName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="sdSarpanch" placeholder="वर्तमान सरपंच का नाम..." style="margin-bottom:8px"><input class="form-control" id="sdTotalWards" placeholder="कुल वार्ड संख्या..." style="margin-bottom:8px"><textarea class="form-control" id="sdPanchs" placeholder="पंचों के नाम..." style="margin-bottom:8px;height:50px"></textarea><input class="form-control" id="sdPopulation" placeholder="गाँव की कुल आबादी..." style="margin-bottom:8px"><input type="file" accept="image/*" class="form-control" onchange="app.handleImage(this)" style="margin-bottom:8px"><button class="btn-submit" onclick="app.submitSarpanchDetails()">📤 विवरण सेव करें</button></div>${this.listItems(this.state.sarpanchDetails,"Sarpanch")||`<div class="empty-state">कोई विवरण उपलब्ध नहीं है।</div>`}`;
 }else if(view.type==="greeting"){
-html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSelect" style="margin-bottom:8px"><option value="default">ग्रीन थीम फ्रेम</option></select><input class="form-control" id="gName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="gMsg" placeholder="बधाई संदेश..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px"><button class="btn-submit" style="background:#2563eb" onclick="app.generateGreetingBannerCanvas()">🎨 सुंदर बैनर बनाएं</button><div id="bannerPreviewBox"></div><button class="btn-submit" onclick="app.submitGreeting()" style="margin-top:8px">📤 बैनर लाइव करें (डैशबोर्ड स्पेशल)</button></div>${this.listItems(this.state.greetings,"Greeting")||`<div class="empty-state">कोई बधाई संदेश उपलब्ध नहीं है।</div>`}`;
+html+=`<div class="live-upload-box"><select class="form-control" id="gTemplateSelect" style="margin-bottom:8px"><option value="default">ग्रीन थीम फ्रेम</option></select><input class="form-control" id="gName" placeholder="आपका नाम..." style="margin-bottom:8px"><input class="form-control" id="gPhone" placeholder="मोबाइल नंबर..." style="margin-bottom:8px"><textarea class="form-control" id="gMsg" placeholder="बधाई संदेश..." style="margin-bottom:8px;height:70px"></textarea><input type="file" accept="image/*" class="form-control" onchange="app.handleBannerUserPhoto(this)" style="margin-bottom:8px"><button class="btn-submit" style="background:#2563eb" onclick="app.generateGreetingBannerCanvas()">🎨 सुंदर बैनर बनाएं</button><div id="bannerPreviewBox"></div><button class="btn-submit" onclick="app.submitGreeting()" style="margin-top:8px">📤 बैनर लाइव करें</button></div>${this.listItems(this.state.greetings,"Greeting")||`<div class="empty-state">कोई बधाई संदेश उपलब्ध नहीं है।</div>`}`;
 }
 return html+"</div>";
 }
@@ -568,6 +580,7 @@ if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.chang
 let filterVillage = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminVillage : null;
 let filterDistrict = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminDistrict : null;
 
+// Global Pending Requests List (बिना गाँव खोले सभी पेंडिंग रिक्वेस्ट्स एक साथ एडमिन को दिखेंगी)
 const globalPendingList=(arr,path,label)=>arr.filter(x=>{
 if(filterVillage && x.villageHi !== filterVillage) return false;
 if(filterDistrict && x.districtId !== filterDistrict) return false;
@@ -668,7 +681,7 @@ allManagedList = `
 return `<button class="back-btn" onclick="app.changeView('home')">← होम</button>
 <div class="card"><div class="card-title">📊 ${this.state.isAdminLoggedIn?"Main Admin Dashboard":"Sub-Admin Panel"}</div></div>
 ${adminPanelTools}
-<h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">⏳ अप्रूवल के लिए पेंडिंग रिक्वेस्ट्स (Pending Requests):</h3>
+<h3 style="font-size:14px;color:#064e3b;margin:12px 0 8px">⏳ अप्रूवल के लिए पेंडिंग रिक्वेस्ट्स (Global Pending Requests):</h3>
 ${pendingCombined || `<div class="empty-state">अभी कोई पेंडिंग रिक्वेस्ट नहीं है। सभी डेटा अप्रूव्ड हैं।</div>`}
 ${allManagedList}
 `;
@@ -678,10 +691,15 @@ let d=D[this.state.selectedDistrict];if(!d){this.state.selectedDistrict="charkhi
 if(!this.state.searchVillage)this.state.searchVillage=d.villages[0]?.[0]||"";
 let village=this.villageObj();
 let display=village?(this.state.lang==="en"?village[1]:village[0]):this.state.searchVillage;
-document.getElementById("headerTitleText").textContent="MeraGaov";
-// हेडर में गाँव के नाम के साथ यूजर का नाम भी दिखाने के लिए:
-document.getElementById("headerVillageBadge").textContent=`📍 ${display} | 👤 ${this.state.userName}`;
+
+// Set Header inputs
+document.getElementById("headerVillageBadge").textContent="📍 "+display;
 document.getElementById("headerUserAvatar").src=this.state.userAvatarUrl;
+let headerInput = document.getElementById("headerUsernameInput");
+if(headerInput && document.activeElement !== headerInput){
+  headerInput.value = this.state.headerUsername;
+}
+
 localStorage.setItem("selectedDistrict",this.state.selectedDistrict);
 if(this.state.searchVillage)localStorage.setItem("searchVillage",this.state.searchVillage);
 this.updateTicker();
@@ -692,14 +710,13 @@ dashBannerEl.innerHTML="";
 let dsOptions=Object.keys(D).map(k=>`<option value="${k}" ${k===this.state.selectedDistrict?"selected":""}>${this.esc(D[k].nameHi)}</option>`).join("");
 let curD=D[this.state.selectedDistrict]||D["charkhi-dadri"];
 let vilOptions=curD.villages.map(v=>`<option value="${this.esc(v[0])}">${this.esc(v[0])}</option>`).join("");
-let html=`<div class="card" style="background:#f0fdf4;border:2px solid #10b981;text-align:center"><div class="card-title" style="justify-content:center;color:#064e3b">🏡 अपना गाँव व नाम दर्ज करें</div><div class="form-group" style="text-align:left"><label>आपका नाम</label><input class="form-control" id="setupUserNameInput" placeholder="अपना नाम लिखें..." value="${this.esc(this.state.userName)}"></div><div class="form-group" style="text-align:left"><label>जिला</label><select class="form-control" id="setupDistrictSelect" onchange="app.state.selectedDistrict=this.value;app.state.searchVillage='';app.render()">${dsOptions}</select></div><div class="form-group" style="text-align:left"><label>गाँव</label><select class="form-control" id="setupVillageSelect">${vilOptions}</select></div><button class="btn-submit" style="background:#059669;padding:12px;margin-top:8px" onclick="app.lockUserVillage()">🔒 गाँव लॉक करें</button></div>`;
+let html=`<div class="card" style="background:#f0fdf4;border:2px solid #10b981;text-align:center"><div class="card-title" style="justify-content:center;color:#064e3b">🏡 अपना गाँव चुनें</div><div class="form-group" style="text-align:left"><label>जिला</label><select class="form-control" id="setupDistrictSelect" onchange="app.state.selectedDistrict=this.value;app.state.searchVillage='';app.render()">${dsOptions}</select></div><div class="form-group" style="text-align:left"><label>गाँव</label><select class="form-control" id="setupVillageSelect">${vilOptions}</select></div><button class="btn-submit" style="background:#059669;padding:12px;margin-top:8px" onclick="app.lockUserVillage()">🔒 गाँव लॉक करें</button></div>`;
 document.getElementById("mainContent").innerHTML=html;
 return;
 }else{
-// डैशबोर्ड बैनर अब केवल 'villageBanners' पाथ या ग्रीटिंग्स के स्पेशल बैनर से फेच होगा, ताकि सामान्य पोस्ट से मेन बैनर ओवरराइट न हो
 let approvedGreetings=this.state.greetings.filter(x=>x.status==="approved"&&x.villageHi===this.state.searchVillage&&x.imageUrl);
 let bannerImg=approvedGreetings.length>0?approvedGreetings[0].imageUrl:"https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&auto=format&fit=crop";
-dashBannerEl.innerHTML=`<div class="village-banner-dash"><b>🌟 ${this.esc(display)} डिजिटल डैशबोर्ड</b><img src="${bannerImg}"></div>`;
+dashBannerEl.innerHTML=`<div class="village-banner-dash" onclick="document.getElementById('dashBannerImageInput').click()" style="cursor:pointer"><b>🌟 ${this.esc(display)} डिजिटल डैशबोर्ड</b><img src="${bannerImg}"></div>`;
 }
 
 let html="";
@@ -707,7 +724,7 @@ if(this.state.view==="home"){
 html=`<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">🌐 All Village (ओपन बाज़ार) →</div>
 <div class="menu-card bg-1" onclick="app.changeView('list')">🛒 1. दुकान और सेवा बाजार →</div>
 <div class="menu-card bg-2" onclick="app.changeView('announcements')">📢 2. मुनादी व जरूरी खबरें →</div>
-<div class="menu-card bg-3" onclick="app.changeView('greetings')">🎉 3. त्यौहार व बधाई संदेश (डैशबोर्ड बैनर) →</div>
+<div class="menu-card bg-3" onclick="app.changeView('greetings')">🎉 3. त्यौहार व बधाई संदेश →</div>
 <div class="menu-card bg-4" onclick="app.changeView('market')">🚜 4. खरीद-बिक्री बाज़ार →</div>
 <div class="menu-card bg-5" onclick="app.changeView('khelkud')">🏆 5. खेल-कूद (कबड्डी / कुश्ती) →</div>
 <div class="menu-card bg-8" onclick="app.changeView('sarpanch')">🏛️ 6. सरपंच, वार्ड व आबादी विवरण →</div>
@@ -716,7 +733,7 @@ html=`<div class="menu-card-small" onclick="app.changeView('allVillageMarket')">
 <div class="menu-card bg-7" onclick="app.changeView('jokes')">😂 चुटकुला ऑफ़ द डे →</div>`;
 }else if(this.state.view==="list"){html=this.renderForm({title:"🛒 दुकान और सेवा बाजार",type:"shop"});
 }else if(this.state.view==="announcements"){html=this.renderForm({title:"📢 मुनादी व जरूरी खबरें",type:"announcement"});
-}else if(this.state.view==="greetings"){html=this.renderForm({title:"🎉 त्यौहार व बधाई संदेश (डैशबोर्ड बैनर)",type:"greeting"});
+}else if(this.state.view==="greetings"){html=this.renderForm({title:"🎉 त्यौहार व बधाई संदेश",type:"greeting"});
 }else if(this.state.view==="market"){html=this.renderForm({title:"🚜 खरीद-बिक्री बाज़ार",type:"market"});
 }else if(this.state.view==="khelkud"){html=this.renderForm({title:"🏆 खेल-कूद (कबड्डी / कुश्ती)",type:"khelkud"});
 }else if(this.state.view==="historyGallery"){html=this.renderForm({title:"📸 गाँव का इतिहास और गैलरी",type:"history"});
