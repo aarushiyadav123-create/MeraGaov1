@@ -21,7 +21,6 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .title{font-size:15px;font-weight:700}
 .header-username-input{background:transparent;border:none;border-bottom:1px dashed #fbbf24;color:#fff;font-size:15px;font-weight:bold;outline:none;width:125px;padding:1px 3px}
 .header-username-input::placeholder{color:#a7f3d0}
-/* गाँव के नाम को बड़ा और साफ़ करने के लिए स्टाइल */
 .village-badge-corner{background:#022c22;border:1px solid #10b981;color:#fde047;padding:3px 8px;border-radius:8px;font-size:13px;font-weight:bold;display:inline-block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;margin-top:2px}
 .header-right{display:flex;gap:5px;align-items:center;position:relative}
 .header-btn{background:#10b981;color:#fff;border:0;padding:5px 9px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:11px}
@@ -44,7 +43,6 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .card-title{font-size:14px;font-weight:700;color:#064e3b;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px}
 .form-group{margin-bottom:12px}.form-group label{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:5px}
 .form-control{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;background:#f8fafc;outline:0}
-/* ड्रॉपडाउन या सिलेक्ट बॉक्स कटने से बचाने के लिए अतिरिक्त पैडिंग व हाइट */
 select.form-control{height:45px;max-height:220px}
 .form-control:focus{border-color:#10b981;box-shadow:0 0 0 2px #10b98120}
 .btn-submit{margin-top:8px;background:#047857;color:#fff;border:0;width:100%;padding:11px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer}
@@ -178,7 +176,6 @@ e.stopPropagation();let m=document.getElementById("dropdownMenu");m.style.displa
 };
 document.addEventListener("click",()=>{let m=document.getElementById("dropdownMenu");if(m)m.style.display="none";});
 
-// English / Language Toggle Fix & Enhancement
 document.getElementById("langToggleBtn").onclick=()=>{
 this.state.lang=this.state.lang==="hi"?"en":"hi";
 document.getElementById("langToggleBtn").textContent=this.state.lang==="hi"?"🌐 English":"🌐 हिंदी";
@@ -278,7 +275,7 @@ this.state.loggedInSubAdminDistrict=s.districtId||s.district||"";
 this.state.loggedInSubAdminName=s.name||"Sub-Admin";
 this.state.loggedInSubAdminPhone=s.phone||"";
 if(s.districtId&&D[s.districtId])this.state.selectedDistrict=s.districtId;
-this.state.searchVillage=this.state.loggedInSubAdminVillage;
+if(s.village)this.state.searchVillage=s.village;
 this.state.villageLocked=true;
 localStorage.setItem("selectedDistrict",this.state.selectedDistrict);
 localStorage.setItem("searchVillage",this.state.searchVillage);
@@ -317,6 +314,11 @@ deleteItem(path,id){
 if(!confirm("डिलीट करना चाहते हैं?")||!window.firebaseDb)return;
 let {db,ref,remove}=window.firebaseDb;
 remove(ref(db,`${path}/${id}`)).then(()=>this.render()).catch(e=>alert(e.message));
+}
+deleteSubAdmin(id){
+if(!confirm("क्या आप इस सब-एडमिन को हटाना चाहते हैं?")||!window.firebaseDb)return;
+let {db,ref,remove}=window.firebaseDb;
+remove(ref(db,`subAdmins/${id}`)).then(()=>{alert("सब-एडमिन हटा दिया गया है!");this.render();}).catch(e=>alert(e.message));
 }
 submitFeedback(){
 let name=document.getElementById("fbName")?.value.trim(),phone=document.getElementById("fbPhone")?.value.trim(),msg=document.getElementById("fbMsg")?.value.trim();
@@ -589,7 +591,6 @@ if(!this.state.isAdminLoggedIn&&!this.state.isSubAdminLoggedIn)return this.chang
 let filterVillage = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminVillage : null;
 let filterDistrict = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminDistrict : null;
 
-// Global Pending Requests List (बिना गाँव खोले सभी गाँवों की पेंडिंग रिक्वेस्ट्स एक साथ एडमिन को दिखेंगी)
 const globalPendingList=(arr,path,label)=>arr.filter(x=>{
 if(filterVillage && x.villageHi !== filterVillage) return false;
 if(filterDistrict && x.districtId !== filterDistrict) return false;
@@ -599,6 +600,17 @@ return x.status && x.status !== "approved";
 let adminPanelTools = "";
 
 if(this.state.isAdminLoggedIn){
+// सब-एडमिन की सूची जिन्हें एडमिन देख और डिलीट कर सके
+let subAdminListHtml = this.state.subAdmins.map(s=>`
+  <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #cbd5e1;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <b style="color:#064e3b">${this.esc(s.name)}</b> (${this.esc(s.phone)})<br>
+      <span style="font-size:12px;color:#d97706">📍 गाँव: <b>${this.esc(s.village||s.villageHi||"N/A")}</b></span>
+    </div>
+    <button class="delete-btn" onclick="app.deleteSubAdmin('${this.esc(s.id)}')">🗑️ डिलीट</button>
+  </div>
+`).join("") || `<div class="empty-state" style="padding:10px">कोई सब-एडमिन मौजूद नहीं है।</div>`;
+
 adminPanelTools = `
 <div class="card" style="background:#f0fdf4;border:2px solid #10b981;">
   <div class="card-title" style="color:#064e3b">⚙️ Main Admin Control</div>
@@ -620,7 +632,7 @@ adminPanelTools = `
 
     <button class="btn-submit" style="background:#2563eb;margin-bottom:10px" onclick="app.toggleSubAdminForm()">➕ नया Sub-Admin जोड़ें</button>
     
-    <div id="subAdminFormContainer" style="display:none;background:#f8fafc;padding:12px;border-radius:10px;border:1px solid #cbd5e1;">
+    <div id="subAdminFormContainer" style="display:none;background:#f8fafc;padding:12px;border-radius:10px;border:1px solid #cbd5e1;margin-bottom:14px">
       <label style="color:#064e3b;font-size:13px;font-weight:bold;margin-bottom:6px;display:block">सब-एडमिन विवरण भरें:</label>
       <input class="form-control" id="subAdminNameInput" placeholder="सब-एडमिन का नाम..." style="margin-bottom:8px">
       <input class="form-control" id="subAdminPhoneInput" placeholder="मोबाइल नंबर (Chat Access हेतु)..." style="margin-bottom:8px">
@@ -634,13 +646,16 @@ adminPanelTools = `
       <button class="btn-submit" style="background:#10b981" onclick="app.addNewSubAdmin()">💾 सब-एडमिन सुरक्षित करें</button>
     </div>
 
+    <label style="margin-top:10px;margin-bottom:6px">👥 पंजीकृत सब-एडमिन लिस्ट व प्रबंधन:</label>
+    ${subAdminListHtml}
+
   </div>
 </div>`;
 } else {
 adminPanelTools = `
 <div class="card" style="background:#eff6ff;border:2px solid #3b82f6;">
   <div class="card-title" style="color:#1d4ed8">🔑 Sub-Admin Dashboard</div>
-  <p style="font-size:13px">आप केवल अपने गाँव <b>${this.esc(this.state.loggedInSubAdminVillage)}</b> का डेटा प्रबंधित कर सकते हैं।</p>
+  <p style="font-size:13px">आप केवल अपने निर्धारित गाँव <b>${this.esc(this.state.loggedInSubAdminVillage)}</b> का डेटा प्रबंधित कर सकते हैं।</p>
 </div>`;
 }
 
@@ -701,7 +716,6 @@ if(!this.state.searchVillage)this.state.searchVillage=d.villages[0]?.[0]||"";
 let village=this.villageObj();
 let display=village?(this.state.lang==="en"?village[1]:village[0]):this.state.searchVillage;
 
-// Set Header inputs
 document.getElementById("headerVillageBadge").textContent="📍 "+display;
 document.getElementById("headerUserAvatar").src=this.state.userAvatarUrl;
 let headerInput = document.getElementById("headerUsernameInput");
