@@ -271,15 +271,23 @@ let s=this.state.subAdmins.find(x=>String(x.pwd)===p);
 if(!s)return alert("गलत पासवर्ड!");
 this.state.isSubAdminLoggedIn=true;this.state.isAdminLoggedIn=false;
 this.state.loggedInSubAdminVillage=s.village||s.villageHi||"";
-this.state.loggedInSubAdminDistrict=s.districtId||s.district||"";
+this.state.loggedInSubAdminDistrict=s.districtId||s.district||"charkhi-dadri";
 this.state.loggedInSubAdminName=s.name||"Sub-Admin";
 this.state.loggedInSubAdminPhone=s.phone||"";
-if(s.districtId&&D[s.districtId])this.state.selectedDistrict=s.districtId;
-if(s.village)this.state.searchVillage=s.village;
+
+if(this.state.loggedInSubAdminDistrict&&D[this.state.loggedInSubAdminDistrict]){
+  this.state.selectedDistrict=this.state.loggedInSubAdminDistrict;
+}
+if(this.state.loggedInSubAdminVillage){
+  this.state.searchVillage=this.state.loggedInSubAdminVillage;
+}
 this.state.villageLocked=true;
+
 localStorage.setItem("selectedDistrict",this.state.selectedDistrict);
 localStorage.setItem("searchVillage",this.state.searchVillage);
 localStorage.setItem("villageLocked","true");
+
+alert(`स्वागत है ${this.state.loggedInSubAdminName}!\nगाँव: ${this.state.searchVillage}`);
 this.changeView("admin");
 }
 changeView(v){
@@ -600,7 +608,6 @@ return x.status && x.status !== "approved";
 let adminPanelTools = "";
 
 if(this.state.isAdminLoggedIn){
-// सब-एडमिन की सूची जिन्हें एडमिन देख और डिलीट कर सके
 let subAdminListHtml = this.state.subAdmins.map(s=>`
   <div style="background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #cbd5e1;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
     <div>
