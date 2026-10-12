@@ -1,102 +1,5 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MeraGaov - मेरी पहचान</title>
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import{getDatabase,ref,set,onValue,push,remove,update}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
-const firebaseConfig={apiKey:"AIzaSyBXryxNOlryP4WOXcKOda5dQIjLAc72g4",authDomain:"meragaov-ab9fb.firebaseapp.com",databaseURL:"https://meragaov-ab9fb-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"meragaov-ab9fb",storageBucket:"meragaov-ab9fb.firebasestorage.app",messagingSenderId:"424538068212",appId:"1:424538068212:web:2d58406aeb0b4d9524faa1",measurementId:"G-86FH5M7NP1"};
-try{const db=getDatabase(initializeApp(firebaseConfig));window.firebaseDb={db,ref,set,onValue,push,remove,update};window.dispatchEvent(new Event("firebase-ready"));}catch(e){console.error(e);window.firebaseError=e;window.dispatchEvent(new Event("firebase-error"));}
-</script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;font-family:Hind,sans-serif}
-body{background:#064e3b;color:#0f172a;padding:6px}
-.container{max-width:580px;margin:auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 25px #0005}
-#splashScreen{position:fixed;inset:0;background:linear-gradient(135deg,#065f46,#047857);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;transition:.5s}
-.header{background:linear-gradient(135deg,#065f46,#047857);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #059669}
-.title-box{display:flex;align-items:center;gap:8px}
-.user-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #fbbf24;background:#064e3b;cursor:pointer}
-.title{font-size:15px;font-weight:700}
-.header-username-input{background:transparent;border:none;border-bottom:1px dashed #fbbf24;color:#fff;font-size:15px;font-weight:bold;outline:none;width:125px;padding:1px 3px}
-.header-username-input::placeholder{color:#a7f3d0}
-.village-badge-corner{background:#022c22;border:1px solid #10b981;color:#fde047;padding:3px 8px;border-radius:8px;font-size:13px;font-weight:bold;display:inline-block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;margin-top:2px}
-.header-right{display:flex;gap:5px;align-items:center;position:relative}
-.header-btn{background:#10b981;color:#fff;border:0;padding:5px 9px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:11px}
-.menu-btn-style{background:#fbbf24;color:#0f172a}
-.dropdown-menu{position:absolute;top:42px;right:0;background:#fff;border-radius:12px;box-shadow:0 10px 25px #0004;border:1px solid #cbd5e1;width:155px;z-index:1000;overflow:hidden;display:none;text-align:left}
-.dropdown-item{padding:10px 14px;font-size:13px;font-weight:600;border-bottom:1px solid #f1f5f9;cursor:pointer;display:flex;align-items:center;gap:8px;color:#0f172a}
-.dropdown-item:hover{background:#ecfdf5}
-.ticker{background:#022c22;color:#fde047;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;border-bottom:2px solid #059669}
-.village-banner-dash{background:linear-gradient(135deg,#047857,#065f46);margin:12px;border-radius:14px;padding:12px;color:#fff;box-shadow:0 4px 15px #0003;text-align:center;border:2px solid #fbbf24;cursor:pointer;position:relative}
-.village-banner-dash img{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-top:8px;border:1px solid #fbbf24}
-.content{padding:14px 18px;background:#f8fafc;min-height:480px}
-.menu-card{border-radius:14px;padding:14px 16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:bold;font-size:14px;color:#fff;box-shadow:0 4px 10px #0002}
-.menu-card-small{border-radius:10px;padding:10px 14px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:bold;font-size:13px;color:#fff;box-shadow:0 2px 6px #0002;background:linear-gradient(135deg,#d97706,#b45309)}
-.bg-1{background:linear-gradient(135deg,#0d9488,#0f766e)}.bg-2{background:linear-gradient(135deg,#ea580c,#c2410c)}
-.bg-3{background:linear-gradient(135deg,#db2777,#be185d)}.bg-4{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
-.bg-5{background:linear-gradient(135deg,#7c3aed,#6d28d9)}.bg-6{background:linear-gradient(135deg,#0891b2,#155e75)}
-.bg-7{background:linear-gradient(135deg,#475569,#334155)}.bg-8{background:linear-gradient(135deg,#0284c7,#0369a1)}
-.card,.service-item,.media-card{background:#fff;border:1px solid #cbd5e1;border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px #0000000d}
-.service-item{border:2px solid #e2e8f0;margin-bottom:16px;background:#ffffff}
-.card-title{font-size:14px;font-weight:700;color:#064e3b;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px}
-.form-group{margin-bottom:12px}.form-group label{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:5px}
-.form-control{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;background:#f8fafc;outline:0}
-select.form-control{height:45px;max-height:220px}
-.form-control:focus{border-color:#10b981;box-shadow:0 0 0 2px #10b98120}
-.btn-submit{margin-top:8px;background:#047857;color:#fff;border:0;width:100%;padding:11px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer}
-.service-tag{background:#d1fae5;color:#064e3b;font-size:10px;font-weight:bold;padding:3px 8px;border-radius:6px;display:inline-block}
-.service-name{font-size:14px;font-weight:700;margin:6px 0;white-space:pre-wrap}
-.service-img{width:100%;height:160px;object-fit:cover;border-radius:8px;margin-top:8px}
-.btn-call{display:block;width:100%;background:#059669;color:#fff;text-align:center;text-decoration:none;padding:10px;border-radius:10px;font-weight:bold;font-size:13px;margin-top:10px}
-.empty-state{text-align:center;padding:25px 15px;background:#fff;border:1px dashed #cbd5e1;border-radius:14px;color:#64748b;font-size:13px}
-.back-btn{background:#065f46;color:#fff;border:0;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:bold;cursor:pointer;margin-bottom:14px}
-.live-upload-box{background:#f0fdf4;border:2px dashed #10b981;border-radius:12px;padding:14px;text-align:center;margin-bottom:15px}
-.delete-btn,.approve-btn,.live-btn{border:0;color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:bold;cursor:pointer;margin-top:6px;margin-right:6px}
-.delete-btn{background:#dc2626}.approve-btn{background:#2563eb}.live-btn{background:#059669}
-.firebase-status{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:7px 12px;border-radius:20px;font-size:11px;z-index:10000;display:none}
-.policy-text{font-size:13px;line-height:1.7;color:#334155}
-</style>
-</head>
-<body>
-<div id="firebaseStatus" class="firebase-status"></div>
-<div id="splashScreen" style="position:fixed;inset:0;background:linear-gradient(135deg,#065f46,#047857);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;transition:.5s">
-<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:90px;height:90px;border-radius:50%;border:3px solid #fbbf24;background:#fff;object-fit:cover;margin-bottom:14px">
-<div style="font-size:22px;font-weight:700">MeraGaov - मेरी पहचान</div>
-<div style="font-size:13px;color:#a7f3d0">गाँव की हर खबर और जरूरत, अब आपके फोन पर</div>
-</div>
-<input type="file" id="dashBannerImageInput" accept="image/*" hidden onchange="app.updateDashboardBannerPhoto(this)">
-<div class="container">
-<header class="header">
-<div class="title-box">
-<input type="file" id="profileImageInput" accept="image/*" hidden onchange="app.changeUserAvatar(this)">
-<img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="user-avatar" onclick="profileImageInput.click()">
-<div>
-<input type="text" id="headerUsernameInput" class="header-username-input" placeholder="User Name" oninput="app.saveHeaderUsername(this.value)">
-<div class="village-badge-corner" id="headerVillageBadge" onclick="app.requestVillageUnlock()" title="गाँव बदलने के लिए क्लिक करें">📍 लोड हो रहा...</div>
-</div>
-</div>
-<div class="header-right">
-<button class="header-btn menu-btn-style" id="menuToggleBtn">☰ Menu</button>
-<button class="header-btn" id="langToggleBtn">🌐 English</button>
-<div class="dropdown-menu" id="dropdownMenu">
-<div class="dropdown-item" onclick="app.requestAdminAccess()">⚙️ Main Admin</div>
-<div class="dropdown-item" onclick="app.requestSubAdminAccess()">🔑 Sub-Admin</div>
-<div class="dropdown-item" onclick="app.changeView('policy')">📜 Policy</div>
-<div class="dropdown-item" onclick="app.changeView('feedback')">✍️ Feedback</div>
-<div class="dropdown-item" onclick="app.changeView('about')">ℹ️ About Us</div>
-</div>
-</div>
-</header>
-
-<div class="ticker">
-<marquee id="dynamicTickerText">🌾 सरसों: ₹5,400/क्विंटल | 🌾 गेहूं: ₹2,425/क्विंटल | 🌤️ मौसम: सामान्य</marquee>
-</div>
-
-<div id="villageDashboardBannerContainer"></div>
-<div class="content" id="mainContent"></div>
-</div>
+Rajesh bhai, bilkul tension mat lo! Purani script ka poora hissa badal do, main niche script tag ka wahi exact hissa de raha hoon jisme password 336200 set hai aur notification count function add ho gaya hai.
+Aap apne code mein <script> tag se lekar </script> tag ke beech ka poora hissa isse replace kar lijiye:
 <script>
 const D={
 "charkhi-dadri":{nameHi:"चरखी दादरी",nameEn:"Charkhi Dadri",villages:[["मालकोश","Malkosh"],["बाउंड","Baund"],["झूझू कलाँ","Jhujhu Kalan"],["पैडवा","Paidwa"],["बल्हा","Balha"],["मान्धी","Mandhi"],["मंसूरवास","Mansoorwas"],["अचैरा","Achaira"],["बडराई","Badrai"],["कोहला","Kohla"],["भागवी","Bhagvi"],["मटौर","Mataur"]]},
@@ -158,6 +61,40 @@ return this.state.loggedInSubAdminVillage===v && this.state.loggedInSubAdminDist
 }
 return false;
 }
+updatePendingNotificationBadge(){
+let filterVillage = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminVillage : null;
+let filterDistrict = this.state.isSubAdminLoggedIn ? this.state.loggedInSubAdminDistrict : null;
+
+let count = 0;
+const checkArr = (arr) => {
+  if(!arr) return;
+  arr.forEach(x => {
+    if(filterVillage && x.villageHi !== filterVillage) return;
+    if(filterDistrict && x.districtId !== filterDistrict) return;
+    if(x.status && x.status !== "approved") count++;
+  });
+};
+checkArr(this.state.services);
+checkArr(this.state.announcements);
+checkArr(this.state.greetings);
+checkArr(this.state.market);
+checkArr(this.state.feedbacks);
+checkArr(this.state.khelKud);
+
+let badgeEl = document.getElementById("adminNotificationBadge");
+let dropBadgeEl = document.getElementById("dropdownAdminBadge");
+if(badgeEl && dropBadgeEl){
+  if(count > 0){
+    badgeEl.textContent = count;
+    badgeEl.style.display = "inline-block";
+    dropBadgeEl.textContent = count;
+    dropBadgeEl.style.display = "inline-block";
+  } else {
+    badgeEl.style.display = "none";
+    dropBadgeEl.style.display = "none";
+  }
+}
+}
 startup(){
 setTimeout(()=>{let s=document.getElementById("splashScreen");if(s){s.style.opacity=0;setTimeout(()=>s.remove(),500);}},1000);
 }
@@ -205,6 +142,7 @@ const load=(key,val)=>{
 this.state[key]=val?Object.keys(val).map(k=>({id:k,...val[k]})).reverse():[];
 if(["list","announcements","greetings","market","historyGallery","sarpanchDetails","admin","feedback","khelKud"].includes(this.state.view))this.render();
 this.updateTicker();
+this.updatePendingNotificationBadge();
 };
 listen("services",v=>load("services",v));
 listen("announcements",v=>load("announcements",v));
@@ -261,7 +199,7 @@ r.readAsDataURL(f);
 }
 requestAdminAccess(){
 let p=prompt(this.state.lang==="en"?"Enter Admin Password:":"एडमिन पासवर्ड दर्ज करें:");
-if(p==="1234"){
+if(p==="336200"){
 this.state.isAdminLoggedIn=true;this.state.isSubAdminLoggedIn=false;this.changeView("admin");
 }else alert(this.state.lang==="en"?"Wrong password!":"गलत पासवर्ड!");
 }
@@ -304,24 +242,24 @@ let autoStatus = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ?
 let statusMsg = (this.state.isAdminLoggedIn || this.state.isSubAdminLoggedIn) ? (this.state.lang==="en"?"Successfully made live!":"सफलतापूर्वक लाइव कर दिया गया!") : (hasSub ? (this.state.lang==="en"?"Sent to village sub-admin for approval!":"गाँव के सब-एडमिन के पास अप्रूवल के लिए भेज दिया गया है!") : (this.state.lang==="en"?"Sent to admin!":"एडमिन के पास भेज दिया गया है!"));
 
 push(ref(db,path),{...data,...extra,districtId:this.state.selectedDistrict,villageHi:this.state.searchVillage,status:autoStatus,timestamp:Date.now()})
-.then(()=>{alert(statusMsg||msg);this.tempImage="";this.tempMedia="";this.changeView("home");})
+.then(()=>{alert(statusMsg||msg);this.tempImage="";this.tempMedia="";this.changeView("home");this.updatePendingNotificationBadge();})
 .catch(e=>alert("Firebase Error: "+e.message));
 }
 approveItem(path,id){
 if(!window.firebaseDb)return alert(this.state.lang==="en"?"Firebase not connected.":"Firebase कनेक्ट नहीं है।");
 let {db,ref,update}=window.firebaseDb;
-update(ref(db,`${path}/${id}`),{status:"approved"}).then(()=>{alert(this.state.lang==="en"?"Successfully approved!":"सफलतापूर्वक अप्रूव हो गया!");this.render();}).catch(e=>alert(e.message));
+update(ref(db,`${path}/${id}`),{status:"approved"}).then(()=>{alert(this.state.lang==="en"?"Successfully approved!":"सफलतापूर्वक अप्रूव हो गया!");this.render();this.updatePendingNotificationBadge();}).catch(e=>alert(e.message));
 }
 makeItemLiveDirect(path,id){
 if(!this.isAdminForVillage(this.state.searchVillage)&&!this.state.isAdminLoggedIn)return alert(this.state.lang==="en"?"Only admin can make this live directly!":"केवल एडमिन इसे डायरेक्ट लाइव कर सकते हैं!");
 if(!window.firebaseDb)return alert(this.state.lang==="en"?"Firebase not connected.":"Firebase कनेक्ट नहीं है।");
 let {db,ref,update}=window.firebaseDb;
-update(ref(db,`${path}/${id}`),{status:"approved",showOnTicker:true}).then(()=>{alert(this.state.lang==="en"?"Successfully made live directly!":"सफलतापूर्वक डायरेक्ट लाइव कर दिया गया!");this.render();}).catch(e=>alert(e.message));
+update(ref(db,`${path}/${id}`),{status:"approved",showOnTicker:true}).then(()=>{alert(this.state.lang==="en"?"Successfully made live directly!":"सफलतापूर्वक डायरेक्ट लाइव कर दिया गया!");this.render();this.updatePendingNotificationBadge();}).catch(e=>alert(e.message));
 }
 deleteItem(path,id){
 if(!confirm(this.state.lang==="en"?"Do you want to delete this?":"डिलीट करना चाहते हैं?")||!window.firebaseDb)return;
 let {db,ref,remove}=window.firebaseDb;
-remove(ref(db,`${path}/${id}`)).then(()=>this.render()).catch(e=>alert(e.message));
+remove(ref(db,`${path}/${id}`)).then(()=>{this.render();this.updatePendingNotificationBadge();}).catch(e=>alert(e.message));
 }
 deleteSubAdmin(id){
 if(!confirm(this.state.lang==="en"?"Do you want to remove this sub-admin?":"क्या आप इस सब-एडमिन को हटाना चाहते हैं?")||!window.firebaseDb)return;
@@ -334,7 +272,7 @@ if(!name||!msg)return alert(this.state.lang==="en"?"Please enter name and messag
 if(phone && !/^[0-9]{10}$/.test(phone))return alert(this.state.lang==="en"?"Please enter a valid 10-digit mobile number!":"कृपया 10 अंकों का सही मोबाइल नंबर दर्ज करें!");
 if(!window.firebaseDb)return alert(this.state.lang==="en"?"Firebase not connected!":"Firebase कनेक्ट नहीं है!");
 window.firebaseDb.push(window.firebaseDb.ref(window.firebaseDb.db,"feedbacks"),{name,phone,message:msg,districtId:this.state.selectedDistrict,villageHi:this.state.searchVillage,timestamp:Date.now(),status:"approved"})
-.then(()=>{alert(this.state.lang==="en"?"Your feedback/complaint has been sent!":"आपकी शिकायत/फीडबैक भेज दी गई है!");this.changeView("home");})
+.then(()=>{alert(this.state.lang==="en"?"Your feedback/complaint has been sent!":"आपकी शिकायत/फीडबैक भेज दी गई है!");this.changeView("home");this.updatePendingNotificationBadge();})
 .catch(e=>alert(e.message));
 }
 submitKhelKud(){
@@ -781,6 +719,7 @@ if(headerInput && document.activeElement !== headerInput){
 localStorage.setItem("selectedDistrict",this.state.selectedDistrict);
 if(this.state.searchVillage)localStorage.setItem("searchVillage",this.state.searchVillage);
 this.updateTicker();
+this.updatePendingNotificationBadge();
 
 let dashBannerEl=document.getElementById("villageDashboardBannerContainer");
 let isEn = this.state.lang==="en";
@@ -838,5 +777,5 @@ document.getElementById("mainContent").innerHTML=html;
 }
 let app;try{app=new VillageApp();}catch(e){console.error(e);document.getElementById("splashScreen")?.remove();document.getElementById("mainContent").innerHTML=`<div class="card" style="text-align:center;border:2px solid #dc2626"><h3 style="color:#dc2626">⚠️ ${app?.state?.lang==="en"?"Error":"समस्या"}</h3><p style="font-size:13px;margin-top:8px">${String(e.message||e)}</p></div>`;}
 </script>
-</body>
-</html>
+
+Bas isey paste kar ke save kar lijiye, password 336200 kaam karne lagega!
