@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MeraGaov - मेरी पहचान</title>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
@@ -18,7 +19,6 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .header{background:linear-gradient(135deg,#065f46,#047857);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #059669}
 .title-box{display:flex;align-items:center;gap:8px}
 .user-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #fbbf24;background:#064e3b;cursor:pointer}
-.title{font-size:15px;font-weight:700}
 .header-username-input{background:transparent;border:none;border-bottom:1px dashed #fbbf24;color:#fff;font-size:15px;font-weight:bold;outline:none;width:125px;padding:1px 3px}
 .header-username-input::placeholder{color:#a7f3d0}
 .village-badge-corner{background:#022c22;border:1px solid #10b981;color:#fde047;padding:3px 8px;border-radius:8px;font-size:13px;font-weight:bold;display:inline-block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;margin-top:2px}
@@ -26,7 +26,7 @@ body{background:#064e3b;color:#0f172a;padding:6px}
 .header-btn{background:#10b981;color:#fff;border:0;padding:5px 9px;border-radius:8px;font-weight:bold;cursor:pointer;font-size:11px;position:relative}
 .menu-btn-style{background:#fbbf24;color:#0f172a}
 .badge-notification{position:absolute;top:-5px;right:-5px;background:#dc2626;color:#fff;font-size:10px;padding:2px 5px;border-radius:50%;font-weight:bold;display:none}
-.dropdown-menu{position:absolute;top:42px;right:0;background:#fff;border-radius:12px;box-shadow:0 10px 25px #0004;border:1px solid #cbd5e1;width:155px;z-index:1000;overflow:hidden;display:none;text-align:left}
+.dropdown-menu{position:absolute;top:42px;right:0;background:#fff;border-radius:12px;box-shadow:0 10px 25px #0004;border:1px solid #cbd5e1;width:160px;z-index:1000;overflow:hidden;display:none;text-align:left}
 .dropdown-item{padding:10px 14px;font-size:13px;font-weight:600;border-bottom:1px solid #f1f5f9;cursor:pointer;display:flex;align-items:center;gap:8px;color:#0f172a}
 .dropdown-item:hover{background:#ecfdf5}
 .ticker{background:#022c22;color:#fde047;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;border-bottom:2px solid #059669}
@@ -62,7 +62,7 @@ select.form-control{height:45px;max-height:220px}
 </head>
 <body>
 <div id="firebaseStatus" class="firebase-status"></div>
-<div id="splashScreen" style="position:fixed;inset:0;background:linear-gradient(135deg,#065f46,#047857);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;transition:.5s">
+<div id="splashScreen">
 <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:90px;height:90px;border-radius:50%;border:3px solid #fbbf24;background:#fff;object-fit:cover;margin-bottom:14px">
 <div style="font-size:22px;font-weight:700">MeraGaov - मेरी पहचान</div>
 <div style="font-size:13px;color:#a7f3d0">गाँव की हर खबर और जरूरत, अब आपके फोन पर</div>
@@ -145,7 +145,7 @@ services:[],announcements:[],greetings:[],market:[],historyGallery:[],sarpanchDe
 allowedChatUsers:{},subAdmins:[],villagesConfig:{},villageUnlockRequests:{},
 userAvatarUrl:localStorage.getItem("userCustomAvatar")||avatarDefault,
 headerUsername:localStorage.getItem("headerUsername")||"User",
-isAdminLoggedIn:localStorage.getItem("isAdminSessionActive")==="true",
+isAdminLoggedIn:false, // सुरक्षा हेतु ऑटो-लॉगिन बंद कर दिया गया है
 isSubAdminLoggedIn:false,
 adminName:localStorage.getItem("adminName")||"Admin",
 loggedInSubAdminVillage:"",loggedInSubAdminDistrict:"",loggedInSubAdminName:"",loggedInSubAdminPhone:"",
@@ -319,16 +319,16 @@ return;
 let p=prompt(this.state.lang==="en"?"Enter Admin Password:":"एडमिन पासवर्ड दर्ज करें:");
 if(p==="336200"){
 this.state.isAdminLoggedIn=true;this.state.isSubAdminLoggedIn=false;
-localStorage.setItem("isAdminSessionActive","true");
 this.changeView("admin");
-}else alert(this.state.lang==="en"?"Wrong password!":"गलत पासवर्ड!");
+}else{
+alert(this.state.lang==="en"?"Wrong password!":"गलत पासवर्ड!");
+}
 }
 requestSubAdminAccess(){
 let p=prompt(this.state.lang==="en"?"Enter Sub-Admin Password:":"सब-एडमिन पासवर्ड दर्ज करें:");
 let s=this.state.subAdmins.find(x=>String(x.pwd)===p);
 if(!s)return alert(this.state.lang==="en"?"Wrong password!":"गलत पासवर्ड!");
 this.state.isSubAdminLoggedIn=true;this.state.isAdminLoggedIn=false;
-localStorage.removeItem("isAdminSessionActive");
 this.state.loggedInSubAdminVillage=s.village||s.villageHi||"";
 this.state.loggedInSubAdminDistrict=s.districtId||s.district||"charkhi-dadri";
 this.state.loggedInSubAdminName=s.name||"Sub-Admin";
